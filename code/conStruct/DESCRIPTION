@@ -1,0 +1,11 @@
+Package: conStruct
+Title: Models Spatially Continuous and Discrete Population Genetic Structure
+Version: 0.1
+Authors@R: person("Gideon", "Bradubrd", email = "gideon.bradburd@msu.edu", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends:
+    R (>= 3.3.2)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
