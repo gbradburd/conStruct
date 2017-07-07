@@ -8,3 +8,4 @@ code/conStruct/.DS_Store
 */.DS_Store
 code/stan_model_blocks/*.DS*
 code/conStruct/*.gz
+code/conStruct/R/.R*
