@@ -1,0 +1,10 @@
+writeup/*.log
+writeup/*.aux
+writeup/*.out
+writeup/*.gz
+code/conStruct/.R*
+code/build.conStruct.pkg.R
+code/conStruct/.DS_Store
+*/.DS_Store
+code/stan_model_blocks/*.DS*
+code/conStruct/*.gz
