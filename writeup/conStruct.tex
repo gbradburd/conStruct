@@ -96,30 +96,64 @@ We demonstrate the utility of this approach using both simulations and an empiri
 The fundamental goal of evolutionary genetics is to link patterns of genetic variation 
 to the processes that have generated and maintained them.
 Often, the first step in the analysis of genetic data is to define evolutionary units of analysis
-by delineating discrete populations from which individuals or alleles are sampled \ref{Wright 1949}.
-These units are useful for defining a scope of study in research on selection or local adaptation \ref{},
+by delineating discrete populations from which individuals or alleles are sampled \citep{wright1949genetical}.
+These units are useful for defining a scope of study in research on selection or local adaptation \citep{},
 or on identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
-Delineating populations can also be useful for informing conservation priorities \ref{}.
+Delineating populations can also be useful for informing conservation priorities \citep{}.
 
 There have been many methods proposed to characterize populations,
-including generating population phylogenies \ref{cavalli-sforza, treemix},
-$k$-means clustering analyses performed on dimensionality-reduction approaches \ref{}, 
-such as principal components analysis \ref{Cavalli-sforza,Novembre and Stephens, Patterson2006},
-and model-based clustering approaches \ref{Pritchard2000, all the other structure papers, admixture, structurama, BAPS, }, among others.
+including generating population phylogenies \citep{CavalliSforza1975, treemix},
+$k$-means clustering analyses performed on dimensionality-reduction approaches \citep{}, 
+such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
+and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003}, among others.
+Here, we will focus on model-based clustering, the most widely used class of approaches.
 These methods each perform best under different specific demographic histories of samples being analyzed,
-but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \ref{Wright 1938, 1940, 1943}.
+but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943}.
 
-Isolation by distance (IBD) can 
+A pattern of isolation by distance (IBD) arises when migration in a population is spatially limited \citep{Slatkin1985},
+and has been modeled in both spatially continuous frameworks \citep{Wright1943,Malecot1948}, 
+in which an individual's parents are found within some radius of that individual's location,
+and discrete, ``stepping-stone'' frameworks \citep{Kimura1953},
+in which migration occurs only between neighboring demes.
+Given the generality of the circumstances that generate a pattern of isolation by distance, 
+it is unsurprising that IBD is ubiquitous in nature \citep{meirmans2012,Sexton_etal_2014}.
 
-Patterns of population genetic differentiation are characterized by both discrete and 
-continuous structure.  Identification of genetically discrete populations is important 
-not just for understanding the distribution of genetic variation on a landscape, but also 
-for understanding the demographic history of a species, or, from a conservation perspective, 
-for characterizing discrete management units.  However, it is frequently difficult to disentangle 
-continuous and discrete patterns of genetic differentiation.  
-  By introducing a statistical framework that simultaneously 
-models discrete and continuous patterns of population structure, we can do a more accurate 
-job describing and quantifying both.
+The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
+as it is frequently difficult to determine whether observed patterns of genetic variation are 
+continuously distributed across a landscape, or instead are partitioned in discrete clusters.
+This problem can be compounded if sampling is done unevenly or discretely across a population or species' range,
+and has given rise to a debate in the population genetic literature about whether 
+individuals are best described as being drawn from continuous clines or discrete clusters 
+\citep[e.g.][]{SerrePaabo2004,rosenberg2005clines}.
+
+Existing model-based clustering approaches can only describe continuous patterns of variation using
+discrete clusters, 
+and so tend to erroneously describe continuously distributed variation with multiple clusters that 
+show spatially autocorrelated cluster membership \citep{Frantz2009,Meirmans2012}.
+In analyses of empirical datasets, which often are characterized by IBD,
+model-based clustering approaches will therefore tend to overestimate the number of discrete clusters present,
+with downstream implications for interpretation of results.
+For example, conservation resources might be spread too thinly over areas 
+that are spuriously assumed to be discrete management units.
+In studies of locally adaptive loci, or of the genetics of disease,
+discrete populations may be modeled in separately,
+reducing the global power to detect the genomic basis of complex phenotypes.
+
+What is desired, then, is a model-based clustering method that incorporates a spatial element.
+and specifically one that uses a model of isolation by distance as a biologically sensible null hypothesis 
+for the process structuring observed genetic variation.
+With an explicit spatial null, discrete population structure need only be invoked when genetic differentiation 
+in the data is above and beyond that expected given some estimated background rate at which divergence 
+increases with geographic separation.
+
+In this paper, we present a statistical method for simultaneously 
+modeling continuous and discrete patterns of population structure.
+We model genetic variation in genotyped individuals as 
+partitioned within or admixed across a user-specified number of discrete clusters,
+within each of which relatedness decays as a parametric function of the distance between samples.
+We also implement a cross-validation approach for comparing and selecting models across different numbers of clusters,
+and we demonstrate the utility of our approach using both simulated and empirical data.
+The implementation of this method, \texttt{conStruct}, is available as an R package at \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
 \section*{Methods}
 \paragraph{Data}
@@ -534,7 +568,7 @@ which can then be used for model comparison or selection.
 
 \newpage
 
-\bibliography{reference.library.tex}
+\bibliography{reference.library.tex.bib}
 
 \newpage
 
