@@ -1,0 +1,61 @@
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+source('~/Dropbox/conStruct/sims/sim_code/sim.in.ms.R')
+ls()
+ls(0
+ls()
+names(sim.datsaet)
+names(sim.dataset)
+names(sim.dataset$freq.data)
+samp.cov <- cov(t(sim.dataset$freq.data$freqs))
+D <- fields::rdist(sim.dataset$coords)
+plot(D,samp.cov)
+load("/Users/gburd/Dropbox/gid_runs/sim_K1/sim.dataset.Robj")
+samp.cov <- cov(t(sim.dataset$freq.data$freqs))
+D <- fields::rdist(sim.dataset$coords)
+plot(D,samp.cov)
+sim.dataset$ms.params
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+sim.dataset$ms.params
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+samp.cov <- cov(t(sim.dataset$freq.data$freqs))
+plot(D,samp.cov)
+D <- fields::rdist(sim.dataset$coords)
+plot(D,samp.cov)
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+samp.cov <- cov(t(sim.dataset$freq.data$freqs)) ; D <- fields::rdist(sim.dataset$coords) ;plot(D,samp.cov)
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+samp.cov <- cov(t(sim.dataset$freq.data$freqs)) ; D <- fields::rdist(sim.dataset$coords) ;plot(D,samp.cov)
+names(sim.dataset)
+sim.dataset$ms.params
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+sim.dataset$ms.params
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+sim.dataset$ms.params
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+sim.dataset$ms.params
+fst <- function(gen,Ne){gen/(2*Ne)}
+plot(1:1e6,fst(1e4,1:1e6))
+plot(1:1e5,fst(1:1e5,1e4))
+plot(1:1e4,fst(1:1e4,1e3))
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+require(conStruct)
+?make.data.block
+??make.data.block
+??data.block
+??conStruct
+library(conStruct)
+conStruct
+names(sim.dataset)
+freq.data <- process.freq.data(sim.dataset$freq.data)
+names(sim.dataset$freq.data)
+freq.data <- process.freq.data(sim.dataset$freq.data$freqs)
+names(freq.data)
+D <- fields::rdist(sim.dataset$coords)
+plot(D,freq.data$obsCov)
+load("/Users/gburd/Dropbox/conStruct/sims/sim_code/sim.dataset.Robj")
+freq.data <- conStruct::process.freq.data(sim.dataset$freq.data$freqs)
+D <- fields::rdist(sim.dataset$coords)#
+pdf(file="ibd.pdf")#
+	plot(D,freq.data$obsCov)#
+dev.off()
+0.00005 == 5e-5
