@@ -1020,7 +1020,7 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 freqs = train.data,
 											 geoDist = geoDist,
 											 coords = coords,
-											 prefix = paste0(prefix,"_sp_","rep",rep.no,"K=",k),
+											 prefix = paste0(prefix,"_sp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
 											 burnin = burnin)
 						})
@@ -1030,7 +1030,7 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 freqs = train.data,
 											 geoDist = geoDist,
 											 coords = coords,
-											 prefix = paste0(prefix,"_nsp_","rep",rep.no,"K=",k),
+											 prefix = paste0(prefix,"_nsp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
 											 burnin = burnin)
 						})
