@@ -522,7 +522,7 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 
 \newpage
 \section{Cross validation}
-To perform model comparison, we employ a Monte Carlo cross-validation approach,
+To perform model comparison, we employ a Monte Carlo cross-validation approach \citep{picard1984},
 also known as repeated random sub-sampling validation.
 Briefly, we follow the following procedure:
 \begin{enumerate}
@@ -555,7 +555,7 @@ Briefly, we follow the following procedure:
 		\end{equation}
 	\item standard error
 		\begin{equation}
-			SE_{\bar{\mathcal{Z}}_{mk}} = \frac{1}{\sqrt{X}}\sum\limits_{x=1}^{X} \left[ {\mathcal{Z}_{xmk} - \bar{\mathcal{Z}}_{mk}} \right]
+			SE_{\bar{\mathcal{Z}}_{mk}} = \sqrt{\frac{\sum\limits_{x=1}^{X} \left[ {\mathcal{Z}_{xmk} - \bar{\mathcal{Z}}_{mk}} \right]}{X}}
 		\end{equation}
 	\item 95\% confidence interval
 		\begin{equation}
