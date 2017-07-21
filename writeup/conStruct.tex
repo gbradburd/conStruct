@@ -259,6 +259,40 @@ around this inference machinery.
 \section*{Results}
 
 \subsection*{Simulations}
+We first test the method with scenarios generated using the coalescent simulator \texttt{ms} \citep{Hudson2002}.
+To generate discrete population structure, we simulate $K$ discrete clusters,
+each of which split from a common ancestor at some point in the past, $\tau_{\text{s}}$,
+then diverge for some time without migration between them.
+To generate continuous differentiation within each cluster,
+at time $\tau_{\text{e}}$ we have each of these discrete clusters instantaneously colonize a lattice of demes,
+for which we use a stepping stone model with symmetric migration 
+to nearest neighbors (eight neighbors, including diagonals).
+Finally, at time $\tau_{\text{a}}$ we generate a single dataset that captures both continuous and discrete patterns of population structure 
+by collapsing those $K$ discrete lattices into a single grid of demes sampled from the different clusters
+or admixed between them (see Fig \ref{sim_setup}).
+We simulated datasets under $K =$ 1 through 4, 
+sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme
+(for details on all simulations, see Methods and Supplementary Materials).
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=4in,height=2.5in]{figs/sims/sim_setup.png}}
+		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
+			    Going forward in time, the $K$ clusters split from a common ancestor at time $\tau_{\text{s}}$,
+			    then each expand to colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
+			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
+			    with ancestry entirely in one or the other of the clusters,
+			    or admixed between them.
+			    }\label{sim_setup}
+\end{figure}
+
+We ran \texttt{conStruct} analyses on each of these simulated datasets, 
+specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
+then used cross-validation to compare the predictive performance of the models.
+
+
+
+
 
 \subsection*{Empirical Applications}
 
@@ -266,7 +300,10 @@ around this inference machinery.
 
 \section*{Acknowledgements}
 
-We thank Marjorie Weber, William Wetzel, Mariah Meek, Yaniv Brandvain, and Matthew Stephens for invaluable comments on the method and manuscript, as well as attendees at the 2017 SSE Meeting in Portland, OR, whose votes determined the name of the method.
+We thank Marjorie Weber, William Wetzel, Mariah Meek, Yaniv Brandvain, and Matthew Stephens 
+for invaluable comments on the method and manuscript, 
+as well as Quentin Cronk, who helped interpret the \textit{Populus} analyses, 
+and the attendees at the 2017 SSE Meeting in Portland, OR, whose votes determined the name of the method.
 This work was supported in part by 
 the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
 the National Institute of General Medical Sciences of the National Institutes of Health under award numbers NIH RO1GM83098 and RO1GM107374 to GC,
@@ -278,7 +315,7 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 \setcounter{equation}{0}
 \renewcommand{\thetable}{A\arabic{table}}
 \setcounter{table}{0}
-\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thefigure}{A\arabic{figure}}
 \setcounter{figure}{0}
 
 
@@ -572,9 +609,39 @@ which can then be used for model comparison or selection.
 We should probably demonstrate that the nonspatial version of \texttt{conStruct} is basically the same as STRUCTURE.
 Maybe check out Engelhardt \& Stephens?
 
+\newpage
+\section*{Supplementary Materials}
+\renewcommand{\theequation}{S\arabic{equation}}
+\setcounter{equation}{0}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{figure}{0}
 
 \newpage
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
+    }\label{sfig:simK1_nsp_pies}
+\end{figure}
 
+
+\newpage
+\newpage
 \bibliography{reference.library.tex.bib}
 
 \newpage

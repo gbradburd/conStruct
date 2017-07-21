@@ -8,8 +8,16 @@ code/conStruct/.DS_Store
 .DS_Store
 */.DS_Store
 code/stan_model_blocks/*.DS*
-code/conStruct/*.gz
+code/conStruct/*.
 code/conStruct/R/.R*
 writeup/*.bbl
 writeup/*.blg
 writeup/conStruct.pdf
+writeup/figs/sims/*.ai
+code/build.conStruct.pkg.Rout
+writeup/*.mp
+writeup/*.top
+writeup/*.tui
+code/conStruct/*.gz
+sims/cross_validation/K_1/x_validation/*.Robj
+sims/cross_validation/K_1/x_validation/*.R
