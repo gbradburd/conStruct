@@ -234,15 +234,19 @@ check.call <- function(args){
 }
 
 #'@export
-conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix="",n.chains=1,n.iter=1e3,burnin=0){
+conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix="",n.chains=1,n.iter=1e3,burnin=0,make.figs=TRUE,save.files=TRUE){
 	#MAKE IT SO BURNIN CAN'T BE MORE THAN N.ITER
 	#GENERALLY DEAL W/ BURNIN
 	call.check <- check.call(args <- as.list(environment()))
 	#validate data block
 	freq.data <- process.freq.data(freqs)
-		save(freq.data,file=paste0(prefix,"_freq.data.Robj"))
+		if(save.files){
+			save(freq.data,file=paste0(prefix,"_freq.data.Robj"))
+		}
 	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp)
-		save(data.block,file=paste0(prefix,"_data.block.Robj"))
+		if(save.files){
+			save(data.block,file=paste0(prefix,"_data.block.Robj"))
+		}
 	#validate model specification
 	#make.stan.code.block
 	stan.block <- make.stan.code.block(spatial,K)
@@ -257,10 +261,14 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix=
 						chains = n.chains,
 						thin = ifelse(n.iter/500 > 1,n.iter/500,1))
 	#save fit obj
-	save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
+		if(save.files){
+			save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
+		}
 	conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
-	save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
-	make.all.the.plots(conStruct.results,n.chains,data.block,freq.data,prefix,burnin,cluster.colors=NULL)
+		save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
+	if(make.figs){
+		make.all.the.plots(conStruct.results,n.chains,data.block,prefix,burnin,cluster.colors=NULL)
+	}
 	return(conStruct.results)
 }
 
@@ -610,11 +618,11 @@ get.par.cov.CI <- function(data.block,conStruct.results,burnin){
 	return(CIs)
 }
 #'@export
-plot.model.fit.CIs <- function(data.block,freq.data,conStruct.results,burnin){
-	cov.range <- range(c(freq.data$obsCov,
+plot.model.fit.CIs <- function(data.block,conStruct.results,burnin){
+	cov.range <- range(c(data.block$obsCov,
 						conStruct.results$posterior$par.cov[
 							(burnin+1):conStruct.results$posterior$n.iter, , ]))
-	plot(data.block$geoDist,freq.data$obsCov,
+	plot(data.block$geoDist,data.block$obsCov,
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
@@ -630,17 +638,17 @@ plot.model.fit.CIs <- function(data.block,freq.data,conStruct.results,burnin){
 						 col = adjustcolor(1,0.1),
 						 lwd=1.5)
 			})
-	points(data.block$geoDist,freq.data$obsCov,col=2,pch=20,cex=0.8)
+	points(data.block$geoDist,data.block$obsCov,col=2,pch=20,cex=0.8)
 	legend(x="topright",legend=c("observed","95% CI"),pch=c(19,NA),lty=c(NA,1),col=c(2,"gray"))
 	return(invisible("plotted"))
 }
 
 #'@export
-plot.model.fit <- function(data.block,freq.data,conStruct.results,burnin){
+plot.model.fit <- function(data.block,conStruct.results,burnin){
 	z <- seq((burnin+1),conStruct.results$posterior$n.iter,length.out=10)
 	index.mat <- upper.tri(data.block$geoDist, diag = TRUE)
-	cov.range <- range(c(freq.data$obsCov,conStruct.results$posterior$par.cov[z, , ]))
-    plot(data.block$geoDist,freq.data$obsCov,
+	cov.range <- range(c(data.block$obsCov,conStruct.results$posterior$par.cov[z, , ]))
+    plot(data.block$geoDist,data.block$obsCov,
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
@@ -649,7 +657,7 @@ plot.model.fit <- function(data.block,freq.data,conStruct.results,burnin){
         points(data.block$geoDist[index.mat], conStruct.results$posterior$par.cov[i,,][index.mat],
         	pch = 20, col = adjustcolor(1, 0.1))
     		})
-    points(data.block$geoDist[index.mat], freq.data$obsCov[index.mat], 
+    points(data.block$geoDist[index.mat], data.block$obsCov[index.mat], 
         xlab = "geographic distance", ylab = "covariance", ylim = cov.range, 
         col=2,pch = 19)
 	legend(x="topright",legend=c("observed","parametric"),pch=19,col=c(2,1))
@@ -818,7 +826,7 @@ get.n.cluster.cov.params <- function(conStruct.results){
 }
 
 #'@export
-make.all.chain.plots <- function(conStruct.results,chain.no,data.block,freq.data=NULL,prefix,burnin=0,cluster.colors,...){
+make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,burnin=0,cluster.colors,...){
 	pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"),...)
 		plot.lpd(conStruct.results,burnin)
 		plot.nuggets(conStruct.results,burnin)
@@ -828,14 +836,12 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,freq.data
 			plot.admix.props(data.block,conStruct.results,cluster.colors,burnin)
 		}
 	dev.off()
-	if(!is.null(freq.data)){
-		pdf(file=paste0(prefix,"_model.fit.chain_",chain.no,".pdf"),...)
-			plot.model.fit(data.block,freq.data,conStruct.results,burnin)
-		dev.off()
-		pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),...)
-			plot.model.fit.CIs(data.block,freq.data,conStruct.results,burnin)
-		dev.off()
-	}
+	pdf(file=paste0(prefix,"_model.fit.chain_",chain.no,".pdf"),...)
+		plot.model.fit(data.block,conStruct.results,burnin)
+	dev.off()
+	pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),...)
+		plot.model.fit.CIs(data.block,conStruct.results,burnin)
+	dev.off()
 	if(data.block$spatial | data.block$K > 1){
 		pdf(file=paste0(prefix,"_cluster.cov.curves.chain_",chain.no,".pdf"),width=5,height=5)
 			plot.cluster.covs(data.block,conStruct.results,cluster.colors,burnin)
@@ -853,12 +859,12 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,freq.data
 }
 
 #'@export
-make.all.the.plots <- function(conStruct.results,n.chains,data.block,freq.data=NULL,prefix,burnin=0,cluster.colors=NULL,...){
+make.all.the.plots <- function(conStruct.results,n.chains,data.block,prefix,burnin=0,cluster.colors=NULL,...){
 	if(is.null(cluster.colors)){
 		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
 	}
 	lapply(1:n.chains,function(i){
-		make.all.chain.plots(conStruct.results[[i]],chain.no=i,data.block,freq.data,prefix,burnin,cluster.colors,...)
+		make.all.chain.plots(conStruct.results[[i]],chain.no=i,data.block,prefix,burnin,cluster.colors,...)
 	})
 	return(invisible("made chain plots!"))
 }
@@ -1006,7 +1012,7 @@ x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter,bu
 }
 
 #'@export
-x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.iter,burnin){
+x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.iter,burnin,make.figs=FALSE,save.files=FALSE){
 	freqs <- drop.invars(freqs)
 	train.loci <- sample(1:ncol(freqs),ncol(freqs)*(1-test.pct))
 	test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
@@ -1022,7 +1028,9 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 coords = coords,
 											 prefix = paste0(prefix,"_sp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
-											 burnin = burnin)
+											 burnin = burnin,
+											 make.figs,
+											 save.files)
 						})
 	training.runs.nsp <- lapply(K,function(k){
 								conStruct(spatial = FALSE,
@@ -1032,7 +1040,9 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 coords = coords,
 											 prefix = paste0(prefix,"_nsp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
-											 burnin = burnin)
+											 burnin = burnin,
+											 make.figs,
+											 save.files)
 						})
 	training.runs <- list("sp" = training.runs.sp,
 						  "nsp" = training.runs.nsp)
@@ -1139,3 +1149,36 @@ estimate.model.evidence <- function(n.TI.steps,spatial=TRUE,K,freqs,geoDist=NULL
 }
 
 
+#'@export
+match.clusters.x.runs <- function(csr1,csr2,csr1.order=NULL){
+	# recover()
+	cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+	K1 <- ncol(csr1$MAP$admix.proportions)
+		if(!is.null(csr1.order)){
+			csr1$MAP$admix.proportions <- csr1$MAP$admix.proportions[,csr1.order]
+		}
+		K1.cols <- cluster.colors[1:K1]
+	K2 <- ncol(csr2$MAP$admix.proportions)
+		K2.cols <- numeric(K2)
+	k.combn <- expand.grid(1:K1,1:K2)
+	clst.cors <- unlist(lapply(1:nrow(k.combn),
+						function(n){
+							cor(csr1$MAP$admix.proportions[,k.combn[n,1]],
+								csr2$MAP$admix.proportions[,k.combn[n,2]])
+							}))
+	while(length(which(K2.cols == 0)) > (K2-K1)){
+		tmp.max <- which.max(rank(clst.cors,na.last=FALSE))
+		csr2.match <- k.combn[tmp.max,2]
+		csr1.match <- k.combn[tmp.max,1]
+		K2.cols[csr2.match] <- K1.cols[csr1.match]
+		clst.cors[which(k.combn[,1]==csr1.match)] <- NA
+		clst.cors[which(k.combn[,2]==csr2.match)] <- NA
+	}
+	if(K2 > K1){
+		K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
+	}
+	K2.clst.order <- match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))]
+	clst2.info <- list("cols" = K2.cols,
+					   "clst.order" = K2.clst.order)
+	return(clst2.info)
+}

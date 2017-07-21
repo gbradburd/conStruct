@@ -1,11 +1,17 @@
 Package: conStruct
 Title: Models Spatially Continuous and Discrete Population Genetic Structure
-Version: 0.1
-Authors@R: person("Gideon", "Bradubrd", email = "gideon.bradburd@msu.edu", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Version: 0.0.0.9000
+Authors@R: person("Gideon", "Bradburd", email = "bradburd@msu.edu", role = c("aut", "cre"))
+Description: A method for modeling genetic data as a combination of discrete
+    clusters, within each of which relatedness may decay continuously with
+    geographic distance. This package contains code for running analyses (which are
+    implemented in the modeling language rstan) and visualizing and interpreting
+    output. See the paper for more details on the model and its utility.
 Depends:
-    R (>= 3.3.2)
-License: What license is it under?
+	R (>= 3.3.2)
+Imports:
+	rstan (>= 2.15.1)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
