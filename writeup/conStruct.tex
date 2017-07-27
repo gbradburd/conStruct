@@ -170,24 +170,31 @@ We then calculate the sample covariance in allele frequencies, $\widehat{\Omega}
 \widehat{\Omega} = \frac{1}{L}  FF^T
 \label{sample_covariance}
 \end{equation}
+\gc{SO IS THIS ACTUALLY the calc given the new diagonal?}
+
 
 \paragraph{Continuous and discrete differentiation}
 We wish to describe the observed patterns of genetic variation as a combination of 
 discrete population clusters,
 within which genetic variation is continuously distributed, 
 and between which sampled individuals or populations can be admixed.
-Each of these discrete clusters is modeled as a spatial process
-in which migration between neighboring demes acts 
-to homogenize allele frequency changes that arise locally due to drift;
-this interplay between drift and migration 
-results in a continuous pattern of isolation by distance within each cluster.
+Each of these discrete clusters is modeled as a spatial process where
+\gc{allele frequencies covary between geographically close locations,
+  but  %%changed as we dont model migration or drif
+this covariance is allowed to decay with geographic distance. This 
+pattern of spatial decay reflects} how migration between neighboring demes acts 
+to homogenize allele frequency changes that arise locally due to
+drift, \gc{but that migration is less effective at homogenizing
+  between geographic distance demes};
+%with this interplay between drift and migration 
+resulting in a continuous pattern of isolation by distance within each cluster.
 Multiple population cluster processes can co-occur in space, 
 leading to discrete jumps in allele frequencies across many loci over small geographic distances,
 and the genotyped samples can be admixed between different clusters.
 
-The continuous decay of allele frequency covariance with geographic distance 
-within a cluster is described using a simple and flexible powered exponential function;
-the within-cluster covariance between samples $i$ and $j$ is given by:
+\gc{To model the} continuous decay of allele frequency covariance with geographic distance 
+within a cluster \gc{we use a flexible powered-exponential function;
+  where the} within-cluster covariance between samples $i$ and $j$ is given by:
 
 \begin{equation}
 G^{(k)}_{i,j} = \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \mu^{(k)}
@@ -197,37 +204,49 @@ G^{(k)}_{i,j} = \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}
 where $G_{i,j}$ is the covariance function between samples $i$ and $j$ within a cluster,
 and the superscript $(k)$ denotes that this function is specific to the $k$th cluster.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
-the $\alpha$ parameters control the shape of the decay of covariance with distance,
-and $\mu$ is a parameter that describes the amount of shared drift within a cluster.
+the \gc{$\alpha^{(k)}$ parameters control the shape of the decay of
+  covariance with distance in the cluster},
+and $\mu$ is a parameter that describes the \gc{background allele
+  frequency   %%amount of shared drift
+  covariance within the cluster. If two samples draw 100\% of their
+  ancestry from cluster $k$ then, if they are geographically very
+  close ($D_{i,j}=0$) they will have allele frequency covariance
+  $\alpha^{(k)}_0 +  \mu^{(k)}$ with their covariance decaying to the
+  background level $\mu^{(k)}$ within the cluster for large enough geographic distances.}
 The shared drift parameter $\mu^{(k)}$ can be interpreted as the branch length connecting 
-the $k$th population to the population ancestral to all modeled clusters.
+the $k$th population to the population ancestral to all modeled
+clusters \gc{(see XXX)}. 
 
-Genotyped samples can be admixed between these different clusters. 
+\gc{Genotyped samples can draw their ancestry from multiple different clusters,
+representing these samples being admixed between the clusters.} 
 The admixture proportion of the $i$th sample in the $k$th cluster, $w^{(k)}_i$,
-gives the probability that an allele in sample $i$ was derived from cluster $k$;
-each sample's admixture proportions across all clusters must sum to one.
+gives the probability that an allele in sample $i$ was derived from
+cluster $k$ \gc{($\sum_k w^{(k)}_i =1$).}
+
 
 We can then describe the covariance between samples $i$ and $j$ across all clusters, $\Omega_{i,j}$,
 by summing their within-cluster spatial covariances ($G_{i,j}^{(k)}$ in cluster $k$) across all $K$ clusters
-and weighting by the product of those samples' admixture proportions in each cluster.
-
+and weighting by the product of those samples' admixture proportions in each cluster
 \begin{equation}
-\Omega_{i,j} = \gamma + \sum\limits_K w^{(k)}_i w^{(k)}_j G^{(k)}_{i,j} + \delta_{i,j}\eta_i
+\Omega_{i,j} = \gamma + \sum\limits_K w^{(k)}_i w^{(k)}_j
+G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
 \label{cross_cluster_covariance}
 \end{equation}
 
 In addition to the admixture-weighted sum of the within-cluster spatial covariances,
 this function contains two terms, $\gamma$ and $\delta_{i,j}\eta_i$.
 The first, $\gamma$, describes the global covariance between all samples, 
-and arises because all samples share an ancestral mean allele frequency at each locus.
+and arises because all samples \gc{have a base-line covariance as they
+  share} an ancestral mean allele frequency at each locus.
 In the second term, $\delta_{i,j}$ is an indicator variable that takes a value of 1 when $i$ equals $j$ and 0 otherwise. 
 and $\eta_i$ gives the variance specific to sample $i$, 
-This term on the diagonal of the parametric covariance matrix 
-is meant to capture processes shaping variance within the sampled deme, 
-such as inbreeding.
+This term on the diagonal of the parametric covariance matrix \gc{captures} processes shaping variance within the sampled deme, 
+such as inbreeding \gc{and the sampling process}.
 
 \paragraph{Likelihood and inference}
-If we assume that the  allele frequencies $\widehat{F}$ are independent and multivariate normally distributed, 
+\gc{We} assume that the allele frequencies \gc{at each locus
+  ($\widehat{F}_{\ell}$) are independent among loci and multivariate normally
+  distributed across populations}, 
 their sample covariance $\widehat{\Omega}$ 
 will be Wishart distributed with degrees of freedom equal to $L$, 
 the number of loci genotyped.
@@ -255,6 +274,18 @@ We use a Hamiltonian Monte Carlo sampling algorithm implemented in the statistic
 \citep{stan, NUTS, stan_lib, rstan} to estimate the posterior distribution on the parameters.
 We also present an R package \citep{R} called \texttt{conStruct} that functions as a wrapper 
 around this inference machinery.
+
+\gc{
+\paragraph{Relationship of this model to non-spatial structure models}
+
+}
+
+\gc{ 
+\paragraph{Choice of cluster number and cross-validation}
+
+
+}
+
 
 \section*{Results}
 
