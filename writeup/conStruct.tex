@@ -106,7 +106,7 @@ There have been many methods proposed to characterize populations,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
 $k$-means clustering analyses performed on dimensionality-reduction approaches \citep{}, 
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
-and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003}, among others.
+and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS}, among others.
 Here, we will focus on model-based clustering, the most widely used class of approaches.
 These methods each perform best under different specific demographic histories of samples being analyzed,
 but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943}.
@@ -158,7 +158,7 @@ The implementation of this method, \texttt{conStruct}, is available as an R pack
 
 \section*{Methods}
 \paragraph{Data}
-The statistical framework of our approach is conceptually similar to \cite{Wasser2004} and \cite{spacemix}.
+The statistical framework of our approach is conceptually similar to \cite{Wasser2004} and \cite{BEDASSLE}, and \cite{spacemix}.
 The genetic data modeled consist of allele frequencies $F$ at $L$ unlinked, bi-allelic single nucleotide polymorphisms (SNPs) genotyped across $N$ samples.
 The sample frequency at locus $\ell$ in sample $n$, $f_{n,\ell}$, is calculated by first arbitrarily choosing an allele segregating 
 at locus $\ell$ to count, 
@@ -270,7 +270,7 @@ to nearest neighbors (eight neighbors, including diagonals).
 Finally, at time $\tau_{\text{a}}$ we generate a single dataset that captures both continuous and discrete patterns of population structure 
 by collapsing those $K$ discrete lattices into a single grid of demes sampled from the different clusters
 or admixed between them (see Fig \ref{sim_setup}).
-We simulated datasets under $K =$ 1 through 4, 
+We simulated datasets under $K =$ 1 through 3, 
 sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme
 (for details on all simulations, see Methods and Supplementary Materials).
 
@@ -289,12 +289,74 @@ sampling 10,000 unlinked loci from each of 20 haploid individuals from every dem
 We ran \texttt{conStruct} analyses on each of these simulated datasets, 
 specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
 then used cross-validation to compare the predictive performance of the models.
+In Fig \ref{simK1_nsp_pies}, we show the results of the nonspatial model 
+run with between 1 and 7 clusters, applied to the dataset simulated under $K=1$,
+and in Fig \ref{xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
+The admixture pie plots for the spatial and nonspatial models run on the datasets simulated under $K=2$ and $K=3$
+are shown in Figs \ref{simK1_sp_pies}-\ref{simK3_sp_pies}.
 
+A number of results are immediately clear from these tests with simulated data.
+First, across all values of K and for all simulations, 
+the spatial model is preferred over the nonspatial model
+(this is not surprising, as the data were simulated under a spatial model).
+Second, the predictive accuracy of the nonspatial model increases with the number of clusters in the model, 
+as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
+with gradients of admixture across more and more discrete clusters.
+This behavior of the nonspatial model is highlighted in the analyses of data simulated under $K=1$ (Fig \ref{simK1_nsp_pies}):
+as $K$ in the model increases, 
+the sampled area is increasingly divvied up between clusters 
+with ``centers of mass" in the $K$ geographical extremes of the simulated space.
+At $K=2$, the clusters are centered in opposite corners on the map; 
+at $K=3$, in the lower two corners and the top half; 
+at $K=4$, all four corners, and so on.
 
-
-
+In contrast, the predictive accuracy of the spatial model of \texttt{conStruct} 
+either plateaus at or declines from the true value of $K$ used to simulate the data (Fig \ref{xvals}, second column).
+And, as $K$ in the spatial model increases, 
+deme membership in clusters beyond the number used to simulate the data does not appreciably increase 
+(Fig \ref{simK1_sp_pies}, \ref{simK2_sp_pies}, \ref{simK3_sp_pies}).
+That is, even when the spatial model is run with $K=7$, 
+the inferred admixture proportions are nearly identical to 
+those estimated under the true value of $K$ for each simulation.
 
 \subsection*{Empirical Applications}
+
+
+
+
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK1_nsp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK1_nsp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK1_nsp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK1_nsp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK1_nsp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK1_nsp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
+    }\label{simK1_nsp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=8.5in]{figs/sims/xvals.pdf}}
+	\caption{
+	Cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
+	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	The first panel in each row shows all results; 
+	the second panel shows results for just the spatial model.
+	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
+    }\label{xvals}
+\end{figure}
+
 
 \section*{Discussion}
 
@@ -621,27 +683,107 @@ Maybe check out Engelhardt \& Stephens?
 \newpage
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+		\subcaptionbox{$K=2$\label{simK1_sp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK1_sp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK1_sp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK1_sp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK1_sp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK1_sp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K7.pdf}}
 	\caption{
-	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
-	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
-    }\label{sfig:simK1_nsp_pies}
+	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
+	The data were simulated using 1 cluster with nearest-neighbor symmetric migration between demes.
+    }\label{simK1_sp_pies}
 \end{figure}
 
+\newpage
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK2_nsp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK2_nsp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK2_nsp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK2_nsp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK2_nsp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK2_nsp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
+    }\label{simK2_nsp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK2_sp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK2_sp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK2_sp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK2_sp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK2_sp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK2_sp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
+	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
+    }\label{simK2_sp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK3_nsp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK3_nsp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK3_nsp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK3_nsp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK3_nsp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK3_nsp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
+    }\label{simK3_nsp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK3_sp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK3_sp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK3_sp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK3_sp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK3_sp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK3_sp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
+	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
+    }\label{simK3_sp_pies}
+\end{figure}
 
 \newpage
-\newpage
+\clearpage
 \bibliography{reference.library.tex.bib}
 
 \newpage
