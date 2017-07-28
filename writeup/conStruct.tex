@@ -171,7 +171,6 @@ we wish to describe the mean of the variance in allele frequencies between haplo
 rather than the variance of the mean frequencies across haplotypes in a sample.
 Therefore, we calculate our sample covariance as follows:
 
-
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
 	\begin{cases}
@@ -286,12 +285,40 @@ around this inference machinery.
 
 }
 
-\gc{ 
 \paragraph{Choice of cluster number and cross-validation}
+There are a number of reasons, both statistical and biological, 
+why choosing a single, ``best" number of clusters to describe the data may not be desirable.
+%, including ambiguity in what exactly it means for any given value of $K$ to be ``best."
+We discuss these reasons further in the Discussion below, 
+but we also recognize that in many circumstances it is either useful or convenient 
+to present only a single set of results from a clustering analysis with a particular number of clusters.
+ideally a number large enough to describe meaningful partitions in the data, 
+but not so large as to be difficult to parse visually.
+Toward that end, we have implemented a method for 
+statistically comparing \texttt{conStruct} runs across different values of $K$.
 
+Several approaches have been proposed to determine the number of clusters in the data, 
+including: 
+the use of information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
+comparisons of the likelihood of the data across different values of $K$, 
+with various criteria on how to choose a single value (e.g., Evanno 2005);
+or comparisons of the marginal likelihood, 
+generated either via various approximations \citep[e.g.][]{STRUCTURE}
+or via a more rigorous and computationally intensive approach such as thermodynamic integration \citep{verity_nichols2016}
+or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
+A comprehensive review of these approaches and their various merits is beyond the scope of this paper,
+but see \cite{verity_nichols2016} for an excellent discussion of and comparison between several.
 
-}
-
+We choose to take a cross-validation approach, 
+estimating the parameters of the model using a ``training" partition of the data,
+then calculating the likelihood of a separate, ``testing" partition of the data given those parameters,
+repeating this procedure many times, 
+and selecting the model with the significantly best predictive accuracy
+(see Section \ref{Xvalidation} for a thorough discussion of our cross-validation procedure).
+This approach rewards models with larger values of $K$, which increase the likelihood of the training partition,
+up to the point that cluster membership is invoked to model noise specific to the training data, 
+at which point predictive accuracy decreases, 
+and models with additional clusters are penalized.
 
 \section*{Results}
 
@@ -355,6 +382,7 @@ deme membership in clusters beyond the number used to simulate the data does not
 That is, even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
+We parse \texttt{conStruct}'s performance on these simulation tests further in the Discussion.
 
 \begin{figure}
 	\centering
@@ -390,8 +418,21 @@ those estimated under the true value of $K$ for each simulation.
 \end{figure}
 
 \subsection*{Empirical Applications}
+To demonstrate the utility of this method, we analyzed empirical population genomic data from two systems:
+a contact zone between two poplar species in northwestern North America,
+and a large North American sample of black bears.
+
+\subsubsection*{Poplars}
+
+\subsubsection*{Black bears}
 
 \section*{Discussion}
+
+\paragraph{Performance on simulated data}
+\paragraph{Empirical results}
+\paragraph{Choosing the ``best" number of clusters}
+\paragraph{Implications for management and conservation}
+\paragraph{Extensions and future directions}
 
 \section*{Acknowledgements}
 
@@ -412,6 +453,8 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 \setcounter{table}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \setcounter{figure}{0}
+\renewcommand{\thesection}{A\arabic{section}}
+\setcounter{section}{0}
 
 
 \section{Model rationale}
@@ -653,7 +696,7 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \end{centering}
 
 \newpage
-\section{Cross validation}
+\section{Cross validation}\label{Xvalidation}
 To perform model comparison, we employ a Monte Carlo cross-validation approach \citep{picard1984},
 also known as repeated random sub-sampling validation.
 Briefly, we follow the following procedure:
