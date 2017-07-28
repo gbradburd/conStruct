@@ -34,8 +34,8 @@
 \date{\vspace{-5ex}}
 \author{
 Gideon S. Bradburd$^{1,a}$, 
-Peter L. Ralph$^{2,b}$, 
-Graham M. Coop$^{3,c}$}
+Graham M. Coop$^{2,b}$,
+Peter L. Ralph$^{3,c}$}
 
 \begin{document}
 
@@ -47,18 +47,18 @@ Ecology, Evolutionary Biology, and Behavior Graduate Group,
 Michigan State University, MI 48824
 
 \textsuperscript{2}
-Institute of Ecology and Evolution,
-Department of Mathematics,
-University of Oregon, Eugene, OR 97403
-
-\textsuperscript{3}
 Center for Population Biology,
 Department of Evolution and Ecology, 
 University of California, Davis, CA 95616
 
+\textsuperscript{3}
+Institute of Ecology and Evolution,
+Department of Mathematics,
+University of Oregon, Eugene, OR 97403
+
 \textsuperscript{a}bradburd@msu.edu; 
-\textsuperscript{b}plr@uoregon.edu;
-\textsuperscript{c}gmcoop@ucdavis.edu\\\\\
+\textsuperscript{c}gmcoop@ucdavis.edu;
+\textsuperscript{b}plr@uoregon.edu\\\\\
 
 \newpage
  
@@ -107,7 +107,7 @@ including generating population phylogenies \citep{CavalliSforza1975, treemix},
 $k$-means clustering analyses performed on dimensionality-reduction approaches \citep{}, 
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS}, among others.
-Here, we will focus on model-based clustering, the most widely used class of approaches.
+Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
 These methods each perform best under different specific demographic histories of samples being analyzed,
 but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943}.
 
@@ -117,7 +117,7 @@ in which an individual's parents are found within some radius of that individual
 and discrete, ``stepping-stone'' frameworks \citep{Kimura1953},
 in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
-it is unsurprising that IBD is ubiquitous in nature \citep{meirmans2012,Sexton_etal_2014}.
+it is unsurprising that IBD is found everywhere in nature \citep{meirmans2012,Sexton_etal_2014}.
 
 The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
 as it is frequently difficult to determine whether observed patterns of genetic variation are 
@@ -136,11 +136,11 @@ model-based clustering approaches will therefore tend to overestimate the number
 with downstream implications for interpretation of results.
 For example, conservation resources might be spread too thinly over areas 
 that are spuriously assumed to be discrete management units.
-In studies of locally adaptive loci, or of the genetics of disease,
+Or, in studies of locally adaptive loci, or of the genetics of disease,
 discrete populations may be modeled in separately,
 reducing the global power to detect the genomic basis of complex phenotypes.
 
-What is desired, then, is a model-based clustering method that incorporates a spatial element.
+What is desired, then, is a model-based clustering method that incorporates a spatial element,
 and specifically one that uses a model of isolation by distance as a biologically sensible null hypothesis 
 for the process structuring observed genetic variation.
 With an explicit spatial null, discrete population structure need only be invoked when genetic differentiation 
@@ -150,11 +150,12 @@ increases with geographic separation.
 In this paper, we present a statistical method for simultaneously 
 modeling continuous and discrete patterns of population structure.
 We model genetic variation in genotyped individuals as 
-partitioned within or admixed across a user-specified number of discrete clusters,
+partitioned within or admixed across a specified number of discrete clusters,
 within each of which relatedness decays as a parametric function of the distance between samples.
 We also implement a cross-validation approach for comparing and selecting models across different numbers of clusters,
 and we demonstrate the utility of our approach using both simulated and empirical data.
-The implementation of this method, \texttt{conStruct}, is available as an R package at \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
+The implementation of this method, \texttt{conStruct}, is available as an R package at 
+\href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
 \section*{Methods}
 \paragraph{Data}
@@ -164,37 +165,44 @@ The sample frequency at locus $\ell$ in sample $n$, $f_{n,\ell}$, is calculated 
 at locus $\ell$ to count, 
 then dividing the total number of observations of that counted allele by the total number of chromosomes genotyped at that locus
 in sample $n$.
-We then calculate the sample covariance in allele frequencies, $\widehat{\Omega}$, as
+We then calculate the sample covariance in allele frequencies, $\widehat{\Omega}_{i,j}$ between samples $i$ and $j$.
+However, for the diagonal of this sample covariance (the variances within each sample),
+we wish to describe the mean of the variance in allele frequencies between haplotypes in a sample, 
+rather than the variance of the mean frequencies across haplotypes in a sample.
+Therefore, we calculate our sample covariance as follows:
 
 \begin{equation}
-\widehat{\Omega} = \frac{1}{L}  FF^T
+\widehat{\Omega}_{i,j} = 
+	\begin{cases}
+		\frac{1}{L}
+		\sum\limits_{\ell=1}^{L}{\left[ 	\left(f_{i,\ell} - \bar{f}_{\ell} \right)
+		 	\left(f_{j,\ell} - \bar{f}_{\ell} \right)\right]
+			} & \text{for } i \neq j \\
+		\text{Var}_L\left( \text{B}(1,f_{i,\ell})	\right) & \text{for } i = j \\
+	\end{cases}
 \label{sample_covariance}
 \end{equation}
-\gc{SO IS THIS ACTUALLY the calc given the new diagonal?}
-
+\gb{ideas for how to describe what I'm doing on the diagonal in actual math notation?}
 
 \paragraph{Continuous and discrete differentiation}
 We wish to describe the observed patterns of genetic variation as a combination of 
 discrete population clusters,
 within which genetic variation is continuously distributed, 
 and between which sampled individuals or populations can be admixed.
-Each of these discrete clusters is modeled as a spatial process where
-\gc{allele frequencies covary between geographically close locations,
-  but  %%changed as we dont model migration or drif
-this covariance is allowed to decay with geographic distance. This 
-pattern of spatial decay reflects} how migration between neighboring demes acts 
-to homogenize allele frequency changes that arise locally due to
-drift, \gc{but that migration is less effective at homogenizing
-  between geographic distance demes};
-%with this interplay between drift and migration 
+Each of these discrete clusters is modeled as a spatial process in which
+allele frequencies covary between geographically close locations,
+but this covariance is allowed to decay with geographic distance.
+This pattern of spatial decay reflects how migration between neighboring demes  
+homogenizes allele frequency changes that arise locally due to drift, 
+but is less effective at homogenizing between geographic distant demes,
 resulting in a continuous pattern of isolation by distance within each cluster.
 Multiple population cluster processes can co-occur in space, 
 leading to discrete jumps in allele frequencies across many loci over small geographic distances,
 and the genotyped samples can be admixed between different clusters.
 
-\gc{To model the} continuous decay of allele frequency covariance with geographic distance 
-within a cluster \gc{we use a flexible powered-exponential function;
-  where the} within-cluster covariance between samples $i$ and $j$ is given by:
+To model the continuous decay of allele frequency covariance with geographic distance within a cluster, 
+we use a flexible powered-exponential function;
+the within-cluster covariance between samples $i$ and $j$ is given by:
 
 \begin{equation}
 G^{(k)}_{i,j} = \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \mu^{(k)}
@@ -204,25 +212,22 @@ G^{(k)}_{i,j} = \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}
 where $G_{i,j}$ is the covariance function between samples $i$ and $j$ within a cluster,
 and the superscript $(k)$ denotes that this function is specific to the $k$th cluster.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
-the \gc{$\alpha^{(k)}$ parameters control the shape of the decay of
-  covariance with distance in the cluster},
-and $\mu$ is a parameter that describes the \gc{background allele
-  frequency   %%amount of shared drift
-  covariance within the cluster. If two samples draw 100\% of their
-  ancestry from cluster $k$ then, if they are geographically very
-  close ($D_{i,j}=0$) they will have allele frequency covariance
-  $\alpha^{(k)}_0 +  \mu^{(k)}$ with their covariance decaying to the
-  background level $\mu^{(k)}$ within the cluster for large enough geographic distances.}
-The shared drift parameter $\mu^{(k)}$ can be interpreted as the branch length connecting 
-the $k$th population to the population ancestral to all modeled
-clusters \gc{(see XXX)}. 
+the $\alpha^{(k)}$ parameters control the shape of the decay of covariance with distance in the cluster,
+and $\mu$ is a parameter that describes the background allele frequency covariance within the cluster. 
+If two samples draw 100\% of their ancestry from cluster $k$ then, 
+if they are geographically very close ($D_{i,j}=0$) 
+they will have allele frequency covariance $\alpha^{(k)}_0 +  \mu^{(k)}$.
+If the geographic distance between them is very large, 
+their covariance will decay to the background level $\mu^{(k)}$ within the cluster.
+The shared drift parameter $\mu^{(k)}$ can be interpreted as the branch length 
+connecting the $k$th population to the population ancestral to all modeled
+clusters \gc{(see XXX)}. \gb{is ``XXX" TreeMix? or one of the $f$stat papers?  or is it a figure?} 
 
-\gc{Genotyped samples can draw their ancestry from multiple different clusters,
-representing these samples being admixed between the clusters.} 
+Genotyped samples can draw their ancestry from multiple different clusters,
+representing these samples being admixed between the clusters.
 The admixture proportion of the $i$th sample in the $k$th cluster, $w^{(k)}_i$,
 gives the probability that an allele in sample $i$ was derived from
-cluster $k$ \gc{($\sum_k w^{(k)}_i =1$).}
-
+cluster $k$ ($\sum_K w^{(k)}_i =1$).
 
 We can then describe the covariance between samples $i$ and $j$ across all clusters, $\Omega_{i,j}$,
 by summing their within-cluster spatial covariances ($G_{i,j}^{(k)}$ in cluster $k$) across all $K$ clusters
@@ -236,19 +241,18 @@ G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
 In addition to the admixture-weighted sum of the within-cluster spatial covariances,
 this function contains two terms, $\gamma$ and $\delta_{i,j}\eta_i$.
 The first, $\gamma$, describes the global covariance between all samples, 
-and arises because all samples \gc{have a base-line covariance as they
-  share} an ancestral mean allele frequency at each locus.
+and arises because all samples share an ancestral mean allele frequency at each locus,
+which generates a base-line covariance.
 In the second term, $\delta_{i,j}$ is an indicator variable that takes a value of 1 when $i$ equals $j$ and 0 otherwise. 
 and $\eta_i$ gives the variance specific to sample $i$, 
-This term on the diagonal of the parametric covariance matrix \gc{captures} processes shaping variance within the sampled deme, 
-such as inbreeding \gc{and the sampling process}.
+This term on the diagonal of the parametric covariance matrix captures processes shaping variance within the sampled deme, 
+such as inbreeding and the sampling process.
 
 \paragraph{Likelihood and inference}
-\gc{We} assume that the allele frequencies \gc{at each locus
-  ($\widehat{F}_{\ell}$) are independent among loci and multivariate normally
-  distributed across populations}, 
-their sample covariance $\widehat{\Omega}$ 
-will be Wishart distributed with degrees of freedom equal to $L$, 
+We assume that the allele frequencies at each locus ($\widehat{F}_{\ell}$) 
+are independent among loci and multivariate normally distributed across populations, 
+so that their sample covariance $\widehat{\Omega}$ 
+is  Wishart distributed with degrees of freedom equal to $L$, 
 the number of loci genotyped.
 Linkage disequilibrium (LD) between loci will decrease the effective number of degrees of freedom, 
 which we discuss further below.
@@ -259,7 +263,8 @@ P(\widehat{\Omega} \; | \; \Omega) = \mathcal{W} \left( L\widehat{\Omega} \; | \
 
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
-$w,\alpha,\mu,\eta,\gamma$ and on observed quantiy $D$ with the notation $\Omega(w,\alpha,\mu,\eta,\gamma,D)$,
+$w,\alpha,\mu,\eta,\gamma$ and on observed quantity $D$ 
+with the notation $\Omega(w,\alpha,\mu,\eta,\gamma,D)$,
 we denote the posterior probability of the parameters as:
 
 \begin{equation}
@@ -268,7 +273,7 @@ P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\mu,\eta,\gamma,D) \right)
 P(w)P(\alpha)P(\mu)P(\eta)P(\gamma)
 \end{equation}
 
-The priors, $P(w),P(\alpha),P(\mu),P(\eta),P(\gamma)$, are detailed in the Appendix,
+The priors, $P(w),P(\alpha),P(\mu),P(\eta),P(\gamma)$, are detailed in Table \ref{tab:param_prior_tab},
 and the constant of proportionality is the normalization constant.
 We use a Hamiltonian Monte Carlo sampling algorithm implemented in the statistical language STAN
 \citep{stan, NUTS, stan_lib, rstan} to estimate the posterior distribution on the parameters.
@@ -292,12 +297,40 @@ of
 
 }
 
-\gc{ 
 \paragraph{Choice of cluster number and cross-validation}
+There are a number of reasons, both statistical and biological, 
+why choosing a single, ``best" number of clusters to describe the data may not be desirable.
+%, including ambiguity in what exactly it means for any given value of $K$ to be ``best."
+We discuss these reasons further in the Discussion below, 
+but we also recognize that in many circumstances it is either useful or convenient 
+to present only a single set of results from a clustering analysis with a particular number of clusters.
+ideally a number large enough to describe meaningful partitions in the data, 
+but not so large as to be difficult to parse visually.
+Toward that end, we have implemented a method for 
+statistically comparing \texttt{conStruct} runs across different values of $K$.
 
+Several approaches have been proposed to determine the number of clusters in the data, 
+including: 
+the use of information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
+comparisons of the likelihood of the data across different values of $K$, 
+with various criteria on how to choose a single value (e.g., Evanno 2005);
+or comparisons of the marginal likelihood, 
+generated either via various approximations \citep[e.g.][]{STRUCTURE}
+or via a more rigorous and computationally intensive approach such as thermodynamic integration \citep{verity_nichols2016}
+or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
+A comprehensive review of these approaches and their various merits is beyond the scope of this paper,
+but see \cite{verity_nichols2016} for an excellent discussion of and comparison between several.
 
-}
-
+We choose to take a cross-validation approach, 
+estimating the parameters of the model using a ``training" partition of the data,
+then calculating the likelihood of a separate, ``testing" partition of the data given those parameters,
+repeating this procedure many times, 
+and selecting the model with the significantly best predictive accuracy
+(see Section \ref{Xvalidation} for a thorough discussion of our cross-validation procedure).
+This approach rewards models with larger values of $K$, which increase the likelihood of the training partition,
+up to the point that cluster membership is invoked to model noise specific to the training data, 
+at which point predictive accuracy decreases, 
+and models with additional clusters are penalized.
 
 \section*{Results}
 
@@ -332,11 +365,11 @@ sampling 10,000 unlinked loci from each of 20 haploid individuals from every dem
 We ran \texttt{conStruct} analyses on each of these simulated datasets, 
 specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
 then used cross-validation to compare the predictive performance of the models.
-In Fig \ref{simK1_nsp_pies}, we show the results of the nonspatial model 
+In Fig \ref{simK1_pies}, we show the results of the nonspatial model 
 run with between 1 and 7 clusters, applied to the dataset simulated under $K=1$,
 and in Fig \ref{xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
 The admixture pie plots for the spatial and nonspatial models run on the datasets simulated under $K=2$ and $K=3$
-are shown in Figs \ref{simK1_sp_pies}-\ref{simK3_sp_pies}.
+are shown in Figs \ref{simK1_nsp_pies}-\ref{simK3_sp_pies}.
 
 A number of results are immediately clear from these tests with simulated data.
 First, across all values of K and for all simulations, 
@@ -345,7 +378,7 @@ the spatial model is preferred over the nonspatial model
 Second, the predictive accuracy of the nonspatial model increases with the number of clusters in the model, 
 as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
 with gradients of admixture across more and more discrete clusters.
-This behavior of the nonspatial model is highlighted in the analyses of data simulated under $K=1$ (Fig \ref{simK1_nsp_pies}):
+This behavior of the nonspatial model is highlighted in the analyses of data simulated under $K=1$ (Fig \ref{simK1_pies} and \ref{simK1_nsp_pies}):
 as $K$ in the model increases, 
 the sampled area is increasingly divvied up between clusters 
 with ``centers of mass" in the $K$ geographical extremes of the simulated space.
@@ -361,12 +394,7 @@ deme membership in clusters beyond the number used to simulate the data does not
 That is, even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
-
-\subsection*{Empirical Applications}
-
-
-
-
+We parse \texttt{conStruct}'s performance on these simulation tests further in the Discussion.
 
 \begin{figure}
 	\centering
@@ -376,16 +404,17 @@ those estimated under the true value of $K$ for each simulation.
 			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
 		\subcaptionbox{$K=4$\label{simK1_nsp_pies:K4}}
 			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK1_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK1_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK1_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+		\subcaptionbox{$K=2$\label{simK1_sp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K5.pdf}}
+		\subcaptionbox{$K=3$\label{simK1_sp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K6.pdf}}
+		\subcaptionbox{$K=4$\label{simK1_sp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K7.pdf}}
 	\caption{
-	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	Map of admixture proportions estimated using the nonspatial model for $K=2$ through 4 (top row)
+	and also the spatial model for $K=2$ through 4 (bottom row).
 	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
-    }\label{simK1_nsp_pies}
+    }\label{simK1_pies}
 \end{figure}
 
 \begin{figure}
@@ -400,8 +429,22 @@ those estimated under the true value of $K$ for each simulation.
     }\label{xvals}
 \end{figure}
 
+\subsection*{Empirical Applications}
+To demonstrate the utility of this method, we analyzed empirical population genomic data from two systems:
+a contact zone between two poplar species in northwestern North America,
+and a large North American sample of black bears.
+
+\subsubsection*{Poplars}
+
+\subsubsection*{Black bears}
 
 \section*{Discussion}
+
+\paragraph{Performance on simulated data}
+\paragraph{Empirical results}
+\paragraph{Choosing the ``best" number of clusters}
+\paragraph{Implications for management and conservation}
+\paragraph{Extensions and future directions}
 
 \section*{Acknowledgements}
 
@@ -422,6 +465,8 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 \setcounter{table}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \setcounter{figure}{0}
+\renewcommand{\thesection}{A\arabic{section}}
+\setcounter{section}{0}
 
 
 \section{Model rationale}
@@ -663,7 +708,7 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \end{centering}
 
 \newpage
-\section{Cross validation}
+\section{Cross validation}\label{Xvalidation}
 To perform model comparison, we employ a Monte Carlo cross-validation approach \citep{picard1984},
 also known as repeated random sub-sampling validation.
 Briefly, we follow the following procedure:
@@ -724,6 +769,26 @@ Maybe check out Engelhardt \& Stephens?
 \setcounter{figure}{0}
 
 \newpage
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{simK1_nsp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
+		\subcaptionbox{$K=3$\label{simK1_nsp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
+		\subcaptionbox{$K=4$\label{simK1_nsp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
+		\subcaptionbox{$K=5$\label{simK1_nsp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
+		\subcaptionbox{$K=6$\label{simK1_nsp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
+		\subcaptionbox{$K=7$\label{simK1_nsp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
+	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
+    }\label{simK1_nsp_pies}
+\end{figure}
+
 \begin{figure}
 	\centering
 		\subcaptionbox{$K=2$\label{simK1_sp_pies:K2}}
