@@ -298,39 +298,58 @@ of
 }
 
 \paragraph{Choice of cluster number and cross-validation}
-There are a number of reasons, both statistical and biological, 
-why choosing a single, ``best" number of clusters to describe the data may not be desirable.
+There are a number of reasons, both statistical and biological, why
+there is no true (or right) number of clusters for real datasets. 
+%There are a number of reasons, both statistical and biological, 
+%why choosing a single, ``best" number of clusters to describe the data may not be desirable.
 %, including ambiguity in what exactly it means for any given value of $K$ to be ``best."
-We discuss these reasons further in the Discussion below, 
-but we also recognize that in many circumstances it is either useful or convenient 
-to present only a single set of results from a clustering analysis with a particular number of clusters.
-ideally a number large enough to describe meaningful partitions in the data, 
-but not so large as to be difficult to parse visually.
+We discuss these reasons further in the Discussion below. In practice
+it is useful to explore the implications of clustering at a variety of
+different levels (i.e. across multiple $K$) for biological
+intepretation and downstream analyses. 
+However, we also recognize that in many circumstances it is 
+useful to know the number of clusters with highest statistical
+support in the (current) dataset.  %, for example to focus su 
+%However, we also recognize that in many circumstances 
+i%t is either useful or convenient 
+%to present only a single set of results from a clustering analysis with a particular number of clusters.
+%ideally a number large enough to describe meaningful partitions in the data, 
+%but not so large as to be difficult to parse visually.
 Toward that end, we have implemented a method for 
-statistically comparing \texttt{conStruct} runs across different values of $K$.
+statistically comparing \texttt{conStruct} results across different values of $K$.
 
-Several approaches have been proposed to determine the number of clusters in the data, 
-including: 
+Several approaches have been used as model choice criteria for the number of
+clusters in \gc{population genetic} data, including: 
 the use of information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
 comparisons of the likelihood of the data across different values of $K$, 
-with various criteria on how to choose a single value (e.g., Evanno 2005);
+with various criteria on how to choose a single value (e.g., \citep{Evanno2005});
 or comparisons of the marginal likelihood, 
 generated either via various approximations \citep[e.g.][]{STRUCTURE}
 or via a more rigorous and computationally intensive approach such as thermodynamic integration \citep{verity_nichols2016}
 or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
-A comprehensive review of these approaches and their various merits is beyond the scope of this paper,
-but see \cite{verity_nichols2016} for an excellent discussion of and comparison between several.
+See \cite{verity_nichols2016} for a discussion of these approaches and comparison
+between several methods. %A comprehensive review of these approaches and their various merits is beyond the scope of this paper,
+%but 
 
-We choose to take a cross-validation approach, 
-estimating the parameters of the model using a ``training" partition of the data,
-then calculating the likelihood of a separate, ``testing" partition of the data given those parameters,
-repeating this procedure many times, 
+\gc{IS PREDICTION accuracy the right phrase?}
+We choose to take a cross-validation approach.  We estimate the
+posterior on the parameters of the model using a ``training" partition
+of the data, in practice the training set is a random subset of $90\%$
+of the loci. We then calculate the likelihood of the
+``testing" subset, the remaining $10\%$ of the loci, averaged over the
+posterior of the parameters. We repeat this procedure a number of
+times, take an average of the relative log-likelihood over the runs at
+sumarize each $K$. 
 and selecting the model with the significantly best predictive accuracy
-(see Section \ref{Xvalidation} for a thorough discussion of our cross-validation procedure).
-This approach rewards models with larger values of $K$, which increase the likelihood of the training partition,
-up to the point that cluster membership is invoked to model noise specific to the training data, 
-at which point predictive accuracy decreases, 
-and models with additional clusters are penalized.
+(see Section \ref{Xvalidation} for more on our cross-validation procedure).
+This approach rewards models with larger values of $K$, which increase
+the likelihood of the training partition, as they fit the data better,
+but the improvement in the likelihood will plateau (or peak) as above
+a certain $K$ we are fitting noise specific to the training data and
+so not fitting the testing set any better, 
+%up to the point that cluster membership is invoked to model noise specific to the training data, 
+%at which point predictive accuracy decreases, 
+%and models with additional clusters are penalized.
 
 \section*{Results}
 
