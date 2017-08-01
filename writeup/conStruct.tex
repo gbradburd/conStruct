@@ -130,7 +130,7 @@ individuals are best described as being drawn from continuous clines or discrete
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, 
 and so tend to erroneously describe continuously distributed variation with multiple clusters that 
-show spatially autocorrelated cluster membership \citep{Frantz2009,Meirmans2012}.
+show spatially autocorrelated cluster membership \citep{Frantz2009,meirmans2012}.
 In analyses of empirical datasets, which often are characterized by IBD,
 model-based clustering approaches will therefore tend to overestimate the number of discrete clusters present,
 with downstream implications for interpretation of results.
@@ -386,7 +386,7 @@ specifying both a spatial and nonspatial model for $K = $ 1 through 7,
 then used cross-validation to compare the predictive performance of the models.
 In Fig \ref{simK1_pies}, we show the results of the nonspatial model 
 run with between 1 and 7 clusters, applied to the dataset simulated under $K=1$,
-and in Fig \ref{xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
+and in Fig \ref{sim_xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
 The admixture pie plots for the spatial and nonspatial models run on the datasets simulated under $K=2$ and $K=3$
 are shown in Figs \ref{simK1_nsp_pies}-\ref{simK3_sp_pies}.
 
@@ -406,7 +406,7 @@ at $K=3$, in the lower two corners and the top half;
 at $K=4$, all four corners, and so on.
 
 In contrast, the predictive accuracy of the spatial model of \texttt{conStruct} 
-either plateaus at or declines from the true value of $K$ used to simulate the data (Fig \ref{xvals}, second column).
+either plateaus at or declines from the true value of $K$ used to simulate the data (Fig \ref{sim_xvals}, second column).
 And, as $K$ in the spatial model increases, 
 deme membership in clusters beyond the number used to simulate the data does not appreciably increase 
 (Fig \ref{simK1_sp_pies}, \ref{simK2_sp_pies}, \ref{simK3_sp_pies}).
@@ -445,7 +445,7 @@ We parse \texttt{conStruct}'s performance on these simulation tests further in t
 	The first panel in each row shows all results; 
 	the second panel shows results for just the spatial model.
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
-    }\label{xvals}
+    }\label{sim_xvals}
 \end{figure}
 
 \subsection*{Empirical Applications}
@@ -454,6 +454,123 @@ a contact zone between two poplar species in northwestern North America,
 and a large North American sample of black bears.
 
 \subsubsection*{Poplars}
+
+Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
+are distributed throughout the Northern Hemisphere, 
+and include species of ecological and economic importance.
+Species in the genus regularly co-occur and, 
+where they do, they frequently hybridize (ref).
+In addition, many \textit{Populus} species display patterns of isolation by distance, 
+making the system well-suited to an analysis designed to tease apart 
+genetic structure partitioned discretely across population (or species) clusters,
+and continuously with geographic distance.
+
+Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
+\textit{Populus trichocarpa}, the black cottonwood,
+and \textit{Populus trichocarpa}, the balsam poplar.
+These species have a broad zone of overlap and are known to hybridize \citep{geraldes_etal_2014}.
+
+
+
+We address this question using a dataset generated and originally published by \cite{geraldes_etal_2014}.
+The published data consist of 434 individuals sampled from 35 drainages 
+and genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
+The data were generated using RAD-seq, 
+and showed a strong pattern of bias in allelic dropout 
+(the majority of missing data were from drainages with only \textit{Populus balsamifera}).
+To ameliorate some of the problems that arise when there is a strong bias in which data are missing, 
+we dropped loci for which any data were missing, 
+resulting in just over 20,200 loci retained for analysis.  
+We then analyzed these data using both the spatial and nonspatial \texttt{conStruct} models, 
+running on $K = 1$ through 7,
+and compared these models using the cross-validation procedure described above. 
+The results of these analyses are shown in 
+Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
+
+
+
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=5in]{figs/populus/populus_sampling_map.pdf}}
+	\caption{
+	Map of the sampled \textit{Populus} populations included in the analysis.
+	The color of the sampling location denotes the putative species.
+    }\label{populus_map}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=3in]{figs/populus/populus_std_xval.pdf}}
+	\caption{
+	Cross-validation results for \textit{Populus} dataset 
+	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	The first panel in each row shows all results; 
+	the second panel zooms in on the results from analyses run with $K = 2$ through 7.
+    }\label{populus_xvals}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{populus_sp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp2.pdf}}
+		\subcaptionbox{$K=3$\label{populus_sp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp3.pdf}}
+		\subcaptionbox{$K=4$\label{populus_sp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp4.pdf}}
+		\subcaptionbox{$K=5$\label{populus_sp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp5.pdf}}
+		\subcaptionbox{$K=6$\label{populus_sp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp6.pdf}}
+		\subcaptionbox{$K=7$\label{populus_sp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp7.pdf}}
+	\caption{
+	Map of admixture proportions estimated for the \textit{Populus} dataset 
+	using the spatial model for $K=2$ through 7.
+    }\label{populus_sp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\subcaptionbox{$K=2$\label{populus_nsp_pies:K2}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp2.pdf}}
+		\subcaptionbox{$K=3$\label{populus_nsp_pies:K3}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp3.pdf}}
+		\subcaptionbox{$K=4$\label{populus_nsp_pies:K4}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp4.pdf}}
+		\subcaptionbox{$K=5$\label{populus_nsp_pies:K5}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp5.pdf}}
+		\subcaptionbox{$K=6$\label{populus_nsp_pies:K6}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp6.pdf}}
+		\subcaptionbox{$K=7$\label{populus_nsp_pies:K7}}
+			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp7.pdf}}
+	\caption{
+	Map of admixture proportions estimated for the \textit{Populus} dataset 
+	using the nonspatial model for $K=2$ through 7.
+    }\label{populus_nsp_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_clst_covs.pdf}}
+	\caption{
+	Plots showing the cluster-specific parametric covariance IBD-curves 
+	estimated for the \textit{Populus} data using 
+	the spatial \texttt{conStruct} model run with $K=2$ through 7.
+	Colors are consistent with Fig \ref{populus_sp_pies}.
+    }\label{populus_sp_clst_covs}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_clst_covs.pdf}}
+	\caption{
+	Plots showing the cluster-specific parametric covariance IBD-curves 
+	estimated for the \textit{Populus} data using 
+	the nonspatial \texttt{conStruct} model run with $K=2$ through 7.
+	Colors are consistent with Fig \ref{populus_nsp_pies}.
+    }\label{populus_nsp_clst_covs}
+\end{figure}
 
 \subsubsection*{Black bears}
 
