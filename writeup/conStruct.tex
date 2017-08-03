@@ -174,15 +174,14 @@ Therefore, we calculate our sample covariance as follows:
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
 	\begin{cases}
-		\frac{1}{L}
-		\sum\limits_{\ell=1}^{L}{\left[ 	\left(f_{i,\ell} - \bar{f}_{\ell} \right)
-		 	\left(f_{j,\ell} - \bar{f}_{\ell} \right)\right]
+		\frac{1}{L-1}
+		\sum\limits_{\ell=1}^{L}{\left[ 	\left(f_{i,\ell} - \bar{f}_{i} \right)
+		 	\left(f_{j,\ell} - \bar{f}_{j} \right)\right]
 			} & \text{for } i \neq j \\
-		\text{Var}_L\left( \text{B}(1,f_{i,\ell})	\right) & \text{for } i = j \\
+		\bar{f}_i (1-\bar{f}_i) & \text{for } i = j \\
 	\end{cases}
 \label{sample_covariance}
 \end{equation}
-\gb{ideas for how to describe what I'm doing on the diagonal in actual math notation?}
 
 \paragraph{Continuous and discrete differentiation}
 We wish to describe the observed patterns of genetic variation as a combination of 
@@ -295,7 +294,9 @@ error is binomial distributed (see XXXX). Therefore, to compare the fit
 of 
 
 
-}
+} 
+\gb{support for the spatial model over the nonspatial model at a given value of $K$ 
+indicates that isolation-by-distance is likely a feature of the data at that level.}
 
 \paragraph{Choice of cluster number and cross-validation}
 There are a number of reasons, both statistical and biological, why
@@ -557,7 +558,11 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
 	Plots showing the cluster-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
 	the spatial \texttt{conStruct} model run with $K=2$ through 7.
-	Colors are consistent with Fig \ref{populus_sp_pies}.
+	Line colors are consistent with Fig \ref{populus_sp_pies}.
+	Points are colored by the species they are a covariance between:
+	black on black points are sample covariances between populations of \textit{Populus balsamifera};
+	green on black points are sample covariances between \textit{P. balsamifera} and \textit{P. trichocarpa};
+	green on green points are sample covariances between \textit{P. trichocarpa} and \textit{P. trichocarpa}.
     }\label{populus_sp_clst_covs}
 \end{figure}
 
@@ -568,7 +573,11 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
 	Plots showing the cluster-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
 	the nonspatial \texttt{conStruct} model run with $K=2$ through 7.
-	Colors are consistent with Fig \ref{populus_nsp_pies}.
+	Line colors are consistent with Fig \ref{populus_nsp_pies}.
+	Points are colored by the species they are a covariance between:
+	black on black points are sample covariances between populations of \textit{Populus balsamifera};
+	green on black points are sample covariances between \textit{P. balsamifera} and \textit{P. trichocarpa};
+	green on green points are sample covariances between \textit{P. trichocarpa} and \textit{P. trichocarpa}.
     }\label{populus_nsp_clst_covs}
 \end{figure}
 

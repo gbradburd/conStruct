@@ -60,7 +60,7 @@ get.xval.CIs <- function(x.vals.std,K){
 				"nsp.CIs" = nsp.CIs))
 }
 
-plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,simK=NULL,cex=1.5,...){
+plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,cex=1.5,jitter=0,...){
 	#recover()
 	if(is.null(ylim)){
 		ylim <- range(c(unlist(lapply(k.range,function(k){xval.CIs$sp.CIs[[k]]})),
@@ -68,7 +68,6 @@ plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,simK=NULL,cex=1.5,
 	}
 	plot(xval.CIs$sp.means,
 			ylim=ylim,
-			xlim=range(k.range),
 			main= "",
 			ylab="",
 			xlab="",type='n',...)
@@ -77,11 +76,11 @@ plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,simK=NULL,cex=1.5,
 						 k,xval.CIs$sp.CIs[[k]][2],
 						 col=adjustcolor(4,0.5),lwd=3)})
 		lapply(1:K,function(k){
-				segments(k,xval.CIs$nsp.CIs[[k]][1],
-						 k,xval.CIs$nsp.CIs[[k]][2],
+				segments(k+jitter,xval.CIs$nsp.CIs[[k]][1],
+						 k+jitter,xval.CIs$nsp.CIs[[k]][2],
 						 col=adjustcolor("green",0.5),lwd=3)})
 		points(xval.CIs$sp.means,pch=19,col=4,cex=cex)			
-		points(xval.CIs$nsp.means,col="green",pch=19,cex=cex)
+		points(1:K + jitter, xval.CIs$nsp.means,col="green",pch=19,cex=cex)
 	return(invisible("plotted"))
 }
 
