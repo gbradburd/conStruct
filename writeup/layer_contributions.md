@@ -1,3 +1,8 @@
+*Note:* compile this to html with
+```r
+templater::render_template("layer_contributions.md")
+```
+
 # Contributions of different layers
 
 The covariance between two populations, $i$, and $j$,
