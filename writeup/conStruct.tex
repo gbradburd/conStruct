@@ -57,8 +57,8 @@ Department of Mathematics,
 University of Oregon, Eugene, OR 97403
 
 \textsuperscript{a}bradburd@msu.edu; 
-\textsuperscript{c}gmcoop@ucdavis.edu;
-\textsuperscript{b}plr@uoregon.edu\\\\\
+\textsuperscript{b}gmcoop@ucdavis.edu;
+\textsuperscript{c}plr@uoregon.edu\\\\\
 
 \newpage
  
@@ -280,13 +280,13 @@ We also present an R package \citep{R} called \texttt{conStruct} that functions 
 around this inference machinery.
 
 
-\paragraph{Relationship of this model to non-spatial structure models}
+\paragraph{Relationship of this model to nonspatial structure models}
 
 A nice feature of our approach is that the model described in Eqn \refeq{cross_cluster_covariance} 
-contains a non-spatial assignment model as a special case 
+contains a nonspatial assignment model as a special case 
 (see \ref{model_app} for a more in-depth discussion). 
 Setting $\alpha_0^{(k)}$ to zero for all $k$, 
-we obtain a non-spatial model in which each cluster has its own allele frequency at each SNP, 
+we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
 This model is strongly conceptually similar to that of STRUCTURE \citep{STRUCTURE} 
 and related models \citep[e.g][]{ADMIXTURE}; 
@@ -308,7 +308,7 @@ useful to know the number of clusters with highest statistical
 support in the (current) dataset.
 Toward that end, we have implemented a method for 
 statistically comparing \texttt{conStruct} results across different values of $K$ 
-and between the spatial and non-spatial models.
+and between the spatial and nonspatial models.
 
 Several approaches have been used as model choice criteria 
 for the number of clusters in population genetic data, including: 
@@ -599,56 +599,36 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 
 
 \section{Model rationale}
-\subsection{Drift, admixture, and allele frequencies}
+\subsection{Drift, admixture, and space}
 \paragraph{Drift} 
-We first provide a simple model of allele frequencies within a
-cluster. Imagine a sample $i$ that draws all of its ancestry from cluster $k$.
-We imagine that the allele frequency ($F$) at locus $\ell$ can be
-written as a sum
+We first provide a simple model of allele frequencies within a cluster. 
+Imagine a sample $i$ that draws all of its ancestry from cluster $k$.
+The allele frequency in sample $i$ at locus $\ell$, $F_{i,\ell}$ can be
+written as the sum
 \begin{equation}
 F_{i,\ell} = \epsilon_{\ell} + \Delta^{(k)}_{\ell} +
 \Delta^{(k,i)}_{\ell} + \Delta^{(i)}_{\ell}
 \label{drift_terms_no_admix}
 \end{equation}
-the first two terms are the ancestral allele frequency
-$\epsilon_\ell$ shared by all samples and the deviation from that
-ancestral mean due to drift in the ancestral population of $k$th cluster, $\Delta^{(k)}$,
-which is shared by all samples within the cluster. The third term is
-the deviation of sample $i$ away from the cluster mean due to the
-spatial process of drift and migration within the cluster,
-$\Delta^{(k,i)}$, the final term is the deviation specific to the $i$th sample, $\Delta^{(i)}$,
+The first term is the ancestral allele frequency $\epsilon_\ell$ shared by all samples; 
+the second is the deviation from that ancestral frequency 
+due to drift in the ancestral population of the $k$th cluster,
+which is shared by all samples within the cluster. 
+The third term is the deviation of the $i$th sample away from the $k$th cluster mean 
+due to the spatial process of drift and migration within the cluster.
+The final term is the deviation specific to the $i$th sample,
 which captures drift not shared by all samples at the population level
-(i.e., subpopulation-specific drift due to, e.g., inbreeding). We will
-assume that these four deviations are all uncorrelated with each other.
+(i.e., subpopulation-specific drift due to, e.g., inbreeding). 
+We will assume that these four deviations are all uncorrelated with each other.
 
-If we have two populations $i$ and $j$ drawn from cluster $k$ their
-covariance across loci will be 
+If we have two samples $i$ and $j$ drawn from cluster $k$, 
+their covariance across loci will be 
 \begin{equation}
 \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right) +
-\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i,j} \text{Var}\left( \Delta^{(i)} \right)\ \\
+\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right)\ \\
 \end{equation}
-
-
-%We rewrite this as 
-%\begin{equation}
-%\gamma +\mu^{(k)} + \delta_{i,j} \eta_{i}
-%\end{equation}
-%We set $\gamma = \text{Var}(\epsilon)$, the variance of allele
-%frequencies due to drift
-%in the ancestor of cluster $k$  $\mu^{(k)}=\text{Var}\left(
- % \Delta^{(k)} \right)$. We parameterize the spatial covariance of
-%population $i$ and $j$ as
-%\begin{equation}
-%\gamma+  \text{Var}\left( \Delta^{(k)} \right) +
-%\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i,j} \text{Var}\left( \Delta^{(i)} \right)\ \\
-%\end{equation}
-
-%Under our non-spatial model we set
-%$\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) =0$, such
-%that  
-
-%If all samples drew all of their ancestry from any one of the $K$ clusters,
-%the  allele frequency in the $i$th sample at the $\ell$th locus would be given by:
+where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
+as in Eqn. \eqref{cross_cluster_covariance}.
 
 
 \paragraph{Admixture} 
@@ -658,158 +638,42 @@ To accommodate admixture between clusters,
 we model allele frequencies within samples as linear combinations of the population-specific 
 drift terms across the clusters from which they draw ancestry.
 To do so, we introduce a term $w^{(k)}_{i}$ that describes the
-admixture proportion of sample $i$ in cluster $k$ ($\sum\limits_{K}w^{(k)}_{i} = 1$),
+admixture proportion of sample $i$ in cluster $k$ ($\sum_{K}w^{(k)}_{i} = 1$),
 which can be interpreted as the proportion of the genome in the $i$th
-sample came from the $k$th cluster (or the probability that an allele
-at a locus is drawn from $k$).
+sample that came from the $k$th cluster 
+(or the probability that an allele at a locus is drawn from $k$).
 The allele frequency in the $i$th sample at the $\ell$th locus can therefore be written as:
 \begin{equation}
 F_{i,\ell} = \epsilon_{\ell} + \sum\limits_{K} w^{(k)}_{i}\left( 
   \Delta^{(k)}_{\ell} + \Delta^{(k,i)}_{\ell}\right) + \Delta^{(i)}_{\ell}	
 \label{drift_terms_admix}
 \end{equation}
-Then the covariance, across loci, between $i$ and $j$ is
+and the covariance between $i$ and $j$ across loci is
 \begin{equation}
 \Omega_{i,j} = \text{Var}(\epsilon) + \sum\limits_K w^{(k)}_iw^{(k)}_j
 \left(
   \text{Var}\left( \Delta^{(k)} \right) +
-\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) 	\right) +
+\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) 	\right) +
 \delta_{i=j} \text{Var}(\Delta_i)
 \label{admixed_spatial_cov}
 \end{equation}
 
-Under our non-spatial model we assume that
-$\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell})=0$ so that
-the only additional convariance between $i$ and $j$ is due to the
-drift in the ancestral population of our cluster (the variance of
-which is $\mu_k$). Under our spatial
-model we assume that the spatial covariance in allele frequencies
+\paragraph{Space}
+Under our nonspatial model, 
+we assume that $\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell})=0$,
+so that the only additional covariance between $i$ and $j$ 
+(above that induced by a shared ancestral frequency at each locus)
+is due to the drift in the ancestral population of their cluster 
+(the variance of which is $\mu_k$). 
+Under our spatial model we assume that some of the covariance in allele frequencies
 between $i$ and $j$ decays as a function of the geographic distance
-between the pair $D_{i,j}$
+between the pair, $D_{i,j}$,
+so that 
 \begin{equation}
-\text{Covar}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right)	
+\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right)
 \end{equation}
-We note that this form is chosen for its flexibility and not because
-it matches any explicit population-genetic model of isolation by
-distance. 
-%
-%where
-%
-%\begin{equation}
-
-%\end{equation}
-
-% \subsection{The Normal approximation to drift}
-% Genetic drift is serial binomial sampling, 
-% but over short timescales, and for intermediate ancestral allele frequencies, 
-% we can reasonably model the allele frequencies at each locus across populations as multivariate normal.
-% This will be a good approximation if the amount of elapsed drift in each sample is relatively small,
-% as would be expected if time since divergence from a common ancestral population is short,
-% or effective population sizes are large.
-
-% Beginning with the simplest case of two clusters ($K=2$),
-% with all samples drawing 100\% of their ancestry from either one or the other cluster, 
-% we can model allele frequencies at locus $\ell$ as:
-% %
-% \begin{equation}
-% F_{\ell} \sim MVN\left(\mu = \epsilon_{\ell} + \iota^{(k)}\Delta_{\ell}^{(k)}, \Sigma = \Omega	\right)
-% \label{MVN_mean}
-% \end{equation}
-% %
-% where $\iota^{(k)}$ is an indicator variable that equals 1 for samples with 100\% membership in cluster $k$
-% and 0 otherwise.
-% In Eqn \eqref{MVN_mean}, all entries of the covariance $\Omega$ have value 0 except the diagonals,
-% which describe sample-specific drift, and have the following value:
-% %
-% \begin{equation}
-% \Omega_{i,i} = \text{Var}\left( \Delta^{(i)} \right)
-% \label{MVN_mean_diag}
-% \end{equation}
-
-% %
-
-% \subsection{Describing relatedness as a covariance}
-% However, our data can consist of many loci, 
-% so it may be computationally impractical to model 
-% the ancestral, cluster, and sample components of each sampled allele frequency.
-% Instead, we can describe the covariance induced between samples due to the sharing of the components.
-% All samples share the same ancestral mean at all loci, 
-% which leads to a global covariance equal to the variance of the ancestral frequencies across loci.
-% Likewise, samples that are in the same cluster will have a covariance equal to the variance 
-% of the cluster-specific deviates from the ancestral frequencies across loci.
-
-% In Eqn \ref{MVN_mean} above, we described the relatedness between samples
-% due to the shared ancestral allele frequency and shared population-level drift
-% via the mean of the multivariate normal.
-% We can describe this relatedness as a covariance as follows:
-
-% \begin{equation}
-% 	\Omega_{i,j} = 
-% 	\begin{cases}
-% 	      \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right) + \text{Var}\left( \Delta^{(i)} \right), & \text{if}\ i=j\ \\
-%       	      \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right), & \text{if}\ \iota^{(k)}_i = \iota^{(k)}_j\ \text{and}\ i \neq j \\
-% 	      \text{Var}(\epsilon), & \text{otherwise}
-% 	\end{cases}
-% \label{MVN_covar}
-% \end{equation}
-
-
-% Generalizing this result to any number of clusters and incorporating admixture as in Eqn \ref{drift_terms_admix}, 
-% we can write the form of the covariance of samples that are admixed between $K$ clusters as:
-
-% \begin{equation}
-% \Omega_{i,j} = \text{Var}(\epsilon) + \sum\limits_K \left(	w^{(k)}_iw^{(k)}_j \text{Var}(\Delta^{(k)}) 	\right) + 
-% \delta_{i=j} \text{Var}(\Delta^{(i)})
-% \label{admixed_discrete_covariance}
-% \end{equation}
-
-% where $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise,
-% as in Eqn \ref{cross_cluster_covariance}.
-
-
-% \subsection{Incorporating spatial differentiation}
-% Equation \ref{admixed_discrete_covariance} describes a model in which 
-% samples can be continuously admixed between a set of $K$ discrete clusters.
-% In this model, any pair of samples with 100\% ancestry in a cluster 
-% have exactly the same covariance with each other (namely $\text{Var}(\epsilon) + \text{Var}(\Delta^{(k)})$).
-% However, we also wish to model continuous decay of covariance with spatial separation between samples.
-% That is, we expect (and want our model to reflect) that samples within the same cluster 
-% will have higher covariance if they are sampled closer together than if they are sampled farther apart.
-% To describe this spatial pattern, we build in a spatial component to our covariance model.
-
-% Specifically, we write that the covariance between a pair of samples $i$ and $j$
-% that draw all their ancestry from a single cluster $k$ decays exponentially as a function 
-% of the distance between their sampling locations as follows:
-% \begin{equation}
-% G^{(k)}_{i,j} = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right) + \mu^{(k)}	
-% \label{spatial_cov}
-% \end{equation}
-% where the $\alpha$ parameters control: 
-% the sill of the covariance ($\alpha_0$), 
-% the rate at which covariance decays with distance $D$ ($\alpha_D$),
-% and the shape of that decay ($\alpha_2$)
-% in the $k$th cluster.
-% The parameter $\mu^{(k)}$ describes the covariance shared by all samples in the $k$th cluster;
-% it and the spatial covariance function $G$ together
-%  describe the quantity $\text{Var}(\Delta^{(k)})$ from Eqn \eqref{admixed_discrete_covariance}.
-
-% Tying these ideas together, we can then construct a covariance that describes
-% \begin{enumerate}
-% \item continuous decay of covariance within a cluster
-% \item a discrete amount of covariance shared within a cluster
-% \item continuous admixture between clusters.
-% \end{enumerate}
-
-% \begin{equation}
-% \Omega_{i,j} = \text{Var}(\epsilon) + \sum\limits_K \left(	w^{(k)}_iw^{(k)}_j G^{(k)}_{i,j}(\theta) 	\right) +
-% \delta_{i=j} \text{Var}(\Delta_i)
-% \label{admixed_spatial_cov}
-% \end{equation}
-% %
-% where $G^{(k)}_{i,j}(\theta)$ denotes the dependence of the spatial covariance between samples $i$ and $j$ 
-% within a cluster on other quantities $\theta$: 
-% specifically, the parameters $\vec{\alpha}^{(k)}$ and $\mu^{(k)}$, which are specific to the $k$th cluster, 
-% as well as on the observed quantity $D_{i,j}$, the pairwise distance between samples $i$ and $j$.
+We note that this form is chosen for its flexibility, 
+and not because it matches any explicit population genetic model of isolation by distance. 
 
 \paragraph{Likelihood}
 If our allele frequency deviations are well approximated by a Gaussian, 
@@ -821,8 +685,15 @@ as a draw from a Wishart distribution with degrees of freedom equal to
 the number of loci $L$ across which the sample covariance is calculated:
 
 \begin{align}
-\widehat{\Omega} &= \frac{1}{L}FF^T \notag \\
-\widehat{\Omega} &\sim \mathcal{W}\left( L\Omega, L	\right)
+&\widehat{\Omega}_{i,j} = 
+	\begin{cases}
+		\frac{1}{L-1}
+		\sum\limits_{\ell=1}^{L}{\left[ 	\left(f_{i,\ell} - \bar{f}_{i} \right)
+		 	\left(f_{j,\ell} - \bar{f}_{j} \right)\right] \notag
+			} & \text{for } i \neq j \\
+		\bar{f}_i (1-\bar{f}_i) & \text{for } i = j \\
+	\end{cases}\\
+&\widehat{\Omega} \sim \mathcal{W}\left( L\Omega, L	\right)
 \label{wishart}
 \end{align}
 
@@ -845,7 +716,7 @@ and they are fixed in the nonspatial model.
 
 \paragraph{Single cluster}
 Each of these models can be run with a single cluster ($K=1$), 
-in which case the cluster-specific covariance parameter $\mu^{(k})$ 
+in which case the cluster-specific covariance parameter $\mu^{(k)}$ 
 and the global covariance parameter $\gamma$ become redundant.
 The single-cluster model is therefore a special case of the multi-cluster model, 
 in which we set $\mu$ to zero, as described below:
