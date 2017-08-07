@@ -279,48 +279,39 @@ We use a Hamiltonian Monte Carlo sampling algorithm implemented in the statistic
 We also present an R package \citep{R} called \texttt{conStruct} that functions as a wrapper 
 around this inference machinery.
 
-\gc{
+
 \paragraph{Relationship of this model to non-spatial structure models}
 
-A nice feature of our approach is that our model contains a non-spatial assignment model as a special case. 
-Setting $\alpha_0^{(k)}$ to zero for all $k$, we obtain a non-spatial model where
-each cluster has its own allele frequency at each SNP, and individuals
-draw a proportion of their ancestry from each cluster. This model is
-strongly conceptually similar to that of STRUCTURE (and related
-approaches ADMIXTURE), the only difference being that our likelihood
-assumes that allele frequencies are normally distributed around their
-expectations, while the standard assignment methods assume that the
-error is binomial distributed (see XXXX). Therefore, to compare the fit
-of 
-
-
-} 
-\gb{support for the spatial model over the nonspatial model at a given value of $K$ 
-indicates that isolation-by-distance is likely a feature of the data at that level.}
+A nice feature of our approach is that the model described in Eqn \refeq{cross_cluster_covariance} 
+contains a non-spatial assignment model as a special case 
+(see \ref{model_app} for a more in-depth discussion). 
+Setting $\alpha_0^{(k)}$ to zero for all $k$, 
+we obtain a non-spatial model in which each cluster has its own allele frequency at each SNP, 
+and individuals draw a proportion of their ancestry from each cluster. 
+This model is strongly conceptually similar to that of STRUCTURE \citep{STRUCTURE} 
+and related models \citep[e.g][]{ADMIXTURE}; 
+the only difference is that our likelihood assumes that allele frequencies are normally distributed 
+around their expectations, 
+while the standard assignment methods assume that the error is binomial distributed (see XXXX).  
+Therefore, we can evaluate the fit of the different models 
+--- spatial vs. nonspatial, across different values of $K$ --- 
+by comparing their performance in a common framework.
 
 \paragraph{Choice of cluster number and cross-validation}
-There are a number of reasons, both statistical and biological, why
-there is no true (or right) number of clusters for real datasets. 
-%There are a number of reasons, both statistical and biological, 
-%why choosing a single, ``best" number of clusters to describe the data may not be desirable.
-%, including ambiguity in what exactly it means for any given value of $K$ to be ``best."
-We discuss these reasons further in the Discussion below. In practice
-it is useful to explore the implications of clustering at a variety of
-different levels (i.e. across multiple $K$) for biological
-intepretation and downstream analyses. 
+There are a number of reasons, both statistical and biological, 
+why there is no true (or right) number of clusters for real datasets. 
+We discuss these reasons further in the Discussion below. 
+In practice, it is useful to explore the implications of clustering at a variety of different levels (
+i.e. across multiple $K$) for biological interpretation and downstream analyses. 
 However, we also recognize that in many circumstances it is 
 useful to know the number of clusters with highest statistical
-support in the (current) dataset.  %, for example to focus su 
-%However, we also recognize that in many circumstances 
-i%t is either useful or convenient 
-%to present only a single set of results from a clustering analysis with a particular number of clusters.
-%ideally a number large enough to describe meaningful partitions in the data, 
-%but not so large as to be difficult to parse visually.
+support in the (current) dataset.
 Toward that end, we have implemented a method for 
-statistically comparing \texttt{conStruct} results across different values of $K$.
+statistically comparing \texttt{conStruct} results across different values of $K$ 
+and between the spatial and non-spatial models.
 
-Several approaches have been used as model choice criteria for the number of
-clusters in \gc{population genetic} data, including: 
+Several approaches have been used as model choice criteria 
+for the number of clusters in population genetic data, including: 
 the use of information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
 comparisons of the likelihood of the data across different values of $K$, 
 with various criteria on how to choose a single value (e.g., \citep{Evanno2005});
@@ -329,28 +320,24 @@ generated either via various approximations \citep[e.g.][]{STRUCTURE}
 or via a more rigorous and computationally intensive approach such as thermodynamic integration \citep{verity_nichols2016}
 or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
-between several methods. %A comprehensive review of these approaches and their various merits is beyond the scope of this paper,
-%but 
+between several methods.
 
 \gc{IS PREDICTION accuracy the right phrase?}
-We choose to take a cross-validation approach.  We estimate the
-posterior on the parameters of the model using a ``training" partition
-of the data, in practice the training set is a random subset of $90\%$
-of the loci. We then calculate the likelihood of the
-``testing" subset, the remaining $10\%$ of the loci, averaged over the
-posterior of the parameters. We repeat this procedure a number of
-times, take an average of the relative log-likelihood over the runs at
-sumarize each $K$. 
-and selecting the model with the significantly best predictive accuracy
+We choose to take a cross-validation approach.
+We estimate the posterior on the parameters of the model using a ``training" partition of the data 
+(in practice the training set is a random subset of $90\%$ of the loci). 
+We then calculate the likelihood of the ``testing" subset (the remaining $10\%$ of the loci), 
+averaged over the posterior of the parameters. 
+We repeat this procedure a number of times, 
+take an average of the relative log-likelihoods over the runs at each $K$, 
+and select the model with the significantly best predictive accuracy
 (see Section \ref{Xvalidation} for more on our cross-validation procedure).
-This approach rewards models with larger values of $K$, which increase
-the likelihood of the training partition, as they fit the data better,
-but the improvement in the likelihood will plateau (or peak) as above
-a certain $K$ we are fitting noise specific to the training data and
-so not fitting the testing set any better, 
-%up to the point that cluster membership is invoked to model noise specific to the training data, 
-%at which point predictive accuracy decreases, 
-%and models with additional clusters are penalized.
+This approach rewards models with larger values of $K$, 
+which increase the likelihood of the training partition, 
+as they fit the data better,
+but the improvement in the likelihood will plateau (or peak),
+ as above a certain $K$ the model is fitting noise specific to the training data 
+ and therefore not fitting the testing set any better.
 
 \section*{Results}
 
@@ -461,24 +448,22 @@ are distributed throughout the Northern Hemisphere,
 and include species of ecological and economic importance.
 Species in the genus regularly co-occur and, 
 where they do, they frequently hybridize (ref).
-In addition, many \textit{Populus} species display patterns of isolation by distance, 
-making the system well-suited to an analysis designed to tease apart 
-genetic structure partitioned discretely across population (or species) clusters,
-and continuously with geographic distance.
 
 Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
 \textit{Populus trichocarpa}, the black cottonwood,
 and \textit{Populus trichocarpa}, the balsam poplar.
-These species have a broad zone of overlap and are known to hybridize \citep{geraldes_etal_2014}.
-
-
+These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014}.
+Both species are sampled over a large geographic region, 
+making the system well-suited to an analysis designed to tease apart 
+proportion of genetic structure that is partitioned discretely across population (or species) clusters,
+as well as continuously with geographic distance.
 
 We address this question using a dataset generated and originally published by \cite{geraldes_etal_2014}.
 The published data consist of 434 individuals sampled from 35 drainages 
 and genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
 The data were generated using RAD-seq, 
 and showed a strong pattern of bias in allelic dropout 
-(the majority of missing data were from drainages with only \textit{Populus balsamifera}).
+(the majority of missing data were from drainages with only \textit{Populus balsamifera} individuals).
 To ameliorate some of the problems that arise when there is a strong bias in which data are missing, 
 we dropped loci for which any data were missing, 
 resulting in just over 20,200 loci retained for analysis.  
@@ -487,8 +472,6 @@ running on $K = 1$ through 7,
 and compared these models using the cross-validation procedure described above. 
 The results of these analyses are shown in 
 Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
-
-
 
 
 \begin{figure}
@@ -595,8 +578,9 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
 
 We thank Marjorie Weber, William Wetzel, Mariah Meek, Yaniv Brandvain, and Matthew Stephens 
 for invaluable comments on the method and manuscript, 
-as well as Quentin Cronk, who helped interpret the \textit{Populus} analyses, 
-and the attendees at the 2017 SSE Meeting in Portland, OR, whose votes determined the name of the method.
+as well as Quentin Cronk, who provided input on the \textit{Populus} analyses, 
+and the attendees at the 2017 SSE Meeting in Portland, OR, 
+whose votes determined the name of the method.
 This work was supported in part by 
 the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
 the National Institute of General Medical Sciences of the National Institutes of Health under award numbers NIH RO1GM83098 and RO1GM107374 to GC,
@@ -785,18 +769,24 @@ after the initial calculation of the sample covariance matrix,
 the computation time of the likelihood is not a function of the number of loci,
 so inference can theoretically be done using whole genome data.
 
-\section{Models, parameters, and priors}
+\section{Models, parameters, and priors}\label{model_app}
 \paragraph{Spatial vs. nonspatial}
-In this paper, we discuss two types of models, spatial and nonspatial.
+In this paper, we discuss two types of models, spatial and nonspatial, 
+each of which can be implemented with different numbers of clusters.
 The spatial model is parameterized as in Eqn \ref{admixed_spatial_cov},
 and the nonspatial model is described in Eqn \ref{admixed_discrete_covariance}.
+The nonspatial model is a special case of the spatial model, 
+in which the value of all $\alpha$ parameters is set to 0.
 The nonspatial model therefore has $3K$ fewer parameters than the spatial model,
 as there are three $\alpha$ parameters that describe the continuous differentiation effect of distance per cluster,
-and they are not included in the nonspatial model.
+and they are fixed in the nonspatial model.
 
 \paragraph{Single cluster}
 Each of these models can be run with a single cluster ($K=1$), 
-which involves a slight re-parameterization, detailed below.
+in which case the cluster-specific covariance parameter $\mu^{(k})$ 
+and the global covariance parameter $\gamma$ become redundant.
+The single-cluster model is therefore a special case of the multi-cluster model, 
+in which we set $\mu$ to zero, as described below:
 
 For the spatial model, the single-cluster parametric covariance is:
 \begin{equation}
