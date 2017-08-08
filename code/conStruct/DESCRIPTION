@@ -8,9 +8,11 @@ Description: A method for modeling genetic data as a combination of discrete
     implemented in the modeling language rstan) and visualizing and interpreting
     output. See the paper for more details on the model and its utility.
 Depends:
-	R (>= 3.3.2)
+    R (>= 3.3.2),
+    rstan (>= 2.15.1)
 Imports:
-	rstan (>= 2.15.1)
+	caroline,
+	gtools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

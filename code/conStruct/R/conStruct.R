@@ -113,21 +113,11 @@ print.freq.data <- function(freq.data){
 }
 
 #'@export
-haploidize <- function(freqs){
-	pop.hap.var <- var(rbinom(length(freqs),1,freqs),na.rm=TRUE)
-	return(pop.hap.var)
-}
-
-#'@export
 unfold.freqs <- function(freqs){
 	N <- nrow(freqs)
 	L <- ncol(freqs)
 	unfold <- runif(L,0,1) > 0.5
-	freqs <- sapply(1:L,function(l){
-				ifelse(rep(unfold[l],N),
-						freqs[,l,drop=FALSE],
-						1-freqs[,l,drop=FALSE])
-			 })
+	freqs[,unfold] <- 1 - freqs[,unfold]
 	return(freqs)
 }
 
@@ -168,7 +158,8 @@ process.freq.data <- function(freqs){
 	freqs <- drop.missing(freqs)
 	n.loci <- ncol(freqs)
 	obsCov <- cov(t(freqs),use="pairwise.complete.obs")
-	diag(obsCov) <- apply(freqs,1,haploidize)
+	mean.freqs <- rowMeans(freqs,na.rm=TRUE)
+	diag(obsCov) <- mean.freqs * (1 - mean.freqs)
 	freq.data <- list("freqs" = freqs,
 					  "obsCov" = obsCov,
 					  "n.loci" = n.loci)
@@ -234,15 +225,11 @@ check.call <- function(args){
 }
 
 #'@export
-conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix="",n.chains=1,n.iter=1e3,burnin=0,make.figs=TRUE,save.files=TRUE){
-	#MAKE IT SO BURNIN CAN'T BE MORE THAN N.ITER
-	#GENERALLY DEAL W/ BURNIN
+conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
 	call.check <- check.call(args <- as.list(environment()))
 	#validate data block
 	freq.data <- process.freq.data(freqs)
-		if(save.files){
-			save(freq.data,file=paste0(prefix,"_freq.data.Robj"))
-		}
+		save(freq.data,file=paste0(prefix,"_freq.data.Robj"))
 	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp)
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
@@ -253,13 +240,13 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix=
 		#write stan block to file
 	#run model
 	#put stan in tryCatch, email me
-	require(rstan)
-	model.fit <- stan(model_code = stan.block,
-						refresh = min(n.iter/10,500),
-						data = data.block,
-						iter = n.iter,
-						chains = n.chains,
-						thin = ifelse(n.iter/500 > 1,n.iter/500,1))
+	model.fit <- rstan::stan(model_code = stan.block,
+							 refresh = min(n.iter/10,500),
+							 data = data.block,
+							 iter = n.iter,
+							 chains = n.chains,
+							 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
+							 save_warmup = FALSE)
 	#save fit obj
 		if(save.files){
 			save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
@@ -267,31 +254,26 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix=
 	conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
 		save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
 	if(make.figs){
-		make.all.the.plots(conStruct.results,n.chains,data.block,prefix,burnin,cluster.colors=NULL)
+		make.all.the.plots(conStruct.results,n.chains,data.block,prefix,cluster.colors=NULL)
 	}
 	return(conStruct.results)
 }
 
 #'@export
-get.conStruct.results <- function(data.block,model.fit,n.chains,burnin=0.2){
+get.conStruct.results <- function(data.block,model.fit,n.chains){
 	conStruct.results <- setNames(
 						lapply(1:n.chains,
 							function(i){
-								get.conStruct.chain.results(data.block,model.fit,i,burnin)
+								get.conStruct.chain.results(data.block,model.fit,i)
 							}),
 					  paste0("chain_",1:n.chains))
 	return(conStruct.results)
 }
 
 #'@export
-get.MAP.iter <- function(model.fit,chain.no,burnin=0.5){
-	burnin <- max(0.5,burnin)
-	logpost <- get_logposterior(model.fit)
-	MAP.iter <- lapply(logpost,
-						function(x){
-							length(x)*burnin + 
-							which.max(x[(length(x)*burnin+1):length(x)])
-						})[[chain.no]]
+get.MAP.iter <- function(model.fit,chain.no){
+	lpd <- get_logposterior(model.fit)
+	MAP.iter <- lapply(lpd,which.max)[[chain.no]]
 	return(MAP.iter)
 }
 
@@ -333,34 +315,55 @@ get.gamma <- function(model.fit,chain.no){
 	return(gamma)
 }
 
+get.null.alpha.params <- function(n.iter){
+	alpha.params <- list("alpha0" = rep(0,n.iter),
+						 "alphaD" = rep(0,n.iter),
+						 "alpha2" = rep(0,n.iter))
+	return(alpha.params)	
+}
+
 #'@export
 get.alpha.params <- function(model.fit,chain.no,cluster,n.clusters){
 	alpha.pars <- model.fit@model_pars[grepl("alpha",model.fit@model_pars)]
-	if(n.clusters > 1){
-		alpha.params <- setNames(
-							lapply(1:length(alpha.pars),
-									function(i){
-										extract(model.fit,
-												pars=paste0(alpha.pars[i],"[",cluster,"]"),
-												inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
-									}),alpha.pars)
+	if(length(alpha.pars) !=0 ){
+		if(n.clusters > 1){
+			alpha.params <- setNames(
+								lapply(1:length(alpha.pars),
+										function(i){
+											extract(model.fit,
+													pars=paste0(alpha.pars[i],"[",cluster,"]"),
+													inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
+										}),alpha.pars)
+		} else {
+			alpha.params <- setNames(
+								lapply(1:length(alpha.pars),
+										function(i){
+											extract(model.fit,
+													pars=alpha.pars[i],
+													inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
+										}),alpha.pars)		
+		}
 	} else {
-		alpha.params <- setNames(
-							lapply(1:length(alpha.pars),
-									function(i){
-										extract(model.fit,
-												pars=alpha.pars[i],
-												inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
-									}),alpha.pars)		
+		alpha.params <- get.null.alpha.params(model.fit@sim$n_save[chain.no])
 	}
 	return(alpha.params)
 }
 
+get.null.mu <- function(n.iter){
+	mu <- rep(0,n.iter)
+	return(mu)
+}
+
 #'@export
 get.cluster.mu <- function(model.fit,chain.no,cluster){
-	mu <- extract(model.fit,
-					pars=paste0("mu","[",cluster,"]"),
-					inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
+	has.mu <- any(grepl("mu",model.fit@model_pars))
+	if(has.mu){
+		mu <- extract(model.fit,
+						pars=paste0("mu","[",cluster,"]"),
+						inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
+	} else {
+		mu <- get.null.mu(model.fit@sim$n_save[chain.no])
+	}
 	return(mu)
 }
 
@@ -410,13 +413,8 @@ get.cluster.cov <- function(cluster.params,data.block,n.iter){
 #'@export
 get.cluster.params <- function(model.fit,data.block,chain.no,cluster,n.clusters,n.iter){
 	cluster.params <- list()
-	if(data.block$spatial){
-		cluster.params <- get.alpha.params(model.fit,chain.no,cluster,n.clusters)
-	}
-	if(n.clusters > 1){
-		cluster.params <- c(cluster.params,
-							list("mu" = get.cluster.mu(model.fit,chain.no,cluster)))
-	}
+	cluster.params <- get.alpha.params(model.fit,chain.no,cluster,n.clusters)
+	cluster.params[["mu"]] <- get.cluster.mu(model.fit,chain.no,cluster)
 	cluster.cov <- get.cluster.cov(cluster.params,data.block,n.iter)
 	cluster.params <- c(cluster.params,list("cluster.cov"=cluster.cov))
 	return(cluster.params)
@@ -456,6 +454,9 @@ index.MAP <- function(param,MAP.iter){
 	}
 	if(class(param) == "array"){
 		MAP.param <- param[MAP.iter,,]
+		if(is.null(dim(MAP.param))){
+			MAP.param <- matrix(MAP.param,nrow=length(MAP.param),ncol=1)
+		}
 	}
 	if(class(param) == "matrix"){
 		MAP.param <- param[MAP.iter,]
@@ -497,20 +498,16 @@ print.conStruct.results <- function(conStruct.results){
 }
 
 #'@export
-get.conStruct.chain.results <- function(data.block,model.fit,chain.no,burnin=0.2){
+get.conStruct.chain.results <- function(data.block,model.fit,chain.no){
 	n.iter <- get.n.iter(model.fit,chain.no)
 	posterior <- list("n.iter" = model.fit@sim$n_save[chain.no],
 					  "lpd" = get_logposterior(model.fit)[[chain.no]],
 					  "nuggets" = get.nuggets(model.fit,chain.no,data.block$N),
 					  "par.cov" = get.par.cov(model.fit,chain.no,data.block$N),
-					  "gamma" = get.gamma(model.fit,chain.no))
-	if(data.block$spatial | data.block$K > 1){
-		posterior[["cluster.params"]] <- get.cluster.params.list(model.fit,data.block,chain.no,n.iter)
-	}
-	if(data.block$K > 1){
-		posterior[["admix.proportions"]] <- get.admix.props(model.fit,chain.no,data.block$N,data.block$K)
-	}
-	MAP.iter <- get.MAP.iter(model.fit,chain.no,burnin)
+					  "gamma" = get.gamma(model.fit,chain.no),
+					  "cluster.params" = get.cluster.params.list(model.fit,data.block,chain.no,n.iter),
+					  "admix.proportions" = get.admix.props(model.fit,chain.no,data.block$N,data.block$K))
+	MAP.iter <- get.MAP.iter(model.fit,chain.no)
 	MAP <- lapply(posterior,function(X){index.MAP(X,MAP.iter)})
 	conStruct.results <- list("posterior" = posterior,"MAP" = MAP)
 	conStruct.results <- make.conStruct.results.S3(conStruct.results)
@@ -518,43 +515,33 @@ get.conStruct.chain.results <- function(data.block,model.fit,chain.no,burnin=0.2
 }
 
 #'@export
-plot.lpd <- function(conStruct.results,burnin=0){
-	z <- (burnin+1):conStruct.results$posterior$n.iter
-	x.lab <- ifelse(burnin==0,
-						"MCMC iterations",
-						paste0("MCMC iterations\n(post burnin of ",burnin,")"))
-	plot(conStruct.results$posterior$lpd[z],
-			xlab=x.lab,ylab="posterior probability",
-			main="Posterior probability",type='l')
+plot.lpd <- function(conStruct.results){
+	plot(conStruct.results$posterior$lpd,
+			ylab="posterior probability",
+			main="Posterior probability",type='l',
+			xlab="MCMC iterations")
 	return(invisible(0))
 }
 
 #'@export
-plot.nuggets <- function(conStruct.results,burnin){
-	z <- (burnin+1):conStruct.results$posterior$n.iter
-	x.lab <- ifelse(burnin==0,
-						"MCMC iterations",
-						paste0("MCMC iterations\n(post burnin of ",burnin,")"))
-	matplot(conStruct.results$post$nuggets[z,],type='l',
+plot.nuggets <- function(conStruct.results){
+	matplot(conStruct.results$post$nuggets,type='l',
 				main="sample nuggets",
 				ylab="nugget value",
-				xlab=x.lab)
+				xlab="MCMC iterations")
 	return(invisible("nuggets"))
 }
 
-plot.gamma <- function(conStruct.results,burnin){
-	z <- (burnin+1):conStruct.results$posterior$n.iter
-	x.lab <- ifelse(burnin==0,
-						"MCMC iterations",
-						paste0("MCMC iterations\n(post burnin of ",burnin,")"))
-	plot(conStruct.results$posterior$gamma[z],
-			xlab=x.lab,ylab="gamma",
+plot.gamma <- function(conStruct.results){
+	plot(conStruct.results$posterior$gamma,
+			ylab="gamma",
+			xlab="MCMC iterations",
 			main="Gamma",type='l')
 	return(invisible(0))
 }
 
 #'@export
-get.ylim <- function(cluster.params,n.clusters,param,z){
+get.ylim <- function(cluster.params,n.clusters,param){
 	y.lim <- range(unlist(
 				lapply(
 					lapply(1:n.clusters,
@@ -562,34 +549,29 @@ get.ylim <- function(cluster.params,n.clusters,param,z){
 							cluster.params[[i]][[param]]
 						}),
 					function(x){
-						range(x[z])
+						range(x)
 					})))
 	y.lim <- y.lim + c(-0.15*diff(y.lim),0.15*diff(y.lim))
 	return(y.lim)
 }
 
 #'@export
-plot.cluster.param <- function(cluster.param,clst.col,z){
-	points(cluster.param[z],type='l',col=clst.col)
+plot.cluster.param <- function(cluster.param,clst.col){
+	points(cluster.param,type='l',col=clst.col)
 	return(invisible(0))
 }
 
 #'@export
-plot.cluster.cov.params <- function(data.block,conStruct.results,burnin,cluster.colors){
+plot.cluster.cov.params <- function(data.block,conStruct.results,cluster.colors){
 	n.clusters <- data.block$K
-	z <- (burnin+1):conStruct.results$posterior$n.iter
-	x.lab <- ifelse(burnin==0,
-						"MCMC iterations",
-						paste0("MCMC iterations\n(post burnin of ",burnin,")"))
 	params <- names(conStruct.results$posterior$cluster.params$Cluster_1)[!names(conStruct.results$posterior$cluster.params$Cluster_1)=="cluster.cov"]
-	param.ranges <- lapply(params,function(x){get.ylim(conStruct.results$posterior$cluster.params,n.clusters,x,z)})
+	param.ranges <- lapply(params,function(x){get.ylim(conStruct.results$posterior$cluster.params,n.clusters,x)})
 	if(length(params) > 0){
 		for(i in 1:length(params)){
 			plot(0,type='n',main=params[i],
-				xlab=x.lab,ylab="parameter value",
-				xlim=c(1,length(z)),
-				ylim=param.ranges[[i]])
-			lapply(1:n.clusters,function(j){plot.cluster.param(conStruct.results$posterior$cluster.params[[j]][[params[i]]],cluster.colors[j],z)})
+				xlab="MCMC iterations",ylab="parameter value",
+				ylim=param.ranges[[i]],xlim=c(1,conStruct.results$posterior$n.iter))
+			lapply(1:n.clusters,function(j){plot.cluster.param(conStruct.results$posterior$cluster.params[[j]][[params[i]]],cluster.colors[j])})
 			legend(x="topright",col= cluster.colors[1:n.clusters],lty=1,legend=paste0("Cluster_",1:n.clusters))
 		}
 	}
@@ -597,38 +579,36 @@ plot.cluster.cov.params <- function(data.block,conStruct.results,burnin,cluster.
 }
 
 #'@export
-plot.admix.props <- function(data.block,conStruct.results,cluster.colors,burnin){
+plot.admix.props <- function(data.block,conStruct.results,cluster.colors){
 	n.clusters <- data.block$K
 	par(mfrow=c(n.clusters,1),mar=c(3,3,2,2))
 		for(i in 1:n.clusters){
-			matplot(conStruct.results$posterior$admix.proportions[(burnin+1):conStruct.results$posterior$n.iter,,i],type='l',ylim=c(0,1),
+			matplot(conStruct.results$posterior$admix.proportions[,,i],type='l',ylim=c(0,1),
 					main=paste0("Cluster ",i),ylab="admixture proportion",col=cluster.colors[i])
 		}
 	return(invisible(0))
 }
 
 #'@export
-get.par.cov.CI <- function(data.block,conStruct.results,burnin){
+get.par.cov.CI <- function(data.block,conStruct.results){
 	combns <- gtools::combinations(n=data.block$N,r=2,v=1:data.block$N,repeats.allowed=TRUE)
-	iters <- (burnin+1):conStruct.results$posterior$n.iter
 	CIs <- lapply(1:nrow(combns),
 				function(i){
-					quantile(conStruct.results$posterior$par.cov[iters,combns[i,1],combns[i,2]],c(0.025,0.975))
+					quantile(conStruct.results$posterior$par.cov[,combns[i,1],combns[i,2]],c(0.025,0.975))
 				})
 	return(CIs)
 }
 #'@export
-plot.model.fit.CIs <- function(data.block,conStruct.results,burnin){
+plot.model.fit.CIs <- function(data.block,conStruct.results){
 	cov.range <- range(c(data.block$obsCov,
-						conStruct.results$posterior$par.cov[
-							(burnin+1):conStruct.results$posterior$n.iter, , ]))
+						conStruct.results$posterior$par.cov))
 	plot(data.block$geoDist,data.block$obsCov,
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
         ylim = cov.range, type = "n")
 	combns <- gtools::combinations(n=data.block$N,r=2,v=1:data.block$N,repeats.allowed=TRUE)
-	CIs <- get.par.cov.CI(data.block,conStruct.results,burnin)
+	CIs <- get.par.cov.CI(data.block,conStruct.results)
 	lapply(1:nrow(combns),
 			function(i){
 				segments(x0 = data.block$geoDist[combns[i,1],combns[i,2]],
@@ -644,16 +624,15 @@ plot.model.fit.CIs <- function(data.block,conStruct.results,burnin){
 }
 
 #'@export
-plot.model.fit <- function(data.block,conStruct.results,burnin){
-	z <- seq((burnin+1),conStruct.results$posterior$n.iter,length.out=10)
+plot.model.fit <- function(data.block,conStruct.results){
 	index.mat <- upper.tri(data.block$geoDist, diag = TRUE)
-	cov.range <- range(c(data.block$obsCov,conStruct.results$posterior$par.cov[z, , ]))
+	cov.range <- range(c(data.block$obsCov,conStruct.results$posterior$par.cov))
     plot(data.block$geoDist,data.block$obsCov,
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
         ylim = cov.range, type = "n")
-    lapply(z, function(i) {
+    lapply(seq(1,conStruct.results$posterior$n.iter,length.out=25), function(i) {
         points(data.block$geoDist[index.mat], conStruct.results$posterior$par.cov[i,,][index.mat],
         	pch = 20, col = adjustcolor(1, 0.1))
     		})
@@ -665,46 +644,34 @@ plot.model.fit <- function(data.block,conStruct.results,burnin){
 }
 
 #'@export
-plot.cluster.covs <- function(data.block,conStruct.results,cluster.colors,burnin){
-	order.mat <- order(data.block$geoDist)
-	z <- seq((burnin+1),conStruct.results$posterior$n.iter,length.out=10)
-	y.range <- range(c(
-				unlist(lapply(1:data.block$K,
-							function(k){
-								conStruct.results$posterior$cluster.params[[k]]$cluster.cov[z]})),
-				data.block$obsCov))
-	plot(data.block$geoDist[upper.tri(data.block$obsCov,diag=TRUE)],
-		 data.block$obsCov[upper.tri(data.block$obsCov,diag=TRUE)],
-			xlim=range(data.block$geoDist),ylim=y.range,
-			xlab = "geographic distance",
-			ylab = "cluster-specific covariances",
-			main = "cluster covariances")
-		lapply(1:data.block$K,function(k){
-			lapply(conStruct.results$posterior$cluster.params[[k]]$cluster.cov[z],function(x){
-				lines(data.block$geoDist[order.mat],
-					  x[order.mat],col=adjustcolor(cluster.colors[k],0.3),pch=20)
-			})
-		})
-	legend(x="topright",col= cluster.colors[1:data.block$K],lty=1,legend=paste0("Cluster_",1:data.block$K))
-	return(invisible("cluster covs"))	
-}
-
-#'@export
 plot.cluster.covariances <- function(data.block,conStruct.results,cluster.colors){
 	ind.mat <- upper.tri(data.block$geoDist,diag=TRUE)
-	y.range <- range(unlist(lapply(seq_along(1:data.block$K),
-										function(i){conStruct.results$MAP$cluster.params[[i]]$cluster.cov})))
-	plot(data.block$geoDist[ind.mat],data.block$geoDist[ind.mat],
-			ylab="sample covariance",xlab="geographic distance",
-			ylim=y.range + diff(range(y.range))/10 * c(-1,1),type='n')
-	for(i in 1:data.block$K){
-		points(data.block$geoDist[ind.mat],
-				conStruct.results$MAP$cluster.params[[i]]$cluster.cov[ind.mat],
-				col=cluster.colors[i],pch=20,cex=0.6)
-	}
-	legend(x="topright",lwd=2,lty=1,col=cluster.colors[1:data.block$K],
-			legend=paste0("Cluster_",1:data.block$K),cex=0.7)
-	return(invisible("plotted"))
+	order.mat <- order(data.block$geoDist)
+	    y.range <- range(c(
+	    			unlist(lapply(1:data.block$K,
+	    							function(k){
+								        conStruct.results$MAP$cluster.params[[k]]$cluster.cov
+					})) + conStruct.results$MAP$gamma, 
+					data.block$obsCov))
+	plot(data.block$geoDist[ind.mat],
+		 data.block$obsCov[ind.mat],
+			xlim=range(data.block$geoDist),ylim=y.range,
+			xlab = "geographic distance",
+			ylab = "covariance",
+			pch=19,col=adjustcolor(1,0.7))
+		lapply(1:data.block$K, function(k) {
+             lines(data.block$geoDist[order.mat][ind.mat],
+             		conStruct.results$MAP$gamma + 
+             		conStruct.results$MAP$cluster.params[[k]]$cluster.cov[order.mat][ind.mat],
+                  col = 1,lwd=4.5,lty=1) ; 
+             lines(data.block$geoDist[order.mat][ind.mat],
+             		conStruct.results$MAP$gamma + 
+             		conStruct.results$MAP$cluster.params[[k]]$cluster.cov[order.mat][ind.mat],
+                  col = cluster.colors[k],lwd=4,lty=1)
+        })
+		legend(x="topright",col= cluster.colors[1:data.block$K],lty=1,
+				legend=paste0("Cluster_",1:data.block$K),cex=0.7)
+	return(invisible("cluster covs"))	
 }
 
 #'@export
@@ -761,10 +728,9 @@ make.admix.pie.plot <- function(data.block,conStruct.results,cluster.colors,stat
 	if(is.null(data.block$coords)){
 		message("\nuser has not specified sampling coordinates in the data block\n")
 	} else {
-		require(caroline)
 		cluster.names <- paste0("cluster_",1:data.block$K)
 		sample.names <- paste0("sample_",1:data.block$N)
-		color.tab <- nv(c(cluster.colors[1:data.block$K]),cluster.names)
+		color.tab <- caroline::nv(c(cluster.colors[1:data.block$K]),cluster.names)
 		if(stat == "MAP"){
 			admix.props <- conStruct.results$MAP$admix.proportions
 		} else if(stat == "mean"){
@@ -772,7 +738,7 @@ make.admix.pie.plot <- function(data.block,conStruct.results,cluster.colors,stat
 		} else if(stat == "median"){
 			admix.props <- apply(conStruct.results$posterior$admix.proportions,c(2,3),median)		
 		}
-		pie.list <- lapply(1:data.block$N,function(i){nv(admix.props[i,],cluster.names)})
+		pie.list <- lapply(1:data.block$N,function(i){caroline::nv(admix.props[i,],cluster.names)})
 		names(pie.list) <- sample.names
 		if(add){
 			par(new=TRUE)
@@ -788,7 +754,7 @@ make.admix.pie.plot <- function(data.block,conStruct.results,cluster.colors,stat
 		if(is.null(y.lim)){
 			y.lim <- c(min(data.block$coords[,2]) - 1, max(data.block$coords[,2]) + 1)
 		}
-		pies(pie.list,x0=data.block$coords[,1],y0=data.block$coords[,2],
+		caroline::pies(pie.list,x0=data.block$coords[,1],y0=data.block$coords[,2],
 					color.table=color.tab,border="black",radii=radii,
 					xlab="",ylab="",main=title,lty=1,density=NULL,
 					xlim = x.lim, ylim = y.lim)
@@ -798,53 +764,25 @@ make.admix.pie.plot <- function(data.block,conStruct.results,cluster.colors,stat
 }
 
 #'@export
-get.cluster.order <- function(K,admix.props,ref.admix.props){
-	K.combn <- expand.grid(1:K,1:K)
-	mean.props <- lapply(1:K,function(i){
-						apply(admix.props[,,i],2,
-							function(x){mean(x)})
-					})	
-	admix.prop.cors <- unlist(
-						lapply(1:nrow(K.combn),function(i){
-							cor(mean.props[[K.combn[i,1]]],
-							ref.admix.props[,K.combn[i,2]])}))
-	matchups <- matrix(c(1:K,rep(NA,K)),nrow=K,ncol=2)
-		colnames(matchups) <- c("sample","reference")
-	while(any(is.na(matchups))){
-		winner <- as.numeric(K.combn[which.max(admix.prop.cors),])
-		matchups[winner[1],2] <- winner[2]
-		admix.prop.cors[which.max(admix.prop.cors)] <- NA
-	}
-	return(matchups)
-}
-
-#'@export
-get.n.cluster.cov.params <- function(conStruct.results){
-	n.params <- length(names(conStruct.results$posterior$cluster.params$Cluster_1)[
-					!names(conStruct.results$posterior$cluster.params$Cluster_1)=="cluster.cov"])
-	return(n.params)
-}
-
-#'@export
-make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,burnin=0,cluster.colors,...){
-	pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"),...)
-		plot.lpd(conStruct.results,burnin)
-		plot.nuggets(conStruct.results,burnin)
-		plot.gamma(conStruct.results,burnin)
-		plot.cluster.cov.params(data.block,conStruct.results,burnin,cluster.colors)
+make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,cluster.colors){
+	pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"))
+		plot.lpd(conStruct.results)
+		plot.nuggets(conStruct.results)
+		plot.gamma(conStruct.results)
+		plot.cluster.cov.params(data.block,conStruct.results,cluster.colors)
 		if(data.block$K > 1){
-			plot.admix.props(data.block,conStruct.results,cluster.colors,burnin)
+			plot.admix.props(data.block,conStruct.results,cluster.colors)
 		}
 	dev.off()
-	pdf(file=paste0(prefix,"_model.fit.chain_",chain.no,".pdf"),...)
-		plot.model.fit(data.block,conStruct.results,burnin)
+	pdf(file=paste0(prefix,"_model.fit.chain_",chain.no,".pdf"))
+		plot.model.fit(data.block,conStruct.results)
 	dev.off()
-	pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),...)
-		plot.model.fit.CIs(data.block,conStruct.results,burnin)
+	pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"))
+		plot.model.fit.CIs(data.block,conStruct.results)
 	dev.off()
 	if(data.block$spatial | data.block$K > 1){
 		pdf(file=paste0(prefix,"_cluster.cov.curves.chain_",chain.no,".pdf"),width=5,height=5)
-			plot.cluster.covs(data.block,conStruct.results,cluster.colors,burnin)
+			plot.cluster.covariances(data.block,conStruct.results,cluster.colors)
 		dev.off()
 	}
 	if(data.block$K > 1){
@@ -859,12 +797,12 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,bu
 }
 
 #'@export
-make.all.the.plots <- function(conStruct.results,n.chains,data.block,prefix,burnin=0,cluster.colors=NULL,...){
+make.all.the.plots <- function(conStruct.results,n.chains,data.block,prefix,cluster.colors=NULL){
 	if(is.null(cluster.colors)){
 		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
 	}
 	lapply(1:n.chains,function(i){
-		make.all.chain.plots(conStruct.results[[i]],chain.no=i,data.block,prefix,burnin,cluster.colors,...)
+		make.all.chain.plots(conStruct.results[[i]],chain.no=i,data.block,prefix,cluster.colors)
 	})
 	return(invisible("made chain plots!"))
 }
@@ -901,7 +839,6 @@ shift.chunk.lnls <- function(chunk.lnls,A,n.iter){
 
 #'@export
 calc.lnl.x.MCMC <- function(cov.chunk,pp.par.cov,chunk.size){
-	#recover()
 	lnl.x.mcmc <- lapply(pp.par.cov,
 						function(x){
 							log.likelihood(cov.chunk,x$inv,x$log.det,n.loci=chunk.size)
@@ -910,91 +847,7 @@ calc.lnl.x.MCMC <- function(cov.chunk,pp.par.cov,chunk.size){
 }
 
 #'@export
-data.chunkification <- function(n.loci,chunk.size){
-	chunk.intervals <- seq(1,n.loci,by=chunk.size)
-	n.chunks <- length(chunk.intervals)	
-	chunk.indices <- cbind(chunk.intervals[1:(n.chunks-1)],chunk.intervals[2:n.chunks])
-	return(chunk.indices)
-}
-
-#'@export
-chunk.freq.data <- function(freqs,data.block,chunk.size){
-	n.loci <- ncol(freqs)
-	chunk.indices <- data.chunkification(n.loci,chunk.size)
-	chunks <- lapply(1:nrow(chunk.indices),
-					  function(i){
-					  	cov(t(freqs[,chunk.indices[i,1]:	
-					  				 chunk.indices[i,2],drop=FALSE]),
-					  		use="pairwise.complete.obs")
-					  })
-	return(chunks)
-}
-
-#'@export
-calculate.lpd <- function(chunk.lnls,n.iter){
-	#recover()
-	#subtract max lnL from log likelihood to avoid overflow
-	A <- determine.log.shift(chunk.lnls)
-	chunk.lnls.shifted <- lapply(chunk.lnls,function(x){shift.chunk.lnls(x,A,n.iter)})
-	lpd <- sum(unlist(chunk.lnls.shifted))
-	return(lpd)
-}
-
-#'@export
-calculate.pwaic <- function(chunk.lnls){
-	pwaic <- lapply(chunk.lnls,var)
-	return(sum(unlist(pwaic)))
-}
-
-#'@export
-calculate.waic <- function(freqs,data.block,conStruct.results,chunk.size,samples=NULL){
-	#recover()
-	cat("breaking data into locus-by-locus covariances...\n\n")
-	chunks <- chunk.freq.data(freqs,data.block,chunk.size)
-	if(is.null(samples)){
-		samples <- 1:conStruct.results$posterior$n.iter
-	}
-	n.iter <- length(samples)
-	#invert the posterior distn of parametric cov matrices
-	cat("inverting posterior distribution of parametric covariance matrices...\n\n")
-		pp.par.cov <- post.process.par.cov(conStruct.results,samples)
-	#calc likelioods of nth data chunk across all sampled MCMC iterations
-	cat("calculating likelihood of each site across posterior distribution of parameters...\n\n")
-		chunk.lnls <- lapply(chunks,function(x){calc.lnl.x.MCMC(x,pp.par.cov=pp.par.cov,chunk.size=chunk.size)})
-	#calculate log pointwise predictive density
-	cat("calculating wAIC score...\n\n\n")
-		lpd <- calculate.lpd(chunk.lnls,n.iter)
-	#calculate effective number of parameters
-	pwaic <- calculate.pwaic(chunk.lnls)
-	elpd <- lpd - pwaic
-	waic <- -2 * elpd
-	waic.list <- list("chunk.lnls" = chunk.lnls,"lpd" = lpd,"pwaic" = pwaic,"elpd" = elpd,"waic" = waic)
-	return(waic.list)
-}
-
-#'@export
-compare.x.K <- function(dir,chunk.size){ #FIX TO MAKE FLEXIBLE W/R/T WHICH K DIRS ARE IN DIR
-	setwd(dir)
-	K.dirs <- list.dirs(full.names=TRUE,recursive=FALSE)
-	waics <- vector("list",length=length(K.dirs))
-	for(k in 1:length(K.dirs)){
-		cat("calculating WAIC for K =",k,"\n\n")
-		setwd(K.dirs[k])
-		load(list.files(pattern="freq.data"))
-		load(list.files(pattern="data.block"))
-		load(list.files(pattern="conStruct.results"))
-		waics[[k]] <- calculate.waic(freqs = freq.data$freqs,
-									 data.block = data.block,
-									 conStruct.results = conStruct.results[[1]], #FIX TO MAKE FLEXIBLE W/R/T NO. CHAINS
-									 chunk.size=chunk.size,
-									 samples=(conStruct.results[[1]]$posterior$n.iter/2 + 1) : conStruct.results[[1]]$posterior$n.iter)
-		setwd("..")
-	}
-	return(waics)
-}
-
-#'@export
-x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter,burnin){
+x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter){
 	x.val <- lapply(1:n.reps,
 					function(i){
 						x.validation.rep(rep.no = i,
@@ -1004,15 +857,14 @@ x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter,bu
 										 geoDist,
 										 coords,
 										 prefix,
-										 n.iter,
-										 burnin)
+										 n.iter)
 					})
 	names(x.val) <- paste0("rep_",1:n.reps)
 	return(x.val)
 }
 
 #'@export
-x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.iter,burnin,make.figs=FALSE,save.files=FALSE){
+x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
 	freqs <- drop.invars(freqs)
 	train.loci <- sample(1:ncol(freqs),ncol(freqs)*(1-test.pct))
 	test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
@@ -1028,9 +880,8 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 coords = coords,
 											 prefix = paste0(prefix,"_sp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
-											 burnin = burnin,
-											 make.figs,
-											 save.files)
+											 make.figs = make.figs,
+											 save.files = save.files)
 						})
 	training.runs.nsp <- lapply(K,function(k){
 								conStruct(spatial = FALSE,
@@ -1040,13 +891,9 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 coords = coords,
 											 prefix = paste0(prefix,"_nsp_","rep",rep.no,"K",k),
 											 n.iter = n.iter,
-											 burnin = burnin,
-											 make.figs,
-											 save.files)
+											 make.figs = make.figs,
+											 save.files = save.files)
 						})
-	training.runs <- list("sp" = training.runs.sp,
-						  "nsp" = training.runs.nsp)
-	save(training.runs,file=paste0(prefix,"rep",rep.no,"_training.runs.Robj"))
 	test.lnl.sp <- lapply(training.runs.sp,
 						function(x){
 							fit.to.test(test.data,x[[1]])
@@ -1076,82 +923,18 @@ fit.to.test <- function(test.data,conStruct.results){
 	return(test.lnl)
 }
 
-#'@export
-get.seq.max <- function(n.TI.steps){
-	seq.max <- 0
-	my.max <- 0
-	while(my.max < 1){
-		my.max <- max(cumsum(1 - 1/(1+seq(0,seq.max,length.out=n.TI.steps))))
-		seq.max <- seq.max + 1e-4	
-	}
-	return(seq.max-1e-4)
+frob.mn <- function(M){
+	frob.mn <- sqrt(sum(M^2))
+	return(frob.mn)
 }
 
-#'@export
-calculate.mean.lnL <- function(conStruct.results,data.block){
-	pp.par.cov <- post.process.par.cov(conStruct.results,
-										samples = (1 + conStruct.results$posterior$n.iter/2):
-													conStruct.results$posterior$n.iter)
-	lnLs <- lapply(pp.par.cov,function(x){log.likelihood(data.block$obsCov,x$inv,x$log.det,data.block$L)})
-	mean.lnL <- mean(unlist(lnLs))
-	return(mean.lnL)
+measure.frob.similarity <- function(m1,m2,K){
+	W <- matrix(1/K,nrow(m1),ncol(m1))
+	frob.sim <- 1 - frob.mn(m1-m2)/sqrt(frob.mn(m1-W) * frob.mn(m2-W))
+	return(frob.sim)
 }
 
-#'@export
-calculate.model.evidence <- function(temps,mean.lnLs){
-	model.evidence <- 0
-	for(i in 1:(length(temps)-1)){
-		model.evidence <- model.evidence + 0.5 * (mean.lnLs[[i+1]] + mean.lnLs[[i]])*(temps[i+1] - temps[i])
-	}
-	return(model.evidence)
-}
-
-#'@export
-nice.rounding <- function(x){
-	dig <- 1
-	while(any(table(round(x,dig)) > 1)){
-		dig <- dig + 1
-	}
-	return(dig)
-}
-
-#'@export
-estimate.model.evidence <- function(n.TI.steps,spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix,n.iter=1e3){
-	seq.max <- get.seq.max(n.TI.steps)
-	temps <- pmin(cumsum(1 - 1 / (1 + seq(0,seq.max,length.out=n.TI.steps))),1)
-	
-	freq.data <- process.freq.data(freqs)
-	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp=NULL)
-	conStruct.runs <- lapply(temps,
-							function(B){
-								conStruct(spatial,
-											 K,
-											 freqs,
-											 geoDist = geoDist,
-											 temp = B,
-											 coords = coords,
-											 prefix = paste0("temp_",round(B,nice.rounding(temps)),"_",prefix),
-											 n.chains = 1,
-											 n.iter = n.iter,
-											 burnin = 0)
-							})
-	mean.lnLs <- lapply(conStruct.runs,
-						 function(x){
-							calculate.mean.lnL(x[[1]],data.block)
-						 })
-	model.evidence <- calculate.model.evidence(temps,mean.lnLs)
-	me.list <- list("temps" = temps,
-					"mean.lnLs" = mean.lnLs,
-					"data.block" = data.block,
-					"model.evidence" = model.evidence)
-	save(me.list,file="model.evidence.list.Robj")
-	return(model.evidence)
-}
-
-
-#'@export
 match.clusters.x.runs <- function(csr1,csr2,csr1.order=NULL){
-	# recover()
 	cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
 	K1 <- ncol(csr1$MAP$admix.proportions)
 		if(!is.null(csr1.order)){
@@ -1161,23 +944,24 @@ match.clusters.x.runs <- function(csr1,csr2,csr1.order=NULL){
 	K2 <- ncol(csr2$MAP$admix.proportions)
 		K2.cols <- numeric(K2)
 	k.combn <- expand.grid(1:K1,1:K2)
-	clst.cors <- unlist(lapply(1:nrow(k.combn),
+	clst.sims <- unlist(lapply(1:nrow(k.combn),
 						function(n){
-							cor(csr1$MAP$admix.proportions[,k.combn[n,1]],
-								csr2$MAP$admix.proportions[,k.combn[n,2]])
+							measure.frob.similarity(csr1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
+													csr2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
+													K=1)
 							}))
 	while(length(which(K2.cols == 0)) > (K2-K1)){
-		tmp.max <- which.max(rank(clst.cors,na.last=FALSE))
+		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
 		csr2.match <- k.combn[tmp.max,2]
 		csr1.match <- k.combn[tmp.max,1]
 		K2.cols[csr2.match] <- K1.cols[csr1.match]
-		clst.cors[which(k.combn[,1]==csr1.match)] <- NA
-		clst.cors[which(k.combn[,2]==csr2.match)] <- NA
+		clst.sims[which(k.combn[,1]==csr1.match)] <- NA
+		clst.sims[which(k.combn[,2]==csr2.match)] <- NA
 	}
 	if(K2 > K1){
 		K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
 	}
-	K2.clst.order <- match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))]
+	K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
 	clst2.info <- list("cols" = K2.cols,
 					   "clst.order" = K2.clst.order)
 	return(clst2.info)
