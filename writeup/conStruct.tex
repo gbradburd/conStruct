@@ -22,6 +22,8 @@
 \newcommand{\e}[1]{{\mathbb E}\left[ #1 \right]}
 \newcommand{\given}{\mid}
 \newcommand{\secref}[1]{``\nameref{#1}''}
+\newcommand{\tri}{\textit{trichocarpa}}
+\newcommand{\bals}{\textit{balsamifera}}
 
 
 \newcommand{\gb}[1]{{\it\color{magenta}{(#1)}}}
@@ -335,9 +337,13 @@ and select the model with the significantly best predictive accuracy
 This approach rewards models with larger values of $K$, 
 which increase the likelihood of the training partition, 
 as they fit the data better,
-but the improvement in the likelihood will plateau (or peak),
- as above a certain $K$ the model is fitting noise specific to the training data 
- and therefore not fitting the testing set any better.
+but the improvement in the likelihood will plateau (or peak), 
+as above a certain $K$ the model is fitting noise specific to the training data 
+and therefore not fitting the testing set any better.
+At any value of $K$, support for the spatial model over the nonspatial model 
+means that isolation by distance is likely a feature of the data.
+\gb{something about how we choose the best model?}
+
 
 \section*{Results}
 
@@ -379,13 +385,15 @@ The admixture pie plots for the spatial and nonspatial models run on the dataset
 are shown in Figs \ref{simK1_nsp_pies}-\ref{simK3_sp_pies}.
 
 A number of results are immediately clear from these tests with simulated data.
-First, across all values of K and for all simulations, 
-the spatial model is preferred over the nonspatial model
-(this is not surprising, as the data were simulated under a spatial model).
+First, \texttt{conStruct} performs well on all simulated scenarios.
+Across all values of K and for all simulations, 
+the spatial model is correctly preferred over the nonspatial model, 
+and it infers the true admixture proportions with high accuracy, tight precision, and good coverage (Fig ).
 Second, the predictive accuracy of the nonspatial model increases with the number of clusters in the model, 
 as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
 with gradients of admixture across more and more discrete clusters.
-This behavior of the nonspatial model is highlighted in the analyses of data simulated under $K=1$ (Fig \ref{simK1_pies} and \ref{simK1_nsp_pies}):
+This behavior of the nonspatial model is highlighted in 
+the analyses of data simulated under $K=1$ (Fig \ref{simK1_pies} and \ref{simK1_nsp_pies}):
 as $K$ in the model increases, 
 the sampled area is increasingly divvied up between clusters 
 with ``centers of mass" in the $K$ geographical extremes of the simulated space.
@@ -401,7 +409,10 @@ deme membership in clusters beyond the number used to simulate the data does not
 That is, even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
-We parse \texttt{conStruct}'s performance on these simulation tests further in the Discussion.
+
+\gb{could talk about proportion of relatedness explained by each layer here.
+e.g., Another way to visualize the difference in the behavior of the spatial and nonspatial models 
+is to summarize the proportion of relatedness between samples explained by each cluster...}
 
 \begin{figure}
 	\centering
@@ -454,11 +465,23 @@ Here, we focus on two \textit{Populus} species in the Pacific Northwest:
 and \textit{Populus trichocarpa}, the balsam poplar.
 These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014}.
 Both species are sampled over a large geographic region, 
-making the system well-suited to an analysis designed to tease apart 
-proportion of genetic structure that is partitioned discretely across population (or species) clusters,
+making the system well-suited to an analysis designed to determine  
+the proportion of genetic structure that is partitioned discretely across population (or species) clusters,
 as well as continuously with geographic distance.
+We had the following questions for the system: 
+\begin{enumerate}
+\item Given the known history of hybridization between this pair of poplar species, 
+is there support for two discrete clusters, 
+rather than a single cline of ancestry across their overlap zone?
+\item If there is evidence for discrete population structuring, 
+does it fall solely along species boundaries, 
+or is there sub-structuring between different populations of the same species?
+\item Is there support for a pattern of isolation by distance within
+the inferred clusters, and, if so, 
+does it differ between different clusters?
+\end{enumerate}
 
-We address this question using a dataset generated and originally published by \cite{geraldes_etal_2014}.
+We address these questions using a dataset generated and originally published by \cite{geraldes_etal_2014}.
 The published data consist of 434 individuals sampled from 35 drainages 
 and genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
 The data were generated using RAD-seq, 
@@ -541,11 +564,11 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
 	Plots showing the cluster-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
 	the spatial \texttt{conStruct} model run with $K=2$ through 7.
-	Line colors are consistent with Fig \ref{populus_sp_pies}.
+	Line colors are consistent with cluster colors in Fig \ref{populus_sp_pies}.
 	Points are colored by the species they are a covariance between:
 	black on black points are sample covariances between populations of \textit{Populus balsamifera};
-	green on black points are sample covariances between \textit{P. balsamifera} and \textit{P. trichocarpa};
-	green on green points are sample covariances between \textit{P. trichocarpa} and \textit{P. trichocarpa}.
+	green on black points are sample covariances between \bals{} and \tri{};
+	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_sp_clst_covs}
 \end{figure}
 
@@ -556,21 +579,88 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
 	Plots showing the cluster-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
 	the nonspatial \texttt{conStruct} model run with $K=2$ through 7.
-	Line colors are consistent with Fig \ref{populus_nsp_pies}.
+	Line colors are consistent with cluster colors in Fig \ref{populus_nsp_pies}.
 	Points are colored by the species they are a covariance between:
 	black on black points are sample covariances between populations of \textit{Populus balsamifera};
-	green on black points are sample covariances between \textit{P. balsamifera} and \textit{P. trichocarpa};
-	green on green points are sample covariances between \textit{P. trichocarpa} and \textit{P. trichocarpa}.
+	green on black points are sample covariances between \bals{} and \tri{};
+	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_nsp_clst_covs}
 \end{figure}
+
+Although admixture was inferred between \textit{P. balsamifera} and \tri{}
+across all values of $K>1$, and in both the spatial and nonspatial models,
+there is nonetheless strong evidence for discrete population structuring, 
+rather than a single, continuous cline of ancestry.
+At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
+at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
+while \bals{} samples displayed no substructure up to $K=7$.
+At all values of $K$, the spatial model was preferred over the nonspatial model, 
+indicating that the data exhibit isolation by distance.
+However, most of this signal of IBD seems to be coming from the \textit{P. trichocarpa} samples;
+in the spatial model, the cluster-specific covariance curves for clusters that are predominantly \tri{}
+have sharper slopes than that of the \bals{} cluster (Fig \ref{populus_sp_clst_covs}).
+The most strongly supported model, given the current dataset, was XXXX.  
+
 
 \subsubsection*{Black bears}
 
 \section*{Discussion}
+Isolation by distance is a pattern that is ubiquitous in nature:
+it can arise as long as mating opportunities are distance-limited, 
+so we might reasonably expect to observe it in more species than not.
+This common pattern can flummox model-based clustering methods, 
+which attempt to ascribe the observed, continuous population differentiation 
+to unnecessary additional discrete clusters.
+The inference of these spurious clusters can have implications for 
+downstream analysis and interpretation of genetic data, 
+including conservation management decisions and 
+identification of the genetic basis of adaptation or disease traits.
 
-\paragraph{Performance on simulated data}
-\paragraph{Empirical results}
+In this paper, we have presented a statistical framework, \texttt{conStruct}, for simultaneously 
+modeling continuous and discrete patterns of population structure.
+By employing the sensible ``null hypothesis" 
+that relatedness ought to decay with distance, even within a population, 
+we avoid erroneously ascribing population differentiation to discrete population clusters.
+We also present a cross-validation approach for comparing between models, 
+although we stress the limits of this or any model selection procedure for genetic clustering.
+
+Our tests on simulated data show that the method performs well; 
+we are able to accurately infer both the admixture proportions used to simulate the data 
+as well as accurately pick the simulating model as the best model using our cross-validation procedure.
+Empirical applications of \texttt{conStruct} to a sample of North American poplars 
+and a sample of North American black bears yield reasonable results, 
+largely in agreement with previous studies in both systems (Geraldes, Puckett).
+
+The proposed method combines the utility of model-based clustering algorithms 
+with a biologically realistic model of isolation by distance.
+We anticipate that \texttt{conStruct} will be useful for identifying populations 
+and determining samples' ancestry in and across them, 
+especially when the populations exhibit spatial patterns of relatedness.
+
+\paragraph{Comparison to nonspatial model-based clustering}
+
 \paragraph{Choosing the ``best" number of clusters}
+Although we recognize the utility of choosing a single, ``best'' value of $K$, 
+and using only that analysis to communicate results, 
+we want to emphasize that there are both statistical and biological reasons 
+why there is no true best value of $K$.
+From a statistical perspective, the choice of best $K$ is always relative to the data in hand.
+This means both that sampling different individuals or loci 
+from the same populations may yield a different ``best" $K$, 
+but also that the support for larger values of $K$ is likely to increase with increasing amounts of data.
+In the limit of infinite data, the best value of $K$ 
+will be the number of individuals included in the dataset.
+From a biological perspective, 
+it is important to stress that patterns of relatedness between individuals and populations 
+are shaped by complex spatial and hierarchical processes.
+All individuals within a species (and indeed, all individuals across all species), 
+are related to one another in some way, 
+and summarizing that relatedness with a single value of $K$ may be reductive or misleading.
+We therefore encourage users to perform analyses across different values of $K$ and 
+observe which clusters split out at what levels 
+(effectively taking successively shallower cross-sections of the population phylogeny),
+and also to take the results of the proposed cross-validation procedure with a large grain of salt.
+
 \paragraph{Implications for management and conservation}
 \paragraph{Extensions and future directions}
 
@@ -629,7 +719,6 @@ their covariance across loci will be
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
 as in Eqn. \eqref{cross_cluster_covariance}.
-
 
 \paragraph{Admixture} 
 The model above describes the simple case 
