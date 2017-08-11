@@ -25,6 +25,8 @@
 \newcommand{\tri}{\textit{trichocarpa}}
 \newcommand{\bals}{\textit{balsamifera}}
 
+\include{macros}
+
 
 \newcommand{\gb}[1]{{\it\color{magenta}{(#1)}}}
 \newcommand{\plr}[1]{{\it\color{purple}{(#1)}}}
@@ -101,8 +103,9 @@ to the processes that have generated and maintained them.
 Often, the first step in the analysis of genetic data is to define evolutionary units of analysis
 by delineating discrete populations from which individuals or alleles are sampled \citep{wright1949genetical}.
 These units are useful for defining a scope of study in research on selection or local adaptation \citep{},
-or on identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
+or for identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
 Delineating populations can also be useful for informing conservation priorities \citep{}.
+However, if underlying population structure is continuous, this may entail a loss of power.
 
 There have been many methods proposed to characterize populations,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
@@ -110,8 +113,10 @@ $k$-means clustering analyses performed on dimensionality-reduction approaches \
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS}, among others.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
-These methods each perform best under different specific demographic histories of samples being analyzed,
-but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943}.
+Like the method we present here, these are based on a statistical model,
+but do not perform inference directly with a demographic model.
+Each of these methods perform best in particular situations,
+but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943, novembre_interpreting_2008}.
 
 A pattern of isolation by distance (IBD) arises when migration in a population is spatially limited \citep{Slatkin1985},
 and has been modeled in both spatially continuous frameworks \citep{Wright1943,Malecot1948}, 
@@ -128,6 +133,9 @@ This problem can be compounded if sampling is done unevenly or discretely across
 and has given rise to a debate in the population genetic literature about whether 
 individuals are best described as being drawn from continuous clines or discrete clusters 
 \citep[e.g.][]{SerrePaabo2004,rosenberg2005clines}.
+As a further complication, if local genetic drift is strong,
+continous models are expected to give rise to spatially patchy patterns
+\citep{SLFV,durrett_crabgrass}.
 
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, 
@@ -142,12 +150,11 @@ Or, in studies of locally adaptive loci, or of the genetics of disease,
 discrete populations may be modeled in separately,
 reducing the global power to detect the genomic basis of complex phenotypes.
 
-What is desired, then, is a model-based clustering method that incorporates a spatial element,
-and specifically one that uses a model of isolation by distance as a biologically sensible null hypothesis 
-for the process structuring observed genetic variation.
-With an explicit spatial null, discrete population structure need only be invoked when genetic differentiation 
-in the data is above and beyond that expected given some estimated background rate at which divergence 
-increases with geographic separation.
+To address this, we set out to develop
+a model-based clustering method that when possible uses isolation by distance 
+to explain observed genetic variation.
+With an explicit spatial component, discrete population structure need only be invoked when genetic differentiation 
+in the data is deviates significantly from that expected given geographic separation.
 
 In this paper, we present a statistical method for simultaneously 
 modeling continuous and discrete patterns of population structure.
@@ -159,126 +166,178 @@ and we demonstrate the utility of our approach using both simulated and empirica
 The implementation of this method, \texttt{conStruct}, is available as an R package at 
 \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
-\section*{Methods}
-\paragraph{Data}
-The statistical framework of our approach is conceptually similar to \cite{Wasser2004} and \cite{BEDASSLE}, and \cite{spacemix}.
-The genetic data modeled consist of allele frequencies $F$ at $L$ unlinked, bi-allelic single nucleotide polymorphisms (SNPs) genotyped across $N$ samples.
-The sample frequency at locus $\ell$ in sample $n$, $f_{n,\ell}$, is calculated by first arbitrarily choosing an allele segregating 
-at locus $\ell$ to count, 
-then dividing the total number of observations of that counted allele by the total number of chromosomes genotyped at that locus
-in sample $n$.
-We then calculate the sample covariance in allele frequencies, $\widehat{\Omega}_{i,j}$ between samples $i$ and $j$.
-However, for the diagonal of this sample covariance (the variances within each sample),
-we wish to describe the mean of the variance in allele frequencies between haplotypes in a sample, 
-rather than the variance of the mean frequencies across haplotypes in a sample.
-Therefore, we calculate our sample covariance as follows:
 
+%%%%%%%%%%%%%%%%%
+\section*{Methods}
+
+\paragraph{Data}
+The statistical framework of our approach is conceptually similar to that in \cite{Wasser2004}, \cite{BEDASSLE}, and \cite{spacemix},
+although we use a somewhat different summary statistic than in this previous work.
+The model works with allele frequencies at $L$ unlinked, bi-allelic single nucleotide polymorphisms (SNPs) genotyped across $N$ samples.
+Each ``sample'' may be a collection of diploids, or frequencies estimated from pooled sequencing.
+We write $N_i$ for the number of chromosomes sequenced in the $i^\text{th}$ sample.
+The \emph{sample frequency} at locus $\ell$ in sample $n$, denoted $f_{n,\ell}$, 
+is calculated by first arbitrarily choosing one of the observed alleles at locus $\ell$ to count, 
+then dividing the number of observations of that counted allele by the total number of chromosomes genotyped at that locus
+in sample $n$.
+The choice of allele does not affect subsequent calculations, and so may be arbitrary.
+\plr{How about calling what we calculate the ``allelic covariance''?  ``individual covariance''?}
+We then calculate the \emph{sample covariance} between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
+as the expected covariance of distinct individual alleles chosen from each of the two samples at a random locus,
+choosing a random allele to code as `1' (and the other as `0').
+Concretely, this is
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
-	\begin{cases}
-		\frac{1}{L-1}
-		\sum\limits_{\ell=1}^{L}{\left[ 	\left(f_{i,\ell} - \bar{f}_{i} \right)
-		 	\left(f_{j,\ell} - \bar{f}_{j} \right)\right]
-			} & \text{for } i \neq j \\
-		\bar{f}_i (1-\bar{f}_i) & \text{for } i = j \\
-	\end{cases}
+    \frac{1}{L} \sum_{\ell=1}^L \left( (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) - \delta_{i,j} f_{i,\ell}^2 / (N_i-1) \right),
 \label{sample_covariance}
 \end{equation}
+where $\delta_{i,j}=1$ if $i=j$ and is 0 otherwise.
+Although we describe this as a covariance between individually drawn alleles,
+$\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequencies
+of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
+The diagonal (where $i=j$) does not have this interpretation.
+
+In addition to these differences on the diagonal,
+this differs from the usual ``genetic covariance'' \cite{mcvean_covariance}
+in that (a) we do not subtract locus means,
+and so to make the statistic invariant under choices of reference allele, 
+(b) we randomly choose alleles to count.
+To see how to arrive at equation \eqref{sample_covariance},
+pick a random locus and
+let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
+If $i=j$ then these are chosen \emph{without} replacement.
+Suppose these are each coded as `0' or `1` (where `0' denotes a reference allele),
+but we randomly ``flip'' this coding, so that we let $X=A$ and $Y=B$ with probability 1/2,
+but otherwise we let $X=1-A$ and $Y=1-B$.
+We then let $\widehat{\Omega}_{i,j} = \cov[X,Y]$ --
+sampling without replacement makes the statistic insensitive to sample size,
+and random allele flipping makes it independent of the choice of reference allele.
+By conditioning on the flip,
+and using the fact that $\E[X] = \E[Y] = 1/2$,
+equation \eqref{sample_covariance} comes from the calculation that
+$\cov[X,Y] = \E[XY] - 1/4 = (1/2)\E[AB + (1-A)(1-B)] - 1/4 = \E[(A-1/2)(B-1/2)]$.
+The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
+then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
+which is $f_i^2 n/(n-1)$.
+As noted in \cite{desi_thesis},
+this covariance has a close relationship to the pairwise genetic distance:
+if $D_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
+then $\Sigma_{i,j} = (1 - 2 D_{i,j})/4$.
+Therefore, unlike genetic covariance,
+this covariance is affected in shape by singleton sites,
+so it may be advisable to filter these prior to analysis
+if these are likely to contain a large percentage of errors.
+
+
+
 
 \paragraph{Continuous and discrete differentiation}
-We wish to describe the observed patterns of genetic variation as a combination of 
-discrete population clusters,
-within which genetic variation is continuously distributed, 
-and between which sampled individuals or populations can be admixed.
-Each of these discrete clusters is modeled as a spatial process in which
-allele frequencies covary between geographically close locations,
-but this covariance is allowed to decay with geographic distance.
+Clustering approaches to describing genetic variation
+are useful because population history can often be meaningfully described on a coarse scale
+by interactions between discrete ``populations''
+whose relationships are delimited by patterns of glaciation,
+large-scale migration,
+mountain ranges, and the like.
+Here we add a spatial component within each such discrete historical component,
+which we refer to as a set of ``layers'' which overlay the modern map.
+We imagine each layer as a geographically distributed population,
+and that each sample is composed of a mixture of contributions from each of these layers.
+These layers thus take the place of ``clusters'' or ``populations'' in clustering methods,
+but we do not adopt these terms as they connote a lack of geographical separation within each.
+
+Within each of these layers,
+allele frequencies have positive covariance at geographically close locations,
+but this covariance is allowed to decay towards zero as geographic distance increases.
 This pattern of spatial decay reflects how migration between neighboring demes  
 homogenizes allele frequency changes that arise locally due to drift, 
-but is less effective at homogenizing between geographic distant demes,
+but this mixing less effectively homogenizes geographic distant demes,
 resulting in a continuous pattern of isolation by distance within each cluster.
-Multiple population cluster processes can co-occur in space, 
-leading to discrete jumps in allele frequencies across many loci over small geographic distances,
-and the genotyped samples can be admixed between different clusters.
+There is a fixed amount of covariance between layers, irrespective of spatial location.
+Within each layer allele frequencies are expected to change gradually with distance,
+but observed frequencies can change abruptly at many loci 
+if the proportions by which individuals' ancestry derive from each layer 
+(the ``admixture'' coefficients) 
+do so as well.
 
-To model the continuous decay of allele frequency covariance with geographic distance within a cluster, 
-we use a flexible powered-exponential function;
-the within-cluster covariance between samples $i$ and $j$ is given by:
-
+To allow flexibility in the form of the decay of allele frequency covariance with geographic distance within each cluster, 
+we define the covariance within cluster $k$ between samples $i$ and $j$ to be:
 \begin{equation}
-G^{(k)}_{i,j} = \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \mu^{(k)}
+G^{(k)}_{i,j} 
+    = 
+    \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \mu^{(k)}
 \label{within_cluster_covariance}
 \end{equation}
-
-where $G_{i,j}$ is the covariance function between samples $i$ and $j$ within a cluster,
-and the superscript $(k)$ denotes that this function is specific to the $k$th cluster.
+where the superscript $(k)$ denotes parameters specific to the $k$th cluster.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
 the $\alpha^{(k)}$ parameters control the shape of the decay of covariance with distance in the cluster,
-and $\mu$ is a parameter that describes the background allele frequency covariance within the cluster. 
-If two samples draw 100\% of their ancestry from cluster $k$ then, 
-if they are geographically very close ($D_{i,j}=0$) 
+and $\mu^{(k)}$ is a parameter that describes the background allele frequency covariance within the cluster. 
+If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
+if they are furthermore geographically very close ($D_{i,j}=0$) 
 they will have allele frequency covariance $\alpha^{(k)}_0 +  \mu^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will decay to the background level $\mu^{(k)}$ within the cluster.
-The shared drift parameter $\mu^{(k)}$ can be interpreted as the branch length 
+their covariance will be equal to to the background level $\mu^{(k)}$ within the cluster.
+The ``shared drift'' parameter $\mu^{(k)}$ can be interpreted as the branch length 
 connecting the $k$th population to the population ancestral to all modeled
 clusters \gc{(see XXX)}. \gb{is ``XXX" TreeMix? or one of the $f$stat papers?  or is it a figure?} 
+\plr{an F-stat paper; also reference Ben Peters review}
 
-Genotyped samples can draw their ancestry from multiple different clusters,
-representing these samples being admixed between the clusters.
-The admixture proportion of the $i$th sample in the $k$th cluster, $w^{(k)}_i$,
-gives the probability that an allele in sample $i$ was derived from
-cluster $k$ ($\sum_K w^{(k)}_i =1$).
+We then allow samples to draw their ancestry from more than one cluster.
+The ``admixture'' proportion of the $i$th sample in the $k$th cluster, denoted $w^{(k)}_i$,
+gives the proportion of alleles from sample $i$ that derive from
+cluster $k$ (and so $\sum_K w^{(k)}_i =1$).
 
 We can then describe the covariance between samples $i$ and $j$ across all clusters, $\Omega_{i,j}$,
-by summing their within-cluster spatial covariances ($G_{i,j}^{(k)}$ in cluster $k$) across all $K$ clusters
-and weighting by the product of those samples' admixture proportions in each cluster
+by summing their within-cluster spatial covariances ($G_{i,j}^{(k)}$ in cluster $k$) across all $K$ clusters,
+weighted by the relevant admixture proportions.
 \begin{equation}
 \Omega_{i,j} = \gamma + \sum\limits_K w^{(k)}_i w^{(k)}_j
 G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
 \label{cross_cluster_covariance}
 \end{equation}
+In this equation, $w^{(k)}_i w^{(k)}_j$ is the proportion of alleles that \emph{both}
+sample $i$ and sample $j$ have inherited from cluster $k$.
 
 In addition to the admixture-weighted sum of the within-cluster spatial covariances,
 this function contains two terms, $\gamma$ and $\delta_{i,j}\eta_i$.
 The first, $\gamma$, describes the global covariance between all samples, 
 and arises because all samples share an ancestral mean allele frequency at each locus,
 which generates a base-line covariance.
-In the second term, $\delta_{i,j}$ is an indicator variable that takes a value of 1 when $i$ equals $j$ and 0 otherwise. 
-and $\eta_i$ gives the variance specific to sample $i$, 
+In the final term, $\delta_{i,j}$ is an indicator variable that takes a value of 1 when $i$ equals $j$ and 0 otherwise,
+and $\eta_i$ adds variance specific to sample $i$.
 This term on the diagonal of the parametric covariance matrix captures processes shaping variance within the sampled deme, 
 such as inbreeding and the sampling process.
 
 \paragraph{Likelihood and inference}
-We assume that the allele frequencies at each locus ($\widehat{F}_{\ell}$) 
-are independent among loci and multivariate normally distributed across populations, 
-so that their sample covariance $\widehat{\Omega}$ 
-is  Wishart distributed with degrees of freedom equal to $L$, 
+If allele frequencies at each locus
+were independent between loci and multivariate normally distributed across populations, 
+then their sample covariance $\widehat{\Omega}$ 
+would be Wishart distributed with degrees of freedom equal to $L$, 
 the number of loci genotyped.
-Linkage disequilibrium (LD) between loci will decrease the effective number of degrees of freedom, 
-which we discuss further below.
-The likelihood of the sample standardized allele frequency covariance is therefore given by
+We use this as a convenient approximation to the true distribution described above,
+and so define the likelihood of the sample standardized allele frequency covariance to be
 \begin{equation}
-P(\widehat{\Omega} \; | \; \Omega) = \mathcal{W} \left( L\widehat{\Omega} \; | \; \Omega,L\right)
+P(\widehat{\Omega} \; | \; \Omega) = \mathcal{W} \left( L\widehat{\Omega} \; | \; \Omega,L\right) .
 \end{equation}
+Linkage disequilibrium (LD) between loci will decrease the effective number of degrees of freedom, 
+a complication we discuss further below.
 
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
-$w,\alpha,\mu,\eta,\gamma$ and on observed quantity $D$ 
+$w,\alpha,\mu,\eta,\gamma$ and on the (observed) geographic distances $D$ 
 with the notation $\Omega(w,\alpha,\mu,\eta,\gamma,D)$,
-we denote the posterior probability of the parameters as:
-
+we denote the posterior probability density of the parameters as:
 \begin{equation}
 P\left( w,\alpha,\mu,\eta,\gamma \;	| \; \widehat{\Omega}, L \right) \propto
 P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\mu,\eta,\gamma,D) \right)
-P(w)P(\alpha)P(\mu)P(\eta)P(\gamma)
+P(w)P(\alpha)P(\mu)P(\eta)P(\gamma) ,
 \end{equation}
-
-The priors, $P(w),P(\alpha),P(\mu),P(\eta),P(\gamma)$, are detailed in Table \ref{tab:param_prior_tab},
-and the constant of proportionality is the normalization constant.
-We use a Hamiltonian Monte Carlo sampling algorithm implemented in the statistical language STAN
-\citep{stan, NUTS, stan_lib, rstan} to estimate the posterior distribution on the parameters.
-We also present an R package \citep{R} called \texttt{conStruct} that functions as a wrapper 
+where $P(w)$, $P(\alpha)$, $P(\mu)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
+All parameters are given (half-)Gaussian priors except for $\alpha_2$, which is uniform on $(0,2)$ and $w$, which is Dirichlet
+(see Table \ref{tab:param_prior_tab} for specifics).
+Parameters are independent between clusters.
+We use Hamiltonian Monte Carlo as implemented in STAN \citep{stan, NUTS, stan_lib, rstan} 
+to estimate the posterior distribution on the parameters.
+We also provide an R package \citep{R} called \texttt{conStruct} that functions as a wrapper 
 around this inference machinery.
 
 
