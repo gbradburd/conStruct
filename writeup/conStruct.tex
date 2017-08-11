@@ -517,13 +517,14 @@ Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods)
 are distributed throughout the Northern Hemisphere, 
 and include species of ecological and economic importance.
 Species in the genus regularly co-occur and, 
-where they do, they frequently hybridize (ref).
+where they do, they frequently hybridize \citep{eckenwalder_1984, cronk_2005}.
 
 Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
 \textit{Populus trichocarpa}, the black cottonwood,
 and \textit{Populus trichocarpa}, the balsam poplar.
-These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014}.
+These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014,suarez-gonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
+and show spatial patterns of genetic and phenotypic variation \citep{Slavov_etal_2012, McKown_etal_2014},
 making the system well-suited to an analysis designed to determine  
 the proportion of genetic structure that is partitioned discretely across population (or species) clusters,
 as well as continuously with geographic distance.
@@ -549,7 +550,7 @@ and showed a strong pattern of bias in allelic dropout
 To ameliorate some of the problems that arise when there is a strong bias in which data are missing, 
 we dropped loci for which any data were missing, 
 resulting in just over 20,200 loci retained for analysis.  
-We then analyzed these data using both the spatial and nonspatial \texttt{conStruct} models, 
+We then analyzed these data, grouped by drainage, using both the spatial and nonspatial \texttt{conStruct} models, 
 running on $K = 1$ through 7,
 and compared these models using the cross-validation procedure described above. 
 The results of these analyses are shown in 
@@ -653,12 +654,27 @@ rather than a single, continuous cline of ancestry.
 At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
 while \bals{} samples displayed no substructure up to $K=7$.
+This lack of substructure within the sampled \bals{} populations is in agreement with results from 
+\citet{Keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
+and probably represents a recent, postglacial expansion.
+
+A consistent split between clusters within \tri{} fell along the ``no-cottonwood belt," 
+a region along the central coast of British Columbia in which black cottonwood is absent. 
+The no-cottonwood belt is hypothesized to divide the species' distribution 
+into northern and southern groups, which, in a provenance test, 
+were experimentally shown to display different phenotypes 
+\citep[pathogen resitsance][]{Xie_etal_2009,Xie_etal_2012}.  
+At higher values of $K$, drainages at the southern tip of the \tri{} sampling 
+begin to split out into their own clusters.  
+This may potentially be the result of introgression from Southern \textit{Populus} species, 
+such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,Geraldes_etal_2014}
+
 At all values of $K$, the spatial model was preferred over the nonspatial model, 
 indicating that the data exhibit isolation by distance.
 However, most of this signal of IBD seems to be coming from the \textit{P. trichocarpa} samples;
 in the spatial model, the cluster-specific covariance curves for clusters that are predominantly \tri{}
 have sharper slopes than that of the \bals{} cluster (Fig \ref{populus_sp_clst_covs}).
-The most strongly supported model, given the current dataset, was XXXX.  
+The most strongly supported model, given the current dataset, was XXXX.
 
 
 \subsubsection*{Black bears}
@@ -721,7 +737,70 @@ observe which clusters split out at what levels
 and also to take the results of the proposed cross-validation procedure with a large grain of salt.
 
 \paragraph{Implications for management and conservation}
+If isolation by distance is common, 
+then a likely result of applying \texttt{conStruct} to existing data is that 
+populations previously identified using nonspatial clustering methods 
+will be collapsed into each other.  
+This ``lumping" might better reflect biological reality, 
+but may also have implications for management decisions and conservation policy, 
+both of which are often predicated on the identification of discrete ``management units" (MUs) 
+identified using genetic data.
+
+It is therefore important to emphasize that individuals sampled from the same \texttt{conStruct} cluster 
+may be quite genetically diverged from one another, 
+and that a \texttt{conStruct} cluster may still contain multiple distinct MUs.  
+Alternatively, the collapse of multiple, previously identified MUs into a single \texttt{conStruct} cluster 
+may reflect a biological reality that these populations are currently 
+(or were recently) exchanging migrants, 
+and thus might emphasize the importance of maintaining habitat corridors (ref) 
+between demes, or of implementing an integrated conservation plan across multiple demes within a cluster.
+
+\paragraph{Caveats and considerations}
+There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
+First, we have modeled allele frequency covariance within a cluster as a spatial process.
+Although there is flexibility built into the model about the shape of that covariance, 
+inference may be misleading if the sampling geography departs radically from the way 
+the sampled organisms experience (or have experienced) their landscape.
+For example, if we were to run a \texttt{conStruct} analysis using geographic distances between 
+sampled individuals of greenish warblers (Irwin ref) or \textit{Ensatina} salamanders (Wake ref)
+--- two canonical examples of rings species --- 
+we might get misleading results.
+This is because distance between locations on either side of the species' distributions
+(across the Tibetan plateau and the Central Valley, respectively) 
+is not representative of the path traversed in the coalescent of a pair of alleles sampled at those locations.
+
+A second caveat is that, in some instances, 
+membership in the same cluster may not mean that samples are particularly related.
+If covariance within a cluster decays sharply with distance, 
+and the cluster-specific relatedness parameter $\mu^{(k)}$ is low, 
+individuals at a far spatial remove may be in the same cluster but have very low pairwise relatedness.
+It is possible that this is happening in Fig \ref{populus_sp_pies}\subref{populus_sp_pies:K3}. 
+At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the green cluster, 
+whose other neighbors are to the north, with an intervening group of populations in the red cluster, 
+and at $K=4$, those southernmost samples split out and become their own yellow cluster.
+Again, we encourage users to run analyses across multiple values of $K$, 
+and to examine the spatial covariance functions within clusters when interpreting results.
+\gb{missing data?}
+
 \paragraph{Extensions and future directions}
+There are several ways in which the model described in this paper might be extended or improved.  
+For example, we currently assume that all layers within a model are equally unrelated 
+(a star population phylogeny, although the branches can have different lengths thanks to the $\mu^{(k)}$ parameter), 
+similar to the F-model in (REF the right STRUCTURE paper).
+However, we could extend the existing model by implementing 
+a relatedness structure between the clusters by, for example, 
+estimating a population phylogeny between them \citep[e.g.][]{treemix}.
+
+A second exciting direction is to model relatedness within a cluster as a spatiotemporal process, 
+in which covariance decays both with distance in space and in time.  
+As the number of genotyped historical or ancient samples increases, 
+it is becoming possible to ask whether there is genetic continuity at a point in space across time, 
+or whether populations are being replaced (yamnaya paper, slatkin and racimo, nielsen 2016, schraiber 2017).
+However, we expect allele frequencies to change through time in a population, even without replacement, 
+simply due to drift.
+Therefore, a natural way to test for population replacement is to estimate the rates 
+at which relatedness within a cluster decays with time in the same way we do in the current model with space, 
+in which case discrete population structure in space is comparable to population replacement in time.
 
 \section*{Acknowledgements}
 
