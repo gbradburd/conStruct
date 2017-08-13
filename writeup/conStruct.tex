@@ -102,26 +102,27 @@ The fundamental goal of evolutionary genetics is to link patterns of genetic var
 to the processes that have generated and maintained them.
 Often, the first step in the analysis of genetic data is to define evolutionary units of analysis
 by delineating discrete populations from which individuals or alleles are sampled \citep{wright1949genetical}.
-These units are useful for defining a scope of study in research on selection or local adaptation \citep{},
+These units are useful for defining a scope of study in research on selection or local adaptation (ref),
 or for identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
-Delineating populations can also be useful for informing conservation priorities \citep{}.
+Delineating populations can also be useful for informing conservation priorities (ref).
 However, if underlying population structure is continuous, this may entail a loss of power.
 
 There have been many methods proposed to characterize populations,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
-$k$-means clustering analyses performed on dimensionality-reduction approaches \citep{}, 
+$k$-means clustering analyses performed on dimensionality-reduction approaches (ref), 
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS}, among others.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
 Like the method we present here, these are based on a statistical model,
 but do not perform inference directly with a demographic model.
 Each of these methods perform best in particular situations,
-but all can give misleading results when applied to data that show a continuous pattern of isolation by distance \citep{Wright 1938, 1940, Wright1943, novembre_interpreting_2008}.
+but all can give misleading results when applied to data that show a continuous pattern of isolation by distance 
+\citep{Wright1943, novembre_interpreting_2008, Frantz2009}.
 
 A pattern of isolation by distance (IBD) arises when migration in a population is spatially limited \citep{Slatkin1985},
-and has been modeled in both spatially continuous frameworks \citep{Wright1943,Malecot1948}, 
+and has been modeled in both spatially continuous frameworks \citep{Wright1943,malecot1969mathematics}, 
 in which an individual's parents are found within some radius of that individual's location,
-and discrete, ``stepping-stone'' frameworks \citep{Kimura1953},
+and discrete, ``stepping-stone'' frameworks \citep{kimura1964stepping},
 in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
 it is unsurprising that IBD is found everywhere in nature \citep{meirmans2012,Sexton_etal_2014}.
@@ -135,7 +136,7 @@ individuals are best described as being drawn from continuous clines or discrete
 \citep[e.g.][]{SerrePaabo2004,rosenberg2005clines}.
 As a further complication, if local genetic drift is strong,
 continous models are expected to give rise to spatially patchy patterns
-\citep{SLFV,durrett_crabgrass}.
+\citep{SLFV,bramson1989crabgrass}.
 
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, 
@@ -198,7 +199,7 @@ of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
 The diagonal (where $i=j$) does not have this interpretation.
 
 In addition to these differences on the diagonal,
-this differs from the usual ``genetic covariance'' \cite{mcvean_covariance}
+this differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
 and so to make the statistic invariant under choices of reference allele, 
 (b) we randomly choose alleles to count.
@@ -219,7 +220,7 @@ $\cov[X,Y] = \E[XY] - 1/4 = (1/2)\E[AB + (1-A)(1-B)] - 1/4 = \E[(A-1/2)(B-1/2)]$
 The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
 then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
 which is $f_i^2 n/(n-1)$.
-As noted in \cite{desi_thesis},
+As noted in \cite{EEMS},
 this covariance has a close relationship to the pairwise genetic distance:
 if $D_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
 then $\Sigma_{i,j} = (1 - 2 D_{i,j})/4$.
@@ -517,14 +518,14 @@ Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods)
 are distributed throughout the Northern Hemisphere, 
 and include species of ecological and economic importance.
 Species in the genus regularly co-occur and, 
-where they do, they frequently hybridize \citep{eckenwalder_1984, cronk_2005}.
+where they do, they frequently hybridize \citep{eckenwalder1984, Cronk2005}.
 
 Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
 \textit{Populus trichocarpa}, the black cottonwood,
 and \textit{Populus trichocarpa}, the balsam poplar.
-These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014,suarez-gonzalez_etal_2016}.
+These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
-and show spatial patterns of genetic and phenotypic variation \citep{Slavov_etal_2012, McKown_etal_2014},
+and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
 making the system well-suited to an analysis designed to determine  
 the proportion of genetic structure that is partitioned discretely across population (or species) clusters,
 as well as continuously with geographic distance.
@@ -655,7 +656,7 @@ At all values of $K>1$, discrete population structure was mostly partitioned alo
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
 while \bals{} samples displayed no substructure up to $K=7$.
 This lack of substructure within the sampled \bals{} populations is in agreement with results from 
-\citet{Keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
+\citet{keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
 and probably represents a recent, postglacial expansion.
 
 A consistent split between clusters within \tri{} fell along the ``no-cottonwood belt," 
@@ -663,11 +664,11 @@ a region along the central coast of British Columbia in which black cottonwood i
 The no-cottonwood belt is hypothesized to divide the species' distribution 
 into northern and southern groups, which, in a provenance test, 
 were experimentally shown to display different phenotypes 
-\citep[pathogen resitsance][]{Xie_etal_2009,Xie_etal_2012}.  
+\citep[pathogen resitsance][]{xie2009,xie2012}.  
 At higher values of $K$, drainages at the southern tip of the \tri{} sampling 
 begin to split out into their own clusters.  
 This may potentially be the result of introgression from Southern \textit{Populus} species, 
-such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,Geraldes_etal_2014}
+such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
 
 At all values of $K$, the spatial model was preferred over the nonspatial model, 
 indicating that the data exhibit isolation by distance.

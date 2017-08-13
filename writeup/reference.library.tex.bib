@@ -153,20 +153,6 @@ OPTeprint = {http://mbe.oxfordjournals.org/content/27/6/1257.full.pdf+html},
 journal = {Molecular Biology and Evolution} 
 }
 
-@article {Petkova_2014_EEMS,
-	author = {Petkova, Desislava and Novembre, John and Stephens, Matthew},
-	title = {Visualizing spatial population structure with estimated effective migration surfaces},
-	year = {2014},
-	OPTdoi = {10.1101/011809},
-	publisher = {Cold Spring Harbor Labs Journals},
-	abstract = {Desislava Petkova, John Novembre and Matthew Stephens1 (mstephens{at}uchicago.edu)
-				 University of Chicago
-			↵*
-					 Corresponding author; email: mstephens{at}uchicago.edu
-				AbstractGenetic data often exhibit patterns that are broadly consistent with "isolation by distance" - a phenomenon where genetic similarity tends to decay with geographic distance. In a heterogeneous habitat, decay may occur more quickly in some regions than others: for example, barriers to gene flow can accelerate the genetic differentiation between groups located close in space. We use the concept of "effective migration" to model the relationship between genetics and geography: in this paradigm, effective migration is low in regions where genetic similarity decays quickly. We present a method to quantify and visualize variation in effective migration across the habitat, which can be used to identify potential barriers to gene flow, from geographically indexed large-scale genetic data. Our approach uses a population genetic model to relate underlying migration rates to expected pairwise genetic dissimilarities, and estimates migration rates by matching these expectations to the observed dissimilarities. We illustrate the potential and limitations of our method using simulations and data from elephant, human, and Arabidopsis thaliana populations.  The resulting visualizations highlight important features of the spatial population structure that are difficult to discern using existing methods for summarizing genetic variation such as principal components analysis.Received November 25, 2014.Accepted November 26, 2014.{\textcopyright} 2014, Published by Cold Spring Harbor Laboratory PressThis pre-print is available under a Creative Commons License (Attribution-NonCommercial-NoDerivs 4.0 International), CC BY-NC-ND 4.0, as described at http://creativecommons.org/licenses/by-nc-nd/4.0/},
-	journal = {bioRxiv}
-}
-
 @article {Yang_2014_SPA,
 	Title = {Spatial localization of recent ancestors for admixed individuals},
 	Author = {Yang, Wen-Yun and Platt, Alexander and Chiang, Charleston Wen-Kai and Eskin, Eleazar and Novembre, John and Pasaniuc, Bogdan},
@@ -201,7 +187,6 @@ volume = "87",
 number = "0",
 pages = "105 - 119",
 year = "2013",
-note = "Coalescent Theory ",
 OPTissn = "0040-5809",
 OPTdoi = "http://dx.doi.org/10.1016/j.tpb.2013.03.001",
 OPTurl = "http://www.sciencedirect.com/science/article/pii/S0040580913000233",
@@ -237,7 +222,6 @@ volume = "86",
 number = "6",
 pages = "850 - 859",
 year = "2010",
-note = "",
 OPTissn = "0002-9297",
 OPTdoi = "http://dx.doi.org/10.1016/j.ajhg.2010.04.015",
 OPTurl = "http://www.sciencedirect.com/science/article/pii/S0002929710002466",
@@ -1288,9 +1272,6 @@ Southern Europeans and Middle Eastern populations are known to have inherited a 
 	pages = {409--413}
 }
 
-
-
-
 @article{mcvean_genealogical_2009,
 	title = {A Genealogical Interpretation of Principal Components Analysis},
 	volume = {5},
@@ -1997,7 +1978,6 @@ number = {3-4},
 pages = {179-197},
 year = {1992},
 OPTdoi = {10.1080/02724999208250611},
-    note ={PMID: 1598418},
 OPTURL = { http://www.tandfonline.com/doi/abs/10.1080/02724999208250611},
 OPTeprint = { http://www.tandfonline.com/doi/pdf/10.1080/02724999208250611}
 }
@@ -3076,4 +3056,269 @@ OPTdoi = {10.1111/evo.12497},
 pages = {3260--3280},
 keywords = {Adaptation, FST outliers, isolation by distance, Populus balsamifera, red/far-red, SNPs},
 year = {2014},
+}
+
+@Article{Zhou2012,
+author="Zhou, Lecong
+and Holliday, Jason A.",
+title="Targeted enrichment of the black cottonwood (Populus trichocarpa) gene space using sequence capture",
+journal="BMC Genomics",
+year="2012",
+month="Dec",
+day="14",
+volume="13",
+number="1",
+pages="703",
+abstract="High-throughput re-sequencing is rapidly becoming the method of choice for studies of neutral and adaptive processes in natural populations across taxa. As re-sequencing the genome of large numbers of samples is still cost-prohibitive in many cases, methods for genome complexity reduction have been developed in attempts to capture most ecologically-relevant genetic variation. One of these approaches is sequence capture, in which oligonucleotide baits specific to genomic regions of interest are synthesized and used to retrieve and sequence those regions.",
+OPTissn="1471-2164",
+OPTdoi="10.1186/1471-2164-13-703",
+OPTurl="https://doi.org/10.1186/1471-2164-13-703"
+}
+
+@article{hubisz2009,
+  title={Inferring weak population structure with the assistance of sample group information.},
+  author={Melissa J Hubisz and Daniel Falush and Matthew Stephens and Jonathan K Pritchard},
+  journal={Molecular ecology resources},
+  year={2009},
+  volume={9 5},
+  pages={1322-32}
+}
+
+@article {TESS,
+	author = {Caye, Kevin and Jay, Flora and Michel, Olivier and Francois, Olivier},
+	title = {Fast Inference of Individual Admixture Coefficients Using Geographic Data},
+	year = {2016},
+	OPTdoi = {10.1101/080291},
+	publisher = {Cold Spring Harbor Labs Journals},
+	abstract = {Accurately evaluating the distribution of genetic ancestry across geographic space is one of the main questions addressed by evolutionary biologists. This question has been commonly addressed through the application of Bayesian estimation programs allowing their users to estimate individual admixture proportions and allele frequencies among putative ancestral populations. Following the explosion of high-throughput sequencing technologies, several algorithms have been proposed to cope with computational burden generated by the massive data in those studies. In this context, incorporating geographic proximity in ancestry estimation algorithms is an open statistical and computational challenge. In this study, we introduce new algorithms that use geographic information to estimate ancestry proportions and ancestral genotype frequencies from population genetic data. Our algorithms combine matrix factorization methods and spatial statistics to provide estimates of ancestry matrices based on least-squares approximation. We demonstrate the benefit of using spatial algorithms through extensive computer simulations, and we provide an example of application of our new algorithms to a set of spatially referenced samples for the plant species Arabidopsis thaliana. Without loss of statistical accuracy, the new algorithms exhibit runtimes that are much shorter than those observed for previously developed spatial methods. Our algorithms are implemented in the R package, tess3r, which is available from \&lt;a href="https://github.com/BioShock38/TESS3_encho_sen"\&gt;https://github.com/BioShock38/TESS3_encho_sen\&lt;/a\&gt;.},
+	OPTURL = {http://www.biorxiv.org/content/early/2016/10/12/080291},
+	eprint = {http://www.biorxiv.org/content/early/2016/10/12/080291.full.pdf},
+	journal = {bioRxiv}
+}
+
+@article{Slatkin1985,
+author = {Slatkin, Montgomery},
+title = {Gene Flow in Natural Populations},
+journal = {Annual Review of Ecology and Systematics},
+volume = {16},
+number = {1},
+pages = {393-430},
+year = {1985},
+OPTdoi = {10.1146/annurev.es.16.110185.002141},
+OPTURL = {https://doi.org/10.1146/annurev.es.16.110185.002141},
+OPTeprint = { https://doi.org/10.1146/annurev.es.16.110185.002141}
+}
+
+@book{malecot1969mathematics,
+  added-at = {2012-11-22T04:47:44.000+0100},
+  author = {Mal{\'e}cot, G.},
+  biburl = {https://www.bibsonomy.org/bibtex/261005750296f02cec3741ae2572a99e4/peter.ralph},
+  interhash = {9adfaf4ffd60bc6371205e981445d2a6},
+  intrahash = {61005750296f02cec3741ae2572a99e4},
+  OPTisbn = {9780716706786},
+  keywords = {effective_dispersal original spatial_structure},
+  lccn = {69012603},
+  note = {Translated from the French edition, 1948},
+  publisher = {Freeman},
+  timestamp = {2016-11-02T18:48:08.000+0100},
+  title = {The Mathematics of Heredity},
+  year = 1969
+}
+
+@article{kimura1964stepping,
+  author = {Kimura, M and Weiss, G H},
+  biburl = {https://www.bibsonomy.org/bibtex/2e17860fdfac7cb2019792dfe8151af58/peter.ralph},
+  description = {The Stepping Stone Model of Population Structure and the Decrease of Genetic Correlation with Distance. - PubMed - NCBI},
+  interhash = {dfb11be514e2f06b6b686e5b390b8c9a},
+  intrahash = {e17860fdfac7cb2019792dfe8151af58},
+  journal = {Genetics},
+  keywords = {isolation_by_distance spatial_coalescent stepping_stone_models},
+  month = apr,
+  number = 4,
+  pages = {561-576},
+  pmid = {17248204},
+  timestamp = {2015-07-31T01:37:39.000+0200},
+  title = {The Stepping Stone Model of Population Structure and the Decrease of Genetic Correlation with Distance},
+  OPTurl = {http://www.ncbi.nlm.nih.gov/pubmed/17248204},
+  volume = 49,
+  year = 1964
+}
+
+@article{bramson1989crabgrass,
+  abstract = {In this article we consider the asymptotic behavior of the contact process when the range $M$ goes to $\infty$. We show that if $\lambda$ is the total birth rate from an isolated particle, then the critical value $\lambda_c(M) \rightarrow 1$ as $M \rightarrow \infty$. The rate of convergence depends upon the dimension: $\lambda_c(M) - 1 \approx M^{-2/3}$ in $d = 1, \approx (\log M)/M^2$ in $d = 2$, and $\approx M^{-d}$ in $d \geq 3$.},
+  added-at = {2009-12-17T06:39:59.000+0100},
+  author = {Bramson, M. and Durrett, R. and Swindle, G.},
+  biburl = {https://www.bibsonomy.org/bibtex/2b32e722ae8e87ffc087e4bb79c4d6265/peter.ralph},
+  coden = {APBYAE},
+  description = {MR: Publications results for "MR Number=(985373)"},
+  fjournal = {The Annals of Probability},
+  interhash = {ec2f1b884224c09656149268c80f0ade},
+  intrahash = {b32e722ae8e87ffc087e4bb79c4d6265},
+  OPTissn = {0091-1798},
+  journal = {Ann. Probab.},
+  keywords = {branching_random_walk contact_process crabgrass travelling_wave},
+  mrclass = {60K35 (60J80)},
+  mrnumber = {MR985373 (90b:60134)},
+  mrreviewer = {Neal Madras},
+  number = 2,
+  pages = {444--481},
+  timestamp = {2013-09-12T22:23:01.000+0200},
+  title = {Statistical mechanics of crabgrass},
+  OPTurl = {http://projecteuclid.org/euclid.aop/1176991410},
+  volume = 17,
+  year = 1989
+}
+
+@article {verity_nichols2016,
+	author = {Verity, Robert and Nichols, Richard},
+	title = {Estimating K in Genetic Mixture Models},
+	year = {2015},
+	OPTdoi = {10.1101/022988},
+	publisher = {Cold Spring Harbor Labs Journals},
+	abstract = {A key quantity in the analysis of structured populations is the parameter K, which describes the number of subpopulations that make up the total population. Inference of K ideally proceeds via the model evidence, which is equivalent to the likelihood of the model. However, the evidence in favour of a particular value of K cannot usually be computed exactly, and instead programs such as STRUCTURE make use of simple heuristic estimators to approximate this quantity. We show - using simulated data sets small enough that the true evidence can be computed exactly - that these simple heuristics often fail to estimate the true evidence, and that this can lead to incorrect conclusions about K. Our proposed solution is to use thermodynamic integration (TI) to estimate the model evidence. After outlining the TI methodology we demonstrate the effectiveness of this approach using a range of simulated data sets. We find that TI can be used to obtain estimates of the model evidence that are orders of magnitude more accurate and precise than those based on simple heuristics. Furthermore, estimates of K based on these values are found to be more reliable than those based on a suite of model comparison statistics. Our solution is implemented for models both with and without admixture in the software TrueK.},
+	OPTURL = {http://www.biorxiv.org/content/early/2015/07/22/022988},
+	OPTeprint = {http://www.biorxiv.org/content/early/2015/07/22/022988.full.pdf},
+	journal = {bioRxiv}
+}
+
+@article {Evanno2005,
+author = {Evanno, G. and Regnaut, S. and Goudet, J.},
+title = {Detecting the number of clusters of individuals using the software structure: a simulation study},
+journal = {Molecular Ecology},
+volume = {14},
+number = {8},
+publisher = {Blackwell Science Ltd},
+OPTissn = {1365-294X},
+OPTurl = {http://dx.doi.org/10.1111/j.1365-294X.2005.02553.x},
+OPTdoi = {10.1111/j.1365-294X.2005.02553.x},
+pages = {2611--2620},
+keywords = {AFLP, hierarchical structure, microsatellite, simulations, structure software},
+year = {2005},
+}
+
+@article{EEMS,
+author={Petkova,Desislava and Novembre,John and Stephens,Matthew},
+year={2016},
+month={01},
+title={Visualizing spatial population structure with estimated effective migration surfaces},
+journal={Nature genetics},
+volume={48},
+number={1},
+pages={94-100C},
+keywords={Biology--Genetics; Methods; Migration; Population},
+isbn={10614036},
+language={English},
+OPTurl={https://search-proquest-com.proxy2.cl.msu.edu/docview/1790499603?accountid=12598},
+}
+
+@article {Cronk2005,
+author = {Cronk, Q. C. B.},
+title = {Plant eco-devo: the potential of poplar as a model organism},
+journal = {New Phytologist},
+volume = {166},
+number = {1},
+publisher = {Blackwell Science Ltd},
+issn = {1469-8137},
+OPTurl = {http://dx.doi.org/10.1111/j.1469-8137.2005.01369.x},
+OPTdoi = {10.1111/j.1469-8137.2005.01369.x},
+pages = {39--48},
+keywords = {adaptive recursion, ecological developmental genetics, ecomolecular synthesis, plant eco-devo, poplar, Populus trichocarpa, single nucleotide polymorphisms},
+year = {2005},
+}
+
+@article{eckenwalder1984,
+author = {James E. Eckenwalder},
+title = {Natural intersectional hybridization between North American species of Populus (Salicaceae) in sections Aigeiros and Tacamahaca. II. Taxonomy},
+journal = {Canadian Journal of Botany},
+volume = {62},
+number = {2},
+pages = {325-335},
+year = {1984},
+OPTdoi = {10.1139/b84-051},
+OPTURL = { https://doi.org/10.1139/b84-051},
+eprint = { https://doi.org/10.1139/b84-051}
+}
+
+@article {suarezgonzalez_etal_2016,
+author = {Suarez-Gonzalez, Adriana and Hefer, Charles A. and Christe, Camille and Corea, Oliver and Lexer, Christian and Cronk, Quentin C. B. and Douglas, Carl J.},
+title = {Genomic and functional approaches reveal a case of adaptive introgression from Populus balsamifera (balsam poplar) in P. trichocarpa (black cottonwood)},
+journal = {Molecular Ecology},
+volume = {25},
+number = {11},
+issn = {1365-294X},
+OPTurl = {http://dx.doi.org/10.1111/mec.13539},
+OPTdoi = {10.1111/mec.13539},
+pages = {2427--2442},
+keywords = {adaptive introgression, admixture, local adaptation, Populus},
+year = {2016},
+}
+
+@article {slavov_etal_2012,
+author = {Slavov, Gancho T. and DiFazio, Stephen P. and Martin, Joel and Schackwitz, Wendy and Muchero, Wellington and Rodgers-Melnick, Eli and Lipphardt, Mindie F. and Pennacchio, Christa P. and Hellsten, Uffe and Pennacchio, Len A. and Gunter, Lee E. and Ranjan, Priya and Vining, Kelly and Pomraning, Kyle R. and Wilhelm, Larry J. and Pellegrini, Matteo and Mockler, Todd C. and Freitag, Michael and Geraldes, Armando and El-Kassaby, Yousry A. and Mansfield, Shawn D. and Cronk, Quentin C. B. and Douglas, Carl J. and Strauss, Steven H. and Rokhsar, Dan and Tuskan, Gerald A.},
+title = {Genome resequencing reveals multiscale geographic structure and extensive linkage disequilibrium in the forest tree Populus trichocarpa},
+journal = {New Phytologist},
+volume = {196},
+number = {3},
+publisher = {Blackwell Publishing Ltd},
+OPTissn = {1469-8137},
+OPTurl = {http://dx.doi.org/10.1111/j.1469-8137.2012.04258.x},
+OPTdoi = {10.1111/j.1469-8137.2012.04258.x},
+pages = {713--725},
+keywords = {allele frequency gradients, black cottonwood (Populus trichocarpa), genome resequencing, linkage disequilibrium (LD), population structure, recombination},
+year = {2012},
+}
+
+@article {mckown_etal_2013,
+author = {McKown, Athena D. and Guy, Robert D. and Klapste, Jaroslav and Geraldes, Armando and Friedmann, Michael and Cronk, Quentin C. B. and El-Kassaby, Yousry A. and Mansfield, Shawn D. and Douglas, Carl J.},
+title = {Geographical and environmental gradients shape phenotypic trait variation and genetic structure in Populus trichocarpa},
+journal = {New Phytologist},
+volume = {201},
+number = {4},
+OPTissn = {1469-8137},
+OPTurl = {http://dx.doi.org/10.1111/nph.12601},
+OPTdoi = {10.1111/nph.12601},
+pages = {1263--1276},
+keywords = {biomass, clinal variation, ecophysiology, landscape genetics, latitude, phenology, photoperiod, poplar (Populus trichocarpa)},
+year = {2014}
+}
+
+@article {keller_etal_2010,
+author = {Keller, Stephen R. and Olson, Matthew S. and Silim, Salim and Schroeder, William and Tiffin, Peter},
+title = {Genomic diversity, population structure, and migration following rapid range expansion in the Balsam Poplar, Populus balsamifera},
+journal = {Molecular Ecology},
+volume = {19},
+number = {6},
+publisher = {Blackwell Publishing Ltd},
+OPTissn = {1365-294X},
+OPTurl = {http://dx.doi.org/10.1111/j.1365-294X.2010.04546.x},
+OPTdoi = {10.1111/j.1365-294X.2010.04546.x},
+pages = {1212--1226},
+keywords = {migration, phylogeography, population structure, Populus, range expansion},
+year = {2010},
+}
+
+@article{xie2009,
+author = {Chang-Yi Xie and Cheng C.Ying and Alvin D.Yanchuk and Diane L. Holowachuk},
+title = {Ecotypic mode of regional differentiation caused by restricted gene migration: a case in black cottonwood (Populus trichocarpa) along the Pacific Northwest coast},
+journal = {Canadian Journal of Forest Research},
+volume = {39},
+number = {3},
+pages = {519-525},
+year = {2009},
+OPTdoi = {10.1139/X08-190},
+OPTURL = { https://doi.org/10.1139/X08-190},
+OPTeprint = { https://doi.org/10.1139/X08-190}
+}
+
+@article{xie2012,
+author = {Xie Chang-Yi and Carlson Mike R. and Ying Cheng C.},
+title = {Ecotypic mode of regional differentiation of black cottonwood (Populus trichocarpa) due to restricted gene migration: further evidence from a field test on the northern coast of British Columbia},
+journal = {Canadian Journal of Forest Research},
+volume = {42},
+number = {2},
+pages = {400-405},
+year = {2012},
+OPTdoi = {10.1139/x11-187},
+OPTURL = { https://doi.org/10.1139/x11-187},
+OPTeprint = { https://doi.org/10.1139/x11-187}
 }
