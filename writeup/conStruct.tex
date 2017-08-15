@@ -265,19 +265,19 @@ we define the covariance within cluster $k$ between samples $i$ and $j$ to be:
 \begin{equation}
 G^{(k)}_{i,j} 
     = 
-    \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \mu^{(k)}
+    \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \phi^{(k)}
 \label{within_cluster_covariance}
 \end{equation}
 where the superscript $(k)$ denotes parameters specific to the $k$th cluster.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
 the $\alpha^{(k)}$ parameters control the shape of the decay of covariance with distance in the cluster,
-and $\mu^{(k)}$ is a parameter that describes the background allele frequency covariance within the cluster. 
+and $\phi^{(k)}$ is a parameter that describes the background allele frequency covariance within the cluster. 
 If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
 if they are furthermore geographically very close ($D_{i,j}=0$)
-they will have allele frequency covariance $\alpha^{(k)}_0 +  \mu^{(k)}$.
+they will have allele frequency covariance $\alpha^{(k)}_0 +  \phi^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will be equal to to the background level $\mu^{(k)}$ within the cluster.
-The ``shared drift'' parameter $\mu^{(k)}$ can be interpreted as the branch length 
+their covariance will be equal to to the background level $\phi^{(k)}$ within the cluster.
+The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
 connecting the $k$th population to the population ancestral to all modeled
 clusters \gc{(see XXX)}. \gb{is ``XXX" TreeMix? or one of the $f$stat papers?  or is it a figure?} 
 \plr{an F-stat paper; also reference Ben Peters review}
@@ -324,15 +324,15 @@ a complication we discuss further below.
 
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
-$w,\alpha,\mu,\eta,\gamma$ and on the (observed) geographic distances $D$ 
-with the notation $\Omega(w,\alpha,\mu,\eta,\gamma,D)$,
+$w,\alpha,\phi,\eta,\gamma$ and on the (observed) geographic distances $D$ 
+with the notation $\Omega(w,\alpha,\phi,\eta,\gamma,D)$,
 we denote the posterior probability density of the parameters as:
 \begin{equation}
-P\left( w,\alpha,\mu,\eta,\gamma \;	| \; \widehat{\Omega}, L \right) \propto
-P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\mu,\eta,\gamma,D) \right)
-P(w)P(\alpha)P(\mu)P(\eta)P(\gamma) ,
+P\left( w,\alpha,\phi,\eta,\gamma \;	| \; \widehat{\Omega}, L \right) \propto
+P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\phi,\eta,\gamma,D) \right)
+P(w)P(\alpha)P(\phi)P(\eta)P(\gamma) ,
 \end{equation}
-where $P(w)$, $P(\alpha)$, $P(\mu)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
+where $P(w)$, $P(\alpha)$, $P(\phi)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
 All parameters are given (half-)Gaussian priors except for $\alpha_2$, which is uniform on $(0,2)$ and $w$, which is Dirichlet
 (see Table \ref{tab:param_prior_tab} for specifics).
 Parameters are independent between clusters.
@@ -829,7 +829,7 @@ is not representative of the path traversed in the coalescent of a pair of allel
 A second caveat is that, in some instances, 
 membership in the same cluster may not mean that samples are particularly related.
 If covariance within a cluster decays sharply with distance, 
-and the cluster-specific relatedness parameter $\mu^{(k)}$ is low, 
+and the cluster-specific relatedness parameter $\phi^{(k)}$ is low, 
 individuals at a far spatial remove may be in the same cluster but have very low pairwise relatedness.
 It is possible that this is happening in Fig \ref{populus_sp_pies}\subref{populus_sp_pies:K3}. 
 At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the green cluster, 
@@ -842,7 +842,7 @@ and to examine the spatial covariance functions within clusters when interpretin
 \paragraph{Extensions and future directions}
 There are several ways in which the model described in this paper might be extended or improved.  
 For example, we currently assume that all layers within a model are equally unrelated 
-(a star population phylogeny, although the branches can have different lengths thanks to the $\mu^{(k)}$ parameter), 
+(a star population phylogeny, although the branches can have different lengths thanks to the $\phi^{(k)}$ parameter), 
 similar to the F-model in (REF the right STRUCTURE paper).
 However, we could extend the existing model by implementing 
 a relatedness structure between the clusters by, for example, 
@@ -948,7 +948,7 @@ we assume that $\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell})=0$,
 so that the only additional covariance between $i$ and $j$ 
 (above that induced by a shared ancestral frequency at each locus)
 is due to the drift in the ancestral population of their cluster 
-(the variance of which is $\mu_k$). 
+(the variance of which is $\phi_k$). 
 Under our spatial model we assume that some of the covariance in allele frequencies
 between $i$ and $j$ decays as a function of the geographic distance
 between the pair, $D_{i,j}$,
@@ -1000,10 +1000,10 @@ and they are fixed in the nonspatial model.
 
 \paragraph{Single cluster}
 Each of these models can be run with a single cluster ($K=1$), 
-in which case the cluster-specific covariance parameter $\mu^{(k)}$ 
+in which case the cluster-specific covariance parameter $\phi^{(k)}$ 
 and the global covariance parameter $\gamma$ become redundant.
 The single-cluster model is therefore a special case of the multi-cluster model, 
-in which we set $\mu$ to zero, as described below:
+in which we set $\phi$ to zero, as described below:
 
 For the spatial model, the single-cluster parametric covariance is:
 \begin{equation}
@@ -1044,9 +1044,9 @@ A table of all parameters, their descriptions, and their priors is given in Tabl
 	$\boldsymbol{\eta_i}$ & 
 		the nugget in population $i$ (population specific drift parameter)  & 
 		$\eta_i \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
-	$\boldsymbol{\mu^{(k)}}$ & 
+	$\boldsymbol{\phi^{(k)}}$ & 
 		cluster-specific shared drift in cluster $k$ &
-		 $\mu^{(k)} \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
+		 $\phi^{(k)} \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
 	$\boldsymbol{w_i}$ &
 		admixture proportions sample $i$ draws across $K$ clusters &
 		$w_i \sim \text{Dir}(\alpha_{1} ... \alpha_{K}=0.1)$  \\ \hline
