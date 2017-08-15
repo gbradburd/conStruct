@@ -347,27 +347,27 @@ around this inference machinery.
 A nice feature of our approach is that the model described in Eqn \refeq{cross_cluster_covariance} 
 contains a nonspatial assignment model as a special case 
 (see \ref{model_app} for a more in-depth discussion). 
-Setting $\alpha_0^{(k)}$ to zero for all $k$, 
+By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
 This model is strongly conceptually similar to that of STRUCTURE \citep{STRUCTURE} 
-and related models \citep[e.g][]{ADMIXTURE}; 
+and related models \citep[e.g.][]{ADMIXTURE}; 
 the only difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
 while the standard assignment methods assume that the error is binomial distributed (see XXXX).  
-Therefore, we can evaluate the fit of the different models 
+Therefore, we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework.
 
 \paragraph{Choice of cluster number and cross-validation}
 There are a number of reasons, both statistical and biological, 
-why there is no true (or right) number of clusters for real datasets. 
-We discuss these reasons further in the Discussion below. 
-In practice, it is useful to explore the implications of clustering at a variety of different levels (
-i.e. across multiple $K$) for biological interpretation and downstream analyses. 
-However, we also recognize that in many circumstances it is 
-useful to know the number of clusters with highest statistical
-support in the (current) dataset.
+why there is no true (or right) number of clusters for real datasets,
+discussed further in the Discussion.
+However, it is still important to assess whether additional spatial layers (larger $K$)
+meaningfully model pattern in the data
+or merely explain spurious variation introduced by noise
+-- in other words, whether additional model complexity
+provides significant explanatory power.
 Toward that end, we have implemented a method for 
 statistically comparing \texttt{conStruct} results across different values of $K$ 
 and between the spatial and nonspatial models.
@@ -383,44 +383,56 @@ or via a more rigorous and computationally intensive approach such as thermodyna
 or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
 between several methods.
+\plr{I wonder if we can just cite \cite{verity_nichols2016} rather than this laundry list here?}
 
-\gc{IS PREDICTION accuracy the right phrase?}
-We choose to take a cross-validation approach.
-We estimate the posterior on the parameters of the model using a ``training" partition of the data 
-(in practice the training set is a random subset of $90\%$ of the loci). 
-We then calculate the likelihood of the ``testing" subset (the remaining $10\%$ of the loci), 
-averaged over the posterior of the parameters. 
-We repeat this procedure a number of times, 
-take an average of the relative log-likelihoods over the runs at each $K$, 
-and select the model with the significantly best predictive accuracy
-(see Section \ref{Xvalidation} for more on our cross-validation procedure).
-This approach rewards models with larger values of $K$, 
-which increase the likelihood of the training partition, 
-as they fit the data better,
-but the improvement in the likelihood will plateau (or peak), 
-as above a certain $K$ the model is fitting noise specific to the training data 
-and therefore not fitting the testing set any better.
+We use cross-validation to attack this problem.
+To do this,
+we use a ``training" partition of the data (in practice, a random 90\% subset of the loci)
+to estimate the posterior distribution of the parameters,
+and then calculate the log-likelihood of the remaining ``testing'' loci,
+averaged over the posterior.
+Prediction accuracy of a particular model (e.g., value of $K$)
+is then measured using this log-likelihood,
+averaged over a number of independent data partitions.
+The best model is judged to be the simplest one with significantly better predictive accuracy
+than others (see Section \ref{Xvalidation} for more on our cross-validation procedure).
+In general, larger values of $K$ allows the model more flexibility,
+and thus increases the likelihood of the training partition, 
+but this improvement in the likelihood will plateau (or even peak), 
+since above a certain $K$ the model only fits noise specific to the training data 
+rather than generalizable patterns.
 At any value of $K$, support for the spatial model over the nonspatial model 
 means that isolation by distance is likely a feature of the data.
+
 \gb{something about how we choose the best model?}
+\plr{how's this?}
+Cross-validation provides a valuable summary of how much explanatory power
+is added by spatial structure within each layer, and each additional layer.
+A simple $t$-test can be used to assess whether additional layers
+show statistically significantly greater predictive accuracy.
+However, we remind users that ``statistical significance does not imply real-world significance'',
+and so small but statistically significant differences between models
+should probably not be relied on too strongly.
 
 
 \section*{Results}
 
 \subsection*{Simulations}
 We first test the method with scenarios generated using the coalescent simulator \texttt{ms} \citep{Hudson2002}.
-To generate discrete population structure, we simulate $K$ discrete clusters,
-each of which split from a common ancestor at some point in the past, $\tau_{\text{s}}$,
-then diverge for some time without migration between them.
+To generate discrete population structure, we simulate $K$ distinct populations,
+each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
+without subsequent migration between them.
 To generate continuous differentiation within each cluster,
-at time $\tau_{\text{e}}$ we have each of these discrete clusters instantaneously colonize a lattice of demes,
+at time $\tau_{\text{e}}$ in the past,
+each of these discrete clusters instantaneously colonizes a lattice of demes,
 for which we use a stepping stone model with symmetric migration 
 to nearest neighbors (eight neighbors, including diagonals).
-Finally, at time $\tau_{\text{a}}$ we generate a single dataset that captures both continuous and discrete patterns of population structure 
-by collapsing those $K$ discrete lattices into a single grid of demes sampled from the different clusters
-or admixed between them (see Fig \ref{sim_setup}).
-We simulated datasets under $K =$ 1 through 3, 
-sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme
+Finally, at time $\tau_{\text{a}}$ in the past 
+we generate a single dataset % that captures both continuous and discrete patterns of population structure 
+by collapsing those $K$ discrete lattices into a single grid of demes that are admixed to various degrees from these different layers
+(see Fig \ref{sim_setup}).
+We simulated datasets using $K=1$, 2, and 3 layers,
+in each sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme
 (for details on all simulations, see Methods and Supplementary Materials).
 
 \begin{figure}
@@ -448,10 +460,12 @@ A number of results are immediately clear from these tests with simulated data.
 First, \texttt{conStruct} performs well on all simulated scenarios.
 Across all values of K and for all simulations, 
 the spatial model is correctly preferred over the nonspatial model, 
-and it infers the true admixture proportions with high accuracy, tight precision, and good coverage (Fig ).
-Second, the predictive accuracy of the nonspatial model increases with the number of clusters in the model, 
+and it infers the true admixture proportions with high accuracy, tight precision, and good coverage 
+(Fig \ref{sim_xvals}).
+Second, the predictive accuracy of the nonspatial model increases 
+with the number of clusters in the model, 
 as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
-with gradients of admixture across more and more discrete clusters.
+using gradients of admixture across more and more discrete clusters.
 This behavior of the nonspatial model is highlighted in 
 the analyses of data simulated under $K=1$ (Fig \ref{simK1_pies} and \ref{simK1_nsp_pies}):
 as $K$ in the model increases, 
@@ -460,8 +474,13 @@ with ``centers of mass" in the $K$ geographical extremes of the simulated space.
 At $K=2$, the clusters are centered in opposite corners on the map; 
 at $K=3$, in the lower two corners and the top half; 
 at $K=4$, all four corners, and so on.
+\plr{Need a concluding sentence, maybe like this?}
+While it is true that each such cluster is more similar within itself
+than it is to other clusters,
+we know that these boundaries are arbitray,
+since the data were simulated with no such boundaries.
 
-In contrast, the predictive accuracy of the spatial model of \texttt{conStruct} 
+In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 either plateaus at or declines from the true value of $K$ used to simulate the data (Fig \ref{sim_xvals}, second column).
 And, as $K$ in the spatial model increases, 
 deme membership in clusters beyond the number used to simulate the data does not appreciably increase 
@@ -522,13 +541,13 @@ where they do, they frequently hybridize \citep{eckenwalder1984, Cronk2005}.
 
 Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
 \textit{Populus trichocarpa}, the black cottonwood,
-and \textit{Populus trichocarpa}, the balsam poplar.
+and \textit{Populus balsamifera}, the balsam poplar.
 These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
 and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
-making the system well-suited to an analysis designed to determine  
-the proportion of genetic structure that is partitioned discretely across population (or species) clusters,
-as well as continuously with geographic distance.
+making the system well-suited to an analysis designed to describe
+how genetic structure is partitioned both discretely across population (or species) clusters
+and continuously with geographic distance.
 We had the following questions for the system: 
 \begin{enumerate}
 \item Given the known history of hybridization between this pair of poplar species, 
@@ -552,10 +571,10 @@ To ameliorate some of the problems that arise when there is a strong bias in whi
 we dropped loci for which any data were missing, 
 resulting in just over 20,200 loci retained for analysis.  
 We then analyzed these data, grouped by drainage, using both the spatial and nonspatial \texttt{conStruct} models, 
-running on $K = 1$ through 7,
-and compared these models using the cross-validation procedure described above. 
+using $K = 1$ through 7,
+and compared these models using cross-validation.
 The results of these analyses are shown in 
-Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
+Figs \ref{populus_xvals}--\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
 
 
 \begin{figure}
@@ -648,9 +667,13 @@ Figs \ref{populus_xvals}-\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus
     }\label{populus_nsp_clst_covs}
 \end{figure}
 
-Although admixture was inferred between \textit{P. balsamifera} and \tri{}
-across all values of $K>1$, and in both the spatial and nonspatial models,
-there is nonetheless strong evidence for discrete population structuring, 
+All models with $K>1$ assigned the majority of each species
+to distinct layers, with some populations drawing ancestry from both layers.
+This provides strong support for discrete population structure between the two species,
+with some admixture,
+% Although admixture was inferred between \textit{P. balsamifera} and \tri{}
+% across all values of $K>1$, and in both the spatial and nonspatial models,
+% there is nonetheless strong evidence for discrete population structuring, 
 rather than a single, continuous cline of ancestry.
 At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
@@ -664,45 +687,48 @@ a region along the central coast of British Columbia in which black cottonwood i
 The no-cottonwood belt is hypothesized to divide the species' distribution 
 into northern and southern groups, which, in a provenance test, 
 were experimentally shown to display different phenotypes 
-\citep[pathogen resitsance][]{xie2009,xie2012}.  
-At higher values of $K$, drainages at the southern tip of the \tri{} sampling 
+\citep[pathogen resistance][]{xie2009,xie2012}.  
+At higher values of $K$, drainages at the southern tip of \tri{} sampling 
 begin to split out into their own clusters.  
+\plr{cut this if we pick lower $K$? Or add a disclaimer?}
 This may potentially be the result of introgression from Southern \textit{Populus} species, 
 such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
 
-At all values of $K$, the spatial model was preferred over the nonspatial model, 
-indicating that the data exhibit isolation by distance.
-However, most of this signal of IBD seems to be coming from the \textit{P. trichocarpa} samples;
-in the spatial model, the cluster-specific covariance curves for clusters that are predominantly \tri{}
-have sharper slopes than that of the \bals{} cluster (Fig \ref{populus_sp_clst_covs}).
+At all values of $K$, the spatial model was preferred over the nonspatial model.
+However, most of this signal seems to derive from the \textit{P. trichocarpa} samples:
+covariance within predominantly \tri{} layers decays more quickly with distance
+than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_clst_covs}.
 The most strongly supported model, given the current dataset, was XXXX.
 
 
 \subsubsection*{Black bears}
 
+
+%%%%%%%%%
 \section*{Discussion}
-Isolation by distance is a pattern that is ubiquitous in nature:
-it can arise as long as mating opportunities are distance-limited, 
-so we might reasonably expect to observe it in more species than not.
-This common pattern can flummox model-based clustering methods, 
-which attempt to ascribe the observed, continuous population differentiation 
-to unnecessary additional discrete clusters.
-The inference of these spurious clusters can have implications for 
+
+The pattern of isolation by distance is ubiquitous in nature,
+unsuprisingly, since mating opportunities are distance-limited in most species.
+However,
+this common pattern can flummox commonly used clustering methods, 
+which must use a possibly large number of discrete clusters
+to describe such continuous population differentiation .
+Inference of these spurious clusters can have implications for 
 downstream analysis and interpretation of genetic data, 
 including conservation management decisions and 
 identification of the genetic basis of adaptation or disease traits.
 
 In this paper, we have presented a statistical framework, \texttt{conStruct}, for simultaneously 
 modeling continuous and discrete patterns of population structure.
-By employing the sensible ``null hypothesis" 
+By employing the sensible default assumption
 that relatedness ought to decay with distance, even within a population, 
 we avoid erroneously ascribing population differentiation to discrete population clusters.
 We also present a cross-validation approach for comparing between models, 
 although we stress the limits of this or any model selection procedure for genetic clustering.
 
-Our tests on simulated data show that the method performs well; 
-we are able to accurately infer both the admixture proportions used to simulate the data 
-as well as accurately pick the simulating model as the best model using our cross-validation procedure.
+The method performs well on simulated data:
+we accurately infer the admixture proportions used to simulate the data 
+and accurately pick the simulating model as the best model using our cross-validation procedure.
 Empirical applications of \texttt{conStruct} to a sample of North American poplars 
 and a sample of North American black bears yield reasonable results, 
 largely in agreement with previous studies in both systems (Geraldes, Puckett).
@@ -714,6 +740,16 @@ and determining samples' ancestry in and across them,
 especially when the populations exhibit spatial patterns of relatedness.
 
 \paragraph{Comparison to nonspatial model-based clustering}
+Above, we \plr{hopefully?} showed that 
+(a) the nonspatial conStruct model recapitulates results of 
+other, commonly-used nonspatial clustering methods,
+and 
+(b) conStruct can concisely capture spatial structure, which is nearly always expected within clusters.
+Given this, when should methods without spatial capability be used?
+One advantage these have over conStruct is speed \plr{details?}.
+The other main difference is the model of noise,
+but it is unclear what effects this may have,
+or indeed, which is closer to the truth.
 
 \paragraph{Choosing the ``best" number of clusters}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
@@ -723,9 +759,12 @@ why there is no true best value of $K$.
 From a statistical perspective, the choice of best $K$ is always relative to the data in hand.
 This means both that sampling different individuals or loci 
 from the same populations may yield a different ``best" $K$, 
-but also that the support for larger values of $K$ is likely to increase with increasing amounts of data.
+but also 
+-- unless the data were generated under the model itself --
+that the support for larger values of $K$ is likely to increase with increasing amounts of data
+(although perhaps only logarithmically).
 In the limit of infinite data, the best value of $K$ 
-will be the number of individuals included in the dataset.
+may be the number of individuals included in the dataset.
 From a biological perspective, 
 it is important to stress that patterns of relatedness between individuals and populations 
 are shaped by complex spatial and hierarchical processes.
