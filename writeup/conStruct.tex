@@ -111,7 +111,7 @@ There have been many methods proposed to characterize populations,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
 $k$-means clustering analyses performed on dimensionality-reduction approaches (ref), 
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
-and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS}, among others.
+and model-based clustering approaches \citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, FINESTRUCTURE, huelsenbeck2007inference, Corander2003,TESS,geneland}, among others.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
 Like the method we present here, these are based on a statistical model,
 but do not perform inference directly with a demographic model.
@@ -273,7 +273,7 @@ The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ a
 the $\alpha^{(k)}$ parameters control the shape of the decay of covariance with distance in the cluster,
 and $\mu^{(k)}$ is a parameter that describes the background allele frequency covariance within the cluster. 
 If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
-if they are furthermore geographically very close ($D_{i,j}=0$) 
+if they are furthermore geographically very close ($D_{i,j}=0$)
 they will have allele frequency covariance $\alpha^{(k)}_0 +  \mu^{(k)}$.
 If the geographic distance between them is very large, 
 their covariance will be equal to to the background level $\mu^{(k)}$ within the cluster.
@@ -385,7 +385,7 @@ See \cite{verity_nichols2016} for a discussion of these approaches and compariso
 between several methods.
 
 \gc{IS PREDICTION accuracy the right phrase?}
-We choose to take a cross-validation approach.
+We choose to take a cross-validation approach \citep[similar in spirit to][]{ADMIXTURE_xval}.
 We estimate the posterior on the parameters of the model using a ``training" partition of the data 
 (in practice the training set is a random subset of $90\%$ of the loci). 
 We then calculate the likelihood of the ``testing" subset (the remaining $10\%$ of the loci), 
