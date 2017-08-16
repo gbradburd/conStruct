@@ -21,3 +21,5 @@ writeup/*.tui
 code/conStruct/*.gz
 sims/cross_validation/K_1/x_validation/*.Robj
 sims/cross_validation/K_1/x_validation/*.R
+writeup/figs/schematic/*.ai
+writeup/figs/schematic/*.pdf
