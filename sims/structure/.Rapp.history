@@ -1,0 +1,426 @@
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+#
+make.ind.genos <- function(ones,N){#
+	geno <- numeric(N)#
+	geno[sample(1:N,ones)] <- 1#
+	return(geno)#
+}#
+#
+split.pop.into.inds <- function(pop.counts,pop.nChromo){#
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})#
+	return(ind.geno)#
+}#
+#
+make.structure.data.file(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes[,1]),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n,1]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n,1]#
+	}#
+}#
+#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+#
+make.ind.genos <- function(ones,N){#
+	geno <- numeric(N)#
+	geno[sample(1:N,ones)] <- 1#
+	return(geno)#
+}#
+#
+split.pop.into.inds <- function(pop.counts,pop.nChromo){#
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})#
+	return(ind.geno)#
+}
+make.structure.data.file(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes[,1]),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	return(geno.matrix)#
+}
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes[,1]),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	return(geno.matrix)#
+}
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes
+test <- make.structure.data.file(counts,sample.sizes[,1])
+dim(sample.sizes)
+sample.sizes[,1]
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	return(geno.matrix)#
+}#
+#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+test <- make.structure.data.file(counts,sample.sizes[,1])
+dim(sample.sizes)
+sum(sample.sizes[,1])
+dim(test)
+samp.cov <- cov(t(test))
+samp.cov <- cov(t(test/2))
+pc.objs <- eigen(samp.cov)
+plot(pc.objs$vectors[,2],pc.objs$vectors[,3])
+apply(1:36,rep,20)
+lapply(1:36,rep,20)
+plot(pc.objs$vectors[,2],pc.objs$vectors[,3],col=unlist(lapply(1:36,rep,20)))
+plot(pc.objs$vectors[,2],pc.objs$vectors[,3],col=unlist(lapply(1:36,function(i){rep(rainbow(36,start=0.5,end=1)[i],20)})))
+str.data <- make.structure.data.file(counts,sample.sizes[,1])
+sample.sizes[,1]
+sample.sizes <- sample.sizes[,1]
+lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					})
+unlist(lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					}))
+unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	PopData <- unlist(lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					}))#
+	LocData <- unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))#
+	return(cbind(PopData,LocData,geno.matrix))#
+}
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])
+str.data[,1]
+str.data[,2]
+str.data[,3]
+getwd()
+write.table(str.data,file="test",quote=FALSE,row.names=FALSE,col.names=FALSE)
+make.ind.genos <- function(ones,N){#
+	geno <- numeric(N)#
+	geno[sample(1:N,ones)] <- 1#
+	return(geno)#
+}#
+#
+split.pop.into.inds <- function(pop.counts,pop.nChromo){#
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})#
+	return(ind.geno)#
+}#
+#
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	PopData <- unlist(lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					}))#
+	LocData <- unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))#
+	return(cbind(PopData,LocData,geno.matrix))#
+}#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK1.str",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK2.str",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK3.str",quote=FALSE,row.names=FALSE,col.names=FALSE)
+make.ind.genos <- function(ones,N){#
+	geno <- numeric(N)#
+	geno[sample(1:N,ones)] <- 1#
+	return(geno)#
+}#
+#
+split.pop.into.inds <- function(pop.counts,pop.nChromo){#
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})#
+	return(ind.geno)#
+}#
+#
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	PopData <- unlist(lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					}))#
+	LocData <- unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))#
+	return(cbind(PopData,LocData,geno.matrix))#
+}#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK1/simK1",quote=FALSE,row.names=FALSE,col.names=FALSE)
+load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK2/simK2",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK3/simK3",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#python structure.py -K 2 --input=/Users/bradburd/Dropbox/conStruct/sims/structure/test --output=/Users/bradburd/Desktop/test_fastStr  --prior=logistic --format=str #
+# samp.cov <- cov(t(str.data/2))#
+# pc.objs <- eigen(samp.cov)#
+# plot(pc.objs$vectors[,2],pc.objs$vectors[,3],col=unlist(lapply(1:36,function(i){rep(rainbow(36,start=0.5,end=1)[i],20)})))
+make.ind.genos <- function(ones,N){#
+	geno <- numeric(N)#
+	geno[sample(1:N,ones)] <- 1#
+	return(geno)#
+}#
+#
+split.pop.into.inds <- function(pop.counts,pop.nChromo){#
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})#
+	return(ind.geno)#
+}#
+#
+make.structure.data.file <- function(counts,sample.sizes){#
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))#
+	index <- 0#
+	for(n in 1:nrow(freqs)){#
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])#
+		index <- index + sample.sizes[n]#
+	}#
+	PopData <- unlist(lapply(1:length(sample.sizes),#
+					function(n){#
+						lapply(1:sample.sizes[n],#
+							function(i){#
+								sprintf("ind_%s.%s",n,i)#
+							})#
+					}))#
+	LocData <- unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))#
+	return(cbind(PopData,LocData,geno.matrix))#
+}#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK1/simK1.str",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK2/simK2.str",quote=FALSE,row.names=FALSE,col.names=FALSE)#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")#
+freqs <- sim.dataset$freq.data$freqs#
+sample.sizes <- sim.dataset$freq.data$sample.sizes#
+counts <- freqs*sample.sizes#
+str.data <- make.structure.data.file(counts,sample.sizes[,1])#
+write.table(str.data,file="datasets/simK3/simK3.str",quote=FALSE,row.names=FALSE,col.names=FALSE)
+collapse.ind.Q <- function(Q,pop.vec){#
+	n.pops <- length(unique(pop.vec))#
+	admix.props <- matrix(NA,n.pops,ncol(Q))#
+	for(i in 1:n.pops){#
+		admix.props[i,] <- colMeans(Q[which(pop.vec==i),])#
+	}#
+	return(admix.props)#
+}#
+#
+pie.plot <- function(Q.file,coords,pop.vec,cluster.colors){#
+	Q <- read.table(Q.file,stringsAsFactors=FALSE)#
+	admix.props <- collapse.ind.Q(Q,pop.vec)#
+	K <- ncol(admix.props)#
+	N <- length(unique(pop.vec))#
+	cluster.names <- paste0("cluster_",1:K)#
+	sample.names <- paste0("sample_", 1:N)#
+	color.tab <- caroline::nv(c(cluster.colors[1:K]), cluster.names)#
+	pie.list <- lapply(1:N, function(i) {#
+	    caroline::nv(admix.props[i, ], cluster.names)#
+	})#
+	names(pie.list) <- sample.names#
+	caroline::pies(pie.list, x0 = coords[, 1], #
+	    y0 = coords[, 2], color.table = color.tab, #
+	    border = "black", radii = 2.7, xlab = "", ylab = "", #
+	    lty = 1, density = NULL)#
+	box(lwd = 2)#
+}#
+#
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")#
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK2.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod"))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK3.3.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod"))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK4.4.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+collapse.ind.Q <- function(Q,pop.vec){#
+	n.pops <- length(unique(pop.vec))#
+	admix.props <- matrix(NA,n.pops,ncol(Q))#
+	for(i in 1:n.pops){#
+		admix.props[i,] <- colMeans(Q[which(pop.vec==i),])#
+	}#
+	return(admix.props)#
+}#
+#
+pie.plot <- function(Q.file,coords,pop.vec,cluster.colors){#
+	Q <- read.table(Q.file,stringsAsFactors=FALSE)#
+	admix.props <- collapse.ind.Q(Q,pop.vec)#
+	K <- ncol(admix.props)#
+	N <- length(unique(pop.vec))#
+	cluster.names <- paste0("cluster_",1:K)#
+	sample.names <- paste0("sample_", 1:N)#
+	color.tab <- caroline::nv(c(cluster.colors[1:K]), cluster.names)#
+	pie.list <- lapply(1:N, function(i) {#
+	    caroline::nv(admix.props[i, ], cluster.names)#
+	})#
+	names(pie.list) <- sample.names#
+	caroline::pies(pie.list, x0 = coords[, 1], #
+	    y0 = coords[, 2], color.table = color.tab, #
+	    border = "black", radii = 2.7, xlab = "", ylab = "", #
+	    lty = 1, density = NULL)#
+	box(lwd = 2)#
+}
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK4.4.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK4.4.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+collapse.ind.Q <- function(Q,pop.vec){#
+	n.pops <- length(unique(pop.vec))#
+	admix.props <- matrix(NA,n.pops,ncol(Q))#
+	for(i in 1:n.pops){#
+		admix.props[i,] <- colMeans(Q[which(pop.vec==i),])#
+	}#
+	return(admix.props)#
+}#
+#
+pie.plot <- function(Q.file,coords,pop.vec,cluster.colors){#
+	Q <- read.table(Q.file,stringsAsFactors=FALSE)#
+	admix.props <- collapse.ind.Q(Q,pop.vec)#
+	K <- ncol(admix.props)#
+	N <- length(unique(pop.vec))#
+	cluster.names <- paste0("cluster_",1:K)#
+	sample.names <- paste0("sample_", 1:N)#
+	color.tab <- caroline::nv(c(cluster.colors[1:K]), cluster.names)#
+	pie.list <- lapply(1:N, function(i) {#
+	    caroline::nv(admix.props[i, ], cluster.names)#
+	})#
+	names(pie.list) <- sample.names#
+	caroline::pies(pie.list, x0 = coords[, 1], #
+	    y0 = coords[, 2], color.table = color.tab, #
+	    border = "black", radii = 2.7, xlab = "", ylab = "", #
+	    lty = 1, density = NULL)#
+	box(lwd = 2)#
+}
+load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK2.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK22.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_est22.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK3.3.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod"))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK4.4.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK3.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK2.2.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK3.3.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod"))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK4.4.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK3.3.meanQ",#
+		 coords = sim.dataset$coords,#
+		 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),#
+		 cluster.colors = c(4,2,"goldenrod"))
