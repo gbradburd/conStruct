@@ -163,8 +163,6 @@ and we demonstrate the utility of our approach using both simulated and empirica
 The implementation of this method, \texttt{conStruct}, is available as an R package at 
 \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
-
-%%%%%%%%%%%%%%%%%
 \section*{Methods}
 
 \paragraph{Data}
@@ -197,24 +195,8 @@ In addition to these differences on the diagonal,
 this differs from the usual ``genetic covariance'' \citep{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
 and so to make the statistic invariant under choices of reference allele, 
-(b) we randomly choose alleles to count.
-To see how to arrive at equation \eqref{allelic_covariance},
-pick a random locus and
-let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
-If $i=j$ then these are chosen \emph{without} replacement.
-Suppose these are each coded as `0' or `1` (where `0' denotes a reference allele),
-but we randomly ``flip'' this coding, so that we let $X=A$ and $Y=B$ with probability 1/2,
-but otherwise we let $X=1-A$ and $Y=1-B$.
-We then let $\widehat{\Omega}_{i,j} = \cov[X,Y]$ --
-sampling without replacement makes the statistic insensitive to sample size,
-and random allele flipping makes it independent of the choice of reference allele.
-By conditioning on the flip,
-and using the fact that $\E[X] = \E[Y] = 1/2$,
-equation \eqref{allelic_covariance} comes from the calculation that
-$\cov[X,Y] = \E[XY] - 1/4 = (1/2)\E[AB + (1-A)(1-B)] - 1/4 = \E[(A-1/2)(B-1/2)]$.
-The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
-then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
-which is $f_i^2 n/(n-1)$.
+(b) we randomly choose an allele to count at each locus.
+We discuss the derivation of Eqn. \eqref{allelic_covariance} further in the Appendix (\secref{allelic_cov}).
 As noted in \cite{EEMS},
 this covariance has a close relationship to the pairwise genetic distance:
 if $D_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
@@ -223,9 +205,6 @@ Therefore, unlike genetic covariance,
 this allelic covariance is affected in shape by singleton sites,
 so it may be advisable to filter these prior to analysis
 if these are likely to contain a large percentage of errors.
-
-
-
 
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
@@ -290,7 +269,7 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 			     and $\phi_{(k)}$ denotes the covariance shared by samples with ancestry entirely in the $k$th cluster.
 			     Sampled populations on the landscape are inferred to be admixed between these layers; 
 			     the $i$th sample draws proportion $w^{(k)}_i$ of its ancestry from cluster $k$.
-			    }\label{sim_setup}
+			    }\label{schematic}
 \end{figure}
 
 We can then describe the covariance between samples $i$ and $j$ across all layers, $\Omega_{i,j}$,
@@ -350,9 +329,9 @@ around this inference machinery.
 
 \paragraph{Relationship of this model to nonspatial structure models}
 
-A nice feature of our approach is that the model described in Eqn \refeq{cross_cluster_covariance} 
+A nice feature of our approach is that the model described in Eqn \eqref{cross_cluster_covariance} 
 contains a nonspatial assignment model as a special case 
-(see \ref{model_app} for a more in-depth discussion). 
+(see \secref{model_app} for a more in-depth discussion). 
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
@@ -390,7 +369,6 @@ or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
 between several methods.
 
-\gc{IS PREDICTION accuracy the right phrase?}
 We choose to take a cross-validation approach \citep[similar in spirit to][]{ADMIXTURE_xval}.
 We estimate the posterior on the parameters of the model using a ``training" partition of the data 
 (in practice the training set is a random subset of $90\%$ of the loci). 
@@ -399,7 +377,7 @@ averaged over the posterior of the parameters.
 We repeat this procedure a number of times, 
 take an average of the relative log-likelihoods over the runs at each $K$, 
 and select the model with the significantly best predictive accuracy
-(see Section \ref{Xvalidation} for more on our cross-validation procedure).
+(see \secref{Xvalidation} for more on our cross-validation procedure).
 This approach rewards models with larger values of $K$, 
 which increase the likelihood of the training partition, 
 as they fit the data better,
@@ -418,7 +396,7 @@ Prediction accuracy of a particular model (e.g., value of $K$)
 is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
-than others (see Section \ref{Xvalidation} for more on our cross-validation procedure).
+than others (see \secref{Xvalidation} for more on our cross-validation procedure).
 In general, larger values of $K$ allows the model more flexibility,
 and thus increases the likelihood of the training partition, 
 but this improvement in the likelihood will plateau (or even peak), 
@@ -451,23 +429,11 @@ each of these discrete clusters instantaneously colonizes a lattice of demes,
 for which we use a stepping stone model with symmetric migration 
 to nearest neighbors (eight neighbors, including diagonals).
 Finally, at time $\tau_{\text{a}}$ in the past 
-we generate a single dataset % that captures both continuous and discrete patterns of population structure 
+we generate a single dataset 
 by collapsing those $K$ discrete lattices into a single grid of demes that are admixed to various degrees from these different layers.
-%(see Fig \ref{sim_setup}).
+(see Fig \ref{sim_setup}).
 We simulated datasets using $K=1$, 2, and 3 layers,
 in each sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme.
-
-%\begin{figure}
-%	\centering
-%		{\includegraphics[width=4in,height=2.5in]{figs/sims/sim_setup.png}}
-%		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
-%			    Going forward in time, the $K$ clusters split from a common ancestor at time $\tau_{\text{s}}$,
-%			    then each expand to colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
-%			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
-%			    with ancestry entirely in one or the other of the clusters,
-%			    or admixed between them.
-%			    }\label{sim_setup}
-%\end{figure}
 
 We ran \texttt{conStruct} analyses on each of these simulated datasets, 
 specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
@@ -480,7 +446,7 @@ are shown in Figs \ref{simK1_nsp_pies}-\ref{simK3_sp_pies}.
 To confirm that results from our nonspatial model were qualitatively similar to those of 
 other nonspatial model-based clustering algorithms, 
 we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, 
-inferring admixture under models with $K=2$ through 4 (Fig \ref{fastStr_simK1}-\ref{fastStr_simK3}).
+inferring admixture under models with $K=2$ through 4.
 
 A number of results are immediately clear from these tests with simulated data.
 First, \texttt{conStruct} performs well on all simulated scenarios.
@@ -500,9 +466,12 @@ with ``centers of mass" in the $K$ geographical extremes of the simulated space.
 At $K=2$, the clusters are centered in opposite corners on the map; 
 at $K=3$, in the lower two corners and the top half; 
 at $K=4$, all four corners, and so on.
+These results are qualitatively similar to those generated using fastSTRUCTURE \citep{fastStructure}, 
+which also describes continuous differentiation using admixture between clusters
+ (Fig \ref{fastStr_simK1}-\ref{fastStr_simK3}).
 While it is true that each such cluster is more similar within itself
 than it is to other clusters,
-we know that these boundaries are arbitray,
+we know that these boundaries are arbitrary,
 since the data were simulated with no such boundaries.
 
 In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
@@ -559,9 +528,8 @@ and a large North American sample of black bears.
 \subsubsection*{Poplars}
 
 Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
-are distributed throughout the Northern Hemisphere, 
-and include species of ecological and economic importance.
-Species in the genus regularly co-occur and, 
+are distributed throughout the Northern Hemisphere;
+species in the genus regularly co-occur and, 
 where they do, they frequently hybridize \citep{eckenwalder1984, Cronk2005}.
 
 Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
@@ -570,10 +538,10 @@ and \textit{Populus balsamifera}, the balsam poplar.
 These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
 and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
-making the system well-suited to an analysis designed to describe
+making the system well-suited to test an analysis designed to describe
 how genetic structure is partitioned both discretely across population (or species) clusters
 and continuously with geographic distance.
-We had the following questions for the system: 
+We organize the results of our analyses around the following questions: 
 \begin{enumerate}
 \item Given the known history of hybridization between this pair of poplar species, 
 is there support for two discrete clusters, 
@@ -696,9 +664,6 @@ All models with $K>1$ assigned the majority of each species
 to distinct layers, with some populations drawing ancestry from both layers.
 This provides strong support for discrete population structure between the two species,
 with some admixture,
-% Although admixture was inferred between \textit{P. balsamifera} and \tri{}
-% across all values of $K>1$, and in both the spatial and nonspatial models,
-% there is nonetheless strong evidence for discrete population structuring, 
 rather than a single, continuous cline of ancestry.
 At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
@@ -967,6 +932,27 @@ so that
 We note that this form is chosen for its flexibility, 
 and not because it matches any explicit population genetic model of isolation by distance. 
 
+\section{Allelic Covariance}\label{allelic_cov}
+To see how to arrive at Eqn. \eqref{allelic_covariance},
+pick a random locus and
+let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
+If $i=j$, then these are chosen \emph{without} replacement.
+Suppose these are each coded as `0' or `1` (where `0' denotes a reference allele),
+but we randomly ``flip'' this coding, so that we let $X=A$ and $Y=B$ with probability 1/2,
+but otherwise we let $X=1-A$ and $Y=1-B$.
+We then let $\widehat{\Omega}_{i,j} = \cov[X,Y]$ ; 
+sampling without replacement makes the statistic insensitive to sample size,
+and random allele flipping makes it independent of the choice of reference allele.
+By conditioning on the flip,
+and using the fact that $\E[X] = \E[Y] = 1/2$,
+Eqn. \eqref{allelic_covariance} comes from the calculation that
+\begin{align}
+\cov[X,Y] &= \E[XY] - 1/4 = (1/2)\E[AB + (1-A)(1-B)] - 1/4\\\notag
+&= \E[(A-1/2)(B-1/2)]
+\end{align}
+The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
+then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
+which is $f_i^2 n/(n-1)$.
 \paragraph{Likelihood}
 If our allele frequency deviations are well approximated by a Gaussian, 
 their sample allelic covariance is a sufficient statistic,
@@ -975,7 +961,7 @@ calculating the probability of the frequency data up to a constant.
 We can therefore model the covariance of the sample allele frequencies, $\widehat{\Omega}$, 
 as a draw from a Wishart distribution with degrees of freedom equal to 
 the number of loci $L$ across which the sample allelic covariance is calculated:
-
+\gb{should we take this equation out?}
 \begin{align}
 &\widehat{\Omega}_{i,j} = 
 	\begin{cases}
@@ -998,8 +984,8 @@ so inference can theoretically be done using whole genome data.
 \paragraph{Spatial vs. nonspatial}
 In this paper, we discuss two types of models, spatial and nonspatial, 
 each of which can be implemented with different numbers of clusters.
-The spatial model is parameterized as in Eqn \ref{admixed_spatial_cov},
-and the nonspatial model is described in Eqn \ref{admixed_discrete_covariance}.
+The spatial model is parameterized as in Eqn \eqref{admixed_spatial_cov},
+and the nonspatial model is described in Eqn \eqref{admixed_discrete_covariance}.
 The nonspatial model is a special case of the spatial model, 
 in which the value of all $\alpha$ parameters is set to 0.
 The nonspatial model therefore has $3K$ fewer parameters than the spatial model,
@@ -1115,10 +1101,6 @@ This cross-validation procedure generates a mean predictive accuracy for each mo
 as well as a confidence interval around that mean,
 which can then be used for model comparison or selection.
 
-\section{Our Model vs. STRUCTURE}
-We should probably demonstrate that the nonspatial version of \texttt{conStruct} is basically the same as STRUCTURE.
-Maybe check out Engelhardt \& Stephens?
-
 \newpage
 \section*{Supplementary Materials}
 \renewcommand{\theequation}{S\arabic{equation}}
@@ -1127,6 +1109,19 @@ Maybe check out Engelhardt \& Stephens?
 \setcounter{table}{0}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \setcounter{figure}{0}
+
+\clearpage
+\begin{figure}
+	\centering
+		{\includegraphics[width=4in,height=2.5in]{figs/sims/sim_setup.png}}
+		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
+			    Going forward in time, the $K$ clusters split from a common ancestor at time $\tau_{\text{s}}$,
+			    then each expand to colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
+			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
+			    with ancestry entirely in one or the other of the clusters,
+			    or admixed between them.
+			    }\label{sim_setup}
+\end{figure}
 
 \newpage
 \begin{figure}
