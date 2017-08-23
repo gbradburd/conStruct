@@ -567,7 +567,7 @@ We then analyzed these data, grouped by drainage, using both the spatial and non
 using $K = 1$ through 7,
 and compared these models using cross-validation.
 The results of these analyses are shown in 
-Figs \ref{populus_xvals}--\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
+Figs \ref{populus_xvals}--\ref{populus_sp_clst_covs} and \ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populus_sp_clst_covs,populus_nsp_clst_covs
 
 
 \begin{figure}
@@ -643,21 +643,6 @@ Figs \ref{populus_xvals}--\ref{populus_nsp_clst_covs}. %,populus_nsp_pies,populu
 	green on black points are sample covariances between \bals{} and \tri{};
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_sp_clst_covs}
-\end{figure}
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_clst_covs.pdf}}
-	\caption{
-	Plots showing the cluster-specific parametric covariance IBD-curves 
-	estimated for the \textit{Populus} data using 
-	the nonspatial \texttt{conStruct} model run with $K=2$ through 7.
-	Line colors are consistent with cluster colors in Fig \ref{populus_nsp_pies}.
-	Points are colored by the species they are a covariance between:
-	black on black points are sample covariances between populations of \textit{Populus balsamifera};
-	green on black points are sample covariances between \bals{} and \tri{};
-	green on green points are sample covariances between \tri{} and \tri{}.
-    }\label{populus_nsp_clst_covs}
 \end{figure}
 
 All models with $K>1$ assigned the majority of each species
@@ -1273,6 +1258,22 @@ which can then be used for model comparison or selection.
 	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK3}
 \end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_clst_covs.pdf}}
+	\caption{
+	Plots showing the cluster-specific parametric covariances 
+	estimated for the \textit{Populus} data using 
+	the nonspatial \texttt{conStruct} model run with $K=2$ through 7.
+	Line colors are consistent with cluster colors in Fig \ref{populus_nsp_pies}.
+	Points are colored by the species they are a covariance between:
+	black on black points are sample covariances between populations of \textit{Populus balsamifera};
+	green on black points are sample covariances between \bals{} and \tri{};
+	green on green points are sample covariances between \tri{} and \tri{}.
+    }\label{populus_nsp_clst_covs}
+\end{figure}
+
 
 \newpage
 \clearpage
