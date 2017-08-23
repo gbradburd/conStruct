@@ -38,3 +38,9 @@ Type 'q()' to quit R.
 > outfile <- paste0("/Users/bradburd/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK",K)
 > call <- paste0("python structure.py -K ",K," --input=",infile," --output=",outfile," --prior=logistic --format=str")
 > system(call)
+/Library/Python/2.7/site-packages/numpy-1.14.0.dev0+6630945-py2.7-macosx-10.12-intel.egg/numpy/core/_methods.py:32: RuntimeWarning: overflow encountered in reduce
+  return umr_sum(a, axis, dtype, out, keepdims)
+> 
+> proc.time()
+     user    system   elapsed 
+68043.078    73.591 68246.576 

@@ -55,7 +55,7 @@ load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK2_pies.pdf",width=12,height=4.5,pointsize=13)
 	par(mfrow=c(1,3))
-		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_est22.2.meanQ",
+		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_est2.2.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 cluster.colors = c(4,2))
@@ -69,7 +69,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK2_pies.pdf",width
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK4.4.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
-				 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+				 cluster.colors = c(2,4,"goldenrod1","forestgreen"))
 			mtext(side=3,font=2,text="K=4")
 dev.off()
 			
@@ -84,12 +84,12 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK3_pies.pdf",width
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK3.3.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
-				 cluster.colors = c(4,2,"goldenrod1"))
+				 cluster.colors = c(4,"goldenrod1",2))
 			mtext(side=3,font=2,text="K=3")
 			mtext(side=1,font=2,text="true K = 3",cex=1.2,padj=2.7)
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK4.4.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
-				 cluster.colors = c(4,2,"goldenrod1","forestgreen"))
+				 cluster.colors = c(2,4,"goldenrod1","forestgreen"))
 			mtext(side=3,font=2,text="K=4")
 dev.off()
