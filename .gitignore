@@ -25,3 +25,10 @@ writeup/figs/schematic/*.ai
 writeup/figs/schematic/*.pdf
 sims/cross_validation/K_*/ms_output
 sims/cross_validation/K_*/*out
+data/*/*training*
+code/tinkering
+sims/cross_validation/K_1/ibd.pdf
+sims/cross_validation/K_2/exe.sim.in.ms.R
+sims/cross_validation/K_3/exe.sim.in.ms.R
+sims/cross_validation/K_2/ibd.pdf
+sims/cross_validation/K_3/ibd.pdf
