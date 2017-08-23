@@ -3,58 +3,98 @@
 #	Sim Figures for conStruct paper
 ################################################################
 ################################################################
-
-source("~/Dropbox/conStruct/sims/cross_validation/summarize.xvals.R")
+source("~/Dropbox/conStruct/writeup/figs/fig_funcs.R")
 
 #K1
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation")
-n.reps <- 10
-K <- 7
-for(n in 1:n.reps){
-	load(sprintf("simK1_rep%s_test.lnl.Robj",n))
-	assign(paste0("tl",n),test.lnl)
-}
-x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-x.vals.std <- lapply(x.vals,standardize.xvals)
-xval.CIs <- get.xval.CIs(x.vals.std,K)
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
-	plot.xval.CIs(xval.CIs,K,simK=" (K = 1)")
-		legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"))
-	mtext("Predictive accuracy",side=2,padj=-5)
-	plot.xval.CIs(xval.CIs,K,simK=" (K = 1)",ylim=c(-10,0))
-		legend(x="bottomleft",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of clusters",side=1,adj=-0.95,padj=4)
-	mtext("Cross-validation results (K=1)",side=3,adj=70,padj=-2.5,font=2,cex=1.2)
+	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation",n.reps=10,K=7,simK=1,y.lim=c(-10,0))
 dev.off()
 
+library(conStruct)
+load("sim.dataset.Robj")
+freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
+data.block <- conStruct:::make.data.block(K = 1,
+										  freq.data = freq.data,
+										  coords = sim.dataset$coords,
+										  spatial = TRUE,
+										  geoDist = fields::rdist(sim.dataset$coords))
+load("training.runs.nsp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.nsp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies_K")
+
+load("training.runs.sp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.sp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K")
+
+
+#K2
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation")
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_std_xval.pdf",width=10,height=5,pointsize=14)
+#	quartz(width=10,height=5)
+	par(mfrow=c(1,2),mar=c(4,5,4,2))
+	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation",n.reps=10,K=7,simK=2,y.lim=c(-10,0))
+dev.off()
+
+load("sim.dataset.Robj")
+freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
+data.block <- conStruct:::make.data.block(K = 1,
+										  freq.data = freq.data,
+										  coords = sim.dataset$coords,
+										  spatial = TRUE,
+										  geoDist = fields::rdist(sim.dataset$coords))
+load("training.runs.nsp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.nsp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies_K")
+
+load("training.runs.sp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.sp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
+			
+			  
+#K3
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation")
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_std_xval.pdf",width=10,height=5,pointsize=14)
+#	quartz(width=10,height=5)
+	par(mfrow=c(1,2),mar=c(4,5,4,2))
+	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation",n.reps=10,K=7,simK=3,y.lim=c(-10,0))
+dev.off()
+
+load("sim.dataset.Robj")
+freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
+data.block <- conStruct:::make.data.block(K = 1,
+										  freq.data = freq.data,
+										  coords = sim.dataset$coords,
+										  spatial = TRUE,
+										  geoDist = fields::rdist(sim.dataset$coords))
+load("training.runs.nsp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.nsp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies_K")
+
+load("training.runs.sp.Robj")
+plot.sim.pies(data.block = data.block,
+			  K = 7,
+			  training.runs = training.runs.sp,
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
+
+
+
+
 
 library(conStruct)
-for(k in 2:7){
-	load(sprintf("simK1__nsp_rep1K%s_data.block.Robj",k))
-	load(sprintf("simK1__nsp_rep1K%s_conStruct.results.Robj",k))
-	csr <- conStruct.results[[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		load(sprintf("simK1__nsp_rep1K%s_conStruct.results.Robj",k-1))
-		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
-	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
-}
-
-library(conStruct)
+lay.con <- vector("list",7)
 for(k in 2:7){
 	load(sprintf("simK1__sp_rep1K%s_data.block.Robj",k))
 	load(sprintf("simK1__sp_rep1K%s_conStruct.results.Robj",k))
@@ -67,19 +107,14 @@ for(k in 2:7){
 	if(k > 2){
 		load(sprintf("simK1__sp_rep1K%s_conStruct.results.Robj",k-1))
 		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+		clst.match <- conStruct:::match.clusters.x.runs(tmp.csr,csr,csr1.order)
 		csr1.order <- clst.match$clst.order
 	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
+	lay.con[[k]] <- calculate.layer.contributions(csr$MAP,data.block,layer.order=csr1.order)
 }
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K",7,".pdf"),width=5,height=5)
-		make.admix.pie.plot(data.block,csr,cluster.colors=c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray"),stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
+plot(unlist(lay.con))
+
+
 
 #K2
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/xvals")
@@ -114,53 +149,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_std_xval.pdf",width=10,hei
 	mtext("Cross-validation results (K=2)",side=3,adj=70,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
-library(conStruct)
-for(k in 2:7){
-	load(sprintf("simK2__nsp_rep2K%s_data.block.Robj",k))
-	load(sprintf("simK2__nsp_rep2K%s_conStruct.results.Robj",k))
-	csr <- conStruct.results[[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		load(sprintf("simK2__nsp_rep2K%s_conStruct.results.Robj",k-1))
-		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
-	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
-}
 
-library(conStruct) 
-for(k in 2:7){
-	load(sprintf("simK2__sp_rep2K%s_data.block.Robj",k))
-	load(sprintf("simK2__sp_rep2K%s_conStruct.results.Robj",k))
-	csr <- conStruct.results[[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		load(sprintf("simK2__sp_rep2K%s_conStruct.results.Robj",k-1))
-		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
-	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
-}
 
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/xvals")
 n.reps <- 10
@@ -194,56 +183,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_std_xval.pdf",width=10,hei
 	mtext("number of clusters",side=1,adj=-0.95,padj=4)
 	mtext("Cross-validation results (K=3)",side=3,adj=70,padj=-2.5,font=2,cex=1.2)
 dev.off()
-
-library(conStruct)
-load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")
-for(k in 2:7){
-	load(sprintf("simK3__nsp_rep2K%s_conStruct.results.Robj",k))
-	csr <- conStruct.results[[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		load(sprintf("simK3__nsp_rep2K%s_conStruct.results.Robj",k-1))
-		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
-	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot.tmp(sim.dataset$coords,k,sim.dataset$N,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
-}
-
-library(conStruct)
-load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")
-for(k in 2:7){
-	load(sprintf("simK3__sp_rep2K%s_conStruct.results.Robj",k))
-	csr <- conStruct.results[[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		load(sprintf("simK3__sp_rep2K%s_conStruct.results.Robj",k-1))
-		tmp.csr <- conStruct.results[[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
-	}
-	# pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_str_K",k,".pdf"),width=10,height=5)
-		# make.structure.plot(data.block,csr,cluster.order=clst.match$clst.order,cluster.colors=clst.match$cols)
-	# dev.off()
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K",k,".pdf"),width=5,height=5)
-		make.admix.pie.plot.tmp(sim.dataset$coords,k,sim.dataset$N,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
-	dev.off()
-}
-
-
 
 
 
