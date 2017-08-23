@@ -3,17 +3,17 @@ Title: Models Spatially Continuous and Discrete Population Genetic Structure
 Version: 0.0.0.9000
 Authors@R: person("Gideon", "Bradburd", email = "bradburd@msu.edu", role = c("aut", "cre"))
 Description: A method for modeling genetic data as a combination of discrete
-    layers, within each of which relatedness may decay continuously with
-    geographic distance. This package contains code for running analyses (which are
-    implemented in the modeling language rstan) and visualizing and interpreting
-    output. See the paper for more details on the model and its utility.
+    layers, within each of which relatedness may decay continuously with geographic
+    distance. This package contains code for running analyses (which are implemented
+    in the modeling language rstan) and visualizing and interpreting output. See the
+    paper for more details on the model and its utility.
 Depends:
     R (>= 3.3.2),
     rstan (>= 2.15.1)
 Imports:
-	caroline,
-	gtools
+    caroline,
+    gtools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
