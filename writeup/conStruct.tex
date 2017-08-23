@@ -94,16 +94,42 @@ We demonstrate the utility of this approach using both simulations and an empiri
 
 \newpage
 \section*{Introduction}
-The fundamental goal of evolutionary genetics is to link patterns of genetic variation 
-to the processes that have generated and maintained them.
-Often, the first step in the analysis of genetic data is to define evolutionary units of analysis
-by delineating discrete populations from which individuals or alleles are sampled \citep{wright1949genetical}.
-These units are useful for defining a scope of study in research on selection or local adaptation (ref),
-or for identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
-Delineating populations can also be useful for informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
-However, if underlying population structure is continuous, this may entail a loss of power.
+A fundemental quandary in the description of biological diversity, is
+the fact that diversity shows both discrete and continuous patterns. 
+For example, there is disagreement on species concepts because the
+process of speciation is usually gradual, and so there is no set point
+in the continuous divergence of populations when they become discrete species.
+This issue extends below the species level as patterns of phenotypic
+and genetic diversity within and among populations are shaped
+by continuous migration and drift, as well as more discrete events and
+processes such as geographic barriers, rapid expansions, bottlenecks, and rare
+long distance migration. 
 
-There have been many methods proposed to characterize populations,
+From a practical standpoint, even while acknowledging continuous
+processes, we often need to identify somewhat separable populations 
+from which individuals are sampled \citep{wright1949genetical}.
+Delineating populations is useful for systematics and for
+informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
+Furthermore, we often need to identify sets of indivduals resulting from reasonably coherent
+evolutionary histories for downstream analyses to learn about population history and adaptation. 
+
+%In studying populations we need group individuals 
+%Many downstream 
+ 
+%Biology diversity 
+
+
+%The fundamental goal of evolutionary genetics is to link patterns of genetic variation 
+%to the processes that have generated and maintained them.
+%Often, the first step in the analysis of genetic data is to define evolutionary units of analysis
+%by delineating discrete populations from which individuals or alleles are sampled \citep{wright1949genetical}.
+%These units are useful for defining a scope of study in research on selection or local adaptation (ref),
+%or for identifying either locally adapted alleles (human skin color, ralph \& coop, gartersnakes) or alleles involved in disease (cystic fibrosis).
+%Delineating populations can also be useful for informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
+%However, if underlying population structure is continuous, this may entail a loss of power.
+
+There have been many methods proposed to characterize population
+genetic structure,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
 $k$-means clustering analyses performed on dimensionality-reduction approaches (ref), 
 such as principal components analysis \citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
@@ -121,7 +147,7 @@ in which an individual's parents are found within some radius of that individual
 and discrete, ``stepping-stone'' frameworks \citep{kimura1964stepping},
 in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
-it is unsurprising that IBD is found everywhere in nature \citep{meirmans2012,Sexton_etal_2014}.
+it is unsurprising that IBD is very widespread in nature \citep{meirmans2012,Sexton_etal_2014}.
 
 The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
 as it is frequently difficult to determine whether observed patterns of genetic variation are 
@@ -130,22 +156,23 @@ This problem can be compounded if sampling is done unevenly or discretely across
 and has given rise to a debate in the population genetic literature about whether 
 individuals are best described as being drawn from continuous clines or discrete clusters 
 \citep[e.g.][]{SerrePaabo2004,rosenberg2005clines}.
-As a further complication, if local genetic drift is strong,
-continous models are expected to give rise to spatially patchy patterns
-\citep{SLFV,bramson1989crabgrass}.
+%As a further complication, if local genetic drift is strong,
+%continous models are expected to give rise to spatially patchy patterns
+%\citep{SLFV,bramson1989crabgrass}.
 
 Existing model-based clustering approaches can only describe continuous patterns of variation using
-discrete clusters, 
-and so tend to erroneously describe continuously distributed variation with multiple clusters that 
+discrete clusters, and so tend to erroneously describe continuously distributed variation with multiple clusters that 
 show spatially autocorrelated cluster membership \citep{Frantz2009,meirmans2012}.
 In analyses of empirical datasets, which often are characterized by IBD,
-model-based clustering approaches will therefore tend to overestimate the number of discrete clusters present,
-with downstream implications for interpretation of results.
-For example, conservation resources might be spread too thinly over areas 
-that are spuriously assumed to be discrete management units.
-Or, in studies of locally adaptive loci, or of the genetics of disease,
-discrete populations may be modeled in separately,
-reducing the global power to detect the genomic basis of complex phenotypes.
+model-based clustering approaches will therefore tend to overestimate
+the number of discrete clusters present. 
+
+%with downstream implications for interpretation of results.
+%For example, conservation resources might be spread too thinly over areas 
+%that are spuriously assumed to be discrete management units.
+%Or, in studies of locally adaptive loci, or of the genetics of disease,
+%discrete populations may be modeled in separately,
+%reducing the global power to detect the genomic basis of complex phenotypes.
 
 To address this, we set out to develop
 a model-based clustering method that when possible uses isolation by distance 
