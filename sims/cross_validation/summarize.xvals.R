@@ -134,3 +134,38 @@ make.admix.pie.plot.tmp <- function(coords, K, N, conStruct.results, cluster.col
     }
     return(invisible(0))
 }
+
+assess.significance <- function(mean1,mean2,se1,se2,n){
+	sd1 <- se1 * sqrt(n)
+	sd2 <- se2 * sqrt(n)
+	se <- sqrt( (sd1^2/n + sd2^2/n) )
+	df <- ( (sd1^2/n + sd2^2/n)^2 ) / ( (sd1^2/n)^2/(n-1) + (sd2^2/n)^2/(n-1))
+	t <- (mean1 - mean2)/se
+	p.value <- pt(t,df=df,lower.tail=TRUE)
+	return(p.value)
+}
+
+choose.best.K <- function(xval.CIs,K,mod,n.reps){
+	means <- paste0(mod,".means")
+	ses <- paste0(mod,".std.errs")
+	overlaps <- lapply(1:(K-1),function(k){
+					unlist(
+						lapply((k+1):K,function(j){
+							assess.significance(xval.CIs[[means]][k],
+									xval.CIs[[means]][j],
+									xval.CIs[[ses]][k],
+									xval.CIs[[ses]][j],
+									n.reps)
+						})
+					)
+				})
+	best <- FALSE
+	k <- 1
+	while(!best){
+		overlaps
+	}
+}
+
+choose.best.mod <- function(xval.CIs,K){
+	sp.best.K <- choose.best.K(xval.CIs,K,"sp")
+}
