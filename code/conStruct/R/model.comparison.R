@@ -35,6 +35,8 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 make.figs = make.figs,
 											 save.files = save.files)
 						})
+	names(training.runs.sp) <- paste0("K",1:K)
+	save(training.runs.sp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.sp.Robj"))
 	training.runs.nsp <- lapply(K,function(k){
 								conStruct(spatial = FALSE,
 											 K = k,
@@ -46,6 +48,8 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 make.figs = make.figs,
 											 save.files = save.files)
 						})
+	names(training.runs.nsp) <- paste0("K",1:K)
+	save(training.runs.nsp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.nsp.Robj"))
 	test.lnl.sp <- lapply(training.runs.sp,
 						function(x){
 							fit.to.test(test.data,x[[1]])
