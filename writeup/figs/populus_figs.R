@@ -26,7 +26,7 @@ dev.off()
 library(conStruct)
 library(maps)
 my.rep <- 1
-load("~/Dropbox/conStruct/data/poplars/poplar.spStr.dataset.Robj")
+load("~/Dropbox/conStruct/data/poplars/poplar.data.redux.Robj")
 col.mat1 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=TRUE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 col.mat2 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=FALSE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sampling_map.pdf",width=6,height=5,pointsize=13)
@@ -44,19 +44,34 @@ data.block <- conStruct:::make.data.block(K = 1,
 										  coords = poplar.data$coords,
 										  spatial = TRUE,
 										  geoDist = fields::rdist.earth(poplar.data$coords))
-load("~/Dropbox/conStruct/data/poplars/training.runs.sp.Robj")
+
+output.list.sp <- vector("list",7)
+for(k in 1:7){
+	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_sp_conStruct.results.Robj",k))
+	output.list.sp[[k]] <- conStruct.results
+}
+
+output.list.nsp <- vector("list",7)
+for(k in 1:7){
+	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_nsp_conStruct.results.Robj",k))
+	output.list.nsp[[k]] <- conStruct.results
+}
+
 for(k in 2:7){
 	data.block$K <- k
-	csr <- training.runs.sp[[k]][[1]]
+	csr <- output.list.sp[[k]][[1]]
 	clst.match <- NULL
 	if(k < 4){
 		csr1.order <- NULL
 	}
 	clst.match$cols <- c(4,2)
 	if(k > 2){
-		tmp.csr <- training.runs.sp[[k-1]][[1]]
+		tmp.csr <- output.list.sp[[k-1]][[1]]
 		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
 		csr1.order <- clst.match$clst.order
+	}
+	if(is.null(csr1.order)){
+		csr1.order <- 1:k
 	}
 	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp",k,".pdf"),width=5,height=5)
 		par(mar=c(5,5,1,1))
@@ -70,32 +85,40 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_clst_covs.p
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=7,data.block=data.block,training.runs=training.runs.sp,col.mat1=col.mat1,col.mat2=col.mat2)
-		legend(x="topright",pch=21,
+	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list=output.list.sp,col.mat1=col.mat1,col.mat2=col.mat2)
+	par(xpd=NA)
+		legend(-0.5,0.06,pch=21,
 				pt.bg=c(1,"forestgreen","forestgreen"),
 				col=c(1,1,"forestgreen"),
 				legend=c("balsamifera - balsamifera",
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
+	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","cluster covariance"))
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
 
-load("~/Dropbox/conStruct/data/poplars/training.runs.nsp.Robj")
 for(k in 2:7){
 	data.block$K <- k
 	data.block$spatial <- FALSE
-	csr <- training.runs.nsp[[k]][[1]]
+	csr <- output.list.nsp[[k]][[1]]
 	clst.match <- NULL
-	if(k < 4){
+	if(k <= 2){
 		csr1.order <- NULL
 	}
-	clst.match$cols <- c(4,2)
-	if(k > 2){
-		tmp.csr <- training.runs.nsp[[k-1]][[1]]
+	if(k==2){
+		tmp.csr <- output.list.sp[[k]][[1]]
 		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
 		csr1.order <- clst.match$clst.order
+	}
+	if(k > 2){
+		tmp.csr <- output.list.nsp[[k-1]][[1]]
+		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+		csr1.order <- clst.match$clst.order
+	}
+	if(is.null(csr1.order)){
+		csr1.order <- 1:k
 	}
 	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp",k,".pdf"),width=5,height=5)
 		par(mar=c(5,5,1,1))
@@ -109,7 +132,65 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_clst_covs.
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=7,data.block=data.block,training.runs=training.runs.nsp,col.mat1=col.mat1,col.mat2=col.mat2)
+	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list=output.list.nsp,col.mat1=col.mat1,col.mat2=col.mat2,output.list.sp=output.list.sp)
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
+dev.off()
+
+
+laycon.sp <- matrix(0,nrow=7,ncol=7)
+colnames(laycon.sp) <- paste(1:7)
+for(k in 1:K){
+	csr <- output.list.sp[[k]][[1]]
+	clst.match <- NULL
+	if(k < 4){
+		csr1.order <- NULL
+	}
+	if(k > 2){
+		tmp.csr <- output.list.sp[[k-1]][[1]]
+		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+		csr1.order <- clst.match$clst.order
+	}
+	if(is.null(csr1.order)){
+		csr1.order <- 1:k
+	}
+	laycon.sp[1:k,k] <- calculate.layer.contributions(csr$MAP,
+														data.block)[csr1.order]
+}
+
+laycon.nsp <- matrix(0,nrow=7,ncol=7)
+colnames(laycon.nsp) <- paste(1:7)
+for(k in 1:K){
+	csr <- output.list.nsp[[k]][[1]]
+	clst.match <- NULL
+	if(k <= 2){
+		csr1.order <- NULL
+	}
+	if(k==2){
+		tmp.csr <- output.list.sp[[k]][[1]]
+		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+		csr1.order <- clst.match$clst.order
+	}
+	if(k > 2){
+		tmp.csr <- output.list.nsp[[k-1]][[1]]
+		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+		csr1.order <- clst.match$clst.order
+	}
+	if(is.null(csr1.order)){
+		csr1.order <- 1:k
+	}
+	laycon.nsp[1:k,k] <- calculate.layer.contributions(csr$MAP,
+														data.block)[csr1.order]
+}
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
+	barplot(laycon.sp,	
+			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			xlab="",ylab="layer importance")
+	barplot(laycon.nsp,
+			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			xlab="",ylab="")
+			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
+			mtext(side=3,text="Layer contributions (Poplars)",padj=-2.25,adj=7,font=2,cex=1.2)
 dev.off()
