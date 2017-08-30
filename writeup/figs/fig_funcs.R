@@ -83,7 +83,6 @@ plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,cex=1.5,jitter=0,.
 }
 
 calculate.qij <- function(cluster.params,data.block,i,j){
-	cluster.params <- fix.pars(cluster.params)
 	q_ij <- 2 * cluster.params$alpha0 * 
 				exp(-(cluster.params$alphaD * 
 						data.block$geoDist[i,j])^cluster.params$alpha2) + 
@@ -124,40 +123,43 @@ get.admix.CIs <- function(conStruct.results){
 	CIs <- apply(conStruct.results$posterior$admix.proportions,
 					c(2,3),
 					function(x){
-						quantile(x,c(0.025,0.975))
+						quantile(x,c(0.005,0.995))
 					}
 			)
 	return(CIs)
 }
 
 viz.admix.results <- function(sim.admix.props,conStruct.results,clst.order=NULL){
-	layout(matrix(c(1,1,2),1,3))
+	#layout(matrix(c(1,1,2),1,3))
 	k.cols <- c("blue", "red", "green", "yellow", "purple", "orange", "lightblue", "darkgreen", "lightblue", "gray")	
 	K <- ncol(sim.admix.props)
 	if(is.null(clst.order)){
 		clst.order <- 1:K
 	}
 	N <- nrow(sim.admix.props)
-	plot(0,ylim=c(0,1),xlim=c(1,N) + c(-0.5,0.5),type='n',ylab="admixture proportion",xlab="samples")
+	#plot(0,ylim=c(0,1),xlim=c(1,N) + c(-0.5,0.5),type='n',ylab="admixture proportion",xlab="samples")
 	admix.prop.CIs <- get.admix.CIs(conStruct.results)
-	for(k in 1:K){
-		segments(1:N,admix.prop.CIs[1,,k],1:N,admix.prop.CIs[2,,k],col=adjustcolor(k.cols[k],0.7),lwd=2.5)
-		points(sim.admix.props[,clst.order[k]],col="gray",bg=k.cols[k],pch=23,cex=1.2)
-	}
+	# for(k in 1:K){
+		# segments(1:N,admix.prop.CIs[1,,k],1:N,admix.prop.CIs[2,,k],col=adjustcolor(k.cols[k],0.7),lwd=2.5)
+		# points(sim.admix.props[,clst.order[k]],col="gray",bg=k.cols[k],pch=23,cex=1.2)
+	# }
 	plot(sim.admix.props,conStruct.results$MAP$admix.proportions[,clst.order],type='n',
 			xlab="true admixture proportions",
-			ylab="MAP estimated admixture proportions")
+			ylab="estimated admixture proportions",
+			main=sprintf("Fitting admixture parameters (K = %s)",K))
 		abline(0,1,col=1,lty=2)
 		for(k in 1:K){
 			segments(sim.admix.props[,clst.order[k]],
 						admix.prop.CIs[1,,k],
 						sim.admix.props[,clst.order[k]],
 						admix.prop.CIs[2,,k],
-						col=adjustcolor(k.cols[k],0.7),lwd=2)
-			points(sim.admix.props[,k],conStruct.results$MAP$admix.proportions[,clst.order[k]],col="gray",bg=k.cols[k],pch=23,cex=1.2)
+						col=adjustcolor(k.cols[k],1),lwd=3)
+			#points(sim.admix.props[,k],conStruct.results$MAP$admix.proportions[,clst.order[k]],col="gray",bg=k.cols[k],pch=23,cex=1.2)
 		}
-	legend(x="topleft",lty=c(NA,1),lwd=c(NA,2),pch=c(23,NA),col=1,pt.bg="gray",
-			legend=c("true admixture proportion","95% credible interval"))
+	legend(x="topleft",lty=1,lwd=2,col=k.cols[1:K],
+			legend=paste0("Cluster ",1:K),title="99% credible interval")
+	# legend(x="topleft",lty=c(NA,1),lwd=c(NA,2),pch=c(23,NA),col=1,pt.bg="gray",
+			# legend=c("true admixture proportion","99% credible interval"))
 }
 
 plot.cluster.curves <- function(data.block, conStruct.results, cluster.cols=NULL,sample.cols=NULL,add=FALSE){
@@ -190,25 +192,32 @@ plot.cluster.curves <- function(data.block, conStruct.results, cluster.cols=NULL
     return(invisible("cluster covs"))
 }
 
-plot.K.cluster.curves <- function(K,data.block,training.runs,col.mat1=NULL,col.mat2=NULL){
+plot.K.cluster.curves <- function(Ks,data.block,output.list,col.mat1=NULL,col.mat2=NULL,output.list.sp=NULL){
 if(is.null(col.mat1)){
 	col.mat1 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
 }
 if(is.null(col.mat2)){
 	col.mat2 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
 }
-	for(k in 2:K){
+	for(k in Ks){
 		data.block$K <- k
-		csr <- training.runs[[k]][[1]]
+		csr <- output.list[[k]][[1]]
 		clst.match <- NULL
-		if(k < 4){
+		if(k <= 2){
 			csr1.order <- NULL
 		}
-		clst.match$cols <- c(4,2)
-		if(k > 2){
-			tmp.csr <- training.runs[[k-1]][[1]]
+		if(k==2 & !is.null(output.list.sp)){
+			tmp.csr <- output.list.sp[[k]][[1]]
 			clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
 			csr1.order <- clst.match$clst.order
+		}
+		if(k > 2){
+			tmp.csr <- output.list[[k-1]][[1]]
+			clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
+			csr1.order <- clst.match$clst.order
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
 		}
 				par(mar=c(5,5,1,1))
 			    order.mat <- order(data.block$geoDist)
@@ -225,17 +234,6 @@ if(is.null(col.mat2)){
 			        col=adjustcolor(col.mat1[upper.tri(data.block$obsCov, diag = TRUE)],0.7),
 			        bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7))
 				plot.cluster.curves(data.block, csr, cluster.cols=clst.match$cols,add=TRUE)
-				if(k==2){
-					legend(x="topright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","cluster covariance"))
-				}
-				# if(k==5){
-					# legend(x="topright",pch=21,
-							# pt.bg=c(1,"forestgreen","forestgreen"),
-							# col=c(1,1,"forestgreen"),
-							# legend=c("balsamifera - balsamifera",
-									 # "balsamifera - trichocarpa",
-									 # "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
-				# }
 		}
 		mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 		mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
@@ -255,20 +253,20 @@ plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 	plot.xval.CIs(xval.CIs,K,ylim=y.lim)
 		legend(x="bottomleft",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
 	mtext("number of clusters",side=1,adj=-0.95,padj=4)
-	mtext("Cross-validation results (K=1)",side=3,adj=70,padj=-2.5,font=2,cex=1.2)
+	mtext(sprintf("Cross-validation results (K=%s)",simK),side=3,adj=70,padj=-2.5,font=2,cex=1.2)
 }
 
-plot.sim.pies <- function(data.block,K,training.runs,file.name){
+plot.sim.pies <- function(data.block,K,output.list,file.name){
 	for(k in 2:K){
 		data.block$K <- k
-		csr <- training.runs[[k]][[1]]
+		csr <- output.list[[k]][[1]]
 		clst.match <- NULL
 		if(k < 4){
 			csr1.order <- NULL
 		}
 		clst.match$cols <- c(4,2)
 		if(k > 2){
-			tmp.csr <- training.runs[[k-1]][[1]]
+			tmp.csr <- output.list[[k-1]][[1]]
 			clst.match <- conStruct:::match.clusters.x.runs(tmp.csr,csr,csr1.order)
 			csr1.order <- clst.match$clst.order
 		}
@@ -276,34 +274,6 @@ plot.sim.pies <- function(data.block,K,training.runs,file.name){
 			make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
 		dev.off()
 	}
-}
-
-plot.sim.xvals.winset <- function(dir,n.reps,K,simK,y.lim){
-	for(n in 1:n.reps){
-		load(sprintf("simK%s_rep%s_test.lnl.Robj",simK,n))
-		assign(paste0("tl",n),test.lnl)
-	}
-	x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-	x.vals.std <- lapply(x.vals,standardize.xvals)
-	xval.CIs <- get.xval.CIs(x.vals.std,K)
-	par(mfrow=c(1,2),mar=c(4,5,4,2))
-	plot.xval.CIs(xval.CIs,K,jitter=0.1)
-		mtext("Predictive accuracy",side=2,padj=-5)
-	rect(1.7,-700,7.2,400,lty=2)
-	arrows(1.7,-700,2.5,-3e3,lty=1,length=0.1)
-	arrows(7.2,-700,6.6,-3e3,lty=1,length=0.1)
-	TeachingDemos::subplot(fun = {
-						plot.xval.CIs(xval.CIs,K,k.range=c(2:7),axes=FALSE,cex=1)
-							axis(1,at=2:7,labels=c(2,"","","","",7),cex.axis=0.8,lty=2)
-							axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=2)
-							box(lwd=1.2,lty=2)
-							legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"),cex=0.8)
-						},
-					x=c(2.5,6.6),y=c(-12.5e3,-3e3))
-		plot.xval.CIs(xval.CIs,K,simK=" (K = 2)",k.range=c(2:7),ylim=c(-9,0))
-		legend(x="bottomleft",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of clusters",side=1,adj=-0.95,padj=4)
-	mtext("Cross-validation results (K=2)",side=3,adj=70,padj=-2.5,font=2,cex=1.2)
 }
 
 admix.pie.plot <- function (coords, w, cluster.colors, radii = 2.7, add = FALSE,box=TRUE) {
@@ -436,6 +406,7 @@ make.bear.redux.result.plot <- function(csr,coords,lump.dist,cluster.colors,clus
 	admix.pie.plot(coords = unique.coords.list$sampling.foci, 
 					w = collapse.rows(matrix=csr$MAP$admix.proportions,index=unique.coords.list$focus.membership), 
 					cluster.colors = cluster.colors,
+					radii=3.2,
 					add=TRUE,
 					box=box)
 	par(xpd=NA)
@@ -445,5 +416,5 @@ make.bear.redux.result.plot <- function(csr,coords,lump.dist,cluster.colors,clus
 			 y1 = unique.coords.list$sampling.foci[order(unique.coords.list$sampling.foci[,1]),2],
 			 lty = 2,
 			 lwd=0.5,
-			 col = "gray")
+			 col = adjustcolor(1,0.6))
 }
