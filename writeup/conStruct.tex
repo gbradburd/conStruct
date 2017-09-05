@@ -269,7 +269,7 @@ Within each layer allele frequencies are expected to change gradually with dista
 but observed frequencies can change abruptly at many loci 
 if the proportions by which individuals' ancestry derive from each layer 
 (the ``admixture'' coefficients) 
-do so as well.
+do so as well. 
 
 To allow flexibility in the form of the decay of allelic covariance with geographic distance within each cluster, 
 we define the covariance within cluster $k$ between samples $i$ and $j$ to be:
@@ -294,7 +294,9 @@ If the geographic distance between them is very large,
 their covariance will be equal to to the background level $\phi^{(k)}$ within the cluster.
 The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
 connecting the $k$th population to the population ancestral to all modeled
-layers \citep[see for example ][]{patterson_ancient_2012, peter_fstats}.
+layers \citep[see for example ][]{patterson_ancient_2012,
+  peter_fstats}. In the methods section \ref{rationale} we lay out a
+simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one cluster.
 The ``admixture'' proportion of the $i$th sample in the $k$th cluster, denoted $w^{(k)}_i$,
@@ -335,7 +337,7 @@ This term on the diagonal of the parametric covariance matrix captures processes
 such as inbreeding and the sampling process.
 
 \paragraph{Likelihood and inference}
-If allele frequencies at each locus
+\gc{Assuming that the} allele frequencies at each locus
 were independent between loci and multivariate normally distributed across populations, 
 then their allelic covariance $\widehat{\Omega}$ 
 would be Wishart distributed with degrees of freedom equal to $L$, 
@@ -345,8 +347,12 @@ and so define the likelihood of the allelic covariance to be
 \begin{equation}
 P(\widehat{\Omega} \; | \; \Omega) = \mathcal{W} \left( L\widehat{\Omega} \; | \; \Omega,L\right) .
 \end{equation}
-Linkage disequilibrium (LD) between loci will decrease the effective number of degrees of freedom, 
-a complication we discuss further below.
+Linkage disequilibrium (LD) between loci will decrease the effective
+number of degrees of freedom.  \gc{One possible solution, that we have
+  not implemented yet, is to estimate an \emph{effective} number of loci 
+by introducing a parameter to modify the given degrees of freedom 
+and thereby informally model linkage between loci \citep[e.g.][]{EEMS}.}
+
 
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
@@ -359,7 +365,9 @@ P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\phi,\eta,\gamma,D) \right)
 P(w)P(\alpha)P(\phi)P(\eta)P(\gamma) ,
 \end{equation}
 where $P(w)$, $P(\alpha)$, $P(\phi)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
-All parameters are given (half-)Gaussian priors except for $\alpha_2$, which is uniform on $(0,2)$ and $w$, which is Dirichlet
+All parameters are given (half-)Gaussian priors except for $\alpha_2$,
+which is uniform on $(0,2)$ and $w$, which is an \gc{independent Dirichlet, of
+  dimension $K$, for each individual}
 (see Table \ref{tab:param_prior_tab} for specifics).
 Parameters are independent between layers.
 We use Hamiltonian Monte Carlo as implemented in STAN \citep{stan, NUTS, stan_lib, rstan} 
@@ -383,11 +391,13 @@ around their expectations,
 while the standard assignment methods assume that the error is binomially distributed \citep{Engelhardt2012}.  
 Therefore, we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
-by comparing their performance in a common framework.
+by comparing their performance in a common framework. \gc{We also
+  validate our claim that the results of our non-spatial method are a
+  close match to those of STRUCTURE-based approaches.}
 
 \paragraph{Choice of cluster number and cross-validation}
-There are a number of reasons, both statistical and biological, 
-why there is no true (or right) number of layers for real datasets,
+There are a number of \gc{reasons 
+why there is no true (or right)} number of layers for real datasets,
 discussed further in the Discussion.
 However, it is still important to assess whether additional spatial layers (larger $K$)
 meaningfully model patterns in the data
@@ -432,7 +442,8 @@ means that isolation by distance is likely a feature of the data.
 Cross-validation provides a valuable summary of how much explanatory power
 is added by spatial structure within each layer, and each additional layer.
 A simple $t$-test can be used to assess whether additional layers
-show statistically significantly greater predictive accuracy.
+show statistically significantly greater predictive accuracy. \gc{DO
+  WE DO t-test? IF NOT DROP THIS'}
 However, we remind users that ``statistical significance does not imply real-world significance'',
 and so small but statistically significant differences between models
 should probably not be relied on too strongly.
@@ -916,17 +927,15 @@ For example, we currently assume that all layers within a model are equally unre
 similar to the F-model in \citep{falush2003}.
 However, we could extend the existing model by implementing 
 a relatedness structure between the layers by, for example, 
-estimating a population phylogeny between them \citep[e.g.][]{treemix}.
+estimating a population phylogeny between them
+\citep[e.g.][]{treemix}.
 
-Similarly, we currently assume that all loci are independent, 
-such that the number of loci in the dataset gives the degrees of 
-freedom of the Wishart distribution in our likelihood calculations.  
-Linkage disequilibrium (LD) between loci will decrease 
-the effective number of degrees of freedom, 
-artificially increasing users' confidence in their results.  
-One possible solution is to estimate an \emph{effective} number of loci 
-by introducing a parameter to modify the given degrees of freedom 
-and thereby model linkage between loci \citep[e.g.][]{EEMS}.
+%%Similarly, we currently assume that all loci are independent, 
+%such that the number of loci in the dataset gives the degrees of 
+%freedom of the Wishart distribution in our likelihood calculations.  
+%Linkage disequilibrium (LD) between loci will decrease 
+%the effective number of degrees of freedom, 
+%artificially increasing users' confidence in their results.  
 
 A final exciting direction is to model relatedness within a cluster as a spatiotemporal process, 
 in which covariance decays both with distance in space and in time.  
@@ -965,7 +974,7 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 
 
 \section{Model rationale}
-\subsection{Drift, admixture, and space}
+\subsection{Drift, admixture, and space} \label{rationale}
 \paragraph{Drift} 
 We first provide a simple model of allele frequencies within a cluster. 
 Imagine a sample $i$ that draws all of its ancestry from cluster $k$.
