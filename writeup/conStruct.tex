@@ -609,27 +609,6 @@ The results of these analyses are shown in
 Figs \ref{populus_xvals} and \ref{populus_pies}, 
 as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplementary Materials.
 
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=6in,height=5in]{figs/populus/populus_sampling_map.pdf}}
-	\caption{
-	Map of the sampled \textit{Populus} populations included in the analysis.
-	The color of the sampling location denotes the putative species.
-    }\label{populus_map}
-\end{figure}
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=6in,height=3in]{figs/populus/populus_std_xval.pdf}}
-	\caption{
-	Cross-validation results for \textit{Populus} dataset 
-	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-	The first panel in each row shows all results; 
-	the second panel zooms in on the results from analyses run with $K = 2$ through 7.
-    }\label{populus_xvals}
-\end{figure}
-
 \begin{figure}
 	\centering
 		\subcaptionbox{$K=2$\label{populus_pies:K2}}
@@ -642,6 +621,17 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplemen
 	Map of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 4.
     }\label{populus_pies}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=3in]{figs/populus/populus_std_xval.pdf}}
+	\caption{
+	Cross-validation results for \textit{Populus} dataset 
+	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	The first panel in each row shows all results; 
+	the second panel zooms in on the results from analyses run with $K = 2$ through 7.
+    }\label{populus_xvals}
 \end{figure}
 
 All models with $K>1$ assigned the majority of each species
@@ -705,7 +695,7 @@ around the following questions:
 
 Our data, originally published by \cite{Puckett2015}, consist of 95 individuals 
 sampled across the United States and on the West coast of Canada,
-genotyped at just under 22,000 bi-allelic loci (map of the sampling shown in Fig \ref{bear_map}).
+genotyped at just under 22,000 bi-allelic loci.
 The distribution of missing data across these individuals was uneven, 
 with a few individuals representing most of the missing data, 
 so we removed individuals with greater than 4\% missing data, 
@@ -715,25 +705,6 @@ using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of be
 and compared these models using cross-validation.
 The results of these analyses are shown in Figs \ref{bear_xvals} - \ref{bear_laycon}, 
 as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Supplementary Materials.
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sampling_map.pdf}}
-	\caption{
-	Map of the sampled black bear individuals included in the analysis.
-    }\label{bear_map}
-\end{figure}
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=6in,height=3in]{figs/bears/bear_std_xval.pdf}}
-	\caption{
-	Cross-validation results for black bear dataset 
-	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-	The first panel in each row shows all results; 
-	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7.
-    }\label{bear_xvals}
-\end{figure}
 
 \begin{figure}
 	\centering
@@ -748,6 +719,17 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Suppleme
 	and the admixture results for all individuals included within each group are 
 	shown in the plot above.
     }\label{bear_K3}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=3in]{figs/bears/bear_std_xval.pdf}}
+	\caption{
+	Cross-validation results for black bear dataset 
+	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	The first panel in each row shows all results; 
+	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7.
+    }\label{bear_xvals}
 \end{figure}
 
 \begin{figure}
@@ -1557,6 +1539,15 @@ as the relative contribution of the $k$th layer to total agreement:
 	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
 	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK3}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=5in]{figs/populus/populus_sampling_map.pdf}}
+	\caption{
+	Map of the sampled \textit{Populus} populations included in the analysis.
+	The color of the sampling location denotes the putative species.
+    }\label{populus_map}
 \end{figure}
 
 \begin{figure}
