@@ -418,3 +418,36 @@ make.bear.redux.result.plot <- function(csr,coords,lump.dist,cluster.colors,clus
 			 lwd=0.5,
 			 col = adjustcolor(1,0.6))
 }
+
+match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
+	cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+	K1 <- ncol(run1$MAP$admix.proportions)
+		if(!is.null(run1.order)){
+			run1$MAP$admix.proportions <- run1$MAP$admix.proportions[,run1.order]
+		}
+		K1.cols <- cluster.colors[1:K1]
+	K2 <- ncol(run2$MAP$admix.proportions)
+		K2.cols <- numeric(K2)
+	k.combn <- expand.grid(1:K1,1:K2)
+	clst.sims <- unlist(lapply(1:nrow(k.combn),
+						function(n){
+							measure.frob.similarity(run1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
+													run2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
+													K=1)
+							}))
+	while(length(which(K2.cols == 0)) > (K2-K1)){
+		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
+		run2.match <- k.combn[tmp.max,2]
+		run1.match <- k.combn[tmp.max,1]
+		K2.cols[run2.match] <- K1.cols[run1.match]
+		clst.sims[which(k.combn[,1]==run1.match)] <- NA
+		clst.sims[which(k.combn[,2]==run2.match)] <- NA
+	}
+	if(K2 > K1){
+		K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
+	}
+	K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
+	clst2.info <- list("cols" = K2.cols,
+					   "clst.order" = K2.clst.order)
+	return(clst2.info)
+}
