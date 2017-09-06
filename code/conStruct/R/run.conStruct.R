@@ -1,18 +1,118 @@
-#'@export
-conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
+#' Run a conStruct analysis.
+#'
+#' \code{conStruct} runs a conStruct analysis of genetic data.
+#'
+#' This function initiates an analysis that uses  
+#' geographic and genetic relationships between samples 
+#' to estimate sample membership (admixture proportions) across 
+#' a user-specified number of layers.
+#'
+#' @param spatial A logical indicating whether to perform a spatial analysis. 
+#' 				  Default is \code{TRUE}. 
+#' @param K An \code{integer} that indicates the number of layers to be 
+#' 				  included in the analysis.
+#' @param freqs A \code{matrix} of allele frequencies with one column per 
+#'				locus and one row per sample.
+#' 				Missing data should be indicated with \code{NA}.
+#' @param geoDist A \code{matrix} of geographic distance between samples. 
+#'					If \code{NULL}, user can only run the nonspatial model.
+#' @param coords A \code{matrix} giving the longitude and latitude 
+#'					(or X and Y coordinates) of the samples.
+#' @param prefix A character \code{vector} giving the prefix to be attached 
+#'					 to all output files.
+#' @param n.chains An integer indicating the number of MCMC chains to be run 
+#'					in the analysis. Default is 1.
+#' @param n.iter An \code{integer} giving the number of iterations each MCMC 
+#'				 chain is run. Default is 1e3.  If the number of iterations 
+#'				 is greater than 500, the MCMC is thinned so that the number 
+#'				 of retained iterations is 500 (before burn-in).
+#' @param make.figs A \code{logical} value indicating whether to automatically 
+#'					make figures once the analysis is complete. Default is 
+#'					\code{TRUE}.
+#' @param save.files A \code{logical} value indicating whether to automatically 
+#'						save output and intermediate files once the analysis is
+#'						 complete. Default is \code{TRUE}.
+#'
+#' @return This function returns a list with one entry for each chain run 
+#'			(specified with \code{n.chains}). The entry for each chain is named 
+#'			"chain_X" for the Xth chain.  The components of the entries for each 
+#'			are detailed below: 
+#'			\itemize{
+#'				\item \code{posterior} gives parameter estimates over the posterior 
+#'						distribution of the MCMC.
+#'					\itemize{
+#'						\item \code{n.iter} number of MCMC iterations retained for 
+#'								analysis (half of the \code{n.iter} argument 
+#'								specified in the function call).
+#'						\item \code{lpd} vector of log posterior density over the retained 
+#'								MCMC iterations.
+#'						\item \code{nuggets} matrix of estimated nugget parameters with 
+#'								one row per MCMC iteration and one column per sample.
+#'						\item \code{par.cov} array of estimated parametric covariance matrices, 
+#'								for which the first dimension is the number of MCMC iterations.
+#'						\item \code{gamma} vector of estimated gamma parameter.
+#'						\item \code{cluster.params} list summarizing estimates of layer-specific 
+#'								parameters. There is one entry for each layer specified, and the 
+#'								entry for the kth layer is named "Cluster_k".
+#'							\itemize{
+#'								\item \code{alpha0} vector of estimated alpha0 parameter in the 
+#'										kth cluster.
+#'								\item \code{alphaD} vector of estimated alphaD parameter in the 
+#'										kth cluster.
+#'								\item \code{alpha2} vector of estimated alpha2 parameter in the 
+#'										kth cluster.
+#'								\item \code{mu} vector of estimated mu parameter in the 
+#'										kth cluster.
+#'								\item \code{cluster.cov} vector of estimated cluster-specific 
+#'										covariance parameter in the kth cluster.
+#'							}
+#'						\item \code{admix.proportions} array of estimated admixture proportions.
+#'								The first dimension is the number of MCMC iterations, 
+#'								the second is the number of samples, 
+#' 								and the third is the number of layers.
+#'					}
+#'			\item \code{MAP} gives point estimates of the parameters listed in the \code{posterior}
+#'								list described above. Values are indexed at the MCMC iteration 
+#'								with the greatest posterior probability.
+#'					\itemize{
+#'						\item \code{index.iter} the iteration of the MCMC with the highest 
+#'								posterior probability, which is used to index all parameters 
+#'								included in the \code{MAP} list
+#'						\item \code{lpd} the greatest value of the posterior probability
+#'						\item \code{nuggets} point estimate of nugget parameters
+#'						\item \code{par.cov} point estimate of parametric covariance
+#'						\item \code{gamma} point estimate of gamma parameter
+#'						\item \code{cluster.params} point estimates of all cluster-specific parameters 
+#'						\item \code{admix.proportions} point estimates of admixture proportions.
+#'					}
+#'			}
+#'
+#' @details This function acts as a wrapper around a STAN model block determined 
+#'			by the user-specified model (e.g., a spatial model with 3 layers, 
+#'			or a nonspatial model with 5 layers).
+#'			User-specified data are checked for appropriate format and consistent dimensions,
+#'			then formatted into a \code{data.block},
+#'			which is then passed to the STAN model block.
+#'			Along with the \code{conStruct.results} output described above, 
+#'			several objects are saved during the course of a \code{conStruct} call
+#'			(if \code{save.files=TRUE}).
+#'			These are the \code{data.block}, which contains all data passed to the STAN model block,
+#'			\code{model.fit}, which is unprocessed results of the STAN run in \code{stanfit} format,
+#'			and the \code{conStruct.results}, which are saved in the course of the function call
+#'			in addition to being returned.
+#'			If \code{make.figs=TRUE}, running \code{conStruct} will also generate many output figures, 
+#'			which are detailed in the function \code{make.all.the.plots} in this package.
+#'
+#' @import rstan
+#' @export
+conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
 	call.check <- check.call(args <- as.list(environment()))
-	#validate data block
 	freq.data <- process.freq.data(freqs)
-	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp)
+	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp=NULL)
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
 		}
-	#validate model specification
-	#make.stan.code.block
 	stan.block <- make.stan.code.block(spatial,K)
-		#write stan block to file
-	#run model
-	#put stan in tryCatch, email me
 	model.fit <- rstan::stan(model_code = stan.block,
 							 refresh = min(n.iter/10,500),
 							 data = data.block,
@@ -29,7 +129,7 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,temp=NULL,coords,prefix=
 			save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
 		}
 	if(make.figs){
-		make.all.the.plots(conStruct.results,n.chains,data.block,prefix,cluster.colors=NULL)
+		make.all.the.plots(conStruct.results,data.block,prefix,cluster.colors=NULL)
 	}
 	return(conStruct.results)
 }
@@ -94,7 +194,7 @@ make.data.block.S3 <- function(data.block){
 }
 
 print.data.block <- function(data.block){
-	print(str(data.block,max.level=1))
+	print(utils::str(data.block,max.level=1))
 }
 
 validate.data.block <- function(data.block){
@@ -136,7 +236,7 @@ make.freq.data.list.S3 <- function(freq.data){
 }
 
 print.freq.data <- function(freq.data){
-	print(str(freq.data,max.level=1))
+	print(utils::str(freq.data,max.level=1))
 }
 
 identify.invar.sites <- function(freqs){
@@ -167,9 +267,9 @@ drop.missing <- function(freqs){
 
 calc.covariance <- function(freqs){
 	x <- t(freqs)
-	allelic.covariance <- cov(x,use="pairwise.complete.obs") - 
-							(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
-							(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
+	allelic.covariance <- stats::cov(x,use="pairwise.complete.obs") - 
+									(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
+									(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
 	diag(allelic.covariance) <- 1/4
 	return(allelic.covariance)
 }
@@ -188,7 +288,7 @@ process.freq.data <- function(freqs){
 
 standardize.distances <- function(D){
 	if(!is.null(D)){
-		stdev.D <- sd(D[upper.tri(D)])
+		stdev.D <- stats::sd(D[upper.tri(D)])
 		std.D <- D/stdev.D
 	} else {
 		std.D <- NULL
