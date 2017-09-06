@@ -64,7 +64,7 @@ make.all.the.plots <- function(conStruct.results,data.block,prefix,cluster.color
 			stop("\nyou must specify one color per cluster\n\n")
 		}
 	} else {
-		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+		cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 		if(data.block$K > 10){
 			stop("\nyou has specified more clusters than there are default colors.\n you must specify your own cluster.colors")
 		}
@@ -133,7 +133,7 @@ make.structure.plot <- function(admix.proportions,mar=c(2,4,2,2),sample.order=NU
 		sample.order <- order(admix.proportions[,sort.by])
 	}
 	if(is.null(cluster.colors)){
-		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+		cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	} else {
 		if(K > length(cluster.colors)){
 			stop("\nyou must specify one color per cluster\n")
@@ -199,7 +199,7 @@ make.admix.pie.plot <- function(admix.proportions,coords,cluster.colors=NULL,rad
 	K <- ncol(admix.proportions)
 	N <- nrow(admix.proportions)	
 	if(is.null(cluster.colors)){
-		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+		cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	} else {
 		if(K > length(cluster.colors)){
 			stop("\nyou must specify one color per cluster\n")
