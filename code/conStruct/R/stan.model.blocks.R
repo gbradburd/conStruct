@@ -92,13 +92,13 @@ model {
 
 multiK.stan.block <- "
 functions {
-	matrix admixed_covariance(int N, int K, matrix w_mat, vector nugget, vector mu, real gamma) {
+	matrix admixed_covariance(int N, int K, matrix w_mat, vector nugget, vector phi, real gamma) {
 		matrix[N,N] parCov;
 		matrix[N,N] Nug_mat;
 		parCov = rep_matrix(0,N,N);
 		Nug_mat = diag_matrix(nugget);
 		for(k in 1:K){
-			parCov = parCov + tcrossprod(to_matrix(w_mat[,k])) * mu[k];
+			parCov = parCov + tcrossprod(to_matrix(w_mat[,k])) * phi[k];
 		}
 		parCov = gamma + parCov + Nug_mat;
 		return parCov;	
@@ -125,7 +125,7 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	positive_ordered[K] mu;				// shared drift effect in cluster k
+	positive_ordered[K] phi;				// shared drift effect in cluster k
 	real<lower=0> gamma;				// covariance between all pairs of clusters
   	vector<lower=0>[N] nugget; 			// sample-specific variance (allele sampling error + sample-specific drift)
 	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K clusters)
@@ -136,11 +136,11 @@ transformed parameters {
 	vector[K] dirConPar;
 	dirConPar = rep_vector(0.1,K);	
 	w_mat = make_w_matrix(N,K,w);
-	parCov = admixed_covariance(N, K, w_mat, nugget, mu, gamma);
+	parCov = admixed_covariance(N, K, w_mat, nugget, phi, gamma);
 }
 model {
 	nugget ~ normal(0,1);										// prior on nugget
-	mu ~ normal(0,1);
+	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
 	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
 	target += dWish(temp, L, obsCov, parCov);					// likelihood function
@@ -149,23 +149,23 @@ model {
 
 space.multiK.stan.block <- "
 functions {
-	matrix spCov(int N, real a0, real aD, real a2, matrix D, real mu){
+	matrix spCov(int N, real a0, real aD, real a2, matrix D, real phi){
 		matrix[N,N] cov;
 		for(i in 1:N){
 			for(j in i:N){
-				cov[i,j] = a0 * exp( -(aD* D[i,j])^a2) + mu;
+				cov[i,j] = a0 * exp( -(aD* D[i,j])^a2) + phi;
 				cov[j,i] = cov[i,j];
 			}
 		}
 		return cov;
 	}
-	matrix admixed_covariance(int N, int K, vector alpha0, vector alphaD, vector alpha2, matrix geoDist, matrix w_mat, vector nugget, vector mu, real gamma) {
+	matrix admixed_covariance(int N, int K, vector alpha0, vector alphaD, vector alpha2, matrix geoDist, matrix w_mat, vector nugget, vector phi, real gamma) {
 		matrix[N,N] parCov;
 		matrix[N,N] Nug_mat;
 		parCov = rep_matrix(0,N,N);
 		Nug_mat = diag_matrix(nugget);
 		for(k in 1:K){
-			parCov = parCov + tcrossprod(to_matrix(w_mat[,k])) .* spCov(N,alpha0[k],alphaD[k],alpha2[k],geoDist,mu[k]);
+			parCov = parCov + tcrossprod(to_matrix(w_mat[,k])) .* spCov(N,alpha0[k],alphaD[k],alpha2[k],geoDist,phi[k]);
 		}
 		parCov = gamma + parCov + Nug_mat;
 		return parCov;	
@@ -196,7 +196,7 @@ parameters {
 	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in cluster k
 	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in cluster k
 	vector<lower=0, upper=2>[K]  alpha2;					// exponential slope parameter in the parametric covariance in cluster k
-	positive_ordered[K] mu;									// shared drift effect in cluster k
+	positive_ordered[K] phi;									// shared drift effect in cluster k
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
 	simplex[K]    w[N];    									// every sample (N in total) has a K simplex (i.e. K clusters)
 	real<lower=0> gamma;
@@ -207,14 +207,14 @@ transformed parameters {
 	matrix[N,K] w_mat;
 	dirConPar = rep_vector(0.1,K);
 	w_mat = make_w_matrix(N,K,w);
-	parCov = admixed_covariance(N, K, alpha0, alphaD, alpha2, geoDist, w_mat, nugget, mu, gamma);
+	parCov = admixed_covariance(N, K, alpha0, alphaD, alpha2, geoDist, w_mat, nugget, phi, gamma);
 }
 model {
 	alpha0 ~ normal(0,1);										// prior on alpha0
 	alphaD ~ normal(0,1);										// prior on alphaD
 	alpha2 ~ uniform(0,2);										// prior on alpha2
 	nugget ~ normal(0,1);										// prior on nugget
-	mu ~ normal(0,1);
+	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
 	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
 	target += dWish(temp, L, obsCov, parCov);					// likelihood function

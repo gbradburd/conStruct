@@ -1,24 +1,205 @@
+#' Run a conStruct cross-validation analysis
+#' 
+#' \code{x.validation} runs a conStruct cross-validation analysis
+#' 
+#' This function initiates a cross-validation analysis that 
+#' uses Monte Carlo cross-validation to determine the statistical 
+#' support for models with different numbers of clusters or 
+#' with and without a spatial component.
+#' 
+#' @param train.prop A numeric value between 0 and 1 that gives 
+#'		the proportions of the data to be used in the 
+#'		training partition of the analysis. Default is 0.9.
+#' @param n.reps An \code{integer} giving the number of cross-
+#'		validation replicates to be run.
+#' @param K A numeric \code{vector} giving the numbers of clusters 
+#'		to be tested in each cross-validation replicate.
+#'		E.g., \code{K=1:7}.
+#' @param freqs A \code{matrix} of allele frequencies with one column per 
+#'		locus and one row per sample.
+#' 		Missing data should be indicated with \code{NA}.
+#' @param geoDist A \code{matrix} of geographic distance between samples. 
+#'		If \code{NULL}, user can only run the nonspatial model.
+#' @param coords A \code{matrix} giving the longitude and latitude 
+#'		(or X and Y coordinates) of the samples.
+#' @param prefix A character \code{vector} giving the prefix to be attached 
+#'		to all output files.
+#' @param n.iter An \code{integer} giving the number of iterations each MCMC 
+#'		chain is run. Default is 1e3.  If the number of iterations 
+#'		is greater than 500, the MCMC is thinned so that the number 
+#'		of retained iterations is 500 (before burn-in).
+#' @param make.figs A \code{logical} value indicating whether to automatically 
+#'		make figures during the course of the cross-validation analysis. 
+#'		Default is \code{FALSE}.
+#' @param save.files A \code{logical} value indicating whether to automatically 
+#'		save output and intermediate files once the analysis is
+#'		complete. Default is \code{FALSE}.
+#'
+#' @return This function returns a \code{list} containing the 
+#'		standardized results of the cross-validation analysis
+#'		across replicates.  For each replicate, the function returns 
+#' 		a list with the following elements:
+#' 	\itemize{
+#' 		\item \code{sp} - the mean of the standardized log likelihoods of the 
+#'		"testing" data partition of that replicate for the spatial model for
+#' 		each value of K specified in \code{K}.
+#' 		\item \code{nsp} - the mean of the standardized log likelihoods of the 
+#'		"testing" data partitions of that replicate for the nonspatial model for
+#' 		each value of K specified in \code{K}.
+#' }
 #'@export
-x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter){
+x.validation <- function(train.prop=0.9,n.reps,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
 	x.val <- lapply(1:n.reps,
 					function(i){
 						x.validation.rep(rep.no = i,
-										 test.pct,
+										 train.prop,
 										 K,
 										 freqs,
 										 geoDist,
 										 coords,
 										 prefix,
-										 n.iter)
+										 n.iter,
+										 make.figs,
+										 save.files)
 					})
 	names(x.val) <- paste0("rep_",1:n.reps)
+	x.val <- standardize.xvals(x.val)
 	return(x.val)
 }
 
+#' Match clusters up across independent conStruct runs
+#' 
+#' \code{match.clusters.x.runs} 
+#' 
+#' This function takes the results of two independent
+#' \code{conStruct} analyses and compares them to identify 
+#' which clusters in a new analysis correspond most closely 
+#' to the clusters from an original analysis.
+#' 
+#' @param admix.mat1 A \code{matrix} of estimated admixture proportions
+#'			from the original \code{conStruct} analysis, with one row 
+#'			per sample and one column per cluster. 
+#' @param admix.mat2 A \code{matrix} of estimated admixture proportions
+#'			from a second \code{conStruct} analysis, with one row per 
+#'			sample and one column per cluster, for which the 
+#'			cluster order is desired. Must have equal or greater number 
+#'			of clusters to \code{admix.mat1}.
+#' @param admix.mat1.order An optional \code{vector} giving the  
+#'			order in which the clusters of \code{admix.mat1} are read.
+#' 
+#' @return This function returns a \code{vector} giving the ordering 
+#' 			of the clusters in \code{admix.mat2} that maximizes 
+#' 			similarity between \code{admix.mat1} and re-ordered 
+#'			\code{admix.mat2}.
+#' 
+#' @details This function compares admixture proportions in clusters across 
+#'			independent \code{conStruct} runs, and compares between them to 
+#' 			identify the clusters in \code{admix.mat2} that correspond most 
+#'			closely to those in \code{admix.mat1}. It then returns a vector 
+#' 			giving an ordering of \code{admix.mat2} that matches up the order
+#' 			of the clusters that correspond to each other.  This can be useful 
+#' 			for:
+#'			\enumerate{
+#'				\item Dealing with "label switching" across independent runs 
+#'					with the same number of clusters; 
+#'				\item Plotting results from independent runs with different 
+#'					numbers of clusters using consistent colors
+#' 					(e.g., the "blue" cluster shows up as blue even as 
+#'					\code{K} increases); 
+#' 				\item Examining results for multimodality (i.e., multiple 
+#'					distinct solutions with qualitatively different patterns
+#'					of membership across clusters).
+#' 			}
+#' 			The \code{admix.mat1.order} argument can be useful when running 
+#' 			this function to sync up plotting colors/order across the output 
+#' 			of more than two \code{conStruct} runs.
 #'@export
-x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
+match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
+	#recover()
+	K1 <- ncol(admix.mat1)
+		if(!is.null(admix.mat1.order)){
+			admix.mat1 <- admix.mat1[,admix.mat1.order]
+		}
+	K2 <- ncol(admix.mat2)
+	if(K1 > K2){
+		stop("\nadmix.mat1 cannot have more clusters than admix.mat2\n")
+	}
+	k.combn <- expand.grid(1:K1,1:K2)
+	clst.sims <- unlist(lapply(1:nrow(k.combn),
+						function(n){
+							measure.frob.similarity(admix.mat1[,k.combn[n,1],drop=FALSE],
+													admix.mat2[,k.combn[n,2],drop=FALSE],
+													K=1)
+							}))
+	run2.order <- numeric(K2)
+	while(length(which(run2.order == 0)) > (K2-K1)){
+		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
+		run2.match <- k.combn[tmp.max,2]
+		run1.match <- k.combn[tmp.max,1]
+		run2.order[run2.match] <- run1.match
+		clst.sims[which(k.combn[,1]==run1.match)] <- NA
+		clst.sims[which(k.combn[,2]==run2.match)] <- NA
+	}
+	if(K2 > K1){
+		run2.order[which(run2.order==0)] <- (K1+1):K2
+	}
+	run2.order <- order(run2.order)
+	return(run2.order)
+}
+
+#' Calculate layer importance
+#' 
+#' \code{calculate.layer.importance} 
+#' 
+#' This function takes the results of a \code{conStruct} 
+#' analysis and calculates the relative contributions of 
+#' each cluster to total covariance.
+#' 
+#' @param conStruct.results The list output by a 
+#'			\code{conStruct} run for a given MCMC chain. 
+#' @param data.block A \code{data.block} list saved during a 
+#'			\code{conStruct} run.
+#' @param layer.order An optional \code{vector} giving the  
+#'			order in which the clusters of \code{conStruct.results} are 
+#' 			read.
+#' 
+#' @return This function returns a \code{vector} giving the 
+#' 			relative contributions (importance) of the clusters 
+#' 			in the analysis.
+#' 
+#' @details This function calculates the contribution of each cluster to
+#'			total covariance by multiplying the within-cluster covariance 
+#'			in a given cluster by the admixture proportions samples draw 
+#'			from that cluster. The relative contribution of that cluster, 
+#'			which can be interpreted as its importance, is this absolute 
+#'			contribution divided by the sum of those of all other clusters. 
+#' 			A cluster can have a large importance if many samples draw 
+#'			large amounts of admixture from it, or if it has a very large 
+#'			within-cluster covariance parameter (phi), or some combination 
+#'			of the two. Cluster importance can be useful for evaluating 
+#'			an appropriate level of model complexity for the data (e.g., 
+#'			choosing a value of \code{K} or comparing the spatial and 
+#'			nonspatial models).
+#'@export
+calculate.layer.importance <- function(conStruct.results,data.block,layer.order=NULL){
+	if(any(grepl("chain",names(conStruct.results)))){
+		stop("user must specify conStruct results from a single chain\ni.e. from conStruct.results[[1]] rather than conStruct.results")
+	}
+	K <- ncol(conStruct.results$MAP$admix.proportions)
+	apply.over <- 1:K
+	if(!is.null(layer.order)){
+		apply.over <- apply.over[layer.order]
+	}
+	raw.layer.scores <- lapply(apply.over,function(k){
+							calculate.laycon.k(k,conStruct.results$MAP,data.block)
+						})
+	layer.contributions <- unlist(raw.layer.scores)/sum(unlist(raw.layer.scores))
+	return(layer.contributions)
+}
+
+x.validation.rep <- function(rep.no,train.prop,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
 	freqs <- drop.invars(freqs)
-	train.loci <- sample(1:ncol(freqs),ncol(freqs)*(1-test.pct))
+	train.loci <- sample(1:ncol(freqs),ncol(freqs)*(train.prop))
 	test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
 	train.data <- freqs[,train.loci]
 	test.data <- freqs[,test.loci]
@@ -35,8 +216,10 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 make.figs = make.figs,
 											 save.files = save.files)
 						})
-	names(training.runs.sp) <- paste0("K",1:K)
-	save(training.runs.sp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.sp.Robj"))
+	names(training.runs.sp) <- paste0("K",K)
+	if(save.files){
+		save(training.runs.sp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.sp.Robj"))
+	}
 	training.runs.nsp <- lapply(K,function(k){
 								conStruct(spatial = FALSE,
 											 K = k,
@@ -48,8 +231,10 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 											 make.figs = make.figs,
 											 save.files = save.files)
 						})
-	names(training.runs.nsp) <- paste0("K",1:K)
-	save(training.runs.nsp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.nsp.Robj"))
+	names(training.runs.nsp) <- paste0("K",K)
+	if(save.files){
+		save(training.runs.nsp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.nsp.Robj"))
+	}
 	test.lnl.sp <- lapply(training.runs.sp,
 						function(x){
 							fit.to.test(test.data,x[[1]])
@@ -66,38 +251,87 @@ x.validation.rep <- function(rep.no,test.pct,K,freqs,geoDist,coords,prefix,n.ite
 	return(test.lnl)
 }
 
-#'@export
-match.clusters.x.runs <- function(csr1,csr2,csr1.order=NULL){
-	cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
-	K1 <- ncol(csr1$MAP$admix.proportions)
-		if(!is.null(csr1.order)){
-			csr1$MAP$admix.proportions <- csr1$MAP$admix.proportions[,csr1.order]
-		}
-		K1.cols <- cluster.colors[1:K1]
-	K2 <- ncol(csr2$MAP$admix.proportions)
-		K2.cols <- numeric(K2)
-	k.combn <- expand.grid(1:K1,1:K2)
-	clst.sims <- unlist(lapply(1:nrow(k.combn),
-						function(n){
-							measure.frob.similarity(csr1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
-													csr2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
-													K=1)
-							}))
-	while(length(which(K2.cols == 0)) > (K2-K1)){
-		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
-		csr2.match <- k.combn[tmp.max,2]
-		csr1.match <- k.combn[tmp.max,1]
-		K2.cols[csr2.match] <- K1.cols[csr1.match]
-		clst.sims[which(k.combn[,1]==csr1.match)] <- NA
-		clst.sims[which(k.combn[,2]==csr2.match)] <- NA
-	}
-	if(K2 > K1){
-		K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
-	}
-	K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
-	clst2.info <- list("cols" = K2.cols,
-					   "clst.order" = K2.clst.order)
-	return(clst2.info)
+standardize.xvals <- function(x.val){
+	mean.lnls <- lapply(x.val,function(x){
+					lapply(x,function(k){mean(unlist(k))})
+				 })
+	xval.max <- max(unlist(mean.lnls))
+	mean.std.lnls <- lapply(mean.lnls,function(s){
+						lapply(s,function(k){
+							k - xval.max
+						})})
+	return(mean.std.lnls)
+}
+
+get.xval.CIs <- function(x.vals.std,K){
+	#recover()
+	sp.means <- lapply(
+				   		lapply(1:K,
+							function(k){
+								unlist(lapply(
+									lapply(x.vals.std,"[[","sp"),
+						"[[",k))}),
+					function(x){
+						mean(x)})
+	sp.std.errs <- lapply(
+				   		lapply(1:K,
+							function(k){
+								unlist(lapply(
+									lapply(x.vals.std,"[[","sp"),
+						"[[",k))}),
+					function(x){
+						stats::sd(x)/sqrt(length(x))})
+	sp.CIs <- lapply(1:K,function(k){
+					sp.means[[k]] + c(-1.96*sp.std.errs[[k]],
+									   1.96*sp.std.errs[[k]])})
+	nsp.means <- lapply(
+				   		lapply(1:K,
+							function(k){
+								unlist(lapply(
+									lapply(x.vals.std,"[[","nsp"),
+						"[[",k))}),
+					function(x){
+						mean(x)})
+	nsp.std.errs <- lapply(
+				   		lapply(1:K,
+							function(k){
+								unlist(lapply(
+									lapply(x.vals.std,"[[","nsp"),
+						"[[",k))}),
+					function(x){
+						stats::sd(x)/sqrt(length(x))})
+	nsp.CIs <- lapply(1:K,function(k){
+					nsp.means[[k]] + c(-1.96*nsp.std.errs[[k]],
+									    1.96*nsp.std.errs[[k]])})
+	return(list("sp.means" = unlist(sp.means),
+				"sp.std.errs" = unlist(sp.std.errs),
+				"sp.CIs" = sp.CIs,
+				"nsp.means" = unlist(nsp.means),
+				"nsp.std.errs" = unlist(nsp.std.errs),
+				"nsp.CIs" = nsp.CIs))
+}
+
+calculate.qij <- function(cluster.params,data.block,i,j){
+	q_ij <- 2 * cluster.params$alpha0 * 
+				exp(-(cluster.params$alphaD * 
+						data.block$geoDist[i,j])^cluster.params$alpha2) + 
+						2 * cluster.params$phi + 0.5
+	return(q_ij)
+}
+
+calculate.weighted.qij <- function(k,MAP,data.block,i,j){
+	#recover()
+	w.qij <- MAP$admix.proportions[i,k] * MAP$admix.proportions[j,k] * 
+				calculate.qij(MAP$cluster.params[[k]],data.block,i,j)
+	return(w.qij)
+}
+
+calculate.laycon.k <- function(k,MAP,data.block){
+	comps <- cbind(utils::combn(1:data.block$N,2),sapply(1:data.block$N,rep,2))
+	lay.con <- lapply(1:ncol(comps),function(n){
+					calculate.weighted.qij(k,MAP,data.block,comps[1,n],comps[2,n])
+				})
+	return(mean(unlist(lay.con)))
 }
 
 post.process.par.cov <- function(conStruct.results,samples){

@@ -1,86 +1,235 @@
+#' Make output plots
+#'
+#' \code{make.all.the.plots} makes figures from the output from a 
+#' 	conStruct analysis.
+#'
+#' This function takes the output from a conStruct analysis and 
+#' generates a number of plots for visualizing results and 
+#' diagnosing MCMC performance.
+#'
+#' @param conStruct.results The list output by a 
+#'			\code{conStruct} run.
+#' @param data.block A \code{data.block} list saved during a 
+#'			\code{conStruct} run.
+#' @param prefix A character vector to be prepended to all figures.
+#' @param cluster.colors A \code{vector} of colors to be used in 
+#'			plotting results for different clusters. Users must 
+#'			specify one color per cluster.  If \code{NULL}, plots 
+#'			will use a pre-specified vector of colors.
+#' @return This function has only invisible return values.
+#'
+#'	@details This function produces a variety of plots that can be 
+#'	useful for visualizing results or diagnosing MCMC performance. 
+#'  The plots made are by no means an exhaustive, and users are 
+#' 	encouraged to make further plots, or customize these plots as they 
+#'	see fit.  For each plot, one file is generated for each MCMC chain 
+#'	(specified withe the \code{n.chains} argument in the function 
+#'	\code{conStruct}. The plots generated (as .pdf files) are:
+#'	\itemize{
+#'		\item Structure plot - STRUCTURE-style plot, where each sample 
+#'			is represented as a stacked bar plot, and the length of the 
+#'			bar plot segments of each color represent that sample's 
+#'			admixture proportion in that cluster. Described further 
+#'			in the help page for \code{make.structure.plot}.
+#'		\item Admixture pie plot - A map of samples in which each sample's 
+#'				location is denoted with a pie chart, and the proportion 
+#'				of a pie chart of each color represents that sample's 
+#'				admixture in each cluster. Described further in the help 
+#'				page for \code{make.admix.pie.plot}
+#'		\item model.fit.CIs - A plot of the sample allelic covariance 
+#'			shown with the 95\% credible interval of the parametric 
+#'			covariance for each entry in the matrix.
+#'		\item cluster.covariances - A plot of the cluster-specific 
+#'				covariances overlain unto the sample allelic covariance.
+#'		\item Trace plots - Plots of parameter values over the MCMC.
+#'		\itemize{
+#'			\item lpd - A plot of the log posterior probability over the MCMC.
+#'			\item nuggets - A plot of estimates of the nugget parameters 
+#'				over the MCMC.
+#'			\item gamma - A plot of estimates of the gamma parameter 
+#'				over the MCMC.
+#'			\item cluster.cov.params - Plots of estimates of the 
+#'				cluster-specific parameters over the MCMC.
+#'			\item admix.props - A plot of estimates of the admixture proportions 
+#'				over the MCMC.
+#'		}
+#'	}
 #'@export
-make.all.the.plots <- function(conStruct.results,n.chains,data.block,prefix,cluster.colors=NULL){
-	if(is.null(cluster.colors)){
-		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+make.all.the.plots <- function(conStruct.results,data.block,prefix,cluster.colors=NULL){
+	if(!any(grepl("chain",names(conStruct.results)))){
+		stop("\nyou must specify conStruct results across all chains\ni.e. from conStruct.results rather than conStruct.results[[1]]\n\n")
 	}
-	lapply(1:n.chains,function(i){
+	if(!is.null(cluster.colors)){
+		if(length(cluster.colors!=data.block$K)){
+			stop("\nyou must specify one color per cluster\n\n")
+		}
+	} else {
+		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+		if(data.block$K > 10){
+			stop("\nyou has specified more clusters than there are default colors.\n you must specify your own cluster.colors")
+		}
+	}
+	lapply(1:length(conStruct.results),function(i){
 		make.all.chain.plots(conStruct.results[[i]],chain.no=i,data.block,prefix,cluster.colors)
 	})
 	return(invisible("made chain plots!"))
 }
 
+#' Make STRUCTURE output plot
+#'
+#' \code{make.structure.plot} makes a STRUCTURE-style plot from the output from a 
+#' 	conStruct analysis.
+#'
+#' This function takes the output from a conStruct analysis and 
+#' makes a STRUCTURE-style plot, where each sample 
+#' is represented as a stacked bar plot, and the length of the 
+#' bar plot segments of each color represent that sample's 
+#' admixture proportion in that cluster.
+#'
+#' @param admix.proportions A \code{matrix} of admixture proportions, 
+#'			with one row per sample and one column per cluster.
+#' @param mar A \code{vector} of plotting margins passed to \code{par}.
+#'			Default is \code{c(2,4,2,2)}, which tends to look good.
+#' @param sample.order A \code{vector} giving the order in which sample 
+#'			admixture proportions are to be plotted, left to right.  If 
+#'			\code{NULL}, samples are plotted in the order they occur in 
+#'			\code{admix.proportions}.
+#' @param cluster.order A \code{vector} giving the order in which clusters 
+#'			are plotted, bottom to top. If \code{NULL}, clusters are plotted 
+#'			in the order they occur in \code{admix.proportions}.
+#' @param sample.names Vector of names to be plotted under each sample's 
+#'			admixture proportion bar plot. The index of a sample's name 
+#'			should be the same as the index of the sample's row in 
+#'			\code{admix.proportions}. If \code{NULL}, no names 
+#'			are printed.
+#' @param sort.by An \code{integer} giving the column index of the \code{admix.proportions} 
+#'			matrix to be used in determining sample plotting order.  If specified, 
+#'			samples are plotted from left to right in increasing order of their 
+#'			membership in that cluster.  If \code{NULL}, samples are plotted 
+#'			in the order they occur in \code{admix.proportions}.
+#' @param cluster.colors A \code{vector} of colors to be used in plotting 
+#'			results for different clusters. Users must specify one 
+#'			color per cluster.  If \code{NULL}, the plot will use 
+#'			a pre-specified vector of colors.
+#' @return This function has only invisible return values.
 #'@export
-make.structure.plot <- function(data.block,conStruct.results,mar=c(2,4,2,2),sample.order=NULL,cluster.order=NULL,sample.names=NULL,sort.by=NULL,cluster.colors=NULL){
-	par(mar=mar)
+make.structure.plot <- function(admix.proportions,mar=c(2,4,2,2),sample.order=NULL,cluster.order=NULL,sample.names=NULL,sort.by=NULL,cluster.colors=NULL){
+	if(class(admix.proportions)!="matrix"){
+		stop("\nyou must specify a matrix of admixture proportions\n")
+	}
+	K <- ncol(admix.proportions)
+	N <- nrow(admix.proportions)
+	graphics::par(mar=mar)
 	if(is.null(cluster.order)){
-		cluster.order <- seq(1:data.block$K)
+		cluster.order <- seq(1:K)
 	}
 	if(is.null(sample.order)){
-		sample.order <- seq(1:data.block$N)
+		sample.order <- seq(1:N)
 	}
 	if(!is.null(sort.by)){
-		sample.order <- order(conStruct.results$MAP$admix.proportions[,sort.by])
+		if(sort.by > K){
+			stop("\nyou must specify a cluster that exists in your data\n")
+		}
+		sample.order <- order(admix.proportions[,sort.by])
 	}
 	if(is.null(cluster.colors)){
 		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+	} else {
+		if(K > length(cluster.colors)){
+			stop("\nyou must specify one color per cluster\n")
+		}
 	}
-	if(data.block$K==1){
-		conStruct.results$MAP$admix.proportions <- matrix(conStruct.results$MAP$admix.proportions,nrow=data.block$N,ncol=1)
-	}
-	use.colors <- cluster.colors[1:data.block$K][cluster.order]
-	plot(0,xlim=c(0,data.block$N),ylim=c(0,1),type='n',ylab="admixture",xlab="",xaxt='n')
-	plotting.admix.props <- apply(cbind(0,conStruct.results$MAP$admix.proportions[,cluster.order]),1,cumsum)
-	lapply(1:data.block$K,function(i){
+	use.colors <- cluster.colors[1:K][cluster.order]
+	graphics::plot(0,xlim=c(0,N),ylim=c(0,1),type='n',ylab="admixture",xlab="",xaxt='n')
+	plotting.admix.props <- apply(cbind(0,admix.proportions[,cluster.order]),1,cumsum)
+	lapply(1:K,function(i){
 		make.structure.polygon.layer(plotting.admix.props,i,use.colors,sample.order)
 	})
 	if(!is.null(sample.names)){
-		axis(side=1,at=seq(1:data.block$N)-0.5,labels=sample.names[sample.order],cex.axis=0.5,las=2)
+		graphics::axis(side=1,at=seq(1:N)-0.5,labels=sample.names[sample.order],cex.axis=0.5,las=2)
 	}
 	return(invisible("plotted"))
 }
 
+#' Make admixture pie plot
+#'
+#' \code{make.structure.plot} makes a map of pie plots showing admixture 
+#' proportions across clusters.
+#'
+#' This function takes the output from a conStruct analysis and 
+#' makes a map of pie plots showing admixture proportions across clusters, 
+#' where each sample is represented as a pie chart, and the proportion of 
+#' the pie of each color represent that sample's 
+#' admixture proportion in that cluster.
+#'
+#' @param admix.proportions A \code{matrix} of admixture proportions, 
+#'			with one row per sample and one column per cluster.
+#' @param coords \code{matrix} of sample coordinates, with one row 
+#'			per sample and two columns giving (respectively) the X 
+#'			and Y plotting coordinates.
+#' @param cluster.colors A \code{vector} of colors to be used in 
+#'			plotting results for different clusters. Users must 
+#'			specify one color per cluster.  If \code{NULL}, the plot 
+#'			will use a pre-specified vector of colors.
+#' @param radii A \code{vector} of numeric values giving the radii to be 
+#'			used in plotting admixture pie plots. If the number of values 
+#'			specified is smaller than the number of samples, radii values 
+#'			will be recycled across samples. The default is 2.7.
+#' @param add A \code{logical} value indicating whether to add the pie plots 
+#'			to an existing plot.  Default is \code{FALSE}.
+#' @param x.lim A \code{vector} giving the x limits of the plot. The default
+#'			value is \code{NULL}, which indicates that the range of values 
+#'			given in the first column of \code{coords} should be used.
+#' @param y.lim A \code{vector} giving the y limits of the plot. The default
+#'			value is \code{NULL}, which indicates that the range of values 
+#'			given in the second column of \code{coords} should be used.
+#' @return This function has only invisible return values.
 #'@export
-make.admix.pie.plot <- function(data.block,conStruct.results,cluster.colors,stat,radii=2.7,add=FALSE,title=NULL,x.lim=NULL,y.lim=NULL){
-	if(is.null(data.block$coords)){
-		message("\nuser has not specified sampling coordinates in the data block\n")
-	} else {
-		cluster.names <- paste0("cluster_",1:data.block$K)
-		sample.names <- paste0("sample_",1:data.block$N)
-		color.tab <- caroline::nv(c(cluster.colors[1:data.block$K]),cluster.names)
-		if(stat == "MAP"){
-			admix.props <- conStruct.results$MAP$admix.proportions
-		} else if(stat == "mean"){
-			admix.props <- apply(conStruct.results$posterior$admix.proportions,c(2,3),mean)
-		} else if(stat == "median"){
-			admix.props <- apply(conStruct.results$posterior$admix.proportions,c(2,3),median)		
-		}
-		pie.list <- lapply(1:data.block$N,function(i){caroline::nv(admix.props[i,],cluster.names)})
-		names(pie.list) <- sample.names
-		if(add){
-			par(new=TRUE)
-		} else {
-			par(mar=c(2,2,2,2))
-		}
-		if(is.null(title)){
-			title <- "Admixture proportion map"
-		}
-		if(is.null(x.lim)){
-			x.lim <- c(min(data.block$coords[,1]) - 1, max(data.block$coords[,1]) + 1)
-		}
-		if(is.null(y.lim)){
-			y.lim <- c(min(data.block$coords[,2]) - 1, max(data.block$coords[,2]) + 1)
-		}
-		caroline::pies(pie.list,x0=data.block$coords[,1],y0=data.block$coords[,2],
-					color.table=color.tab,border="black",radii=radii,
-					xlab="",ylab="",main=title,lty=1,density=NULL,
-					xlim = x.lim, ylim = y.lim)
-		box(lwd=2)
+make.admix.pie.plot <- function(admix.proportions,coords,cluster.colors=NULL,radii=2.7,add=FALSE,x.lim=NULL,y.lim=NULL){
+	if(class(admix.proportions)!="matrix"){
+		stop("\nyou must specify a matrix of admixture proportions\n")
 	}
+	if(is.null(coords)){
+		stop("\nyou must specify sampling coordinates\n")
+	} else {
+		if(nrow(coords) != nrow(admix.proportions)){
+			stop("\nyou must specify one set of coordinates for each row of the admixture proportion matrix\n")
+		}
+	}
+	K <- ncol(admix.proportions)
+	N <- nrow(admix.proportions)	
+	if(is.null(cluster.colors)){
+		cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
+	} else {
+		if(K > length(cluster.colors)){
+			stop("\nyou must specify one color per cluster\n")
+		}
+	}
+	cluster.names <- paste0("cluster_",1:K)
+	sample.names <- paste0("sample_",1:N)
+	color.tab <- caroline::nv(c(cluster.colors[1:K]),cluster.names)
+	pie.list <- lapply(1:N,function(i){caroline::nv(admix.proportions[i,],cluster.names)})
+	names(pie.list) <- sample.names
+	if(add){
+		graphics::par(new=TRUE)
+	} else {
+		graphics::par(mar=c(2,2,2,2))
+	}
+	if(is.null(x.lim)){
+		x.lim <- c(min(coords[,1]) - 1, max(coords[,1]) + 1)
+	}
+	if(is.null(y.lim)){
+		y.lim <- c(min(coords[,2]) - 1, max(coords[,2]) + 1)
+	}
+	caroline::pies(pie.list,x0=coords[,1],y0=coords[,2],
+				color.table=color.tab,border="black",radii=radii,
+				xlab="",ylab="",main="",lty=1,density=NULL,
+				xlim = x.lim, ylim = y.lim)
 	return(invisible(0))
 }
 
 plot.lpd <- function(conStruct.results){
-	plot(conStruct.results$posterior$lpd,
+	graphics::plot(conStruct.results$posterior$lpd,
 			ylab="posterior probability",
 			main="Posterior probability",type='l',
 			xlab="MCMC iterations")
@@ -89,7 +238,7 @@ plot.lpd <- function(conStruct.results){
 
 
 plot.nuggets <- function(conStruct.results){
-	matplot(conStruct.results$post$nuggets,type='l',
+	graphics::matplot(conStruct.results$post$nuggets,type='l',
 				main="sample nuggets",
 				ylab="nugget value",
 				xlab="MCMC iterations")
@@ -97,7 +246,7 @@ plot.nuggets <- function(conStruct.results){
 }
 
 plot.gamma <- function(conStruct.results){
-	plot(conStruct.results$posterior$gamma,
+	graphics::plot(conStruct.results$posterior$gamma,
 			ylab="gamma",
 			xlab="MCMC iterations",
 			main="Gamma",type='l')
@@ -121,7 +270,7 @@ get.ylim <- function(cluster.params,n.clusters,param){
 
 
 plot.cluster.param <- function(cluster.param,clst.col){
-	points(cluster.param,type='l',col=clst.col)
+	graphics::points(cluster.param,type='l',col=clst.col)
 	return(invisible(0))
 }
 
@@ -132,11 +281,11 @@ plot.cluster.cov.params <- function(data.block,conStruct.results,cluster.colors)
 	param.ranges <- lapply(params,function(x){get.ylim(conStruct.results$posterior$cluster.params,n.clusters,x)})
 	if(length(params) > 0){
 		for(i in 1:length(params)){
-			plot(0,type='n',main=params[i],
+			graphics::plot(0,type='n',main=params[i],
 				xlab="MCMC iterations",ylab="parameter value",
 				ylim=param.ranges[[i]],xlim=c(1,conStruct.results$posterior$n.iter))
 			lapply(1:n.clusters,function(j){plot.cluster.param(conStruct.results$posterior$cluster.params[[j]][[params[i]]],cluster.colors[j])})
-			legend(x="topright",col= cluster.colors[1:n.clusters],lty=1,legend=paste0("Cluster_",1:n.clusters))
+			graphics::legend(x="topright",col= cluster.colors[1:n.clusters],lty=1,legend=paste0("Cluster_",1:n.clusters))
 		}
 	}
 	return(invisible(0))
@@ -145,9 +294,9 @@ plot.cluster.cov.params <- function(data.block,conStruct.results,cluster.colors)
 
 plot.admix.props <- function(data.block,conStruct.results,cluster.colors){
 	n.clusters <- data.block$K
-	par(mfrow=c(n.clusters,1),mar=c(3,3,2,2))
+	graphics::par(mfrow=c(n.clusters,1),mar=c(3,3,2,2))
 		for(i in 1:n.clusters){
-			matplot(conStruct.results$posterior$admix.proportions[,,i],type='l',ylim=c(0,1),
+			graphics::matplot(conStruct.results$posterior$admix.proportions[,,i],type='l',ylim=c(0,1),
 					main=paste0("Cluster ",i),ylab="admixture proportion",col=cluster.colors[i])
 		}
 	return(invisible(0))
@@ -158,7 +307,7 @@ get.par.cov.CI <- function(data.block,conStruct.results){
 	combns <- gtools::combinations(n=data.block$N,r=2,v=1:data.block$N,repeats.allowed=TRUE)
 	CIs <- lapply(1:nrow(combns),
 				function(i){
-					quantile(conStruct.results$posterior$par.cov[,combns[i,1],combns[i,2]],c(0.025,0.975))
+					stats::quantile(conStruct.results$posterior$par.cov[,combns[i,1],combns[i,2]],c(0.025,0.975))
 				})
 	return(CIs)
 }
@@ -166,7 +315,7 @@ get.par.cov.CI <- function(data.block,conStruct.results){
 plot.model.fit.CIs <- function(data.block,conStruct.results){
 	cov.range <- range(c(data.block$obsCov,
 						conStruct.results$posterior$par.cov))
-	plot(data.block$geoDist,data.block$obsCov,
+	graphics::plot(data.block$geoDist,data.block$obsCov,
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
@@ -175,38 +324,17 @@ plot.model.fit.CIs <- function(data.block,conStruct.results){
 	CIs <- get.par.cov.CI(data.block,conStruct.results)
 	lapply(1:nrow(combns),
 			function(i){
-				segments(x0 = data.block$geoDist[combns[i,1],combns[i,2]],
+				graphics::segments(x0 = data.block$geoDist[combns[i,1],combns[i,2]],
 						 y0 = CIs[[i]][1],
 						 x1 = data.block$geoDist[combns[i,1],combns[i,2]],
 						 y1 = CIs[[i]][2],
-						 col = adjustcolor(1,0.1),
+						 col = grDevices::adjustcolor(1,0.1),
 						 lwd=1.5)
 			})
-	points(data.block$geoDist,data.block$obsCov,col=2,pch=20,cex=0.8)
-	legend(x="topright",legend=c("observed","95% CI"),pch=c(19,NA),lty=c(NA,1),col=c(2,"gray"))
+	graphics::points(data.block$geoDist,data.block$obsCov,col=2,pch=20,cex=0.8)
+	graphics::legend(x="topright",legend=c("observed","95% CI"),pch=c(19,NA),lty=c(NA,1),col=c(2,"gray"))
 	return(invisible("plotted"))
 }
-
-
-plot.model.fit <- function(data.block,conStruct.results){
-	index.mat <- upper.tri(data.block$geoDist, diag = TRUE)
-	cov.range <- range(c(data.block$obsCov,conStruct.results$posterior$par.cov))
-    plot(data.block$geoDist,data.block$obsCov,
-    	xlab = "geographic distance", 
-        ylab = "covariance",
-        main="Cov/geoDist",
-        ylim = cov.range, type = "n")
-    lapply(seq(1,conStruct.results$posterior$n.iter,length.out=25), function(i) {
-        points(data.block$geoDist[index.mat], conStruct.results$posterior$par.cov[i,,][index.mat],
-        	pch = 20, col = adjustcolor(1, 0.1))
-    		})
-    points(data.block$geoDist[index.mat], data.block$obsCov[index.mat], 
-        xlab = "geographic distance", ylab = "covariance", ylim = cov.range, 
-        col=2,pch = 19)
-	legend(x="topright",legend=c("observed","parametric"),pch=19,col=c(2,1))
-	return(invisible("plotted"))
-}
-
 
 plot.cluster.covariances <- function(data.block,conStruct.results,cluster.colors){
 	ind.mat <- upper.tri(data.block$geoDist,diag=TRUE)
@@ -217,35 +345,35 @@ plot.cluster.covariances <- function(data.block,conStruct.results,cluster.colors
 								        conStruct.results$MAP$cluster.params[[k]]$cluster.cov
 					})) + conStruct.results$MAP$gamma, 
 					data.block$obsCov))
-	plot(data.block$geoDist[ind.mat],
+	graphics::plot(data.block$geoDist[ind.mat],
 		 data.block$obsCov[ind.mat],
 			xlim=range(data.block$geoDist),ylim=y.range,
 			xlab = "geographic distance",
 			ylab = "covariance",
-			pch=19,col=adjustcolor(1,0.7))
+			pch=19,col=grDevices::adjustcolor(1,0.7))
 		lapply(1:data.block$K, function(k) {
-             lines(data.block$geoDist[order.mat][ind.mat],
+             graphics::lines(data.block$geoDist[order.mat][ind.mat],
              		conStruct.results$MAP$gamma + 
              		conStruct.results$MAP$cluster.params[[k]]$cluster.cov[order.mat][ind.mat],
                   col = 1,lwd=4.5,lty=1) ; 
-             lines(data.block$geoDist[order.mat][ind.mat],
+             graphics::lines(data.block$geoDist[order.mat][ind.mat],
              		conStruct.results$MAP$gamma + 
              		conStruct.results$MAP$cluster.params[[k]]$cluster.cov[order.mat][ind.mat],
                   col = cluster.colors[k],lwd=4,lty=1)
         })
-		legend(x="topright",col= cluster.colors[1:data.block$K],lty=1,
+		graphics::legend(x="topright",col= cluster.colors[1:data.block$K],lty=1,
 				legend=paste0("Cluster_",1:data.block$K),cex=0.7)
 	return(invisible("cluster covs"))	
 }
 
 
 structure.polygon <- function(plotting.admix.props,i,j,use.colors){
-	polygon(x = c(j-1,j,j,j-1),
-			y = c(plotting.admix.props[i,j],
-					plotting.admix.props[i,j],
-					plotting.admix.props[i+1,j],
-					plotting.admix.props[i+1,j]),
-			col=use.colors[i])
+	graphics::polygon(x = c(j-1,j,j,j-1),
+				y = c(plotting.admix.props[i,j],
+						plotting.admix.props[i,j],
+						plotting.admix.props[i+1,j],
+						plotting.admix.props[i+1,j]),
+				col=use.colors[i])
 	return(invisible(j))
 }
 
@@ -258,7 +386,7 @@ make.structure.polygon.layer <- function(plotting.admix.props,i,use.colors,sampl
 }
 
 make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,cluster.colors){
-	pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"))
+	grDevices::pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"))
 		plot.lpd(conStruct.results)
 		plot.nuggets(conStruct.results)
 		plot.gamma(conStruct.results)
@@ -266,25 +394,22 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,cl
 		if(data.block$K > 1){
 			plot.admix.props(data.block,conStruct.results,cluster.colors)
 		}
-	dev.off()
-	pdf(file=paste0(prefix,"_model.fit.chain_",chain.no,".pdf"))
-		plot.model.fit(data.block,conStruct.results)
-	dev.off()
-	pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"))
+	grDevices::dev.off()
+	grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"))
 		plot.model.fit.CIs(data.block,conStruct.results)
-	dev.off()
+	grDevices::dev.off()
 	if(data.block$spatial | data.block$K > 1){
-		pdf(file=paste0(prefix,"_cluster.cov.curves.chain_",chain.no,".pdf"),width=5,height=5)
+		grDevices::pdf(file=paste0(prefix,"_cluster.cov.curves.chain_",chain.no,".pdf"),width=5,height=5)
 			plot.cluster.covariances(data.block,conStruct.results,cluster.colors)
-		dev.off()
+		grDevices::dev.off()
 	}
 	if(data.block$K > 1){
-		pdf(file=paste0(prefix,"_pie.map.chain_",chain.no,".pdf"),width=6,height=6)	
-			make.admix.pie.plot(data.block,conStruct.results,cluster.colors,stat="MAP",radii=2.7,add=FALSE,title=NULL,x.lim=NULL,y.lim=NULL)
-		dev.off()
-		pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=10,height=5)
-			make.structure.plot(data.block,conStruct.results,mar=c(2,4,2,2),sample.order=NULL,cluster.order=NULL,sample.names=NULL,sort.by=NULL,cluster.colors=cluster.colors)
-		dev.off()
+		grDevices::pdf(file=paste0(prefix,"_pie.map.chain_",chain.no,".pdf"),width=6,height=6)	
+			make.admix.pie.plot(conStruct.results$MAP$admix.proportions,data.block$coords,cluster.colors,radii=2.7,add=FALSE,x.lim=NULL,y.lim=NULL)
+		grDevices::dev.off()
+		grDevices::pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=10,height=5)
+			make.structure.plot(conStruct.results$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,cluster.order=NULL,sample.names=NULL,sort.by=NULL,cluster.colors)
+		grDevices::dev.off()
 	}
 	return(invisible("made chain plots!"))
 }
