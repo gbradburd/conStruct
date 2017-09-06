@@ -7,8 +7,8 @@ for(n in 1:n.reps){
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-x.vals.std <- lapply(x.vals,standardize.xvals)
-xval.CIs <- get.xval.CIs(x.vals.std,K)
+x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
+xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
@@ -22,8 +22,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,hei
 	mtext("Cross-validation results (Bears)",side=3,adj=10.5,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
-
-library(conStruct)
 library(maps)
 load("~/Dropbox/conStruct/data/bears/bear.dataset.redux.Robj")
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sampling_map.pdf",width=6,height=4,pointsize=13)
@@ -34,7 +32,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sampling_map.pdf",width=6,
 	map.axes()
 dev.off()
 
-
 freq.data <- conStruct:::process.freq.data(bear.dataset$sample.freqs)
 data.block <- conStruct:::make.data.block(K = 1,
 										  freq.data = freq.data,
@@ -44,70 +41,64 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_sp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.sp[[k]] <- conStruct.results
 }
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_nsp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
+csr1.order <- NULL
 for(k in 2:7){
 	data.block$K <- k
 	csr <- output.list.sp[[k]][[1]]
-	clst.match <- NULL
-	if(k < 4){
-		csr1.order <- NULL
-	}
-	clst.match$cols <- c(4,2)
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
 	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp",k,".pdf"),width=7,height=7)
-		make.bear.redux.result.plot(csr = csr,
+		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
 									coords = bear.dataset$sample.coords,
 									lump.dist = 200,
-									cluster.colors = clst.match$cols,
+									cluster.colors = cluster.colors[order(csr1.order)],
 									cluster.order=csr1.order,
-									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
-									box=TRUE)
+									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
 	dev.off()
 }
 
+csr1.order <- NULL
 for(k in 2:7){
 	data.block$K <- k
 	csr <- output.list.nsp[[k]][[1]]
-	clst.match <- NULL
-	if(k <= 2){
-		csr1.order <- NULL
-	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
 	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp",k,".pdf"),width=7,height=7)
-		make.bear.redux.result.plot(csr = csr,
+		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
 									coords = bear.dataset$sample.coords,
 									lump.dist = 200,
-									cluster.colors = clst.match$cols,
+									cluster.colors = cluster.colors[order(csr1.order)],
 									cluster.order=csr1.order,
-									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
-									box=TRUE)
+									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
 	dev.off()
 }
 
@@ -133,58 +124,52 @@ dev.off()
 
 
 
+K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.sp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.sp[[k]][[1]]
-	clst.match <- NULL
-	if(k < 4){
+	if(k < 3){
 		csr1.order <- NULL
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.nsp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.nsp[[k]][[1]]
-	clst.match <- NULL
 	if(k <= 2){
 		csr1.order <- NULL
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="layer importance")
 	barplot(laycon.nsp,
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (Bears)",padj=-2.25,adj=18,font=2,cex=1.2)

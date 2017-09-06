@@ -1,62 +1,5 @@
-standardize.xvals <- function(x.val){
-	mean.lnls <- lapply(x.val,function(x){
-					lapply(x,function(k){mean(unlist(k))})
-				 })
-	xval.max <- max(unlist(mean.lnls))
-	mean.std.lnls <- lapply(mean.lnls,function(s){
-						lapply(s,function(k){
-							k - xval.max
-						})})
-	return(mean.std.lnls)
-}
-
-get.xval.CIs <- function(x.vals.std,K){
-	#recover()
-	sp.means <- lapply(
-				   		lapply(1:K,
-							function(k){
-								unlist(lapply(
-									lapply(x.vals.std,"[[","sp"),
-						"[[",k))}),
-					function(x){
-						mean(x)})
-	sp.std.errs <- lapply(
-				   		lapply(1:K,
-							function(k){
-								unlist(lapply(
-									lapply(x.vals.std,"[[","sp"),
-						"[[",k))}),
-					function(x){
-						sd(x)/sqrt(length(x))})
-	sp.CIs <- lapply(1:K,function(k){
-					sp.means[[k]] + c(-1.96*sp.std.errs[[k]],
-									   1.96*sp.std.errs[[k]])})
-	nsp.means <- lapply(
-				   		lapply(1:K,
-							function(k){
-								unlist(lapply(
-									lapply(x.vals.std,"[[","nsp"),
-						"[[",k))}),
-					function(x){
-						mean(x)})
-	nsp.std.errs <- lapply(
-				   		lapply(1:K,
-							function(k){
-								unlist(lapply(
-									lapply(x.vals.std,"[[","nsp"),
-						"[[",k))}),
-					function(x){
-						sd(x)/sqrt(length(x))})
-	nsp.CIs <- lapply(1:K,function(k){
-					nsp.means[[k]] + c(-1.96*nsp.std.errs[[k]],
-									    1.96*nsp.std.errs[[k]])})
-	return(list("sp.means" = unlist(sp.means),
-				"sp.std.errs" = unlist(sp.std.errs),
-				"sp.CIs" = sp.CIs,
-				"nsp.means" = unlist(nsp.means),
-				"nsp.std.errs" = unlist(nsp.std.errs),
-				"nsp.CIs" = nsp.CIs))
-}
+require(conStruct)
+cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 
 plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,cex=1.5,jitter=0,...){
 	#recover()
@@ -82,43 +25,6 @@ plot.xval.CIs <- function(xval.CIs,K,k.range=c(1:K),ylim=NULL,cex=1.5,jitter=0,.
 	return(invisible("plotted"))
 }
 
-calculate.qij <- function(cluster.params,data.block,i,j){
-	q_ij <- 2 * cluster.params$alpha0 * 
-				exp(-(cluster.params$alphaD * 
-						data.block$geoDist[i,j])^cluster.params$alpha2) + 
-						2 * cluster.params$mu + 0.5
-	return(q_ij)
-}
-
-calculate.weighted.qij <- function(k,MAP,data.block,i,j){
-	#recover()
-	w.qij <- MAP$admix.proportions[i,k] * MAP$admix.proportions[j,k] * 
-				calculate.qij(MAP$cluster.params[[k]],data.block,i,j)
-	return(w.qij)
-}
-
-calculate.laycon.k <- function(k,MAP,data.block){
-	comps <- cbind(combn(1:data.block$N,2),sapply(1:data.block$N,rep,2))
-	lay.con <- lapply(1:ncol(comps),function(n){
-					calculate.weighted.qij(k,MAP,data.block,comps[1,n],comps[2,n])
-				})
-	return(mean(unlist(lay.con)))
-}
-
-calculate.layer.contributions <- function(MAP,data.block,layer.order=NULL){
-	#recover()
-	K <- ncol(MAP$admix.proportions)
-	apply.over <- 1:K
-	if(!is.null(layer.order)){
-		apply.over <- apply.over[layer.order]
-	}
-	raw.layer.scores <- lapply(apply.over,function(k){
-							calculate.laycon.k(k,MAP,data.block)
-						})
-	layer.contributions <- unlist(raw.layer.scores)/sum(unlist(raw.layer.scores))
-	return(layer.contributions)
-}
-
 get.admix.CIs <- function(conStruct.results){
 	CIs <- apply(conStruct.results$posterior$admix.proportions,
 					c(2,3),
@@ -131,7 +37,7 @@ get.admix.CIs <- function(conStruct.results){
 
 viz.admix.results <- function(sim.admix.props,conStruct.results,clst.order=NULL){
 	#layout(matrix(c(1,1,2),1,3))
-	k.cols <- c("blue", "red", "green", "yellow", "purple", "orange", "lightblue", "darkgreen", "lightblue", "gray")	
+	k.cols <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	K <- ncol(sim.admix.props)
 	if(is.null(clst.order)){
 		clst.order <- 1:K
@@ -164,7 +70,7 @@ viz.admix.results <- function(sim.admix.props,conStruct.results,clst.order=NULL)
 
 plot.cluster.curves <- function(data.block, conStruct.results, cluster.cols=NULL,sample.cols=NULL,add=FALSE){
 	if(is.null(cluster.cols)){
-		cluster.cols <- c("blue", "red", "green", "yellow", "purple","orange", "lightblue", "darkgreen", "lightblue", "gray")
+		cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	}
 	order.mat <- order(data.block$geoDist)
 	if(add==FALSE){
@@ -193,6 +99,7 @@ plot.cluster.curves <- function(data.block, conStruct.results, cluster.cols=NULL
 }
 
 plot.K.cluster.curves <- function(Ks,data.block,output.list,col.mat1=NULL,col.mat2=NULL,output.list.sp=NULL){
+cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 if(is.null(col.mat1)){
 	col.mat1 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
 }
@@ -202,19 +109,16 @@ if(is.null(col.mat2)){
 	for(k in Ks){
 		data.block$K <- k
 		csr <- output.list[[k]][[1]]
-		clst.match <- NULL
 		if(k <= 2){
 			csr1.order <- NULL
 		}
 		if(k==2 & !is.null(output.list.sp)){
 			tmp.csr <- output.list.sp[[k]][[1]]
-			clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-			csr1.order <- clst.match$clst.order
+			csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 		}
 		if(k > 2){
 			tmp.csr <- output.list[[k-1]][[1]]
-			clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-			csr1.order <- clst.match$clst.order
+			csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 		}
 		if(is.null(csr1.order)){
 			csr1.order <- 1:k
@@ -233,7 +137,7 @@ if(is.null(col.mat2)){
 			        xlab="",ylab="",pch=21,cex=1.3,
 			        col=adjustcolor(col.mat1[upper.tri(data.block$obsCov, diag = TRUE)],0.7),
 			        bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7))
-				plot.cluster.curves(data.block, csr, cluster.cols=clst.match$cols,add=TRUE)
+				plot.cluster.curves(data.block, csr, cluster.cols=cluster.colors[order(csr1.order)],add=TRUE)
 		}
 		mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 		mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
@@ -245,8 +149,8 @@ plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 		assign(paste0("tl",n),test.lnl)
 	}
 	x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-	x.vals.std <- lapply(x.vals,standardize.xvals)
-	xval.CIs <- get.xval.CIs(x.vals.std,K)
+	x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
+	xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	plot.xval.CIs(xval.CIs,K,jitter=0.1)
 		legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"))
 	mtext("Predictive accuracy",side=2,padj=-5)
@@ -257,81 +161,79 @@ plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 }
 
 plot.sim.pies <- function(data.block,K,output.list,file.name){
+	#recover()
+	cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	csr1.order <- NULL
 	for(k in 2:K){
 		data.block$K <- k
 		csr <- output.list[[k]][[1]]
-		clst.match <- NULL
-		if(k < 4){
-			csr1.order <- NULL
-		}
-		clst.match$cols <- c(4,2)
 		if(k > 2){
 			tmp.csr <- output.list[[k-1]][[1]]
-			clst.match <- conStruct:::match.clusters.x.runs(tmp.csr,csr,csr1.order)
-			csr1.order <- clst.match$clst.order
+			csr1.order <- conStruct:::match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
 		}
 		pdf(file=paste0(file.name,k,".pdf"),width=5,height=5)
-			make.admix.pie.plot(data.block,csr,cluster.colors=clst.match$cols,stat="MAP",title="",radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
+			make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=3.5,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
 		dev.off()
 	}
 }
 
-admix.pie.plot <- function (coords, w, cluster.colors, radii = 2.7, add = FALSE,box=TRUE) {
-	K <- ncol(w)
-	N <- nrow(w)
-   	cluster.names <- paste0("cluster_", 1:K)
-   	sample.names <- paste0("sample_", 1:N)
-   	color.tab <- caroline::nv(c(cluster.colors[1:K]),cluster.names)
-   	pie.list <- lapply(1:N, function(i) {
-    		   caroline::nv(w[i, ], cluster.names)
-   	})
-   	names(pie.list) <- sample.names
-   	if (add) {
-    	   par(new = TRUE)
-   	}
-   	else {
-    	   par(mar = c(2, 2, 2, 2))
-   	}
-   	caroline::pies(pie.list, x0 = coords[, 1], 
-       y0 = coords[, 2], color.table = color.tab, 
-       border = "black", radii = radii, xlab = "", ylab = "", 
-       main = "", lty = 1, density = NULL)
-	if(box){
-	   	box(lwd = 2)
-	}
-    return(invisible(0))
-}
+# admix.pie.plot <- function (coords, w, cluster.colors, radii = 2.7, add = FALSE,box=TRUE) {
+	# K <- ncol(w)
+	# N <- nrow(w)
+   	# cluster.names <- paste0("cluster_", 1:K)
+   	# sample.names <- paste0("sample_", 1:N)
+   	# color.tab <- caroline::nv(c(cluster.colors[1:K]),cluster.names)
+   	# pie.list <- lapply(1:N, function(i) {
+    		   # caroline::nv(w[i, ], cluster.names)
+   	# })
+   	# names(pie.list) <- sample.names
+   	# if (add) {
+    	   # par(new = TRUE)
+   	# }
+   	# else {
+    	   # par(mar = c(2, 2, 2, 2))
+   	# }
+   	# caroline::pies(pie.list, x0 = coords[, 1], 
+       # y0 = coords[, 2], color.table = color.tab, 
+       # border = "black", radii = radii, xlab = "", ylab = "", 
+       # main = "", lty = 1, density = NULL)
+	# if(box){
+	   	# box(lwd = 2)
+	# }
+    # return(invisible(0))
+# }
 
-structure.plot <- function(w, mar = c(2, 4, 2, 2), sample.order = NULL, cluster.order = NULL, sample.names = NULL, sort.by = NULL, cluster.colors = NULL) {
-	N <- nrow(w)
-	K <- ncol(w)
-    par(mar = mar)
-    if (is.null(cluster.order)) {
-        cluster.order <- seq(1:K)
-    }
-    if (is.null(sample.order)) {
-        sample.order <- seq(1:N)
-    }
-    if (!is.null(sort.by)) {
-        sample.order <- order(w[,sort.by])
-    }
-    if (is.null(cluster.colors)) {
-        cluster.colors <- c("blue", "red", "green", "yellow", 
-            "purple", "orange", "lightblue", "darkgreen", "lightblue", 
-            "gray")
-    }
-    use.colors <- cluster.colors[1:K][cluster.order]
-    plot(0, xlim = c(0, N), ylim = c(0, 1), type = "n", 
-        ylab = "", xlab = "", xaxt = "n",bty="n",yaxt="n")
-    plotting.admix.props <- apply(cbind(0, w[, cluster.order]), 1, cumsum)
-    lapply(1:K, function(i) {
-        conStruct:::make.structure.polygon.layer(plotting.admix.props, i, use.colors, sample.order)
-    })
-    if (!is.null(sample.names)) {
-        axis(side = 1, at = seq(1:N) - 0.5, labels = sample.names[sample.order], cex.axis = 0.5, las = 2)
-    }
-    return(invisible("plotted"))
-}
+# structure.plot <- function(w, mar = c(2, 4, 2, 2), sample.order = NULL, cluster.order = NULL, sample.names = NULL, sort.by = NULL, cluster.colors = NULL) {
+	# N <- nrow(w)
+	# K <- ncol(w)
+    # par(mar = mar)
+    # if (is.null(cluster.order)) {
+        # cluster.order <- seq(1:K)
+    # }
+    # if (is.null(sample.order)) {
+        # sample.order <- seq(1:N)
+    # }
+    # if (!is.null(sort.by)) {
+        # sample.order <- order(w[,sort.by])
+    # }
+    # if (is.null(cluster.colors)) {
+        # cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+    # }
+    # use.colors <- cluster.colors[1:K][cluster.order]
+    # plot(0, xlim = c(0, N), ylim = c(0, 1), type = "n", 
+        # ylab = "", xlab = "", xaxt = "n",bty="n",yaxt="n")
+    # plotting.admix.props <- apply(cbind(0, w[, cluster.order]), 1, cumsum)
+    # lapply(1:K, function(i) {
+        # conStruct:::make.structure.polygon.layer(plotting.admix.props, i, use.colors, sample.order)
+    # })
+    # if (!is.null(sample.names)) {
+        # axis(side = 1, at = seq(1:N) - 0.5, labels = sample.names[sample.order], cex.axis = 0.5, las = 2)
+    # }
+    # return(invisible("plotted"))
+# }
 
 find.unique.sampling.coords <- function(coords,lump.dist){
 	sampling.foci <- coords[1,,drop=FALSE]
@@ -388,27 +290,27 @@ get.str.plot.order <- function(unique.coords.list){
 	return(str.plot.order)
 }
 
-make.bear.redux.result.plot <- function(csr,coords,lump.dist,cluster.colors,cluster.order=NULL,layout=matrix(c(1,2),nrow=2,ncol=1),box=TRUE){
+make.bear.redux.result.plot <- function(admix.proportions,coords,lump.dist,cluster.colors,cluster.order=NULL,layout=matrix(c(1,2),nrow=2,ncol=1)){
 	unique.coords.list <- find.unique.sampling.coords(coords,lump.dist)
 	par(xpd=FALSE)
 	layout(layout)
-	structure.plot(w = csr$MAP$admix.proportions, 
-				   mar = c(1,1,1,1),
-				   sample.order = order(get.str.plot.order(unique.coords.list)),
-				   cluster.order = cluster.order,
-				   sample.names = NULL,
-				   sort.by = NULL,
-				   cluster.colors = cluster.colors)
+	make.structure.plot(admix.proportions = admix.proportions, 
+					    mar = c(1,1,1,1),
+					    sample.order = order(get.str.plot.order(unique.coords.list)),
+					    cluster.order = cluster.order,
+					    sample.names = NULL,
+					    sort.by = NULL,
+					    cluster.colors = cluster.colors)
 	bin.middles <- divvy.str.by.clump(unique.coords.list$focus.membership,yneg=-0.03,index.order=order(unique.coords.list$sampling.foci[,1]))
 	bin.mid.coords.X <- grconvertX(bin.middles[,1],to="ndc")
 	bin.mid.coords.Y <- grconvertY(bin.middles[,2],to="ndc")
 	map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(1,1,1,1))
-	admix.pie.plot(coords = unique.coords.list$sampling.foci, 
-					w = collapse.rows(matrix=csr$MAP$admix.proportions,index=unique.coords.list$focus.membership), 
-					cluster.colors = cluster.colors,
-					radii=3.2,
-					add=TRUE,
-					box=box)
+	make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
+						admix.proportions = collapse.rows(matrix=admix.proportions,index=unique.coords.list$focus.membership), 
+						cluster.colors = cluster.colors,
+						radii=3.2,
+						add=TRUE)
+	box(lwd=2)
 	par(xpd=NA)
 	segments(x0 = grconvertX(bin.mid.coords.X,from="ndc"),
 			 y0 = grconvertY(bin.mid.coords.Y,from="ndc"),
@@ -419,35 +321,35 @@ make.bear.redux.result.plot <- function(csr,coords,lump.dist,cluster.colors,clus
 			 col = adjustcolor(1,0.6))
 }
 
-match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
-	cluster.colors <- c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")
-	K1 <- ncol(run1$MAP$admix.proportions)
-		if(!is.null(run1.order)){
-			run1$MAP$admix.proportions <- run1$MAP$admix.proportions[,run1.order]
-		}
-		K1.cols <- cluster.colors[1:K1]
-	K2 <- ncol(run2$MAP$admix.proportions)
-		K2.cols <- numeric(K2)
-	k.combn <- expand.grid(1:K1,1:K2)
-	clst.sims <- unlist(lapply(1:nrow(k.combn),
-						function(n){
-							measure.frob.similarity(run1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
-													run2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
-													K=1)
-							}))
-	while(length(which(K2.cols == 0)) > (K2-K1)){
-		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
-		run2.match <- k.combn[tmp.max,2]
-		run1.match <- k.combn[tmp.max,1]
-		K2.cols[run2.match] <- K1.cols[run1.match]
-		clst.sims[which(k.combn[,1]==run1.match)] <- NA
-		clst.sims[which(k.combn[,2]==run2.match)] <- NA
-	}
-	if(K2 > K1){
-		K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
-	}
-	K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
-	clst2.info <- list("cols" = K2.cols,
-					   "clst.order" = K2.clst.order)
-	return(clst2.info)
-}
+# match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
+	# cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	# K1 <- ncol(run1$MAP$admix.proportions)
+		# if(!is.null(run1.order)){
+			# run1$MAP$admix.proportions <- run1$MAP$admix.proportions[,run1.order]
+		# }
+		# K1.cols <- cluster.colors[1:K1]
+	# K2 <- ncol(run2$MAP$admix.proportions)
+		# K2.cols <- numeric(K2)
+	# k.combn <- expand.grid(1:K1,1:K2)
+	# clst.sims <- unlist(lapply(1:nrow(k.combn),
+						# function(n){
+							# measure.frob.similarity(run1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
+													# run2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
+													# K=1)
+							# }))
+	# while(length(which(K2.cols == 0)) > (K2-K1)){
+		# tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
+		# run2.match <- k.combn[tmp.max,2]
+		# run1.match <- k.combn[tmp.max,1]
+		# K2.cols[run2.match] <- K1.cols[run1.match]
+		# clst.sims[which(k.combn[,1]==run1.match)] <- NA
+		# clst.sims[which(k.combn[,2]==run2.match)] <- NA
+	# }
+	# if(K2 > K1){
+		# K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
+	# }
+	# K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
+	# clst2.info <- list("cols" = K2.cols,
+					   # "clst.order" = K2.clst.order)
+	# return(clst2.info)
+# }

@@ -14,7 +14,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_std_xval.pdf",width=10,hei
 dev.off()
 
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_1")
-library(conStruct)
 load("sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
 data.block <- conStruct:::make.data.block(K = 1,
@@ -26,12 +25,18 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_sp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.sp[[k]] <- conStruct.results
 }
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_nsp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
@@ -51,54 +56,47 @@ laycon.sp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.sp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.sp[[k]][[1]]
-	clst.match <- NULL
-	if(k < 4){
+	if(k < 3){
 		csr1.order <- NULL
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.nsp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.nsp[[k]][[1]]
-	clst.match <- NULL
 	if(k <= 2){
 		csr1.order <- NULL
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="layer importance")
 	barplot(laycon.nsp,
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=1)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -114,7 +112,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_std_xval.pdf",width=10,hei
 dev.off()
 
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_2")
-library(conStruct)
 load("sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
 data.block <- conStruct:::make.data.block(K = 1,
@@ -126,12 +123,18 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_sp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.sp[[k]] <- conStruct.results
 }
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_nsp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
@@ -144,61 +147,54 @@ plot.sim.pies(data.block = data.block,
 plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")			
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
 
 K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.sp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.sp[[k]][[1]]
-	clst.match <- NULL
-	if(k < 4){
+	if(k < 3){
 		csr1.order <- NULL
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.nsp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.nsp[[k]][[1]]
-	clst.match <- NULL
 	if(k <= 2){
 		csr1.order <- NULL
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="layer importance")
 	barplot(laycon.nsp,
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=2)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -219,7 +215,6 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_std_xval.pdf",width=10,hei
 dev.off()
 
 setwd("~/Dropbox/conStruct/sims/cross_validation/K_3")
-library(conStruct)
 load("sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
 data.block <- conStruct:::make.data.block(K = 1,
@@ -231,12 +226,18 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_sp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.sp[[k]] <- conStruct.results
 }
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_nsp_conStruct.results.Robj",k))
+	for(j in 1:k){
+		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
@@ -249,61 +250,54 @@ plot.sim.pies(data.block = data.block,
 plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")		
+			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
 
 K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.sp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.sp[[k]][[1]]
-	clst.match <- NULL
-	if(k < 4){
+	if(k < 3){
 		csr1.order <- NULL
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.nsp) <- paste(1:7)
 for(k in 1:K){
 	csr <- output.list.nsp[[k]][[1]]
-	clst.match <- NULL
 	if(k <= 2){
 		csr1.order <- NULL
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		clst.match <- match.clusters.x.runs(tmp.csr,csr,csr1.order)
-		csr1.order <- clst.match$clst.order
+		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.contributions(csr$MAP,
-														data.block)[csr1.order]
+	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="layer importance")
 	barplot(laycon.nsp,
-			col=c("blue","red","green","yellow","purple","orange","lightblue"),
+			col=cluster.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=3)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -327,8 +321,8 @@ for(n in 1:n.reps){
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-x.vals.std <- lapply(x.vals,standardize.xvals)
-xval.CIs <- get.xval.CIs(x.vals.std,K)
+x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
+xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	par(mfrow=c(1,3),mar=c(4.5,5,4,2))
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
 		mtext("Predictive accuracy",side=2,padj=-4)
@@ -354,8 +348,8 @@ for(n in 1:n.reps){
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-x.vals.std <- lapply(x.vals,standardize.xvals)
-xval.CIs <- get.xval.CIs(x.vals.std,K)
+x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
+xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
 	rect(0.7,-700,7.3,400,lty=2)
 	arrows(0.7,-700,2.5,-3e3,lty=1,length=0.15)
@@ -378,8 +372,8 @@ for(n in 1:n.reps){
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-x.vals.std <- lapply(x.vals,standardize.xvals)
-xval.CIs <- get.xval.CIs(x.vals.std,K)
+x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
+xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
 	rect(0.7,-680,7.3,470,lty=2)
 	arrows(0.7,-680,3.2,-4e3,lty=1,length=0.1)
