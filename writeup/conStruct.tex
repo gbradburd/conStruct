@@ -379,8 +379,8 @@ and $w$, for which we use an independent Dirichlet of dimension $K$ for each ind
 Parameters are independent between layers.
 We use Hamiltonian Monte Carlo as implemented in STAN \citep{stan, NUTS, stan_lib, rstan} 
 to estimate the posterior distribution on the parameters.
-We also provide an R package \citep{R} called \texttt{conStruct} that functions as a wrapper 
-around this inference machinery.
+We also provide an R package \citep{R} called \texttt{conStruct} 
+(for ``continuous structure") that functions as a wrapper around this inference machinery.
 
 
 \paragraph{Relationship of this model to nonspatial structure models}
@@ -569,7 +569,8 @@ in contrast, additional layers in the nonspatial analyses continue to be importa
 		{\includegraphics[width=6in,height=2in]{figs/sims/sim_xvals.pdf}}
 	\caption{
 	Cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
-	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	comparing the spatial and nonspatial \texttt{conStruct} models 
+	(in blue and green, respectively) run with $K=1$ through 7.  
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
     }\label{sim_xvals}
 \end{figure}
@@ -621,7 +622,7 @@ We then analyzed these data, grouped by drainage, using both the spatial and non
 using $K = 1$ through 7,
 and compared these models using cross-validation.
 The results of these analyses are shown in 
-Figs \ref{populus_xvals} and \ref{populus_pies}, 
+Figs \ref{populus_pies} and \ref{populus_xvals}, 
 as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplementary Materials.
 
 \begin{figure}
@@ -650,14 +651,14 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplemen
 \end{figure}
 
 All models with $K>1$ assigned the majority of each species
-to distinct layers, with some populations drawing ancestry from both layers.
+to distinct layers, with some populations drawing ancestry from multiple layers.
 This provides strong support for discrete population structure between the two species,
 with some admixture,
 rather than a single, continuous cline of ancestry.
 At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
 while \bals{} samples displayed no substructure up to $K=7$.
-This lack of substructure within the sampled \bals{} populations is in agreement with results from 
+This lack of substructure within the sampled \bals{} populations is largely in agreement with results from 
 \citet{keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
 and probably represents a recent, postglacial expansion.
 
@@ -677,7 +678,7 @@ Most of this signal seems to derive from the \textit{P. trichocarpa} samples:
 covariance within predominantly \tri{} layers decays more quickly with distance
 than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_clst_covs}.  
 This indicates that, although isolation by distance is a feature of the dataset as a whole, 
-it's magnitude varies considerably across biological units - 
+its magnitude varies considerably across biological units - 
 an aspect of the data \texttt{conStruct} is able capture well.
 
 
@@ -718,7 +719,7 @@ resulting in a final dataset of 78 individuals.
 We then analyzed these data, treating individuals as the unit of analysis, 
 using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of between 1 and 7, 
 and compared these models using cross-validation.
-The results of these analyses are shown in Figs \ref{bear_xvals} - \ref{bear_laycon}, 
+The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
 as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Supplementary Materials.
 
 \begin{figure}
@@ -796,8 +797,10 @@ previous analyses that split Alaskan and British Columbian bears out
 into their own cluster with an inferred Beringian glacial refugium
 \citep{Byun1997,Stone2000,Puckett2015}.
 Our model, which explicitly incorporates a spatial decay of relatedness, 
-allows individuals sampled at a large remove to belong to the same layer
-instead of splitting these individuals out into successive clusters.
+allows somewhat genetically differentiated individuals 
+that are sampled far from one another to belong to the same layer,
+instead of splitting these individuals out into successive clusters 
+(e.g., Fig \ref{bear_sp_pies:K5} vs \ref{bear_nsp_pies:K5}).
 
 %%%%%%%%%
 \section*{Discussion}
@@ -1662,7 +1665,7 @@ as the relative contribution of the $k$th layer to total agreement:
 		\subcaptionbox{$K=7$\label{bear_sp_pies:K7}}
 			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp7.pdf}}
 	\caption{
-	Map of admixture proportions estimated for the \textit{bear} dataset 
+	Map of admixture proportions estimated for the bear dataset 
 	using the spatial model for $K=2$ through 7.
     }\label{bear_sp_pies}
 \end{figure}
@@ -1682,7 +1685,7 @@ as the relative contribution of the $k$th layer to total agreement:
 		\subcaptionbox{$K=7$\label{bear_nsp_pies:K7}}
 			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp7.pdf}}
 	\caption{
-	Map of admixture proportions estimated for the \textit{bear} dataset 
+	Map of admixture proportions estimated for the bear dataset 
 	using the nonspatial model for $K=2$ through 7.
     }\label{bear_nsp_pies}
 \end{figure}
