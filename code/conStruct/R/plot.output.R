@@ -183,9 +183,13 @@ make.structure.plot <- function(admix.proportions,mar=c(2,4,2,2),sample.order=NU
 #' @param y.lim A \code{vector} giving the y limits of the plot. The default
 #'			value is \code{NULL}, which indicates that the range of values 
 #'			given in the second column of \code{coords} should be used.
+#' @param mar A \code{vector} giving the number of lines of margin specified 
+#'		for the four sides of the plotting window (passed to \code{par}). 
+#'		Default value, which is only used if \code{add=FALSE}, is 
+#'		\code{c(2,2,2,2)}.
 #' @return This function has only invisible return values.
 #'@export
-make.admix.pie.plot <- function(admix.proportions,coords,cluster.colors=NULL,radii=2.7,add=FALSE,x.lim=NULL,y.lim=NULL){
+make.admix.pie.plot <- function(admix.proportions,coords,cluster.colors=NULL,radii=2.7,add=FALSE,x.lim=NULL,y.lim=NULL,mar=c(2,2,2,2)){
 	if(class(admix.proportions)!="matrix"){
 		stop("\nyou must specify a matrix of admixture proportions\n")
 	}
@@ -213,7 +217,7 @@ make.admix.pie.plot <- function(admix.proportions,coords,cluster.colors=NULL,rad
 	if(add){
 		graphics::par(new=TRUE)
 	} else {
-		graphics::par(mar=c(2,2,2,2))
+		graphics::par(mar=mar)
 	}
 	if(is.null(x.lim)){
 		x.lim <- c(min(coords[,1]) - 1, max(coords[,1]) + 1)
