@@ -362,7 +362,7 @@ make.bear.redux.result.plot.multipanel2 <- function(output.list,coords,lump.dist
 		map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5))
 		make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
 							admix.proportions = collapse.rows(matrix=csr$MAP$admix.proportions,index=unique.coords.list$focus.membership), 
-							cluster.colors = cluster.colors,
+							cluster.colors = cluster.colors[order(csr1.order)],
 							radii=3.2,
 							add=TRUE)
 		box(lwd=2)
