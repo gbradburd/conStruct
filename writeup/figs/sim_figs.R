@@ -51,6 +51,49 @@ plot.sim.pies(data.block = data.block,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K")
 
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.nsp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.sp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/Fig2_simK1_sp_vs_nsp.pdf",width=8,height=5.34,pointsize=14)
+	#quartz(width=6,height=4,pointsize=14)
+	radii <- 1.7
+	mar <- c(5,3,1,3)
+	par(mfrow=c(2,3))
+		make.admix.pie.plot(output.list.nsp[[2]][[1]]$MAP$admix.proportions,
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(a) ",italic("K")," = 2")),padj=2.7,adj=0.4)
+		make.admix.pie.plot(output.list.nsp[[3]][[1]]$MAP$admix.proportions[,c(2,3,1)],
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(b) ",italic("K")," = 3")),padj=2.7,adj=0.4)
+		make.admix.pie.plot(output.list.nsp[[4]][[1]]$MAP$admix.proportions[,c(4,2,3,1)],
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(c) ",italic("K")," = 4")),padj=2.7,adj=0.4)
+		make.admix.pie.plot(output.list.sp[[2]][[1]]$MAP$admix.proportions,
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(d) ",italic("K")," = 2")),padj=2.7,adj=0.4)
+		make.admix.pie.plot(output.list.sp[[3]][[1]]$MAP$admix.proportions[,c(3,1,2)],
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(e) ",italic("K")," = 3")),padj=2.7,adj=0.4)
+		make.admix.pie.plot(output.list.sp[[4]][[1]]$MAP$admix.proportions[,c(4,2,1,3)],
+								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
+			mtext(side=1,text=expression(paste("(f) ",italic("K")," = 4")),padj=2.7,adj=0.4)
+dev.off()
+
 K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
 colnames(laycon.sp) <- paste(1:7)
@@ -148,6 +191,24 @@ plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.nsp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.sp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
 
 K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
@@ -251,6 +312,24 @@ plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.nsp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies.pdf",width=8,height=5.34,pointsize=14)
+	par(mfrow=c(2,3))
+	plot.sim.pies.multipanel(data.block = data.block,
+							 K = 7,
+							 output.list = output.list.sp,
+							 radii = 1.7,
+							 mar = c(5,3,1,3))
+dev.off()
 
 K <- 7
 laycon.sp <- matrix(0,nrow=7,ncol=7)
