@@ -390,7 +390,7 @@ dev.off()
 
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=16,height=5,pointsize=14)
-#	quartz(width=15,height=5)
+#	quartz(width=16,height=5)
 #K1
 setwd("~/Dropbox/gid_runs/mc_runs/sims/simK1")
 n.reps <- 10
@@ -438,6 +438,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=2)
 							axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=2)
 							box(lwd=1.2,lty=2)
+							box(lwd=1.2,lty=1,bty="l")
 						},
 					x=c(2.5,6.6),y=c(-12.5e3,-3e3))
 	mtext("K = 2",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
@@ -462,6 +463,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=2)
 							axis(2,at=seq(-140,0,length.out=6),labels=c(-140,"","","","",0),cex.axis=0.8,lty=2)
 							box(lwd=1.2,lty=2)
+							box(lwd=1.2,lty=1,bty="l")
 						},
 					x=c(3.2,6.6),y=c(-1.5e4,-4e3))
 	mtext("K = 3",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
