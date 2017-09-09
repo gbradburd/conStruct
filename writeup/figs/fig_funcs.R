@@ -180,60 +180,45 @@ plot.sim.pies <- function(data.block,K,output.list,file.name){
 	}
 }
 
-# admix.pie.plot <- function (coords, w, cluster.colors, radii = 2.7, add = FALSE,box=TRUE) {
-	# K <- ncol(w)
-	# N <- nrow(w)
-   	# cluster.names <- paste0("cluster_", 1:K)
-   	# sample.names <- paste0("sample_", 1:N)
-   	# color.tab <- caroline::nv(c(cluster.colors[1:K]),cluster.names)
-   	# pie.list <- lapply(1:N, function(i) {
-    		   # caroline::nv(w[i, ], cluster.names)
-   	# })
-   	# names(pie.list) <- sample.names
-   	# if (add) {
-    	   # par(new = TRUE)
-   	# }
-   	# else {
-    	   # par(mar = c(2, 2, 2, 2))
-   	# }
-   	# caroline::pies(pie.list, x0 = coords[, 1], 
-       # y0 = coords[, 2], color.table = color.tab, 
-       # border = "black", radii = radii, xlab = "", ylab = "", 
-       # main = "", lty = 1, density = NULL)
-	# if(box){
-	   	# box(lwd = 2)
-	# }
-    # return(invisible(0))
-# }
+plot.sim.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
+	#recover()
+	cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	csr1.order <- NULL
+	for(k in 2:K){
+		data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		if(k > 2){
+			tmp.csr <- output.list[[k-1]][[1]]
+			csr1.order <- conStruct:::match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar=mar)
+			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
+}
 
-# structure.plot <- function(w, mar = c(2, 4, 2, 2), sample.order = NULL, cluster.order = NULL, sample.names = NULL, sort.by = NULL, cluster.colors = NULL) {
-	# N <- nrow(w)
-	# K <- ncol(w)
-    # par(mar = mar)
-    # if (is.null(cluster.order)) {
-        # cluster.order <- seq(1:K)
-    # }
-    # if (is.null(sample.order)) {
-        # sample.order <- seq(1:N)
-    # }
-    # if (!is.null(sort.by)) {
-        # sample.order <- order(w[,sort.by])
-    # }
-    # if (is.null(cluster.colors)) {
-        # cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
-    # }
-    # use.colors <- cluster.colors[1:K][cluster.order]
-    # plot(0, xlim = c(0, N), ylim = c(0, 1), type = "n", 
-        # ylab = "", xlab = "", xaxt = "n",bty="n",yaxt="n")
-    # plotting.admix.props <- apply(cbind(0, w[, cluster.order]), 1, cumsum)
-    # lapply(1:K, function(i) {
-        # conStruct:::make.structure.polygon.layer(plotting.admix.props, i, use.colors, sample.order)
-    # })
-    # if (!is.null(sample.names)) {
-        # axis(side = 1, at = seq(1:N) - 0.5, labels = sample.names[sample.order], cex.axis = 0.5, las = 2)
-    # }
-    # return(invisible("plotted"))
-# }
+plot.poplar.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
+	#recover()
+	cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	csr1.order <- NULL
+	for(k in 2:K){
+		data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		if(k > 2){
+			tmp.csr <- output.list[[k-1]][[1]]
+			csr1.order <- conStruct:::match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray", mar=mar)
+		map.axes()
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),add=TRUE)
+			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
+}
 
 find.unique.sampling.coords <- function(coords,lump.dist){
 	sampling.foci <- coords[1,,drop=FALSE]
@@ -321,35 +306,74 @@ make.bear.redux.result.plot <- function(admix.proportions,coords,lump.dist,clust
 			 col = adjustcolor(1,0.6))
 }
 
-# match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
-	# cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
-	# K1 <- ncol(run1$MAP$admix.proportions)
-		# if(!is.null(run1.order)){
-			# run1$MAP$admix.proportions <- run1$MAP$admix.proportions[,run1.order]
-		# }
-		# K1.cols <- cluster.colors[1:K1]
-	# K2 <- ncol(run2$MAP$admix.proportions)
-		# K2.cols <- numeric(K2)
-	# k.combn <- expand.grid(1:K1,1:K2)
-	# clst.sims <- unlist(lapply(1:nrow(k.combn),
-						# function(n){
-							# measure.frob.similarity(run1$MAP$admix.proportions[,k.combn[n,1],drop=FALSE],
-													# run2$MAP$admix.proportions[,k.combn[n,2],drop=FALSE],
-													# K=1)
-							# }))
-	# while(length(which(K2.cols == 0)) > (K2-K1)){
-		# tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
-		# run2.match <- k.combn[tmp.max,2]
-		# run1.match <- k.combn[tmp.max,1]
-		# K2.cols[run2.match] <- K1.cols[run1.match]
-		# clst.sims[which(k.combn[,1]==run1.match)] <- NA
-		# clst.sims[which(k.combn[,2]==run2.match)] <- NA
-	# }
-	# if(K2 > K1){
-		# K2.cols[which(K2.cols==0)] <- cluster.colors[(K1+1):K2]
-	# }
-	# K2.clst.order <- unique(match(cluster.colors,K2.cols)[which(!is.na(match(cluster.colors,K2.cols)))])
-	# clst2.info <- list("cols" = K2.cols,
-					   # "clst.order" = K2.clst.order)
-	# return(clst2.info)
-# }
+make.bear.redux.result.plot.multipanel1 <- function(admix.proportions,coords,lump.dist,cluster.colors,cluster.order=NULL){
+	unique.coords.list <- find.unique.sampling.coords(coords,lump.dist)
+	par(xpd=FALSE)
+	make.structure.plot(admix.proportions = admix.proportions, 
+					    mar = c(1,2.5,1,1),
+					    sample.order = order(get.str.plot.order(unique.coords.list)),
+					    cluster.order = cluster.order,
+					    sample.names = NULL,
+					    sort.by = NULL,
+					    cluster.colors = cluster.colors)
+	bin.middles <- divvy.str.by.clump(unique.coords.list$focus.membership,yneg=-0.03,index.order=order(unique.coords.list$sampling.foci[,1]))
+	bin.mid.coords.X <- grconvertX(bin.middles[,1],to="ndc")
+	bin.mid.coords.Y <- grconvertY(bin.middles[,2],to="ndc")
+	map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5))
+	make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
+						admix.proportions = collapse.rows(matrix=admix.proportions,index=unique.coords.list$focus.membership), 
+						cluster.colors = cluster.colors,
+						radii=3.2,
+						add=TRUE)
+	box(lwd=2)
+	par(xpd=NA)
+	segments(x0 = grconvertX(bin.mid.coords.X,from="ndc"),
+			 y0 = grconvertY(bin.mid.coords.Y,from="ndc"),
+			 x1 = unique.coords.list$sampling.foci[order(unique.coords.list$sampling.foci[,1]),1],
+			 y1 = unique.coords.list$sampling.foci[order(unique.coords.list$sampling.foci[,1]),2],
+			 lty = 2,
+			 lwd=0.5,
+			 col = adjustcolor(1,0.6))
+}
+
+make.bear.redux.result.plot.multipanel2 <- function(output.list,coords,lump.dist,cluster.colors,csr1.order=NULL){
+	unique.coords.list <- find.unique.sampling.coords(coords,lump.dist)
+	for(k in 2:7){
+		data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		if(k > 2){
+			tmp.csr <- output.list[[k-1]][[1]]
+			csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		par(xpd=FALSE)
+		make.structure.plot(admix.proportions = csr$MAP$admix.proportions, 
+						    mar = c(1,2.5,1,1),
+						    sample.order = order(get.str.plot.order(unique.coords.list)),
+						    cluster.order = csr1.order,
+						    sample.names = NULL,
+						    sort.by = NULL,
+						    cluster.colors = cluster.colors[order(csr1.order)])
+		bin.middles <- divvy.str.by.clump(unique.coords.list$focus.membership,yneg=-0.03,index.order=order(unique.coords.list$sampling.foci[,1]))
+		bin.mid.coords.X <- grconvertX(bin.middles[,1],to="ndc")
+		bin.mid.coords.Y <- grconvertY(bin.middles[,2],to="ndc")
+		map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5))
+		make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
+							admix.proportions = collapse.rows(matrix=csr$MAP$admix.proportions,index=unique.coords.list$focus.membership), 
+							cluster.colors = cluster.colors[order(csr1.order)],
+							radii=3.2,
+							add=TRUE)
+		box(lwd=2)
+		par(xpd=NA)
+		segments(x0 = grconvertX(bin.mid.coords.X,from="ndc"),
+				 y0 = grconvertY(bin.mid.coords.Y,from="ndc"),
+				 x1 = unique.coords.list$sampling.foci[order(unique.coords.list$sampling.foci[,1]),1],
+				 y1 = unique.coords.list$sampling.foci[order(unique.coords.list$sampling.foci[,1]),2],
+				 lty = 2,
+				 lwd=0.5,
+				 col = adjustcolor(1,0.6))
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=-1.5,adj=0.03,cex=1.3)
+	}
+}

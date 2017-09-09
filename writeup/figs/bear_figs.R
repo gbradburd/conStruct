@@ -102,6 +102,59 @@ for(k in 2:7){
 	dev.off()
 }
 
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/Fig6_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
+	layout(cbind(matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
+				 matrix(2+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE)))
+	par(mar=c(5,5,1,1))
+	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.sp[[3]][[1]]$MAP$admix.proportions,
+										coords = bear.dataset$sample.coords,
+										lump.dist = 200,
+										cluster.colors = cluster.colors[order(c(1,2,3))],
+										cluster.order=c(1,2,3))
+		mtext(side=1,text=bquote(paste("(",.(letters[1]),") ",italic("K")," = ",.(3)," (spatial)")),padj=-1.5,adj=0.03,cex=1.3)
+	par(xpd=FALSE)
+	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.nsp[[3]][[1]]$MAP$admix.proportions[,c(3,1,2)],
+										coords = bear.dataset$sample.coords,
+										lump.dist = 200,
+										cluster.colors = cluster.colors[order(c(1,2,3))],
+										cluster.order=c(1,2,3))
+		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3)," (nonspatial)")),padj=-1.5,adj=0.03,cex=1.3)
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,height=10)
+	layout(
+		rbind(
+			Reduce("cbind",lapply(1:3,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)})),
+			Reduce("cbind",lapply(4:6,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)}))
+			))
+	make.bear.redux.result.plot.multipanel2(output.list = output.list.sp,
+											coords = data.block$coords,
+											lump.dist = 200,
+											cluster.colors,csr1.order=NULL)
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,height=10)
+	layout(
+		rbind(
+			Reduce("cbind",lapply(1:3,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)})),
+			Reduce("cbind",lapply(4:6,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)}))
+			))
+	make.bear.redux.result.plot.multipanel2(output.list = output.list.nsp,
+											coords = data.block$coords,
+											lump.dist = 200,
+											cluster.colors,csr1.order=c(2,1))
+dev.off()
+
+
 pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp_clst_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))

@@ -5,7 +5,8 @@
 \title{Make admixture pie plot}
 \usage{
 make.admix.pie.plot(admix.proportions, coords, cluster.colors = NULL,
-  radii = 2.7, add = FALSE, x.lim = NULL, y.lim = NULL)
+  radii = 2.7, add = FALSE, x.lim = NULL, y.lim = NULL, mar = c(2, 2,
+  2, 2))
 }
 \arguments{
 \item{admix.proportions}{A \code{matrix} of admixture proportions, 
@@ -35,6 +36,11 @@ given in the first column of \code{coords} should be used.}
 \item{y.lim}{A \code{vector} giving the y limits of the plot. The default
 value is \code{NULL}, which indicates that the range of values 
 given in the second column of \code{coords} should be used.}
+
+\item{mar}{A \code{vector} giving the number of lines of margin specified 
+for the four sides of the plotting window (passed to \code{par}). 
+Default value, which is only used if \code{add=FALSE}, is 
+\code{c(2,2,2,2)}.}
 }
 \value{
 This function has only invisible return values.

@@ -1,7 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{mathtools}
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -554,18 +553,7 @@ up the spatial patterns within clusters}.
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK1_pies:nsp_K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK1_pies:nsp_K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK1_pies:nsp_K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=2$\label{simK1_pies:sp_K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K5.pdf}}
-		\subcaptionbox{$K=3$\label{simK1_pies:sp_K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K6.pdf}}
-		\subcaptionbox{$K=4$\label{simK1_pies:sp_K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/Fig2_simK1_sp_vs_nsp.pdf}}
 	\caption{
 	Map of admixture proportions estimated using the nonspatial model for $K=2$ through 4 (top row)
 	and also the spatial model for $K=2$ through 4 (bottom row).
@@ -636,12 +624,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplemen
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{populus_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp2.pdf}}
-		\subcaptionbox{$K=3$\label{populus_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp3.pdf}}
-		\subcaptionbox{$K=4$\label{populus_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp4.pdf}}
+		{\includegraphics[width=6in,height=2in]{figs/populus/Fig4_pop_sp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 4.
@@ -736,10 +719,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Suppleme
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=3$ (spatial)\label{bear_K3:sp}}
-			{\includegraphics[width=2.5in,height=2.5in]{figs/bears/bear_sp3.pdf}}
-		\subcaptionbox{$K=3$ (nonspatial)\label{bear_K3:nsp}}
-			{\includegraphics[width=2.5in,height=2.5in]{figs/bears/bear_nsp3.pdf}}
+		{\includegraphics[width=6in,height=3in]{figs/bears/Fig6_sp_vs_nsp.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
 	using the spatial model (left) and the nonspatial model (right) for $K=3$.
@@ -801,7 +781,7 @@ and lack of denser sampling across northern North America,
 Results from the nonspatial model clearly exhibit the tendency 
 of nonspatial clustering algorithms to describe continuous spatial patterns of divergence 
 using gradients of admixture between clusters.
-For example, in Fig \ref{bear_K3:nsp}, 
+For example, in Fig \ref{bear_K3}b, 
 the third cluster (in green) exhibits a clear East-West gradient that 
 is overlain across the discrete structure between the Southwest cluster and the Southeast 
 
@@ -816,7 +796,7 @@ Our model, which explicitly incorporates a spatial decay of relatedness,
 allows somewhat genetically differentiated individuals 
 that are sampled far from one another to belong to the same layer,
 instead of splitting these individuals out into successive clusters 
-(e.g., Fig \ref{bear_sp_pies:K5} vs \ref{bear_nsp_pies:K5}).
+(e.g., Fig \ref{bear_sp_pies}d vs \ref{bear_nsp_pies}d).
 
 %%%%%%%%%
 \section*{Discussion}
@@ -941,8 +921,8 @@ membership in the same cluster may not mean that samples are particularly relate
 If covariance within a cluster decays sharply with distance, 
 and the cluster-specific relatedness parameter $\phi^{(k)}$ is low, 
 individuals at a far spatial remove may be in the same cluster but have very low pairwise relatedness.
-It is possible that this is happening in Fig \ref{populus_sp_pies}\subref{populus_sp_pies:K3}. 
-At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the yellow cluster, 
+It is possible that this is happening in Fig \ref{populus_sp_pies}. 
+At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold cluster, 
 whose other neighbors are to the north, with an intervening group of populations in the red cluster, 
 and at $K=5$, those southernmost samples split out and become their own cluster.
 Again, we encourage users to run analyses across multiple values of $K$, 
@@ -1348,18 +1328,7 @@ as the relative contribution of the $k$th layer to total agreement:
 \newpage
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK1_nsp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK1_nsp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK1_nsp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK1_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK1_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK1_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_nsp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
@@ -1368,18 +1337,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK1_sp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK1_sp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK1_sp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK1_sp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK1_sp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK1_sp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK1_sp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using 1 cluster with nearest-neighbor symmetric migration between demes.
@@ -1412,18 +1370,7 @@ as the relative contribution of the $k$th layer to total agreement:
 \newpage
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK2_nsp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK2_nsp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK2_nsp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK2_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK2_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK2_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_nsp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
@@ -1432,18 +1379,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK2_sp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK2_sp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK2_sp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK2_sp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK2_sp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK2_sp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK2_sp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
@@ -1483,18 +1419,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK3_nsp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK3_nsp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK3_nsp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK3_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK3_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK3_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_nsp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
@@ -1503,18 +1428,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{simK3_sp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K2.pdf}}
-		\subcaptionbox{$K=3$\label{simK3_sp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K3.pdf}}
-		\subcaptionbox{$K=4$\label{simK3_sp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K4.pdf}}
-		\subcaptionbox{$K=5$\label{simK3_sp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K5.pdf}}
-		\subcaptionbox{$K=6$\label{simK3_sp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K6.pdf}}
-		\subcaptionbox{$K=7$\label{simK3_sp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/sims/simK3_sp_pies_K7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
@@ -1591,18 +1505,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{populus_sp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp2.pdf}}
-		\subcaptionbox{$K=3$\label{populus_sp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp3.pdf}}
-		\subcaptionbox{$K=4$\label{populus_sp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp4.pdf}}
-		\subcaptionbox{$K=5$\label{populus_sp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp5.pdf}}
-		\subcaptionbox{$K=6$\label{populus_sp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp6.pdf}}
-		\subcaptionbox{$K=7$\label{populus_sp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_sp7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 7.
@@ -1611,18 +1514,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{populus_nsp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp2.pdf}}
-		\subcaptionbox{$K=3$\label{populus_nsp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp3.pdf}}
-		\subcaptionbox{$K=4$\label{populus_nsp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp4.pdf}}
-		\subcaptionbox{$K=5$\label{populus_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp5.pdf}}
-		\subcaptionbox{$K=6$\label{populus_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp6.pdf}}
-		\subcaptionbox{$K=7$\label{populus_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/populus/populus_nsp7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the \textit{Populus} dataset 
 	using the nonspatial model for $K=2$ through 7.
@@ -1673,18 +1565,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{bear_sp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp2.pdf}}
-		\subcaptionbox{$K=3$\label{bear_sp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp3.pdf}}
-		\subcaptionbox{$K=4$\label{bear_sp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp4.pdf}}
-		\subcaptionbox{$K=5$\label{bear_sp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp5.pdf}}
-		\subcaptionbox{$K=6$\label{bear_sp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp6.pdf}}
-		\subcaptionbox{$K=7$\label{bear_sp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_sp7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the spatial model for $K=2$ through 7.
@@ -1693,18 +1574,7 @@ as the relative contribution of the $k$th layer to total agreement:
 
 \begin{figure}
 	\centering
-		\subcaptionbox{$K=2$\label{bear_nsp_pies:K2}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp2.pdf}}
-		\subcaptionbox{$K=3$\label{bear_nsp_pies:K3}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp3.pdf}}
-		\subcaptionbox{$K=4$\label{bear_nsp_pies:K4}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp4.pdf}}
-		\subcaptionbox{$K=5$\label{bear_nsp_pies:K5}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp5.pdf}}
-		\subcaptionbox{$K=6$\label{bear_nsp_pies:K6}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp6.pdf}}
-		\subcaptionbox{$K=7$\label{bear_nsp_pies:K7}}
-			{\includegraphics[width=1.8in,height=1.8in]{figs/bears/bear_nsp7.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the nonspatial model for $K=2$ through 7.
