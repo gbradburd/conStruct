@@ -1,0 +1,98 @@
+\documentclass[11pt]{letter}
+\usepackage[hidelinks]{hyperref}
+\usepackage[green]{msuletterhead}
+%\topmarginskip{-0.35in}
+%\bottommarginskip{-1.5in}
+%\leftmarginsize{1in}
+%\rightmarginsize{1.25in}
+%\sigskipbefore{0.4in}
+%\sigskipafter{0in}
+%\noLines
+%\nolines
+%\noHeadline
+%\noheadline
+%\signature{Gideon Bradburd, Graham Coop, and Peter Ralph}
+%
+%\namefrom{}
+%\addrfrom{Gideon Bradburd \\ Dept. of Integrative Biology \\ Michigan State University \\ East Lansing, MI 48823 USA \\ 
+%\href{mailto:bradburd@msu.edu}{bradburd@msu.edu}}
+%\emailfrom{bradburd@msu.edu}
+%
+%\greetto{To the Editor(s) --}
+%\closeline{Sincerely,}
+
+\begin{document}
+%\begin{newlfm}
+
+Submission Cover Letter\\
+\emph{PLoS Biology}
+\\\\\\
+To the Editor(s),
+
+Please find enclosed our manuscript,  
+``Inferring Continuous and Discrete Population Genetic Structure Across Space,"
+for consideration for publication in PLoS Biology.
+
+In the manuscript, we present a novel statistical method 
+for the simultaneous inference of continuous and discrete patterns of population structure.
+The method estimates ancestry proportions for each 
+sample from a set of discrete population layers, 
+and, within each layer, estimates a rate at which relatedness decays with distance.
+This model explicitly addresses the ``clines vs. clusters" problem in 
+modeling population genetic variation by jointly accommodating 
+continuous and discrete patterns of differentiation. 
+We demonstrate the utility of this approach using both simulations 
+and empirical applications, with datasets from poplars and black bears. 
+We also release an associated R package, called \texttt{conStruct}, 
+for ``\emph{con}tinuous \emph{struct}ure."
+
+This work is motivated by two observations:
+first, that patterns of isolation by distance (IBD) are ubiquitous in nature; 
+and second, that existing model-based clustering methods, 
+such as \texttt{STRUCTURE} (Pritchard \emph{et al.} 2000) 
+or \texttt{ADMIXTURE} (Alexander \emph{et al.} 2009), 
+can only describe continuous patterns of variation using discrete clusters, 
+and so must use a possibly large number of clusters
+to describe continuous population differentiation.
+Inference of these spurious clusters can throw a 
+wrench in the gears of efforts to describe and categorize natural variation, 
+one of the first steps in any analysis of genetic data, 
+and a principal mission of biology.  
+
+In this manuscript,
+we use simulations and empirical data to demonstrate 
+the ways in which nonspatial clustering approaches 
+fail in the presence of IBD; 
+we also present two different metrics for choosing an appropriate 
+number of layers to describe the data, 
+and, using both, 
+are able to establish that our method performs quite well.
+
+As of this submission, \texttt{STRUCTURE} alone has been cited more than 20,000 times, 
+and the falling costs of sequencing are facilitating an explosion of next-generation sequence datasets.  
+The first step in the analysis of these data will, for most researchers, 
+involve a model-based clustering analysis.
+We therefore believe that our work represents an important and timely contribution to the field.  
+
+John Novembre (jnovembre@uchicago.edu), \\
+Desislava Petkova (desislavka@gmail.com), \\
+Jonathan Pritchard (pritch@stanford.edu),  \\
+Sohini Ramachandran (sramachandran@brown.edu), \\
+and Matthew Stephens (mstephens@uchicago.edu) \\
+would be suitable reviewers. 
+
+Sincerely,
+Gideon Bradburd, 
+Graham Coop, and 
+Peter Ralph
+%\end{newlfm}
+\end{document}
+
+%What is the scientific question you are addressing?
+%What is the key finding that answers this question?
+%What is the nature of the evidence you provide in support of your conclusion?
+%What are the three most recently published articles that are relevant to this question?
+%What significance do your results have for the field?
+%What significance do your results have for the broader community (of biologists and/or the public)?
+%What other novel findings do you present?
+%Is there additional information that we should take into account?
