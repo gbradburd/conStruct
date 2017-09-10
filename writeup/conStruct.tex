@@ -180,7 +180,8 @@ partitioned within or admixed across a specified number of discrete layers,
 within each of which relatedness decays as a parametric function of the distance between samples.
 We also implement a cross-validation approach for comparing and selecting models across different numbers of layers,
 and we demonstrate the utility of our approach using both simulated and empirical data.
-The implementation of this method, \texttt{conStruct}, is available as an R package at 
+The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
+is available as an R package at 
 \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
 \section*{Methods}
@@ -623,9 +624,11 @@ resulting in just over 20,200 loci retained for analysis.
 We then analyzed these data, grouped by drainage, using both the spatial and nonspatial \texttt{conStruct} models, 
 using $K = 1$ through 7,
 and compared these models using cross-validation.
-The results of these analyses are shown in 
+For comparison, we also ran fastSTRUCTURE \citep{fastStructure} 
+using $K = 1$ through 7.
+The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
-as well as in Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplementary Materials.
+as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Supplementary Materials.
 
 \begin{figure}
 	\centering
@@ -659,7 +662,8 @@ This lack of substructure within the sampled \bals{} populations is largely in a
 \citet{keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
 and probably represents a recent, postglacial expansion.
 
-For values of $K<4$, the spatial model was strongly preferred over the nonspatial model (Fig \ref{populus_xvals}).
+For values of $K<4$, the spatial model was strongly preferred over the nonspatial model (Fig \ref{populus_xvals}),
+the results of which were broadly concordant with those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}).
 Most of this signal seems to derive from the \textit{P. trichocarpa} samples:
 covariance within predominantly \tri{} layers decays more quickly with distance
 than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_clst_covs}.  
@@ -1541,7 +1545,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated for the \textit{Populus} dataset 
+	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 7.
     }\label{populus_sp_pies}
 \end{figure}
@@ -1550,7 +1554,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated for the \textit{Populus} dataset 
+	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the nonspatial model for $K=2$ through 7.
     }\label{populus_nsp_pies}
 \end{figure}
@@ -1595,6 +1599,15 @@ as might be expected if a spatial process were mediating admixture between diver
 	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
 	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_clst_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_clst_covs}.
     }\label{populus_laycon}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=4in]{figs/populus/poplar_fastStr_results.pdf}}
+	\caption{
+	Maps of admixture proportions estimated for the \textit{Populus} dataset 
+	using fastSTRUCTURE for $K=2$ through 7.
+    }\label{populus_fastStr}
 \end{figure}
 
 \begin{figure}

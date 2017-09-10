@@ -24,7 +24,6 @@ dev.off()
 
 
 library(maps)
-my.rep <- 1
 load("~/Dropbox/conStruct/data/poplars/poplar.data.redux.Robj")
 col.mat1 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=TRUE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 col.mat2 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=FALSE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
@@ -230,4 +229,40 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_laycon_barplots.pdf",
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (Poplars)",padj=-2.25,adj=7,font=2,cex=1.2)
+dev.off()
+
+
+collapse.ind.Q <- function(Q,pop.vec){
+	n.pops <- length(unique(pop.vec))
+	admix.props <- matrix(NA,n.pops,ncol(Q))
+	for(i in 1:n.pops){
+		admix.props[i,] <- colMeans(Q[which(pop.vec==i),,drop=FALSE])
+	}
+	return(admix.props)
+}
+load("~/Dropbox/conStruct/data/poplars/fastStructure/poplar.sample.sizes.Robj")
+poplar.pop.vec <- unlist(lapply(1:length(poplar.sample.sizes),function(n){rep(n,poplar.sample.sizes[n])}))
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_fastStr_results.pdf",width=12,height=8,pointsize=14)
+	par(mfrow=c(2,3),mar=c(5,3,0,1.5))
+	for(k in 2:7){
+		w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/fastStructure/poplars_K%s.%s.meanQ",k,k),stringsAsFactors=FALSE)),
+							pop.vec = poplar.pop.vec)	
+		if(k <= 2){
+			csr1.order <- NULL
+		}
+		if(k > 2){
+		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/fastStructure/poplars_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE)),
+								pop.vec = poplar.pop.vec)
+			csr1.order <- match.clusters.x.runs(tmp.w,w,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		par(mar=c(5,5,1,1))
+		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
+		map.axes()
+		make.admix.pie.plot(w[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=1.7,add=TRUE)
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
 dev.off()
