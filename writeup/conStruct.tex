@@ -968,8 +968,18 @@ a relatedness structure between the layers by, for example,
 estimating a population phylogeny between them
 \citep[e.g.][]{treemix}.
 
-%\gc{We could imagine modeling }
-
+\gc{Here we have assumed that samples have known geographic
+  co-ordinates, and draw ancestry from the layers only at those sampled locations. A
+  natural extension would be to attempt to ``geo-locate'' the ancestry
+of samples without geographic co-ordinates \citep{Elephants}. We could
+also imagine letting samples drawn ancestry from other geographic
+co-ordinates, as we have done in a previous approach
+\citep{Spaceymix}, to model long distance dispersal. Indeed we could
+allow entire layers to draw their mean frequency from a particular
+location on another layer. This would enable the modeling of scenerios
+such as range expansion, or domestication, where
+a set of individuals are thought to have ancestry that originated from
+a particular geographic location embedded in a larger pattern of IBD. }
 %%Similarly, we currently assume that all loci are independent, 
 %such that the number of loci in the dataset gives the degrees of 
 %freedom of the Wishart distribution in our likelihood calculations.  
@@ -977,7 +987,7 @@ estimating a population phylogeny between them
 %the effective number of degrees of freedom, 
 %artificially increasing users' confidence in their results.  
 
-A final exciting direction is to model relatedness within a cluster as a spatiotemporal process, 
+A final direction is to model relatedness within a \gc{layer} as a spatiotemporal process, 
 in which covariance decays both with distance in space and in time.  
 As the number of genotyped historical or ancient samples increases, 
 it is becoming possible to ask whether there is genetic continuity at a point in space across time, 
@@ -985,8 +995,8 @@ or whether populations are being replaced \citep{lazaridis_ancient_2014, Haak201
 However, we expect allele frequencies to change through time in a population, even without replacement, 
 simply due to drift.
 Therefore, a natural way to test for population replacement is to estimate the rates 
-at which relatedness within a cluster decays with time in the same way we do in the current model with space, 
-in which case discrete population structure in space is comparable to population replacement in time.
+at which relatedness within a \gc{layer} decays with time in the same way we do in the current model with space, 
+in which case \gc{changes in discrete population structure across space is comparable to population replacement across time.}
 
 \section*{Acknowledgements}
 
