@@ -858,30 +858,29 @@ One advantage these have over \texttt{conStruct} is speed.
 Although \texttt{conStruct}'s computation time is invariant 
 with the number of loci included in the dataset 
 (after the initial calculation of the allelic covariance), 
-it \gc{currently scales} poorly with number of samples.
+it currently scales poorly with number of samples.
 The computationally limiting step is the inversion of the parametric covariance, 
 which is an operation of order $O(n^3)$, 
 whereas computation time for, e.g., STRUCTURE, 
-scales linearly with number of samples. \gb{is this true?}
-\gc{Our speed, on large sample sizes, could be improved by adopting rank one updates to the
- inverse of the covariance matrix for updating an individual's
- admixture proportions, which alters only a single row/column of the
- covariance matrix. However, we have not implemented this yet as it
- would likely mean losing our Hamilton MCMC for our parameters.}
-
-%The other main difference is the model of noise,
-%but it is unclear what effects this may have,
+scales linearly with number of samples.
+Our speed, on datasets with large sample sizes, 
+could be improved by adopting rank-one updates 
+to the inverse of the covariance matrix 
+\citep[e.g.][]{woodbury1950,sherman_morrison1950}
+when updating a sample's admixture proportions, 
+which alters only a single row/column of the covariance matrix. 
+However, we have not implemented this yet, 
+as it would likely mean losing the ability to do efficient,  
+Hamiltonian Monte Carlo sampling of our parameters.
 
 \gc{SO I THINK IF YOU SAY THIS you need to give some run time specs,
   mainly to show that it's not insanely slow.}
 
-%Binomially clearly is, genotypes are discrete:  "or indeed, which is closer to the truth."
-
 \paragraph{Choosing the ``best" number of clusters}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
 and using only that analysis to communicate results, 
-\gc{we emphasize that there} is no true best value of $K$.
-\gc{The choice} of best $K$ is always relative to the data in hand.
+we emphasize that there is no true best value of $K$.
+The choice of best $K$ is always relative to the data in hand.
 %This means both that sampling different individuals or loci 
 %from the same populations may yield a different ``best" $K$, 
 From the statistical perspective, Unless the data were generated under the model itself 
@@ -889,6 +888,7 @@ that the support for larger values of $K$ is likely to increase with increasing 
 %(although perhaps only logarithmically).
 In the limit of infinite data, the best value of $K$ 
 may be the number of samples included in the dataset \citep{Patterson2006}.
+
 From a biological perspective, 
 it is important to stress that patterns of relatedness between individuals and populations 
 are shaped by complex spatial and hierarchical processes.
@@ -897,37 +897,34 @@ are related to one another in some way,
 and summarizing that relatedness with a single value of $K$ may be reductive or misleading.
 We therefore encourage users to perform analyses across different values of $K$ and 
 observe which layers split out at what levels 
-(\gc{conceptually similar to} taking successively shallower
-cross-sections of the population phylogeny),  %%note that the
-                                %%equivalent would only be ~true if we
-                                %%had same sample size from each
-                                %%proportion.
+(this is conceptually similar to taking successively shallower
+cross-sections of the population phylogeny), 
 and also to take the results of the proposed cross-validation procedure with a large grain of salt.
 Calculating layer importance may also be a useful heuristic, 
 as it can reveal layers with statistical support but small biological import.
 
-
-\gc{In adding to spatial realism to the groups used by clustering methods,
-it is important to re-emphasize that that clusters/layers detected by
-these methods do not necessarily accord to distinct, ancestral
-populations. Nor does a non-zero admixture proportion indicate that admixture (i.e. gene
-flow) must have occurred. Both groupings and admixture proportions
-should be viewed as hypotheses that should be subject to futher
-testing, see \citet{Falush:16} for futher discussion of these points. }
+Although we believe our model adds spatial realism to the groups used by clustering methods,
+it is important to note that the clusters/layers detected by our method 
+do not necessarily correspond  to distinct, ancestral populations; 
+nor does a non-zero admixture proportion indicate that admixture 
+(i.e. gene flow) must have occurred. 
+Both groupings and admixture proportions
+should be viewed as hypotheses that should be subject to further testing
+\citep[see][for an in-depth discussion of these points]{Falush:16}.
 
 \paragraph{Implications for management and conservation}
 If isolation by distance is common, 
 then a likely result of applying \texttt{conStruct} to existing data is that 
 populations previously identified using nonspatial clustering methods 
 will be collapsed into each other.  
-This ``lumping" might better reflect biological \gc{``reality'',  
+This ``lumping" might better reflect biological ``reality'',  
 but may also have implications for management decisions and conservation policy, 
 both of which are often predicated on the identification of discrete ``management units" (MUs) 
 identified using genetic data \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
 
-It is therefore important to emphasize that individuals sampled from the same \texttt{conStruct} layer 
-may be quite genetically diverged from one another, \gc{perhaps especially at
-  loci underlying adaptive traits}, 
+It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
+may be quite genetically diverged from one another, 
+perhaps especially at loci underlying adaptive traits, 
 and that a \texttt{conStruct} layer may still contain multiple distinct MUs.  
 Alternatively, the collapse of multiple, previously identified MUs into a single \texttt{conStruct} layer 
 may reflect a biological reality that these populations are currently 
@@ -940,8 +937,7 @@ There are a few important caveats to consider in the interpretation of \texttt{c
 First, we have modeled allelic covariance within a layer as a spatial process.
 Although there is flexibility built into the model about the shape of that covariance, 
 inference may be misleading if the sampling geography departs radically from the way 
-the sampled organisms experience (or have experienced) \gc{dispersal
-  on } their landscape.
+the sampled organisms disperse (or have dispersed) on their landscape.
 For example, if we were to run a \texttt{conStruct} analysis using geographic distances between 
 sampled individuals of greenish warblers \citep{Irwin2001} or \textit{Ensatina} salamanders \citep{wake_schneider1998} 
 --- two canonical examples of rings species --- 
