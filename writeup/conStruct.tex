@@ -1009,7 +1009,8 @@ We also thank the attendees at the 2017 SSE Meeting in Portland, OR,
 whose votes determined the name of the method.
 This work was supported in part by 
 the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
-the National Institute of General Medical Sciences of the National Institutes of Health under award numbers NIH RO1GM83098 and RO1GM107374 to GC,
+the National Institute of General Medical Sciences of the National
+Institutes of Health under award numbers NIH R01-GM108779 to GC,
 and the National Science Foundation under award numbers NSF \# 1148897 and \# 1402725 to GB.
 
 \newpage
@@ -1027,8 +1028,10 @@ and the National Science Foundation under award numbers NSF \# 1148897 and \# 14
 
 \section{Model rationale}
 \subsection{Drift, admixture, and space} \label{rationale}
+\gc{Here we sketch a simple model of allele frequencies and their
+covariances, to justify the form given in the main text.}
 \paragraph{Drift} 
-We first provide a simple model of allele frequencies within a cluster. 
+We first provide a simple model of allele frequencies within a \gc{layer}. 
 Imagine a sample $i$ that draws all of its ancestry from cluster $k$.
 The allele frequency in sample $i$ at locus $\ell$, $F_{i,\ell}$ can be
 written as the sum
@@ -1039,16 +1042,17 @@ F_{i,\ell} = \epsilon_{\ell} + \Delta^{(k)}_{\ell} +
 \end{equation}
 The first term is the ancestral allele frequency $\epsilon_\ell$ shared by all samples; 
 the second is the deviation from that ancestral frequency 
-due to drift in the ancestral population of the $k$th cluster,
+due to drift in the ancestral population of the $k$th \gc{layer},
 which is shared by all samples within the cluster. 
-The third term is the deviation of the $i$th sample away from the $k$th cluster mean 
-due to the spatial process of drift and migration within the cluster.
+The third term is the deviation of the $i$th sample away from the
+$k$th \gc{layer} mean 
+due to the spatial process of drift and migration within the \gc{layer}.
 The final term is the deviation specific to the $i$th sample,
 which captures drift not shared by all samples at the population level
 (i.e., subpopulation-specific drift due to, e.g., inbreeding). 
 We will assume that these four deviations are all uncorrelated with each other.
 
-If we have two samples $i$ and $j$ drawn from cluster $k$, 
+If we have two samples $i$ and $j$ drawn from \gc{layer} $k$, 
 their covariance across loci will be 
 \begin{equation}
 \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right) +
@@ -1059,14 +1063,14 @@ as in Eqn. \eqref{cross_cluster_covariance}.
 
 \paragraph{Admixture} 
 The model above describes the simple case 
-in which samples draw 100\% of their ancestry from only a single cluster each. 
-To accommodate admixture between clusters, 
+in which samples draw 100\% of their ancestry from only a single \gc{layer} each. 
+To accommodate admixture between \gc{layers}, 
 we model allele frequencies within samples as linear combinations of the population-specific 
 drift terms across the clusters from which they draw ancestry.
 To do so, we introduce a term $w^{(k)}_{i}$ that describes the
-admixture proportion of sample $i$ in cluster $k$ ($\sum_{K}w^{(k)}_{i} = 1$),
+admixture proportion of sample $i$ in \gc{layer} $k$ ($\sum_{K}w^{(k)}_{i} = 1$),
 which can be interpreted as the proportion of the genome in the $i$th
-sample that came from the $k$th cluster 
+sample that came from the $k$th \gc{layer} 
 (or the probability that an allele at a locus is drawn from $k$).
 The allele frequency in the $i$th sample at the $\ell$th locus can therefore be written as:
 \begin{equation}
@@ -1102,7 +1106,7 @@ We note that this form is chosen for its flexibility,
 and not because it matches any explicit population genetic model of isolation by distance. 
 
 \section{Allelic Covariance}\label{allelic_cov}
-To see how to arrive at Eqn. \eqref{allelic_covariance},
+To see how to arrive at \gc{our empirical variance-covariance expression,} Eqn. \eqref{allelic_covariance},
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
 If $i=j$, then these are chosen \emph{without} replacement.
@@ -1242,26 +1246,27 @@ Briefly, we follow the following procedure:
 		\end{enumerate}
 	\end{enumerate}
 \item For each model (i.e., each combination of $m$ and $k$) calculate 
-	the mean standardized log likelihood of the testing data partition across $X$ replicates, 
-	as well its standard error and 95\% confidence interval:
-	\begin{enumerate}
-	\item mean
-		\begin{equation}
-			\bar{\mathcal{Z}}_{mk} = \frac{1}{X}\sum\limits_{x=1}^{X}\mathcal{Z}_{xmk}
-		\end{equation}
-	\item standard error
-		\begin{equation}
-			SE_{\bar{\mathcal{Z}}_{mk}} = \sqrt{\frac{\sum\limits_{x=1}^{X} \left[ {\mathcal{Z}_{xmk} - \bar{\mathcal{Z}}_{mk}} \right]}{X}}
-		\end{equation}
-	\item 95\% confidence interval
-		\begin{equation}
-			95\% \text{CI} = \bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}
-		\end{equation}
-	\end{enumerate}
-\end{enumerate}
+	the mean ($	\bar{\mathcal{Z}}_{mk} $) standardized log likelihood of the testing data partition across $X$ replicates, 
+	as well its standard error ($SE_{\bar{\mathcal{Z}}_{mk}}$) and
+        95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
+% 	\begin{enumerate}
+% 	\item mean
+% 		\begin{equation}
+% 			\bar{\mathcal{Z}}_{mk} = \frac{1}{X}\sum\limits_{x=1}^{X}\mathcal{Z}_{xmk}
+% 		\end{equation}
+% 	\item standard error
+% 		\begin{equation}
+% 			SE_{\bar{\mathcal{Z}}_{mk}} = \sqrt{\frac{\sum\limits_{x=1}^{X} \left[ {\mathcal{Z}_{xmk} - \bar{\mathcal{Z}}_{mk}} \right]}{X}}
+% 		\end{equation}
+% 	\item 95\% confidence interval
+% 		\begin{equation}
+% 			95\% \text{CI} = \bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}
+% 		\end{equation}
+% 	\end{enumerate}
+% \end{enumerate}
 
 \newpage
-\section{Calculating layer importance}\label{layer_importance}
+\section{Calculating layer \gc{contributions}}\label{layer_importance}
 First, we describe the allelic covariance between two samples, $i$, and $j$.
 Note that this is the allelic covariance described in Eqn \eqref{allelic_covariance},
 in which we randomly polarize alleles,
@@ -1290,7 +1295,7 @@ which is the genetic divergence.)
 Now, here is a generative model that gives us the form of the covariance we have postulated.
 To decide whether or not $X$ and $Y$ will agree,
 first each sample randomly chooses a layer: call these $I$ and $J$.
-The probability that $X$ chooses layer $k$ is $\P{I=k}$, which is $w_i^{(k)}$, 
+The probability that $X$ chooses layer $k$ is \gc{$\P({I=k})$}, which is $w_i^{(k)}$, 
 the $i$th sample's admixture proportion in the $k$th layer.
 The same holds true for $Y$.
 If they do not choose the same layer, the probability that they agree is $p_\gamma$.
@@ -1309,7 +1314,10 @@ So, the contribution from layer $k$ to agreement between $i$ and $j$ is
 $w_i^{(k)} w_j^{(k)} q^{(k)}_{ij} / (p_\gamma + \sum_K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$,
 which is the probability, given that they agree, that they agree thanks to layer $k$.
 Similarly, the ``background" contribution is $p_\gamma / (p_\gamma + \sum_K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$.
-Because our signal comes from \emph{variation} in covariance, we omit the $p_\gamma$ terms.
+Because our signal comes from \emph{variation} in covariance, we omit
+the $p_\gamma$ terms. \gc{Stated in this way this quantity is the
+relative contribution of the $k$th layer to the (model-based) kinship
+coefficient between $i$ and $j$.}
 
 This suggests defining the overall contribution of layer $k$ to agreement, $\xi^{(k)}$, 
 to be the average of that quantity over $i$ and $j$.
@@ -1331,7 +1339,7 @@ to be the average of that quantity over $i$ and $j$.
 %
 which is that layer's contribution to agreement between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
-We define the importance of the $k$th layer, $\Xi^{(k)}$, 
+We define the \gc{contribution} of the $k$th layer, $\Xi^{(k)}$, 
 as the relative contribution of the $k$th layer to total agreement:
 %
 \begin{equation}
