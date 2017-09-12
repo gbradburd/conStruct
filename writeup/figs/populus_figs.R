@@ -125,7 +125,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_pies.pdf",width=1
 							 K = 7,
 							 output.list = output.list.nsp,
 							 radii = 1.7,
-							 mar = c(5,3,0,1.5))
+							 mar = c(5,3,0,1.5),
+							 K2.order=c(2,1))
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sp_pies.pdf",width=12,height=8,pointsize=14)
@@ -247,9 +248,9 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_fastStr_results.pdf",w
 	par(mfrow=c(2,3),mar=c(5,3,0,1.5))
 	for(k in 2:7){
 		w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/fastStructure/poplars_K%s.%s.meanQ",k,k),stringsAsFactors=FALSE)),
-							pop.vec = poplar.pop.vec)	
-		if(k <= 2){
-			csr1.order <- NULL
+							pop.vec = poplar.pop.vec)
+		if(k == 2){
+			csr1.order <- c(2,1)
 		}
 		if(k > 2){
 		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/fastStructure/poplars_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE)),

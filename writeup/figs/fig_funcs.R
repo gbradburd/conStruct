@@ -199,13 +199,16 @@ plot.sim.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
 	}
 }
 
-plot.poplar.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
+plot.poplar.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL,K2.order=NULL){
 	#recover()
 	cluster.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	csr1.order <- NULL
 	for(k in 2:K){
 		data.block$K <- k
 		csr <- output.list[[k]][[1]]
+		if(k==2 & !is.null(K2.order)){
+			csr1.order <- K2.order
+		}
 		if(k > 2){
 			tmp.csr <- output.list[[k-1]][[1]]
 			csr1.order <- conStruct:::match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
