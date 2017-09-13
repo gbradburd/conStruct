@@ -4,8 +4,7 @@
 \alias{make.all.the.plots}
 \title{Make output plots}
 \usage{
-make.all.the.plots(conStruct.results, data.block, prefix,
-  cluster.colors = NULL)
+make.all.the.plots(conStruct.results, data.block, prefix, layer.colors = NULL)
 }
 \arguments{
 \item{conStruct.results}{The list output by a 
@@ -16,9 +15,9 @@ make.all.the.plots(conStruct.results, data.block, prefix,
 
 \item{prefix}{A character vector to be prepended to all figures.}
 
-\item{cluster.colors}{A \code{vector} of colors to be used in 
-plotting results for different clusters. Users must 
-specify one color per cluster.  If \code{NULL}, plots 
+\item{layer.colors}{A \code{vector} of colors to be used in 
+plotting results for different layers. Users must 
+specify one color per layer.  If \code{NULL}, plots 
 will use a pre-specified vector of colors.}
 }
 \value{
@@ -44,17 +43,17 @@ see fit.  For each plot, one file is generated for each MCMC chain
 	\item Structure plot - STRUCTURE-style plot, where each sample 
 		is represented as a stacked bar plot, and the length of the 
 		bar plot segments of each color represent that sample's 
-		admixture proportion in that cluster. Described further 
+		admixture proportion in that layer. Described further 
 		in the help page for \code{make.structure.plot}.
 	\item Admixture pie plot - A map of samples in which each sample's 
 			location is denoted with a pie chart, and the proportion 
 			of a pie chart of each color represents that sample's 
-			admixture in each cluster. Described further in the help 
+			admixture in each layer. Described further in the help 
 			page for \code{make.admix.pie.plot}
 	\item model.fit.CIs - A plot of the sample allelic covariance 
 		shown with the 95\% credible interval of the parametric 
 		covariance for each entry in the matrix.
-	\item cluster.covariances - A plot of the cluster-specific 
+	\item layer.covariances - A plot of the layer-specific 
 			covariances overlain unto the sample allelic covariance.
 	\item Trace plots - Plots of parameter values over the MCMC.
 	\itemize{
@@ -63,8 +62,8 @@ see fit.  For each plot, one file is generated for each MCMC chain
 			over the MCMC.
 		\item gamma - A plot of estimates of the gamma parameter 
 			over the MCMC.
-		\item cluster.cov.params - Plots of estimates of the 
-			cluster-specific parameters over the MCMC.
+		\item layer.cov.params - Plots of estimates of the 
+			layer-specific parameters over the MCMC.
 		\item admix.props - A plot of estimates of the admixture proportions 
 			over the MCMC.
 	}

@@ -43,13 +43,13 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in cluster k
-	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in cluster k
-	vector<lower=0, upper=2>[K]  alpha2;					// exponential slope parameter in the parametric covariance in cluster k
-	positive_ordered[K] mu;									// shared drift effect in cluster k
+	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in layer k
+	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in layer k
+	vector<lower=0, upper=2>[K]  alpha2;					// exponential slope parameter in the parametric covariance in layer k
+	positive_ordered[K] mu;									// shared drift effect in layer k
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
-	simplex[K]    w[N];    									// every sample (N in total) has a K simplex (i.e. K clusters)
-	real<lower=0> gamma;
+	simplex[K]    w[N];    									// every sample (N in total) has a K simplex (i.e. K layers)
+	real<lower=0> gamma;									// covariance between all layers
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix

@@ -4,21 +4,21 @@
 \alias{make.admix.pie.plot}
 \title{Make admixture pie plot}
 \usage{
-make.admix.pie.plot(admix.proportions, coords, cluster.colors = NULL,
+make.admix.pie.plot(admix.proportions, coords, layer.colors = NULL,
   radii = 2.7, add = FALSE, x.lim = NULL, y.lim = NULL, mar = c(2, 2,
   2, 2))
 }
 \arguments{
 \item{admix.proportions}{A \code{matrix} of admixture proportions, 
-with one row per sample and one column per cluster.}
+with one row per sample and one column per layer.}
 
 \item{coords}{\code{matrix} of sample coordinates, with one row 
 per sample and two columns giving (respectively) the X 
 and Y plotting coordinates.}
 
-\item{cluster.colors}{A \code{vector} of colors to be used in 
-plotting results for different clusters. Users must 
-specify one color per cluster.  If \code{NULL}, the plot 
+\item{layer.colors}{A \code{vector} of colors to be used in 
+plotting results for different layers. Users must 
+specify one color per layer.  If \code{NULL}, the plot 
 will use a pre-specified vector of colors.}
 
 \item{radii}{A \code{vector} of numeric values giving the radii to be 
@@ -47,12 +47,12 @@ This function has only invisible return values.
 }
 \description{
 \code{make.structure.plot} makes a map of pie plots showing admixture 
-proportions across clusters.
+proportions across layers.
 }
 \details{
 This function takes the output from a conStruct analysis and 
-makes a map of pie plots showing admixture proportions across clusters, 
+makes a map of pie plots showing admixture proportions across layers, 
 where each sample is represented as a pie chart, and the proportion of 
 the pie of each color represent that sample's 
-admixture proportion in that cluster.
+admixture proportion in that layer.
 }

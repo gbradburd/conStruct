@@ -24,7 +24,7 @@ functions {
 	}
 }
 data {
-	int<lower=1> K;		  				// number of clusters
+	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
@@ -32,10 +32,10 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	positive_ordered[K] mu;				// shared drift effect in cluster k
-	real<lower=0> gamma;				// covariance between all pairs of clusters
+	positive_ordered[K] mu;				// shared drift effect in layer k
+	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 			// sample-specific variance (allele sampling error + sample-specific drift)
-	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K clusters)
+	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K layers)
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix

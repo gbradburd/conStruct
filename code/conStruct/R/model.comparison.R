@@ -4,7 +4,7 @@
 #' 
 #' This function initiates a cross-validation analysis that 
 #' uses Monte Carlo cross-validation to determine the statistical 
-#' support for models with different numbers of clusters or 
+#' support for models with different numbers of layers or 
 #' with and without a spatial component.
 #' 
 #' @param train.prop A numeric value between 0 and 1 that gives 
@@ -12,7 +12,7 @@
 #'		training partition of the analysis. Default is 0.9.
 #' @param n.reps An \code{integer} giving the number of cross-
 #'		validation replicates to be run.
-#' @param K A numeric \code{vector} giving the numbers of clusters 
+#' @param K A numeric \code{vector} giving the numbers of layers 
 #'		to be tested in each cross-validation replicate.
 #'		E.g., \code{K=1:7}.
 #' @param freqs A \code{matrix} of allele frequencies with one column per 
@@ -67,54 +67,54 @@ x.validation <- function(train.prop=0.9,n.reps,K,freqs,geoDist,coords,prefix,n.i
 	return(x.val)
 }
 
-#' Match clusters up across independent conStruct runs
+#' Match layers up across independent conStruct runs
 #' 
-#' \code{match.clusters.x.runs} 
+#' \code{match.layers.x.runs} 
 #' 
 #' This function takes the results of two independent
 #' \code{conStruct} analyses and compares them to identify 
-#' which clusters in a new analysis correspond most closely 
-#' to the clusters from an original analysis.
+#' which layers in a new analysis correspond most closely 
+#' to the layers from an original analysis.
 #' 
 #' @param admix.mat1 A \code{matrix} of estimated admixture proportions
 #'			from the original \code{conStruct} analysis, with one row 
-#'			per sample and one column per cluster. 
+#'			per sample and one column per layer. 
 #' @param admix.mat2 A \code{matrix} of estimated admixture proportions
 #'			from a second \code{conStruct} analysis, with one row per 
-#'			sample and one column per cluster, for which the 
-#'			cluster order is desired. Must have equal or greater number 
-#'			of clusters to \code{admix.mat1}.
+#'			sample and one column per layer, for which the 
+#'			layer order is desired. Must have equal or greater number 
+#'			of layers to \code{admix.mat1}.
 #' @param admix.mat1.order An optional \code{vector} giving the  
-#'			order in which the clusters of \code{admix.mat1} are read.
+#'			order in which the layers of \code{admix.mat1} are read.
 #' 
 #' @return This function returns a \code{vector} giving the ordering 
-#' 			of the clusters in \code{admix.mat2} that maximizes 
+#' 			of the layers in \code{admix.mat2} that maximizes 
 #' 			similarity between \code{admix.mat1} and re-ordered 
 #'			\code{admix.mat2}.
 #' 
-#' @details This function compares admixture proportions in clusters across 
+#' @details This function compares admixture proportions in layers across 
 #'			independent \code{conStruct} runs, and compares between them to 
-#' 			identify the clusters in \code{admix.mat2} that correspond most 
+#' 			identify the layers in \code{admix.mat2} that correspond most 
 #'			closely to those in \code{admix.mat1}. It then returns a vector 
 #' 			giving an ordering of \code{admix.mat2} that matches up the order
-#' 			of the clusters that correspond to each other.  This can be useful 
+#' 			of the layers that correspond to each other.  This can be useful 
 #' 			for:
 #'			\enumerate{
 #'				\item Dealing with "label switching" across independent runs 
-#'					with the same number of clusters; 
+#'					with the same number of layers; 
 #'				\item Plotting results from independent runs with different 
-#'					numbers of clusters using consistent colors
-#' 					(e.g., the "blue" cluster shows up as blue even as 
+#'					numbers of layers using consistent colors
+#' 					(e.g., the "blue" layer shows up as blue even as 
 #'					\code{K} increases); 
 #' 				\item Examining results for multimodality (i.e., multiple 
 #'					distinct solutions with qualitatively different patterns
-#'					of membership across clusters).
+#'					of membership across layers).
 #' 			}
 #' 			The \code{admix.mat1.order} argument can be useful when running 
 #' 			this function to sync up plotting colors/order across the output 
 #' 			of more than two \code{conStruct} runs.
 #'@export
-match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
+match.layers.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 	#recover()
 	K1 <- ncol(admix.mat1)
 		if(!is.null(admix.mat1.order)){
@@ -122,10 +122,10 @@ match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 		}
 	K2 <- ncol(admix.mat2)
 	if(K1 > K2){
-		stop("\nadmix.mat1 cannot have more clusters than admix.mat2\n")
+		stop("\nadmix.mat1 cannot have more layers than admix.mat2\n")
 	}
 	k.combn <- expand.grid(1:K1,1:K2)
-	clst.sims <- unlist(lapply(1:nrow(k.combn),
+	layer.sims <- unlist(lapply(1:nrow(k.combn),
 						function(n){
 							measure.frob.similarity(admix.mat1[,k.combn[n,1],drop=FALSE],
 													admix.mat2[,k.combn[n,2],drop=FALSE],
@@ -133,12 +133,12 @@ match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 							}))
 	run2.order <- numeric(K2)
 	while(length(which(run2.order == 0)) > (K2-K1)){
-		tmp.max <- which.max(rank(clst.sims,na.last=FALSE))
+		tmp.max <- which.max(rank(layer.sims,na.last=FALSE))
 		run2.match <- k.combn[tmp.max,2]
 		run1.match <- k.combn[tmp.max,1]
 		run2.order[run2.match] <- run1.match
-		clst.sims[which(k.combn[,1]==run1.match)] <- NA
-		clst.sims[which(k.combn[,2]==run2.match)] <- NA
+		layer.sims[which(k.combn[,1]==run1.match)] <- NA
+		layer.sims[which(k.combn[,2]==run2.match)] <- NA
 	}
 	if(K2 > K1){
 		run2.order[which(run2.order==0)] <- (K1+1):K2
@@ -153,30 +153,30 @@ match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 #' 
 #' This function takes the results of a \code{conStruct} 
 #' analysis and calculates the relative contributions of 
-#' each cluster to total covariance.
+#' each layer to total covariance.
 #' 
 #' @param conStruct.results The list output by a 
 #'			\code{conStruct} run for a given MCMC chain. 
 #' @param data.block A \code{data.block} list saved during a 
 #'			\code{conStruct} run.
 #' @param layer.order An optional \code{vector} giving the  
-#'			order in which the clusters of \code{conStruct.results} are 
+#'			order in which the layers of \code{conStruct.results} are 
 #' 			read.
 #' 
 #' @return This function returns a \code{vector} giving the 
-#' 			relative contributions of the clusters 
+#' 			relative contributions of the layers 
 #' 			in the analysis.
 #' 
-#' @details This function calculates the contribution of each cluster to
-#'			total covariance by multiplying the within-cluster covariance 
-#'			in a given cluster by the admixture proportions samples draw 
-#'			from that cluster. The relative contribution of that cluster 
+#' @details This function calculates the contribution of each layer to
+#'			total covariance by multiplying the within-layer covariance 
+#'			in a given layer by the admixture proportions samples draw 
+#'			from that layer. The relative contribution of that layer 
 #'			is this absolute contribution divided by the sum of those of 
-#'			all other clusters. 
-#' 			A cluster can have a large contribution if many samples draw 
+#'			all other layers. 
+#' 			A layer can have a large contribution if many samples draw 
 #'			large amounts of admixture from it, or if it has a very large 
-#'			within-cluster covariance parameter (phi), or some combination 
-#'			of the two. Cluster contribution can be useful for evaluating 
+#'			within-layer covariance parameter (phi), or some combination 
+#'			of the two. layer contribution can be useful for evaluating 
 #'			an appropriate level of model complexity for the data (e.g., 
 #'			choosing a value of \code{K} or comparing the spatial and 
 #'			nonspatial models).
@@ -311,18 +311,18 @@ get.xval.CIs <- function(x.vals.std,K){
 				"nsp.CIs" = nsp.CIs))
 }
 
-calculate.qij <- function(cluster.params,data.block,i,j){
-	q_ij <- 2 * cluster.params$alpha0 * 
-				exp(-(cluster.params$alphaD * 
-						data.block$geoDist[i,j])^cluster.params$alpha2) + 
-						2 * cluster.params$phi + 0.5
+calculate.qij <- function(layer.params,data.block,i,j){
+	q_ij <- 2 * layer.params$alpha0 * 
+				exp(-(layer.params$alphaD * 
+						data.block$geoDist[i,j])^layer.params$alpha2) + 
+						2 * layer.params$phi + 0.5
 	return(q_ij)
 }
 
 calculate.weighted.qij <- function(k,MAP,data.block,i,j){
 	#recover()
 	w.qij <- MAP$admix.proportions[i,k] * MAP$admix.proportions[j,k] * 
-				calculate.qij(MAP$cluster.params[[k]],data.block,i,j)
+				calculate.qij(MAP$layer.params[[k]],data.block,i,j)
 	return(w.qij)
 }
 
