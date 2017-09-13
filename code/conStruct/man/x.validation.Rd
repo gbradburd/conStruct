@@ -15,7 +15,7 @@ training partition of the analysis. Default is 0.9.}
 \item{n.reps}{An \code{integer} giving the number of cross-
 validation replicates to be run.}
 
-\item{K}{A numeric \code{vector} giving the numbers of clusters 
+\item{K}{A numeric \code{vector} giving the numbers of layers 
 to be tested in each cross-validation replicate.
 E.g., \code{K=1:7}.}
 
@@ -65,6 +65,6 @@ This function returns a \code{list} containing the
 \details{
 This function initiates a cross-validation analysis that 
 uses Monte Carlo cross-validation to determine the statistical 
-support for models with different numbers of clusters or 
+support for models with different numbers of layers or 
 with and without a spatial component.
 }

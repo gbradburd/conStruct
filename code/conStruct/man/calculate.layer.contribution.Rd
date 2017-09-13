@@ -15,12 +15,12 @@ calculate.layer.contribution(conStruct.results, data.block,
 \code{conStruct} run.}
 
 \item{layer.order}{An optional \code{vector} giving the
-order in which the clusters of \code{conStruct.results} are 
+order in which the layers of \code{conStruct.results} are 
     read.}
 }
 \value{
 This function returns a \code{vector} giving the 
-			relative contributions of the clusters 
+			relative contributions of the layers 
 			in the analysis.
 }
 \description{
@@ -29,18 +29,18 @@ This function returns a \code{vector} giving the
 \details{
 This function takes the results of a \code{conStruct} 
 analysis and calculates the relative contributions of 
-each cluster to total covariance.
+each layer to total covariance.
 
-This function calculates the contribution of each cluster to
-		total covariance by multiplying the within-cluster covariance 
-		in a given cluster by the admixture proportions samples draw 
-		from that cluster. The relative contribution of that cluster 
+This function calculates the contribution of each layer to
+		total covariance by multiplying the within-layer covariance 
+		in a given layer by the admixture proportions samples draw 
+		from that layer. The relative contribution of that layer 
 		is this absolute contribution divided by the sum of those of 
-		all other clusters. 
-			A cluster can have a large contribution if many samples draw 
+		all other layers. 
+			A layer can have a large contribution if many samples draw 
 		large amounts of admixture from it, or if it has a very large 
-		within-cluster covariance parameter (phi), or some combination 
-		of the two. Cluster contribution can be useful for evaluating 
+		within-layer covariance parameter (phi), or some combination 
+		of the two. layer contribution can be useful for evaluating 
 		an appropriate level of model complexity for the data (e.g., 
 		choosing a value of \code{K} or comparing the spatial and 
 		nonspatial models).

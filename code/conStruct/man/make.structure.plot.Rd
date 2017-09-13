@@ -5,12 +5,12 @@
 \title{Make STRUCTURE output plot}
 \usage{
 make.structure.plot(admix.proportions, mar = c(2, 4, 2, 2),
-  sample.order = NULL, cluster.order = NULL, sample.names = NULL,
-  sort.by = NULL, cluster.colors = NULL)
+  sample.order = NULL, layer.order = NULL, sample.names = NULL,
+  sort.by = NULL, layer.colors = NULL)
 }
 \arguments{
 \item{admix.proportions}{A \code{matrix} of admixture proportions, 
-with one row per sample and one column per cluster.}
+with one row per sample and one column per layer.}
 
 \item{mar}{A \code{vector} of plotting margins passed to \code{par}.
 Default is \code{c(2,4,2,2)}, which tends to look good.}
@@ -20,8 +20,8 @@ admixture proportions are to be plotted, left to right.  If
 \code{NULL}, samples are plotted in the order they occur in 
 \code{admix.proportions}.}
 
-\item{cluster.order}{A \code{vector} giving the order in which clusters 
-are plotted, bottom to top. If \code{NULL}, clusters are plotted 
+\item{layer.order}{A \code{vector} giving the order in which layers 
+are plotted, bottom to top. If \code{NULL}, layers are plotted 
 in the order they occur in \code{admix.proportions}.}
 
 \item{sample.names}{Vector of names to be plotted under each sample's 
@@ -33,12 +33,12 @@ are printed.}
 \item{sort.by}{An \code{integer} giving the column index of the \code{admix.proportions} 
 matrix to be used in determining sample plotting order.  If specified, 
 samples are plotted from left to right in increasing order of their 
-membership in that cluster.  If \code{NULL}, samples are plotted 
+membership in that layer.  If \code{NULL}, samples are plotted 
 in the order they occur in \code{admix.proportions}.}
 
-\item{cluster.colors}{A \code{vector} of colors to be used in plotting 
-results for different clusters. Users must specify one 
-color per cluster.  If \code{NULL}, the plot will use 
+\item{layer.colors}{A \code{vector} of colors to be used in plotting 
+results for different layers. Users must specify one 
+color per layer.  If \code{NULL}, the plot will use 
 a pre-specified vector of colors.}
 }
 \value{
@@ -53,5 +53,5 @@ This function takes the output from a conStruct analysis and
 makes a STRUCTURE-style plot, where each sample 
 is represented as a stacked bar plot, and the length of the 
 bar plot segments of each color represent that sample's 
-admixture proportion in that cluster.
+admixture proportion in that layer.
 }

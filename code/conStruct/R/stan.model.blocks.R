@@ -15,7 +15,7 @@ functions {
 	}
 }
 data {
-	int<lower=1> K;		  				// number of clusters
+	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
@@ -23,7 +23,7 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	real<lower=0> gamma;				// covariance between all pairs of clusters
+	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
 }
 transformed parameters {
@@ -61,7 +61,7 @@ functions {
 	}	
 }
 data {
-	int<lower=1> K;		  				// number of clusters
+	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
@@ -70,10 +70,10 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood
 }
 parameters {
-	real<lower=0> alpha0;								// sill of the parametric covariance in cluster k
-	real<lower=0> alphaD;								// effect of geographic distance in the parametric covariance in cluster k
-	real<lower=0, upper=2>  alpha2;					// exponential slope parameter in the parametric covariance in cluster k
-	real<lower=0> gamma;				// covariance between all pairs of clusters
+	real<lower=0> alpha0;								// sill of the parametric covariance in layer k
+	real<lower=0> alphaD;								// effect of geographic distance in the parametric covariance in layer k
+	real<lower=0, upper=2>  alpha2;					// exponential slope parameter in the parametric covariance in layer k
+	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
 }
 transformed parameters {
@@ -117,7 +117,7 @@ functions {
 	}
 }
 data {
-	int<lower=1> K;		  				// number of clusters
+	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
@@ -125,10 +125,10 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	positive_ordered[K] phi;				// shared drift effect in cluster k
-	real<lower=0> gamma;				// covariance between all pairs of clusters
+	positive_ordered[K] phi;				// shared drift effect in layer k
+	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 			// sample-specific variance (allele sampling error + sample-specific drift)
-	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K clusters)
+	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K layers)
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
@@ -184,7 +184,7 @@ functions {
 	}	
 }
 data {
-	int<lower=1> K;		  				// number of clusters
+	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
@@ -193,12 +193,12 @@ data {
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 parameters {
-	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in cluster k
-	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in cluster k
-	vector<lower=0, upper=2>[K]  alpha2;					// exponential slope parameter in the parametric covariance in cluster k
-	positive_ordered[K] phi;									// shared drift effect in cluster k
+	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in layer k
+	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in layer k
+	vector<lower=0, upper=2>[K]  alpha2;					// exponential slope parameter in the parametric covariance in layer k
+	positive_ordered[K] phi;									// shared drift effect in layer k
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
-	simplex[K]    w[N];    									// every sample (N in total) has a K simplex (i.e. K clusters)
+	simplex[K]    w[N];    									// every sample (N in total) has a K simplex (i.e. K layers)
 	real<lower=0> gamma;
 }
 transformed parameters {
