@@ -445,8 +445,8 @@ and so small but statistically significant differences between models
 should probably not be relied on too strongly.
 
 An additional heuristic to evaluate the inclusion of additional layers is to calculate 
-each layer's relative contribution to total covariance as their importance, 
-and to choose a value of $K$ where all layers have an importance above some cutoff (e.g. 0.1\%).
+each layer's relative contribution to total covariance, 
+and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
 Because the prior on admixture proportions is a Dirichlet distribution 
 that is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
 the model will tend to ``not use" unnecessary layers, 
@@ -454,10 +454,10 @@ and they will have a low contribution to overall covariance.
 The contribution of the $k$th layer can be calculated as
 its contribution to the parametric covariance between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
-The importance of the $k$th layer is its contribution relative to those of all other layers, 
+The contribution of the $k$th layer is its absolute contribution relative to those of all other layers, 
 i.e., its contribution divided by the sum of the contributions of all $K$ layers
-(for details on calculating this importance, see Appendix \secref{layer_importance}). 
-This layer importance is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
+(for details on calculating this contribution, see Appendix \secref{layer_contribution}). 
+This layer contribution is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
 
@@ -536,7 +536,7 @@ those estimated under the true value of $K$ for each simulation.
 Moreover, the method infers the true admixture proportions with high accuracy, tight precision, and good coverage 
 (Figs \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit}).
 
-Finally, we calculated layer importance for 
+Finally, we calculated layer contribution for 
 analyses run in each simulation 
 (Fig \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}).
 In the spatial analyses, once we pass the true $K$, 
@@ -570,7 +570,7 @@ as they are forced to partition up the spatial patterns within clusters.
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK1_laycon_barplots.pdf}}
 		\caption{
-			Layer ``importance" (i.e., how much total covariance is contributed by each layer), 
+			Layer contributions (i.e., how much total covariance is contributed by each layer), 
 			for all layers estimated in runs using $K = 1$ through 7 
 			for the spatial model (left) and the nonspatial model (right).
 			Data were simulated using $K=1$.
@@ -753,7 +753,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Suppleme
 	\centering
 		{\includegraphics[width=6in,height=3in]{figs/bears/bears_laycon_barplots.pdf}}
 	\caption{
-	Layer ``contributions" (i.e., how much total covariance is contributed by each layer), 
+	Layer contributions (i.e., how much total covariance is contributed by each layer), 
 	for all layers estimated in runs using $K = 1$ through 7 
 	for the spatial model (left) and the nonspatial model (right).
 	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
@@ -767,13 +767,13 @@ which also occurs in Alaska,
 the other primarily west of the Rockies (blue).
 The disjointed range of the blue layer likely reflects the fact
 that Canada was not sampled, 
-and so the blue layer may extend
+and so the red layer may extend
 through the intervening (unsampled) northern Great Plains and Canadian Shield, 
-with the red layer presumably then stretching up into British Columbia.
+with the blue layer presumably then stretching up into British Columbia.
 
 Additional layers in the spatial model have strong statistical support 
 up until around $K=5$ or 6 (Fig \ref{bear_xvals}).
-However, upon examining layer importance (Fig \ref{bear_laycon}),
+However, upon examining layer contributions (Fig \ref{bear_laycon}),
 it is clear that the additional spatial layers beyond $K=2$ are contributing only a very small amount toward 
 total covariance between individuals.
 The locations of the individuals inferred to be admixed between the two layers 
@@ -872,9 +872,14 @@ which alters only a single row/column of the covariance matrix.
 However, we have not implemented this yet, 
 as it would likely mean losing the ability to do efficient,  
 Hamiltonian Monte Carlo sampling of our parameters.
-
-\gc{SO I THINK IF YOU SAY THIS you need to give some run time specs,
-  mainly to show that it's not insanely slow.}
+On a desktop machine with a 4.2 GHz Intel Core i7 processor, 
+an analysis of the the poplar dataset (35 samples, 22,500 loci), 
+running the spatial model with 7 layers for 5,000 MCMC iterations 
+took 29.8 minutes.
+For the black bear dataset (84 samples, 21,000 loci) 
+running the spatial model with 7 layers for 5,000 MCMC iterations, 
+which was more than sufficient for convergence,
+took 6.9 hours.
 
 \paragraph{Choosing the ``best" number of clusters}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
@@ -900,7 +905,7 @@ observe which layers split out at what levels
 (this is conceptually similar to taking successively shallower
 cross-sections of the population phylogeny), 
 and also to take the results of the proposed cross-validation procedure with a large grain of salt.
-Calculating layer importance may also be a useful heuristic, 
+Calculating layer contributions may also be a useful heuristic, 
 as it can reveal layers with statistical support but small biological import.
 
 Although we believe our model adds spatial realism to the groups used by clustering methods,
@@ -917,7 +922,7 @@ If isolation by distance is common,
 then a likely result of applying \texttt{conStruct} to existing data is that 
 populations previously identified using nonspatial clustering methods 
 will be collapsed into each other.  
-This ``lumping" might better reflect biological ``reality'',  
+This ``lumping" might better reflect biological reality, 
 but may also have implications for management decisions and conservation policy, 
 both of which are often predicated on the identification of discrete ``management units" (MUs) 
 identified using genetic data \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
@@ -925,9 +930,9 @@ identified using genetic data \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
 It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
 may be quite genetically diverged from one another, 
 perhaps especially at loci underlying adaptive traits, 
-and that a \texttt{conStruct} layer may still contain multiple distinct MUs.  
-Alternatively, the collapse of multiple, previously identified MUs into a single \texttt{conStruct} layer 
-may reflect a biological reality that these populations are currently 
+and that a \texttt{conStruct} layer may still contain multiple distinct MUs worthy of independent protections.  
+Alternatively, the inclusion of multiple MUs into a single \texttt{conStruct} layer 
+may occur if these populations are currently 
 (or were recently) exchanging migrants, 
 and thus might emphasize the importance of maintaining habitat corridors between demes, 
 or of implementing an integrated conservation plan across multiple demes within a layer.
@@ -1251,7 +1256,7 @@ Briefly, we follow the following procedure:
 \end{enumerate}
 
 \newpage
-\section{Calculating layer importance}\label{layer_importance}
+\section{Calculating layer contributions}\label{layer_contribution}
 First, we describe the allelic covariance between two samples, $i$, and $j$.
 Note that this is the allelic covariance described in Eqn \eqref{allelic_covariance},
 in which we randomly polarize alleles,
@@ -1321,7 +1326,7 @@ to be the average of that quantity over $i$ and $j$.
 %
 which is that layer's contribution to agreement between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
-We define the importance of the $k$th layer, $\Xi^{(k)}$, 
+We define the contribution of the $k$th layer, $\Xi^{(k)}$, 
 as the relative contribution of the $k$th layer to total agreement:
 %
 \begin{equation}
@@ -1449,7 +1454,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK2_laycon_barplots.pdf}}
 		\caption{
-			Layer ``importance" (i.e., how much total covariance is contributed by each layer), 
+			Layer contributions (i.e., how much total covariance is contributed by each layer), 
 			for all layers estimated in runs using $K = 1$ through 7 
 			for the spatial model (left) and the nonspatial model (right).
 			Data were simulated using $K=2$.
@@ -1499,7 +1504,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK3_laycon_barplots.pdf}}
 		\caption{
-			Layer ``importance" (i.e., how much total covariance is contributed by each layer), 
+			Layer contributions (i.e., how much total covariance is contributed by each layer), 
 			for all layers estimated in runs using $K = 1$ through 7 
 			for the spatial model (left) and the nonspatial model (right).
 			Data were simulated using $K=3$.
@@ -1614,7 +1619,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=3in]{figs/populus/populus_laycon_barplots.pdf}}
 	\caption{
-	Layer ``contributions" (i.e., how much total covariance is contributed by each layer), 
+	Layer contributions (i.e., how much total covariance is contributed by each layer), 
 	for all layers estimated in runs using $K = 1$ through 7 
 	for the spatial model (left) and the nonspatial model (right).
 	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
