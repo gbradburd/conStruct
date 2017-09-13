@@ -229,16 +229,10 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",widt
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width=15,height=10,pointsize=14)
-	layout(
-		rbind(
-			Reduce("cbind",lapply(1:3,function(x){
-				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
-					nrow=5,ncol=5,byrow=TRUE)})),
-			Reduce("cbind",lapply(4:6,function(x){
-				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
-					nrow=5,ncol=5,byrow=TRUE)}))
-			))
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width=15,height=5,pointsize=14)
+	layout(Reduce("cbind",lapply(1:3,function(x){
+			matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)})))
 	for(k in 2:4){
 		w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k,k),stringsAsFactors=FALSE))
 		if(k <= 2){
@@ -251,11 +245,11 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width
 		if(is.null(csr1.order)){
 			csr1.order <- 1:k
 		}
-		make.bear.redux.result.plot.multipanel1(admix.proportions = w,
+		make.bear.redux.result.plot.multipanel1(admix.proportions = w[,csr1.order],
 												coords = bear.dataset$sample.coords,
 												lump.dist = 200,
 												cluster.colors = cluster.colors,
 												cluster.order=NULL)
-		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=0.8,adj=0.4)
 	}
 dev.off()

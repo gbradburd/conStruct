@@ -723,8 +723,10 @@ resulting in a final dataset of 78 individuals.
 We then analyzed these data, treating individuals as the unit of analysis, 
 using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of between 1 and 7, 
 and compared these models using cross-validation.
+We also ran fastSTRUCTURE \citep{fastStructure} on the same dataset, 
+using $K = 2$ through 4.
 The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
-as well as in Figs \ref{bear_sp_pies} - \ref{bear_nsp_clst_covs} in the Supplementary Materials.
+as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary Materials.
 
 \begin{figure}
 	\centering
@@ -793,7 +795,13 @@ of nonspatial clustering algorithms to describe continuous spatial patterns of d
 using gradients of admixture between clusters.
 For example, in Fig \ref{bear_K3}b, 
 the third cluster (in green) exhibits a clear East-West gradient that 
-is overlain across the discrete structure between the Southwest cluster and the Southeast 
+is overlain across the discrete structure between the Southwest cluster and the Southeast.
+The results from fastSTRUCTURE are are not identical to 
+those obtained using the nonspatial model, 
+but they do showcase the same tendency: 
+e.g., at $K=3$, fastSTRUCTURE splits the westernmost Alaskan samples 
+out of the cluster with the eastern samples, 
+and at $K=4$, it splits them into their own cluster entirely \ref{bear_fastStr}.
 
 Across all values of $K$ for which we ran \texttt{conStruct},
 we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}),
@@ -1177,7 +1185,7 @@ For the nonspatial model, the single-cluster parametric covariance is:
 \paragraph{Priors}
 We use a Bayesian approach to parameter inference, 
 
-A table of all parameters, their descriptions, and their priors is given in Table \ref{tab:param_prior_tab} below.
+A table of all parameters, their descriptions, and their priors is given in Table \ref{tab:param_prior_tab}.
 
 \begin{centering}
 \begin{table}
@@ -1245,21 +1253,7 @@ Briefly, we follow the following procedure:
 	the mean ($	\bar{\mathcal{Z}}_{mk} $) standardized log likelihood of the testing data partition across $X$ replicates, 
 	as well its standard error ($SE_{\bar{\mathcal{Z}}_{mk}}$) and
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
-% 	\begin{enumerate}
-% 	\item mean
-% 		\begin{equation}
-% 			\bar{\mathcal{Z}}_{mk} = \frac{1}{X}\sum\limits_{x=1}^{X}\mathcal{Z}_{xmk}
-% 		\end{equation}
-% 	\item standard error
-% 		\begin{equation}
-% 			SE_{\bar{\mathcal{Z}}_{mk}} = \sqrt{\frac{\sum\limits_{x=1}^{X} \left[ {\mathcal{Z}_{xmk} - \bar{\mathcal{Z}}_{mk}} \right]}{X}}
-% 		\end{equation}
-% 	\item 95\% confidence interval
-% 		\begin{equation}
-% 			95\% \text{CI} = \bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}
-% 		\end{equation}
-% 	\end{enumerate}
-% \end{enumerate}
+\end{enumerate}
 
 \newpage
 \section{Calculating layer contributions}\label{layer_contribution}
@@ -1322,8 +1316,8 @@ to be the average of that quantity over $i$ and $j$.
 %
 \begin{equation}
 \xi^{(k)} = 
-	\sum\limits_{i=1}^{N-1}
-		\sum\limits_{j=i+1}^N
+	\sum\limits_{i=1}^{N}
+		\sum\limits_{j=i}^N
 			w^{(k)}_iw^{(k)}_j 
 				\left(	
 					2\alpha^{(k)}_0 
@@ -1642,7 +1636,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/populus/poplar_fastStr_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
-	using fastSTRUCTURE for $K=2$ through 7.
+	using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 7.
     }\label{populus_fastStr}
 \end{figure}
 
@@ -1682,6 +1676,15 @@ as might be expected if a spatial process were mediating admixture between diver
 	estimated for the black bear data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
     }\label{bear_nsp_clst_covs}
+\end{figure}
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=6in,height=2in]{figs/bears/bear_fastStr_results.pdf}}
+	\caption{
+	Maps of admixture proportions estimated for the black bear dataset 
+	using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
+    }\label{bear_fastStr}
 \end{figure}
 
 \newpage

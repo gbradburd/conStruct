@@ -93,3 +93,4 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK3_pies.pdf",width
 				 cluster.colors = c(2,4,"goldenrod1","forestgreen"))
 			mtext(side=3,font=2,text="K=4")
 dev.off()
+
