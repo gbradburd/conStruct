@@ -33,3 +33,10 @@ sims/cross_validation/K_2/exe.sim.in.ms.R
 sims/cross_validation/K_3/exe.sim.in.ms.R
 sims/cross_validation/K_2/ibd.pdf
 sims/cross_validation/K_3/ibd.pdf
+data/bears/runs
+data/poplars/runs
+sims/cross_validation/K_1/runs
+sims/cross_validation/K_2/runs
+sims/cross_validation/K_3/runs
+sims/missing_data
+data/poplars/poplar.dataset.Robj
