@@ -862,7 +862,7 @@ and
 (b) \texttt{conStruct} can concisely capture spatial structure, which
 will be common within populations.
 Given this, when should methods without spatial capability be used?
-One advantage these have over \texttt{conStruct} is speed.
+One advantage these have over \texttt{conStruct} is speed when the number of samples is large.
 Although \texttt{conStruct}'s computation time is invariant 
 with the number of loci included in the dataset 
 (after the initial calculation of the allelic covariance), 
@@ -877,17 +877,22 @@ to the inverse of the covariance matrix
 \citep[e.g.][]{woodbury1950,sherman_morrison1950}
 when updating a sample's admixture proportions, 
 which alters only a single row/column of the covariance matrix. 
-However, we have not implemented this yet, 
+We have not implemented this yet, 
 as it would likely mean losing the ability to do efficient,  
 Hamiltonian Monte Carlo sampling of our parameters.
+
+For a relatively small number of samples, 
+\texttt{conStruct} can be much faster than other nonspatial clustering methods.
 On a desktop machine with a 4.2 GHz Intel Core i7 processor, 
-an analysis of the the poplar dataset (35 samples, 22,500 loci), 
-running the spatial model with 7 layers for 5,000 MCMC iterations 
-took 29.8 minutes.
-For the black bear dataset (84 samples, 21,000 loci) 
-running the spatial model with 7 layers for 5,000 MCMC iterations, 
+an analysis of the black bear dataset (84 samples, 21,000 loci) 
+running \texttt{conStruct}'s spatial model with 4 layers for 5,000 MCMC iterations, 
 which was more than sufficient for convergence,
-took 6.9 hours.
+took XXX hours.
+On the same machine and dataset, 
+a fastSTRUCTURE run with $K=4$ took 3.76 days.
+However, for a large number of samples, 
+fastSTRUCTURE (or ADMIXTURE) would be much faster.
+
 
 \paragraph{Choosing the ``best" number of clusters}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
