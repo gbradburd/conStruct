@@ -62,20 +62,20 @@ This function returns a list with one entry for each chain run
 					\item \code{par.cov} array of estimated parametric covariance matrices, 
 							for which the first dimension is the number of MCMC iterations.
 					\item \code{gamma} vector of estimated gamma parameter.
-					\item \code{cluster.params} list summarizing estimates of layer-specific 
+					\item \code{layer.params} list summarizing estimates of layer-specific 
 							parameters. There is one entry for each layer specified, and the 
-							entry for the kth layer is named "Cluster_k".
+							entry for the kth layer is named "Layer_k".
 						\itemize{
 							\item \code{alpha0} vector of estimated alpha0 parameter in the 
-									kth cluster.
+									kth layer.
 							\item \code{alphaD} vector of estimated alphaD parameter in the 
-									kth cluster.
+									kth layer.
 							\item \code{alpha2} vector of estimated alpha2 parameter in the 
-									kth cluster.
+									kth layer.
 							\item \code{mu} vector of estimated mu parameter in the 
-									kth cluster.
-							\item \code{cluster.cov} vector of estimated cluster-specific 
-									covariance parameter in the kth cluster.
+									kth layer.
+							\item \code{layer.cov} vector of estimated layer-specific 
+									covariance parameter in the kth layer.
 						}
 					\item \code{admix.proportions} array of estimated admixture proportions.
 							The first dimension is the number of MCMC iterations, 
@@ -93,7 +93,7 @@ This function returns a list with one entry for each chain run
 					\item \code{nuggets} point estimate of nugget parameters
 					\item \code{par.cov} point estimate of parametric covariance
 					\item \code{gamma} point estimate of gamma parameter
-					\item \code{cluster.params} point estimates of all cluster-specific parameters 
+					\item \code{layer.params} point estimates of all layer-specific parameters 
 					\item \code{admix.proportions} point estimates of admixture proportions.
 				}
 		}

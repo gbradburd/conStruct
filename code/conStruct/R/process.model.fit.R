@@ -14,11 +14,11 @@ get.MAP.iter <- function(model.fit,chain.no){
 	return(MAP.iter)
 }
 
-get.admix.props <- function(model.fit,chain.no,N,n.clusters){
+get.admix.props <- function(model.fit,chain.no,N,n.layers){
 	# recover()
-	admix.props <- array(1,dim=c(model.fit@sim$n_save[chain.no],N,n.clusters))
+	admix.props <- array(1,dim=c(model.fit@sim$n_save[chain.no],N,n.layers))
 	if(any(grepl("w",model.fit@model_pars))){
-		for(k in 1:n.clusters){
+		for(k in 1:n.layers){
 			admix.props[,,k] <- rstan::extract(model.fit,
 											pars=unlist(lapply(1:N,function(j){sprintf("w[%s,%s]",j,k)})),
 											permuted=FALSE,inc_warmup=TRUE)[,chain.no,]
@@ -55,15 +55,15 @@ get.null.alpha.params <- function(n.iter){
 	return(alpha.params)	
 }
 
-get.alpha.params <- function(model.fit,chain.no,cluster,n.clusters){
+get.alpha.params <- function(model.fit,chain.no,layer,n.layers){
 	alpha.pars <- model.fit@model_pars[grepl("alpha",model.fit@model_pars)]
 	if(length(alpha.pars) !=0 ){
-		if(n.clusters > 1){
+		if(n.layers > 1){
 			alpha.params <- stats::setNames(
 									lapply(1:length(alpha.pars),
 											function(i){
 												rstan::extract(model.fit,
-														pars=paste0(alpha.pars[i],"[",cluster,"]"),
+														pars=paste0(alpha.pars[i],"[",layer,"]"),
 														inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
 											}),alpha.pars)
 		} else {
@@ -86,11 +86,11 @@ get.null.phi <- function(n.iter){
 	return(phi)
 }
 
-get.cluster.phi <- function(model.fit,chain.no,cluster){
+get.layer.phi <- function(model.fit,chain.no,layer){
 	has.phi <- any(grepl("phi",model.fit@model_pars))
 	if(has.phi){
 		phi <- rstan::extract(model.fit,
-						pars=paste0("phi","[",cluster,"]"),
+						pars=paste0("phi","[",layer,"]"),
 						inc_warmup=TRUE,permuted=FALSE)[,chain.no,]
 	} else {
 		phi <- get.null.phi(model.fit@sim$n_save[chain.no])
@@ -101,72 +101,72 @@ get.cluster.phi <- function(model.fit,chain.no,cluster){
 get.cov.function <- function(data.block){
 	if(data.block$K == 1){
 		if(data.block$spatial){
-			cov.func <- function(cluster.params,data.block){
-				return(cluster.params$alpha0 * 
-						exp(-(cluster.params$alphaD*data.block$geoDist)^cluster.params$alpha2))
+			cov.func <- function(layer.params,data.block){
+				return(layer.params$alpha0 * 
+						exp(-(layer.params$alphaD*data.block$geoDist)^layer.params$alpha2))
 			}
 		}
 		if(!data.block$spatial){
-			cov.func <- function(cluster.params,data.block){
+			cov.func <- function(layer.params,data.block){
 				return(matrix(0,nrow=data.block$N,ncol=data.block$N))
 			}
 		}
 	} else {
 		if(data.block$spatial){
-			cov.func <- function(cluster.params,data.block){
-				return(cluster.params$alpha0 *  
-						exp(-(cluster.params$alphaD*data.block$geoDist)^cluster.params$alpha2) + 
-							cluster.params$phi)
+			cov.func <- function(layer.params,data.block){
+				return(layer.params$alpha0 *  
+						exp(-(layer.params$alphaD*data.block$geoDist)^layer.params$alpha2) + 
+							layer.params$phi)
 			}
 		}
 		if(!data.block$spatial){
-			cov.func <- function(cluster.params,data.block){
-				return(matrix(cluster.params$phi,nrow=data.block$N,ncol=data.block$N))
+			cov.func <- function(layer.params,data.block){
+				return(matrix(layer.params$phi,nrow=data.block$N,ncol=data.block$N))
 			}
 		}
 	}
 	return(cov.func)
 }
 
-get.cluster.cov <- function(cluster.params,data.block,n.iter){
+get.layer.cov <- function(layer.params,data.block,n.iter){
 	cov.function <- get.cov.function(data.block)
-	cluster.cov <- lapply(1:n.iter,
+	layer.cov <- lapply(1:n.iter,
 							function(i){
-								cov.function(cluster.params=
-												lapply(cluster.params,"[[",i),
+								cov.function(layer.params=
+												lapply(layer.params,"[[",i),
 												data.block)
 							})
-	return(cluster.cov)
+	return(layer.cov)
 }
 
-get.cluster.params <- function(model.fit,data.block,chain.no,cluster,n.clusters,n.iter){
-	cluster.params <- list()
-	cluster.params <- get.alpha.params(model.fit,chain.no,cluster,n.clusters)
-	cluster.params[["phi"]] <- get.cluster.phi(model.fit,chain.no,cluster)
-	cluster.cov <- get.cluster.cov(cluster.params,data.block,n.iter)
-	cluster.params <- c(cluster.params,list("cluster.cov"=cluster.cov))
-	return(cluster.params)
+get.layer.params <- function(model.fit,data.block,chain.no,layer,n.layers,n.iter){
+	layer.params <- list()
+	layer.params <- get.alpha.params(model.fit,chain.no,layer,n.layers)
+	layer.params[["phi"]] <- get.layer.phi(model.fit,chain.no,layer)
+	layer.cov <- get.layer.cov(layer.params,data.block,n.iter)
+	layer.params <- c(layer.params,list("layer.cov"=layer.cov))
+	return(layer.params)
 }
 
-get.cluster.params.list <- function(model.fit,data.block,chain.no,n.iter){
-	cluster.params <- stats::setNames(
+get.layer.params.list <- function(model.fit,data.block,chain.no,n.iter){
+	layer.params <- stats::setNames(
 								lapply(1:data.block$K,
 											function(i){
-												get.cluster.params(model.fit,data.block,chain.no,i,data.block$K,n.iter)
+												get.layer.params(model.fit,data.block,chain.no,i,data.block$K,n.iter)
 											}),
-								paste("Cluster",1:data.block$K,sep="_"))
-	cluster.params <- make.cluster.params.S3(cluster.params)
-	return(cluster.params)
+								paste("layer",1:data.block$K,sep="_"))
+	layer.params <- make.layer.params.S3(layer.params)
+	return(layer.params)
 }
 
-make.cluster.params.S3 <- function(cluster.params){
-	cluster.params <- cluster.params
-	class(cluster.params) <- "cluster.params"
-	return(cluster.params)
+make.layer.params.S3 <- function(layer.params){
+	layer.params <- layer.params
+	class(layer.params) <- "layer.params"
+	return(layer.params)
 }
 
-print.cluster.params <- function(cluster.params){
-	print(utils::str(cluster.params,max.level=1))
+print.layer.params <- function(layer.params){
+	print(utils::str(layer.params,max.level=1))
 }
 
 index.MAP <- function(param,MAP.iter){
@@ -185,20 +185,20 @@ index.MAP <- function(param,MAP.iter){
 	if(class(param) == "matrix"){
 		MAP.param <- param[MAP.iter,]
 	}
-	if(class(param) == "cluster.params"){
-		MAP.param <- index.MAP.cluster.params.list(param,MAP.iter)
+	if(class(param) == "layer.params"){
+		MAP.param <- index.MAP.layer.params.list(param,MAP.iter)
 	}
 	return(MAP.param)
 }
 
-index.MAP.cluster.params <- function(cluster.params,MAP.iter){
-	MAP.cluster.params <- lapply(cluster.params,index.MAP,MAP.iter)
-	return(MAP.cluster.params)
+index.MAP.layer.params <- function(layer.params,MAP.iter){
+	MAP.layer.params <- lapply(layer.params,index.MAP,MAP.iter)
+	return(MAP.layer.params)
 }
 
-index.MAP.cluster.params.list <- function(cluster.params.list,MAP.iter){
-	MAP.cluster.params.list <- lapply(cluster.params.list,index.MAP.cluster.params,MAP.iter)
-	return(MAP.cluster.params.list)
+index.MAP.layer.params.list <- function(layer.params.list,MAP.iter){
+	MAP.layer.params.list <- lapply(layer.params.list,index.MAP.layer.params,MAP.iter)
+	return(MAP.layer.params.list)
 }
 
 get.n.iter <- function(model.fit,chain.no){
@@ -223,7 +223,7 @@ get.conStruct.chain.results <- function(data.block,model.fit,chain.no){
 					  "nuggets" = get.nuggets(model.fit,chain.no,data.block$N),
 					  "par.cov" = get.par.cov(model.fit,chain.no,data.block$N),
 					  "gamma" = get.gamma(model.fit,chain.no),
-					  "cluster.params" = get.cluster.params.list(model.fit,data.block,chain.no,n.iter),
+					  "layer.params" = get.layer.params.list(model.fit,data.block,chain.no,n.iter),
 					  "admix.proportions" = get.admix.props(model.fit,chain.no,data.block$N,data.block$K))
 	MAP.iter <- get.MAP.iter(model.fit,chain.no)
 	MAP <- lapply(posterior,function(X){index.MAP(X,MAP.iter)})

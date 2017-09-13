@@ -51,20 +51,20 @@
 #'						\item \code{par.cov} array of estimated parametric covariance matrices, 
 #'								for which the first dimension is the number of MCMC iterations.
 #'						\item \code{gamma} vector of estimated gamma parameter.
-#'						\item \code{cluster.params} list summarizing estimates of layer-specific 
+#'						\item \code{layer.params} list summarizing estimates of layer-specific 
 #'								parameters. There is one entry for each layer specified, and the 
-#'								entry for the kth layer is named "Cluster_k".
+#'								entry for the kth layer is named "Layer_k".
 #'							\itemize{
 #'								\item \code{alpha0} vector of estimated alpha0 parameter in the 
-#'										kth cluster.
+#'										kth layer.
 #'								\item \code{alphaD} vector of estimated alphaD parameter in the 
-#'										kth cluster.
+#'										kth layer.
 #'								\item \code{alpha2} vector of estimated alpha2 parameter in the 
-#'										kth cluster.
+#'										kth layer.
 #'								\item \code{mu} vector of estimated mu parameter in the 
-#'										kth cluster.
-#'								\item \code{cluster.cov} vector of estimated cluster-specific 
-#'										covariance parameter in the kth cluster.
+#'										kth layer.
+#'								\item \code{layer.cov} vector of estimated layer-specific 
+#'										covariance parameter in the kth layer.
 #'							}
 #'						\item \code{admix.proportions} array of estimated admixture proportions.
 #'								The first dimension is the number of MCMC iterations, 
@@ -82,7 +82,7 @@
 #'						\item \code{nuggets} point estimate of nugget parameters
 #'						\item \code{par.cov} point estimate of parametric covariance
 #'						\item \code{gamma} point estimate of gamma parameter
-#'						\item \code{cluster.params} point estimates of all cluster-specific parameters 
+#'						\item \code{layer.params} point estimates of all layer-specific parameters 
 #'						\item \code{admix.proportions} point estimates of admixture proportions.
 #'					}
 #'			}
@@ -129,7 +129,7 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 			save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
 		}
 	if(make.figs){
-		make.all.the.plots(conStruct.results,data.block,prefix,cluster.colors=NULL)
+		make.all.the.plots(conStruct.results,data.block,prefix,layer.colors=NULL)
 	}
 	return(conStruct.results)
 }
@@ -206,21 +206,21 @@ validate.data.block <- function(data.block){
 	message("\nchecking specified model\n")
 		validate.model(data.block)
 	if(data.block$spatial){
-		message(sprintf("\nuser has specified a spatial model with %s cluster(s)\n",data.block$K))
+		message(sprintf("\nuser has specified a spatial model with %s layer(s)\n",data.block$K))
 	}
 	if(!data.block$spatial){
-		message(sprintf("\nuser has specified a purely discrete model with %s cluster(s)\n",data.block$K))
+		message(sprintf("\nuser has specified a purely discrete model with %s layer(s)\n",data.block$K))
 	}
 	data.block <- make.data.block.S3(data.block)
 	return(data.block)
 }
 
-make.stan.code.block <- function(spatial,n.clusters){
+make.stan.code.block <- function(spatial,n.layers){
 	stan.code.block.name <- "stan.block"
-	if(n.clusters == 1){
+	if(n.layers == 1){
 		stan.code.block.name <- paste0("oneK.",stan.code.block.name)
 	}
-	if(n.clusters > 1){
+	if(n.layers > 1){
 		stan.code.block.name <- paste0("multiK.",stan.code.block.name)
 	}
 	if(spatial){
