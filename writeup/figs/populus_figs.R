@@ -196,7 +196,7 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.sp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
@@ -217,14 +217,14 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=cluster.colors,
-			xlab="",ylab="layer importance")
+			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
 			col=cluster.colors,
 			xlab="",ylab="")

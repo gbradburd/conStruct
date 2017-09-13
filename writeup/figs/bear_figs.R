@@ -192,7 +192,7 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.sp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
@@ -213,14 +213,14 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=cluster.colors,
-			xlab="",ylab="layer importance")
+			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
 			col=cluster.colors,
 			xlab="",ylab="")
@@ -228,50 +228,34 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",widt
 			mtext(side=3,text="Layer contributions (Bears)",padj=-2.25,adj=18,font=2,cex=1.2)
 dev.off()
 
-# pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_sp.pdf",width=7,height=7,pointsize=14)
-	# par(mar=c(4.5,4.5,1,1))
-	# plot(0,xlim=c(0.7,7.3),ylim=c(0,1),type='n',xlab="number of layers",ylab="layer importance")
-		# lapply(1:7,function(k){
-			# points(rep(k,k),
-				# sort(calculate.layer.contributions(output.list.sp[[k]][[1]]$MAP,data.block),
-					# decreasing=TRUE),
-				# pch=9,col=c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")[1:k],
-				# cex=1.5)
-		# })
-# dev.off()
 
-# pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_nsp.pdf",width=7,height=7,pointsize=14)
-	# par(mar=c(4.5,4.5,1,1))
-	# plot(0,xlim=c(0.7,7.3),ylim=c(0,1),type='n',xlab="number of layers",ylab="layer importance")
-		# lapply(1:7,function(k){
-			# points(rep(k,k),
-				# sort(calculate.layer.contributions(output.list.nsp[[k]][[1]]$MAP,data.block),
-					# decreasing=TRUE),
-				# pch=9,col=c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")[1:k],
-				# cex=1.5)
-		# })
-# dev.off()
-
-
-# pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_loglaycon_sp.pdf",width=7,height=7,pointsize=14)
-	# par(mar=c(4.5,4.5,1,1))
-	# plot(0,xlim=c(0.7,7.3),ylim=c(log(0.0008),log(1)),type='n',xlab="number of layers",ylab="log(layer importance)")
-		# lapply(1:7,function(k){
-			# points(rep(k,k),
-				# sort(log(calculate.layer.contributions(output.list.sp[[k]][[1]]$MAP,data.block)),
-					# decreasing=TRUE),
-				# pch=9,col=c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")[1:k],
-				# cex=1.5)
-		# })
-# dev.off()
-# pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_loglaycon_nsp.pdf",width=7,height=7,pointsize=14)
-	# par(mar=c(4.5,4.5,1,1))
-	# plot(0,xlim=c(0.7,7.3),ylim=c(log(0.009),log(1)),type='n',xlab="number of layers",ylab="log(layer importance)")
-		# lapply(1:7,function(k){
-			# points(rep(k,k),
-				# sort(log(calculate.layer.contributions(output.list.nsp[[k]][[1]]$MAP,data.block)),
-					# decreasing=TRUE),
-				# pch=9,col=c("blue","red","green","yellow","purple","orange","lightblue","darkgreen","lightblue","gray")[1:k],
-				# cex=1.5)
-		# })
-# dev.off()
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width=15,height=10,pointsize=14)
+	layout(
+		rbind(
+			Reduce("cbind",lapply(1:3,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)})),
+			Reduce("cbind",lapply(4:6,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)}))
+			))
+	for(k in 2:4){
+		w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k,k),stringsAsFactors=FALSE))
+		if(k <= 2){
+			csr1.order <- NULL
+		}
+		if(k > 2){
+			tmp.w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE))
+			csr1.order <- match.clusters.x.runs(tmp.w,w,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		make.bear.redux.result.plot.multipanel1(admix.proportions = w,
+												coords = bear.dataset$sample.coords,
+												lump.dist = 200,
+												cluster.colors = cluster.colors,
+												cluster.order=NULL)
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
+dev.off()

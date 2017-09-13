@@ -109,7 +109,7 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.sp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
@@ -130,14 +130,14 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=cluster.colors,
-			xlab="",ylab="layer importance")
+			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
 			col=cluster.colors,
 			xlab="",ylab="")
@@ -225,7 +225,7 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.sp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
@@ -246,14 +246,14 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=cluster.colors,
-			xlab="",ylab="layer importance")
+			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
 			col=cluster.colors,
 			xlab="",ylab="")
@@ -346,7 +346,7 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.sp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.sp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 laycon.nsp <- matrix(0,nrow=7,ncol=7)
@@ -367,14 +367,14 @@ for(k in 1:K){
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
 	}
-	laycon.nsp[1:k,k] <- calculate.layer.importance(csr,data.block,csr1.order)
+	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=cluster.colors,
-			xlab="",ylab="layer importance")
+			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
 			col=cluster.colors,
 			xlab="",ylab="")
@@ -468,82 +468,3 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 					x=c(3.2,6.6),y=c(-1.5e4,-4e3))
 	mtext("K = 3",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 dev.off()
-
-# #All together now
-
-# #K1
-# setwd("~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation")
-# n.reps <- 10
-# K <- 7
-# for(n in 1:n.reps){
-	# load(sprintf("simK1_rep%s_test.lnl.Robj",n))
-	# assign(paste0("tl",n),test.lnl)
-# }
-# x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-# x.vals.std <- lapply(x.vals,standardize.xvals)
-# xval.CIs <- get.xval.CIs(x.vals.std,K)
-# pdf(file="~/Dropbox/conStruct/writeup/figs/sims/xvals.pdf",width=10,height=15,pointsize=14)
-# #	quartz(width=10,height=15)
-	# layout(matrix(c(1:6),nrow=3,ncol=2,byrow=TRUE))
-	# par(mar=c(4,5,3,2),oma=c(3,3,3,1))
-	# plot.xval.CIs(xval.CIs,K,xlim=c(0.7,7.3))
-		# legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"))
-	# rect(0.7,-110,7.3,10,lwd=1,lty=2)
-	# plot.xval.CIs(xval.CIs,K,ylim=c(-100,0),xlim=c(0.7,7.3))
-		# legend(x="bottomleft",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	# mtext("K = 1",side=3,adj=-0.3,padj=-2.2,font=2,cex=1.2)
-
-# #K2
-# setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/xvals")
-# n.reps <- 10
-# K <- 7
-# for(n in 1:n.reps){
-	# load(sprintf("simK2_rep%s_test.lnl.Robj",n))
-	# assign(paste0("tl",n),test.lnl)
-# }
-# x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-# x.vals.std <- lapply(x.vals,standardize.xvals)
-# xval.CIs <- get.xval.CIs(x.vals.std,K)
-# #	quartz(width=10,height=5)
-	# plot.xval.CIs(xval.CIs,K)
-		# mtext("Predictive accuracy",side=2,padj=-5,font=2)
-	# rect(1.7,-700,7.2,400,lty=2)
-	# arrows(1.7,-700,2.5,-3e3,lty=1,length=0.1)
-	# arrows(7.2,-700,6.6,-3e3,lty=1,length=0.1)
-	# TeachingDemos::subplot(fun = {
-						# plot.xval.CIs(xval.CIs,K,k.range=c(2:7),axes=FALSE,cex=1)
-							# axis(1,at=2:7,labels=c(2,"","","","",7),cex.axis=0.8,lty=2)
-							# axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=2)
-							# box(lwd=1.2,lty=2)
-						# },
-					# x=c(2.5,6.6),y=c(-12.5e3,-3e3))
-		# plot.xval.CIs(xval.CIs,K,simK=" (K = 2)",k.range=c(2:7),ylim=c(-9,0))
-	# mtext("K = 2",side=3,adj=-0.3,padj=-2.2,font=2,cex=1.2)
-	
-# setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/xvals")
-# n.reps <- 10
-# K <- 7
-# for(n in 1:n.reps){
-	# load(sprintf("simK3_rep%s_test.lnl.Robj",n))
-	# assign(paste0("tl",n),test.lnl)
-# }
-# x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
-# x.vals.std <- lapply(x.vals,standardize.xvals)
-# xval.CIs <- get.xval.CIs(x.vals.std,K)
-
-	# plot.xval.CIs(xval.CIs,K)
-	# rect(2.8,-680,7.2,470,lty=2)
-	# arrows(2.8,-680,3.2,-4e3,lty=1,length=0.1)
-	# arrows(7.2,-700,6.6,-4e3,lty=1,length=0.1)
-	# TeachingDemos::subplot(fun = {
-						# plot.xval.CIs(xval.CIs,K,k.range=c(3:7),axes=FALSE,cex=1)
-							# axis(1,at=3:7,labels=c(3,"","","",7),cex.axis=0.8,lty=2)
-							# axis(2,at=seq(-140,0,length.out=6),labels=c(-140,"","","","",0),cex.axis=0.8,lty=2)
-							# box(lwd=1.2,lty=2)
-						# },
-					# x=c(3.2,6.6),y=c(-1.5e4,-4e3))
-		# plot.xval.CIs(xval.CIs,K,simK=" (K = 3)",k.range=c(3:7),ylim=c(-9,0))
-	# mtext("K = 3",side=3,adj=-0.3,padj=-2.2,font=2,cex=1.2)
-	# mtext("number of clusters",side=1,adj=-0.7,padj=4,font=2)
-# dev.off()
-
