@@ -147,9 +147,9 @@ match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 	return(run2.order)
 }
 
-#' Calculate layer importance
+#' Calculate layer contribution
 #' 
-#' \code{calculate.layer.importance} 
+#' \code{calculate.layer.contribution} 
 #' 
 #' This function takes the results of a \code{conStruct} 
 #' analysis and calculates the relative contributions of 
@@ -164,24 +164,24 @@ match.clusters.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 #' 			read.
 #' 
 #' @return This function returns a \code{vector} giving the 
-#' 			relative contributions (importance) of the clusters 
+#' 			relative contributions of the clusters 
 #' 			in the analysis.
 #' 
 #' @details This function calculates the contribution of each cluster to
 #'			total covariance by multiplying the within-cluster covariance 
 #'			in a given cluster by the admixture proportions samples draw 
-#'			from that cluster. The relative contribution of that cluster, 
-#'			which can be interpreted as its importance, is this absolute 
-#'			contribution divided by the sum of those of all other clusters. 
-#' 			A cluster can have a large importance if many samples draw 
+#'			from that cluster. The relative contribution of that cluster 
+#'			is this absolute contribution divided by the sum of those of 
+#'			all other clusters. 
+#' 			A cluster can have a large contribution if many samples draw 
 #'			large amounts of admixture from it, or if it has a very large 
 #'			within-cluster covariance parameter (phi), or some combination 
-#'			of the two. Cluster importance can be useful for evaluating 
+#'			of the two. Cluster contribution can be useful for evaluating 
 #'			an appropriate level of model complexity for the data (e.g., 
 #'			choosing a value of \code{K} or comparing the spatial and 
 #'			nonspatial models).
 #'@export
-calculate.layer.importance <- function(conStruct.results,data.block,layer.order=NULL){
+calculate.layer.contribution <- function(conStruct.results,data.block,layer.order=NULL){
 	if(any(grepl("chain",names(conStruct.results)))){
 		stop("user must specify conStruct results from a single chain\ni.e. from conStruct.results[[1]] rather than conStruct.results")
 	}
