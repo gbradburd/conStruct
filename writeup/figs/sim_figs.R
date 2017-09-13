@@ -25,8 +25,9 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_sp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.sp[[k]] <- conStruct.results
 }
@@ -34,13 +35,14 @@ for(k in 1:7){
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_nsp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-
+if(FALSE){
 plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.nsp,
@@ -50,6 +52,7 @@ plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K")
+}
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
 	par(mfrow=c(2,3))
@@ -104,7 +107,7 @@ for(k in 1:K){
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -121,11 +124,11 @@ for(k in 1:K){
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -136,10 +139,10 @@ for(k in 1:K){
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=1)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -166,8 +169,9 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_sp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.sp[[k]] <- conStruct.results
 }
@@ -175,13 +179,14 @@ for(k in 1:7){
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_nsp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-
+if(FALSE){
 plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.nsp,
@@ -191,6 +196,7 @@ plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
+}
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
 	par(mfrow=c(2,3))
@@ -220,7 +226,7 @@ for(k in 1:K){
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -237,11 +243,11 @@ for(k in 1:K){
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -252,10 +258,10 @@ for(k in 1:K){
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=2)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -264,7 +270,7 @@ dev.off()
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_adprop_fit.pdf",width=6,height=6,pointsize=14)
 	viz.admix.results(sim.admix.props = sim.dataset$admix.list$w,
 				 	 conStruct.results = output.list.sp[[2]][[1]],
-				 	 clst.order=c(2,1))
+				 	 layer.order=c(2,1))
 dev.off()
 
 #K3
@@ -287,8 +293,9 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_sp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.sp[[k]] <- conStruct.results
 }
@@ -296,13 +303,14 @@ for(k in 1:7){
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_nsp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-
+if(FALSE){
 plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.nsp,
@@ -312,6 +320,7 @@ plot.sim.pies(data.block = data.block,
 			  K = 7,
 			  output.list = output.list.sp,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
+}
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
 	par(mfrow=c(2,3))
@@ -341,7 +350,7 @@ for(k in 1:K){
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -358,11 +367,11 @@ for(k in 1:K){
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -373,10 +382,10 @@ for(k in 1:K){
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (K=3)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
@@ -385,7 +394,7 @@ dev.off()
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_adprop_fit.pdf",width=6,height=6,pointsize=14)
 viz.admix.results(sim.admix.props = sim.dataset$admix.list$w,
 				  conStruct.results = output.list.sp[[3]][[1]],
-				  clst.order=c(3,2,1))
+				  layer.order=c(3,2,1))
 dev.off()
 
 
@@ -442,7 +451,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 						},
 					x=c(2.5,6.6),y=c(-12.5e3,-3e3))
 	mtext("K = 2",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
-	mtext("number of clusters",side=1,padj=3.4)
+	mtext("number of layers",side=1,padj=3.4)
 #K3
 setwd("~/Dropbox/gid_runs/mc_runs/sims/simK3")
 n.reps <- 10

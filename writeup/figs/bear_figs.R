@@ -18,7 +18,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,hei
 	plot.xval.CIs(xval.CIs,K,ylim=c(-200,0),jitter=0.1,xlim=c(3.75,7.25),xaxt='n')
 		axis(1,at=c(4:7))
 		legend(x="bottomright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of clusters",side=1,adj=-1.1,padj=4,font=2)
+	mtext("number of layers",side=1,adj=-1.1,padj=4,font=2)
 	mtext("Cross-validation results (Bears)",side=3,adj=10.5,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
@@ -41,8 +41,9 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_sp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.sp[[k]] <- conStruct.results
 }
@@ -50,19 +51,21 @@ for(k in 1:7){
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_nsp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
+if(FALSE){
 csr1.order <- NULL
 for(k in 2:7){
 	data.block$K <- k
 	csr <- output.list.sp[[k]][[1]]
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -71,8 +74,8 @@ for(k in 2:7){
 		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
 									coords = bear.dataset$sample.coords,
 									lump.dist = 200,
-									cluster.colors = cluster.colors[order(csr1.order)],
-									cluster.order=csr1.order,
+									layer.colors = layer.colors[order(csr1.order)],
+									layer.order=csr1.order,
 									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
 	dev.off()
 }
@@ -83,11 +86,11 @@ for(k in 2:7){
 	csr <- output.list.nsp[[k]][[1]]
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -96,12 +99,12 @@ for(k in 2:7){
 		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
 									coords = bear.dataset$sample.coords,
 									lump.dist = 200,
-									cluster.colors = cluster.colors[order(csr1.order)],
-									cluster.order=csr1.order,
+									layer.colors = layer.colors[order(csr1.order)],
+									layer.order=csr1.order,
 									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
 	dev.off()
 }
-
+}
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/Fig6_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
 	layout(cbind(matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
@@ -110,15 +113,15 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/Fig6_sp_vs_nsp.pdf",width=15,he
 	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.sp[[3]][[1]]$MAP$admix.proportions,
 										coords = bear.dataset$sample.coords,
 										lump.dist = 200,
-										cluster.colors = cluster.colors[order(c(1,2,3))],
-										cluster.order=c(1,2,3))
+										layer.colors = layer.colors[order(c(1,2,3))],
+										layer.order=c(1,2,3))
 		mtext(side=1,text=bquote(paste("(",.(letters[1]),") ",italic("K")," = ",.(3)," (spatial)")),padj=-1.5,adj=0.03,cex=1.3)
 	par(xpd=FALSE)
 	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.nsp[[3]][[1]]$MAP$admix.proportions[,c(3,1,2)],
 										coords = bear.dataset$sample.coords,
 										lump.dist = 200,
-										cluster.colors = cluster.colors[order(c(1,2,3))],
-										cluster.order=c(1,2,3))
+										layer.colors = layer.colors[order(c(1,2,3))],
+										layer.order=c(1,2,3))
 		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3)," (nonspatial)")),padj=-1.5,adj=0.03,cex=1.3)
 dev.off()
 
@@ -135,7 +138,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,h
 	make.bear.redux.result.plot.multipanel2(output.list = output.list.sp,
 											coords = data.block$coords,
 											lump.dist = 200,
-											cluster.colors,csr1.order=NULL)
+											layer.colors,csr1.order=NULL)
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,height=10)
@@ -151,25 +154,25 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,
 	make.bear.redux.result.plot.multipanel2(output.list = output.list.nsp,
 											coords = data.block$coords,
 											lump.dist = 200,
-											cluster.colors,csr1.order=c(2,1))
+											layer.colors,csr1.order=c(2,1))
 dev.off()
 
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp_clst_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list= output.list.sp,col.mat1=NULL,col.mat2=NULL)
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.sp,col.mat1=NULL,col.mat2=NULL)
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_clst_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list= output.list.nsp,col.mat1=NULL,col.mat2=NULL,output.list.sp=output.list.sp)
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.nsp,col.mat1=NULL,col.mat2=NULL,output.list.sp=output.list.sp)
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
@@ -187,7 +190,7 @@ for(k in 1:K){
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -204,11 +207,11 @@ for(k in 1:K){
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -219,10 +222,10 @@ for(k in 1:K){
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (Bears)",padj=-2.25,adj=18,font=2,cex=1.2)
@@ -240,7 +243,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width
 		}
 		if(k > 2){
 			tmp.w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE))
-			csr1.order <- match.clusters.x.runs(tmp.w,w,csr1.order)
+			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
 		}
 		if(is.null(csr1.order)){
 			csr1.order <- 1:k
@@ -248,8 +251,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width
 		make.bear.redux.result.plot.multipanel1(admix.proportions = w[,csr1.order],
 												coords = bear.dataset$sample.coords,
 												lump.dist = 200,
-												cluster.colors = cluster.colors,
-												cluster.order=NULL)
+												layer.colors = layer.colors,
+												layer.order=NULL)
 		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=0.8,adj=0.4)
 	}
 dev.off()

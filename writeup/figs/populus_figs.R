@@ -18,7 +18,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_std_xval.pdf",width=1
 	mtext("Predictive accuracy",side=2,padj=-5,font=2)
 	plot.xval.CIs(xval.CIs,K,ylim=c(-40,0),jitter=0.1,xlim=c(1.75,7.25))
 		legend(x="bottomright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of clusters",side=1,adj=-1.1,padj=4,font=2)
+	mtext("number of layers",side=1,adj=-1.1,padj=4,font=2)
 	mtext("Cross-validation results (Populus)",side=3,adj=5,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
@@ -46,8 +46,9 @@ data.block <- conStruct:::make.data.block(K = 1,
 output.list.sp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_sp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.sp[[k]] <- conStruct.results
 }
@@ -55,19 +56,21 @@ for(k in 1:7){
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
 	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_nsp_conStruct.results.Robj",k))
+	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$cluster.params[[j]])[4] <- "phi"
+		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
 }
 
+if(FALSE){
 csr1.order <- NULL
 for(k in 2:7){
 	data.block$K <- k
 	csr <- output.list.sp[[k]][[1]]
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -76,16 +79,17 @@ for(k in 2:7){
 		par(mar=c(5,5,1,1))
 		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
 		map.axes()
-		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=2.5,add=TRUE)
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=2.5,add=TRUE)
 		box(lwd=2)
 	dev.off()
 }
+}
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_clst_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list=output.list.sp,col.mat1=col.mat1,col.mat2=col.mat2)
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list=output.list.sp,col.mat1=col.mat1,col.mat2=col.mat2)
 	par(xpd=NA)
 		legend(-0.5,0.06,pch=21,
 				pt.bg=c(1,"forestgreen","forestgreen"),
@@ -93,7 +97,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_clst_covs.p
 				legend=c("balsamifera - balsamifera",
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
-	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","cluster covariance"))
+	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
@@ -105,7 +109,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",widt
 			csr <- output.list.sp[[k]][[1]]
 			if(k > 2){
 				tmp.csr <- output.list.sp[[k-1]][[1]]
-				csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+				csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 			}
 			if(is.null(csr1.order)){
 				csr1.order <- 1:k
@@ -113,7 +117,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",widt
 			map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
 			map.axes()
 			make.admix.pie.plot(output.list.sp[[k]][[1]]$MAP$admix.proportions[,csr1.order],
-								data.block$coords,cluster.colors=cluster.colors,radii=1.7,add=TRUE)
+								data.block$coords,layer.colors=layer.colors,radii=1.7,add=TRUE)
 			box(lwd=2)
 			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 		}
@@ -138,6 +142,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sp_pies.pdf",width=12
 								 mar = c(5,3,0,1.5))
 dev.off()
 
+if(FALSE){
 csr1.order <- NULL
 for(k in 2:7){
 	data.block$K <- k
@@ -145,11 +150,11 @@ for(k in 2:7){
 	csr <- output.list.nsp[[k]][[1]]
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -158,16 +163,16 @@ for(k in 2:7){
 		par(mar=c(5,5,1,1))
 		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
 		map.axes()
-		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=2.5,add=TRUE)
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=2.5,add=TRUE)
 		box(lwd=2)
 	dev.off()
 }
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_clst_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.cluster.curves(K=1:6,data.block=data.block,output.list=output.list.nsp,col.mat1=col.mat1,col.mat2=col.mat2,output.list.sp=output.list.sp)
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list=output.list.nsp,col.mat1=col.mat1,col.mat2=col.mat2,output.list.sp=output.list.sp)
 	par(xpd=NA)
 		legend(-0.5,0.06,pch=21,
 				pt.bg=c(1,"forestgreen","forestgreen"),
@@ -175,7 +180,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_clst_covs.
 				legend=c("balsamifera - balsamifera",
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
-	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","cluster covariance"))
+	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
 	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
@@ -191,7 +196,7 @@ for(k in 1:K){
 	}
 	if(k > 2){
 		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -208,11 +213,11 @@ for(k in 1:K){
 	}
 	if(k==2){
 		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(k > 2){
 		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.clusters.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
 	}
 	if(is.null(csr1.order)){
 		csr1.order <- 1:k
@@ -223,10 +228,10 @@ for(k in 1:K){
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="layer contribution")
 	barplot(laycon.nsp,
-			col=cluster.colors,
+			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
 			mtext(side=3,text="Layer contributions (Poplars)",padj=-2.25,adj=7,font=2,cex=1.2)
@@ -255,7 +260,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_fastStr_results.pdf",w
 		if(k > 2){
 		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/fastStructure/poplars_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE)),
 								pop.vec = poplar.pop.vec)
-			csr1.order <- match.clusters.x.runs(tmp.w,w,csr1.order)
+			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
 		}
 		if(is.null(csr1.order)){
 			csr1.order <- 1:k
@@ -263,7 +268,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_fastStr_results.pdf",w
 		par(mar=c(5,5,1,1))
 		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
 		map.axes()
-		make.admix.pie.plot(w[,csr1.order],data.block$coords,cluster.colors=cluster.colors,radii=1.7,add=TRUE)
+		make.admix.pie.plot(w[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=1.7,add=TRUE)
 		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 	}
 dev.off()
+}

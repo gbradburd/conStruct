@@ -257,7 +257,7 @@ but this covariance is allowed to decay as geographic distance increases.
 This pattern of spatial decay reflects how migration between neighboring demes  
 homogenizes allele frequency changes that arise locally due to drift, 
 but less effectively homogenizes geographic distant demes,
-resulting in a continuous pattern of isolation by distance within each cluster.
+resulting in a continuous pattern of isolation by distance within each layer.
 There is a fixed amount of covariance between layers, irrespective of spatial location.
 Within each layer allele frequencies are expected to change gradually with distance,
 but observed frequencies can change abruptly at many loci 
@@ -265,38 +265,38 @@ if the proportions by which individuals' ancestry derive from each layer
 (the ``admixture'' coefficients) 
 do so as well. 
 
-To allow flexibility in the form of the decay of allelic covariance with geographic distance within each cluster, 
-we define the covariance within cluster $k$ between samples $i$ and $j$ to be:
+To allow flexibility in the form of the decay of allelic covariance with geographic distance within each layer, 
+we define the covariance within layer $k$ between samples $i$ and $j$ to be:
 \begin{equation}
 G^{(k)}_{i,j} 
     = 
     \alpha^{(k)}_0 \left( \text{exp} \left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}	\right) \right) + \phi^{(k)}
-\label{within_cluster_covariance}
+\label{within_layer_covariance}
 \end{equation}
-where the superscript $(k)$ denotes parameters specific to the $k$th cluster.
+where the superscript $(k)$ denotes parameters specific to the $k$th layer.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
 the $\alpha^{(k)}$ parameters control the shape of the decay of
-covariance with distance in the cluster.
+covariance with distance in the layer.
 Our choice of a powered-exponential decay, 
 as parameterized by the $\alpha$s, 
 is a flexible and standard choice in spatial statistics \citep{Diggle1998}, 
 and is not chosen to match a particular population genetics model. 
-The $\phi^{(k)}$ is a parameter that describes the background covariance within the cluster. 
-If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
+The $\phi^{(k)}$ is a parameter that describes the background covariance within the layer. 
+If two samples draw 100\% of their ancestry from layer $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
 if they are furthermore geographically very close ($D_{i,j}=0$)
 they will have covariance $\alpha^{(k)}_0 +  \phi^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will be equal to to the background level $\phi^{(k)}$ within the cluster.
+their covariance will be equal to to the background level $\phi^{(k)}$ within the layer.
 The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
 connecting the $k$th population to the population ancestral to all modeled
 layers \citep[see for example ][]{patterson_ancient_2012,
   peter_fstats}. In the methods section \ref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
-We then allow samples to draw their ancestry from more than one cluster.
-The ``admixture'' proportion of the $i$th sample in the $k$th cluster, denoted $w^{(k)}_i$,
+We then allow samples to draw their ancestry from more than one layer.
+The ``admixture'' proportion of the $i$th sample in the $k$th layer, denoted $w^{(k)}_i$,
 gives the genome-wide proportion of alleles from sample $i$ that derive from
-cluster $k$ (and so $\sum_K w^{(k)}_i =1$).
+layer $k$ (and so $\sum_K w^{(k)}_i =1$).
 A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 
 \begin{figure}
@@ -315,17 +315,17 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 \end{figure}
 
 We can then describe the covariance between samples $i$ and $j$ across all layers, $\Omega_{i,j}$,
-by summing their within-cluster spatial covariances ($G_{i,j}^{(k)}$ in cluster $k$) across all $K$ layers,
+by summing their within-layer spatial covariances ($G_{i,j}^{(k)}$ in layer $k$) across all $K$ layers,
 weighted by the relevant admixture proportions.
 \begin{equation}
 \Omega_{i,j} = \gamma + \sum\limits_K w^{(k)}_i w^{(k)}_j
 G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
-\label{cross_cluster_covariance}
+\label{cross_layer_covariance}
 \end{equation}
 In this equation, $w^{(k)}_i w^{(k)}_j$ is the proportion of alleles that \emph{both}
-sample $i$ and sample $j$ have inherited from cluster $k$.
+sample $i$ and sample $j$ have inherited from layer $k$.
 
-In addition to the admixture-weighted sum of the within-cluster spatial covariances,
+In addition to the admixture-weighted sum of the within-layer spatial covariances,
 this function contains two terms, $\gamma$ and $\delta_{i,j}\eta_i$.
 The first, $\gamma$, describes the global allelic covariance between all samples, 
 and arises because all samples share an ancestral mean allele frequency at each locus,
@@ -377,7 +377,7 @@ We also provide an R package \citep{R} called \texttt{conStruct}
 
 \paragraph{Relationship of this model to nonspatial structure models}
 
-A nice feature of our approach is that the model described in Eqn \eqref{cross_cluster_covariance} 
+A nice feature of our approach is that the model described in Eqn \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
 (see \secref{model_app} for a more in-depth discussion). 
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
@@ -394,7 +394,7 @@ by comparing their performance in a common framework.
 We also validate our claim that the results of our non-spatial method 
 are a close match to those of STRUCTURE-based approaches.
 
-\paragraph{Choice of cluster number and cross-validation}
+\paragraph{Choice of layer number and cross-validation}
 There are a number of reasons 
 why there is no true (or right) number of layers for real datasets,
 discussed further in the Discussion.
@@ -408,7 +408,7 @@ statistically comparing \texttt{conStruct} results across different values of $K
 and between the spatial and nonspatial models.
 
 Several approaches have been used as model choice criteria 
-for the number of clusters in population genetic data, including: 
+for the number of discrete clusters in population genetic data, including: 
 information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
 comparisons of the likelihood of the data across different values of $K$, 
 with various criteria on how to choose a single value (e.g., \citep{Evanno2005});
@@ -481,7 +481,7 @@ that have various amounts of admixture from these different layers
 (see Fig \ref{sim_setup}). 
 We collapse the layers together using random admixture proportions 
 that are spatially autocorrelated (see Appendix \secref{sim_details} for details), 
-so that both the frequencies in layers and the cluster memberships are
+so that both the frequencies in layers and the layer memberships are
 spatially autocorrelated. 
 We simulated datasets using $K=1$, 2, and 3 layers,
 in each sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme.
@@ -490,7 +490,7 @@ We ran \texttt{conStruct} analyses on each of these simulated datasets,
 specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
 then used cross-validation to compare the predictive performance of the models.
 In Fig \ref{simK1_pies}, we show the results of the analyses of the dataset simulated under $K=1$, 
-contrasting the results of the nonspatial model runs with 2 - 4 clusters 
+contrasting the results of the nonspatial model runs with 2 - 4 layers 
 with those of spatial model with 2 - 4 layers.
 In Fig \ref{sim_xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
 The results of all analyses run on datasets simulated using $K=1$ through 3 are shown in 
@@ -505,7 +505,7 @@ First, \texttt{conStruct} performs well on all simulated scenarios.
 Across all values of K and for all simulations, 
 the spatial model is correctly preferred over the nonspatial model
 (Fig \ref{sim_xvals}). Second, the predictive accuracy of the nonspatial model increases 
-with the number of clusters in the model, 
+with the number of layers in the model, 
 as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
 using gradients of admixture across more and more discrete clusters.
 This behavior of the nonspatial model is highlighted in 
@@ -541,7 +541,7 @@ analyses run in each simulation
 (Fig \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}).
 In the spatial analyses, once we pass the true $K$, 
 subsequent layers add little in terms of (co)variance explained; 
-in contrast, additional layers in the nonspatial analyses continue to
+in contrast, additional clusters in the nonspatial analyses continue to
 be important for describing variation, 
 as they are forced to partition up the spatial patterns within clusters.
 
@@ -551,7 +551,7 @@ as they are forced to partition up the spatial patterns within clusters.
 	\caption{
 	Map of admixture proportions estimated using the nonspatial model for $K=2$ through 4 (top row)
 	and also the spatial model for $K=2$ through 4 (bottom row).
-	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
+	The data were simulated using a single layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_pies}
 \end{figure}
 
@@ -597,18 +597,18 @@ These species have a broad zone of overlap and are hypothesized to hybridize \ci
 Both species are sampled over a large geographic region, 
 and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
 making the system well-suited to test an analysis designed to describe
-how genetic structure is partitioned both discretely across population (or species) clusters
+how genetic structure is partitioned both discretely across populations (or species)
 and continuously with geographic distance.
 We organize the results of our analyses around the following questions: 
 \begin{enumerate}
 \item Given the known history of hybridization between this pair of poplar species, 
-is there support for two discrete clusters, 
+is there support for two discrete populations, 
 rather than a single cline of ancestry across their overlap zone?
 \item If there is evidence for discrete population structuring, 
 does it fall solely along species boundaries, 
 or is there sub-structuring between different populations of the same species?
 \item Is there support for a pattern of isolation by distance within
-the inferred clusters, and, if so, 
+the inferred layers, and, if so, 
 does it differ between different layers?
 \end{enumerate}
 
@@ -666,7 +666,7 @@ For values of $K<4$, the spatial model was strongly preferred over the nonspatia
 the results of which were broadly concordant with those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}).
 Most of this signal seems to derive from the \textit{P. trichocarpa} samples:
 covariance within predominantly \tri{} layers decays more quickly with distance
-than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_clst_covs}.  
+than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_layer_covs}.  
 This indicates that, although isolation by distance is a feature of the dataset as a whole, 
 its magnitude varies considerably across biological units - 
 an aspect of the data \texttt{conStruct} is able capture well.
@@ -709,7 +709,7 @@ We organize the results of our analyses of
 the complicated landscape of genetic structure in black bears 
 around the following questions:
 \begin{enumerate}
-\item How many historical clusters are reflected in modern patterns of genetic variation?
+\item How many historical populations are reflected in modern patterns of genetic variation?
 \item Do we see support for a pattern of isolation by distance within each of the inferred discrete groups?
 \end{enumerate}
 
@@ -894,7 +894,7 @@ However, for a large number of samples,
 fastSTRUCTURE (or ADMIXTURE) would be much faster.
 
 
-\paragraph{Choosing the ``best" number of clusters}
+\paragraph{Choosing the ``best" number of layers}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
 and using only that analysis to communicate results, 
 we emphasize that there is no true best value of $K$.
@@ -965,14 +965,14 @@ This is because distance between locations on either side of the species' distri
 is not representative of the path traversed in the coalescent of a pair of alleles sampled at those locations.
 
 A second caveat is that, in some instances, 
-membership in the same cluster may not mean that samples are particularly related.
-If covariance within a cluster decays sharply with distance, 
-and the cluster-specific relatedness parameter $\phi^{(k)}$ is low, 
-individuals at a far spatial remove may be in the same cluster but have very low pairwise relatedness.
+membership in the same layer may not mean that samples are particularly related.
+If covariance within a layer decays sharply with distance, 
+and the layer-specific relatedness parameter $\phi^{(k)}$ is low, 
+individuals at a far spatial remove may be in the same layer but have very low pairwise relatedness.
 It is possible that this is happening in Fig \ref{populus_sp_pies}. 
-At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold cluster, 
-whose other neighbors are to the north, with an intervening group of populations in the red cluster, 
-and at $K=5$, those southernmost samples split out and become their own cluster.
+At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold layer, 
+whose other neighbors are to the north, with an intervening group of populations in the red layer, 
+and at $K=5$, those southernmost samples split out and become their own layer.
 Again, we encourage users to run analyses across multiple values of $K$, 
 and to examine the spatial covariance functions within layers when interpreting results.
 
@@ -1042,7 +1042,7 @@ Here we sketch a simple model of allele frequencies and their
 covariances, to justify the form given in the main text.
 \paragraph{Drift} 
 We first provide a simple model of allele frequencies within a layer. 
-Imagine a sample $i$ that draws all of its ancestry from cluster $k$.
+Imagine a sample $i$ that draws all of its ancestry from layer $k$.
 The allele frequency in sample $i$ at locus $\ell$, $F_{i,\ell}$ can be
 written as the sum
 \begin{equation}
@@ -1053,7 +1053,7 @@ F_{i,\ell} = \epsilon_{\ell} + \Delta^{(k)}_{\ell} +
 The first term is the ancestral allele frequency $\epsilon_\ell$ shared by all samples; 
 the second is the deviation from that ancestral frequency 
 due to drift in the ancestral population of the $k$th layer,
-which is shared by all samples within the cluster. 
+which is shared by all samples within the layer. 
 The third term is the deviation of the $i$th sample away from the $k$th layer mean 
 due to the spatial process of drift and migration within the layer.
 The final term is the deviation specific to the $i$th sample,
@@ -1068,14 +1068,14 @@ their covariance across loci will be
 \text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right)\ \\
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
-as in Eqn. \eqref{cross_cluster_covariance}.
+as in Eqn. \eqref{cross_layer_covariance}.
 
 \paragraph{Admixture} 
 The model above describes the simple case 
 in which samples draw 100\% of their ancestry from only a single layer each. 
 To accommodate admixture between layers, 
 we model allele frequencies within samples as linear combinations of the population-specific 
-drift terms across the clusters from which they draw ancestry.
+drift terms across the layers from which they draw ancestry.
 To do so, we introduce a term $w^{(k)}_{i}$ that describes the
 admixture proportion of sample $i$ in layer $k$ ($\sum_{K}w^{(k)}_{i} = 1$),
 which can be interpreted as the proportion of the genome in the $i$th
@@ -1102,7 +1102,7 @@ Under our nonspatial model,
 we assume that $\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell})=0$,
 so that the only additional covariance between $i$ and $j$ 
 (above that induced by a shared ancestral frequency at each locus)
-is due to the drift in the ancestral population of their cluster 
+is due to the drift in the ancestral population of their layer 
 (the variance of which is $\phi^{(k)}$). 
 Under our spatial model we assume that some of the covariance in allele frequencies
 between $i$ and $j$ decays as a function of the geographic distance
@@ -1157,23 +1157,23 @@ so inference can theoretically be done using whole genome data.
 \section{Models, parameters, and priors}\label{model_app}
 \paragraph{Spatial vs. nonspatial}
 In this paper, we discuss two types of models, spatial and nonspatial, 
-each of which can be implemented with different numbers of clusters.
+each of which can be implemented with different numbers of layers/clusters.
 The spatial model is parameterized as in Eqn \eqref{admixed_spatial_cov},
 and the nonspatial model is described in Eqn \eqref{admixed_discrete_covariance}.
 The nonspatial model is a special case of the spatial model, 
 in which the value of all $\alpha$ parameters is set to 0.
 The nonspatial model therefore has $3K$ fewer parameters than the spatial model,
-as there are three $\alpha$ parameters that describe the continuous differentiation effect of distance per cluster,
+as there are three $\alpha$ parameters that describe the continuous differentiation effect of distance per layer,
 and they are fixed in the nonspatial model.
 
-\paragraph{Single cluster}
-Each of these models can be run with a single cluster ($K=1$), 
-in which case the cluster-specific covariance parameter $\phi^{(k)}$ 
+\paragraph{Single layer}
+Each of these models can be run with a single layer ($K=1$), 
+in which case the layer-specific covariance parameter $\phi^{(k)}$ 
 and the global covariance parameter $\gamma$ become redundant.
-The single-cluster model is therefore a special case of the multi-cluster model, 
+The single-layer model is therefore a special case of the multi-layer model, 
 in which we set $\phi$ to zero, as described below:
 
-For the spatial model, the single-cluster parametric covariance is:
+For the spatial model, the single-layer parametric covariance is:
 \begin{equation}
 \Omega_{i,j} = \text{Var}(\epsilon) + 
 \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right)	 +
@@ -1201,22 +1201,22 @@ A table of all parameters, their descriptions, and their priors is given in Tabl
 		global covariance due to shared ancestral frequency & 
 		$\gamma \sim \mathcal{N}(\mu = \text{Var}(\bar{f}), \sigma = 0.5)$\\ \hline
 	$\boldsymbol{\alpha^{(k)}_0}$ & 
-		controls the sill of the covariance matrix in cluster $k$& 
+		controls the sill of the covariance matrix in layer $k$& 
 		$\alpha^{(k)}_0 \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
 	$\boldsymbol{\alpha^{(k)}_D}$ & 
-		controls the rate of the decay of covariance with distance in cluster $k$& 
+		controls the rate of the decay of covariance with distance in layer $k$& 
 		$\alpha^{(k)}_D \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
 	$\boldsymbol{\alpha^{(k)}_2}$ & 
-		controls the shape of the decay of covariance with distance in cluster $k$ & 
+		controls the shape of the decay of covariance with distance in layer $k$ & 
 		$\alpha^{(k)}_2 \sim U(0,2)$\\ \hline
 	$\boldsymbol{\eta_i}$ & 
 		the nugget in population $i$ (population specific drift parameter)  & 
 		$\eta_i \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
 	$\boldsymbol{\phi^{(k)}}$ & 
-		cluster-specific shared drift in cluster $k$ &
+		layer-specific shared drift in layer $k$ &
 		 $\phi^{(k)} \sim \mathcal{N}(\mu = 0, \sigma = 1)$\\ \hline
 	$\boldsymbol{w_i}$ &
-		admixture proportions sample $i$ draws across $K$ clusters &
+		admixture proportions sample $i$ draws across $K$ layers &
 		$w_i \sim \text{Dir}(\alpha_{1} ... \alpha_{K}=0.1)$  \\ \hline
 	\hline
 \end{tabular}
@@ -1241,7 +1241,7 @@ Briefly, we follow the following procedure:
 		\item run our inference procedure on the training partition to estimate model parameters $\theta_{mk}$ for: \label{inference}
 			\begin{enumerate}
 				\item $m$: the spatial and the nonspatial model
-				\item $k$: the number of clusters 1 through $K$
+				\item $k$: the number of layers/clusters 1 through $K$
 			\end{enumerate}	
 	\item calculate the mean log likelihood of the testing data partition, 
 	over the posterior distribution of training-estimated parameters for each model 
@@ -1363,9 +1363,9 @@ Using the program \texttt{ms} \citep{Hudson2002},
 we generated discrete population structure by simulating $K$ distinct populations,
 each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
 without subsequent migration between them.
-Then, to generate continuous differentiation within each cluster,
+Then, to generate continuous differentiation within each population,
 at time $\tau_{\text{e}}$ in the past,
-each of these discrete clusters instantaneously colonizes an
+each of these discrete populations instantaneously colonizes an
 independent lattice of demes,
 for which we use a stepping stone model with symmetric migration 
 to nearest neighbors (eight neighbors, including diagonals).
@@ -1392,10 +1392,10 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=4in,height=2.5in]{figs/sims/sim_setup.png}}
 		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
-			    Going forward in time, the $K$ clusters split from a common ancestor at time $\tau_{\text{s}}$,
+			    Going forward in time, the $K$ populations split from a common ancestor at time $\tau_{\text{s}}$,
 			    then expand to each  colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
 			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
-			    with ancestry entirely in one or the other of the clusters,
+			    with ancestry entirely in one or the other of the populations,
 			    or admixed between them.
 			    }\label{sim_setup}
 \end{figure}
@@ -1416,7 +1416,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
-	The data were simulated using a single cluster with nearest-neighbor symmetric migration between demes.
+	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_nsp_pies}
 \end{figure}
 
@@ -1425,7 +1425,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
-	The data were simulated using 1 cluster with nearest-neighbor symmetric migration between demes.
+	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_sp_pies}
 \end{figure}
 
@@ -1446,7 +1446,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
-	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_nsp_pies}
 \end{figure}
 
@@ -1455,7 +1455,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
-	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_sp_pies}
 \end{figure}
 
@@ -1495,7 +1495,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
-	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_nsp_pies}
 \end{figure}
 
@@ -1504,7 +1504,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
-	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_sp_pies}
 \end{figure}
 \clearpage
@@ -1545,7 +1545,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK1_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
-	The data were simulated using one cluster with nearest-neighbor symmetric migration between demes.
+	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK1}
 \end{figure}
 
@@ -1554,7 +1554,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK2_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
-	The data were simulated using two clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK2}
 \end{figure}
 
@@ -1563,7 +1563,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK3_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
-	The data were simulated using three clusters with nearest-neighbor symmetric migration between demes.
+	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK3}
 \end{figure}
 
@@ -1596,32 +1596,32 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_clst_covs.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_layer_covs.pdf}}
 	\caption{
-	Plots showing the cluster-specific parametric covariance IBD-curves 
+	Plots showing the layer-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
-	Line colors are consistent with cluster colors in Fig \ref{populus_sp_pies}.
+	Line colors are consistent with layer colors in Fig \ref{populus_sp_pies}.
 	Points are colored by the species they are a covariance between:
 	black on black points are sample covariances between populations of \textit{Populus balsamifera};
 	green on black points are sample covariances between \bals{} and \tri{};
 	green on green points are sample covariances between \tri{} and \tri{}.
-    }\label{populus_sp_clst_covs}
+    }\label{populus_sp_layer_covs}
 \end{figure}
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_clst_covs.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_layer_covs.pdf}}
 	\caption{
-	Plots showing the cluster-specific parametric covariances 
+	Plots showing the layer-specific parametric covariances 
 	estimated for the \textit{Populus} data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
-	Line colors are consistent with cluster colors in Fig \ref{populus_nsp_pies}.
+	Line colors are consistent with layer colors in Fig \ref{populus_nsp_pies}.
 	Points are colored by the species they are a covariance between:
 	black on black points are sample covariances between populations of \textit{Populus balsamifera};
 	green on black points are sample covariances between \bals{} and \tri{};
 	green on green points are sample covariances between \tri{} and \tri{}.
-    }\label{populus_nsp_clst_covs}
+    }\label{populus_nsp_layer_covs}
 \end{figure}
 
 \begin{figure}
@@ -1632,7 +1632,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	for all layers estimated in runs using $K = 1$ through 7 
 	for the spatial model (left) and the nonspatial model (right).
 	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
-	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_clst_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_clst_covs}.
+	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_layer_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_layer_covs}.
     }\label{populus_laycon}
 \end{figure}
 
@@ -1665,22 +1665,22 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sp_clst_covs.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sp_layer_covs.pdf}}
 	\caption{
-	Plots showing the cluster-specific parametric covariance IBD-curves 
+	Plots showing the layer-specific parametric covariance IBD-curves 
 	estimated for the black bear data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
-	 }\label{bear_sp_clst_covs}
+	 }\label{bear_sp_layer_covs}
 \end{figure}
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_clst_covs.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_layer_covs.pdf}}
 	\caption{
-	Plots showing the cluster-specific parametric covariances 
+	Plots showing the layer-specific parametric covariances 
 	estimated for the black bear data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
-    }\label{bear_nsp_clst_covs}
+    }\label{bear_nsp_layer_covs}
 \end{figure}
 
 \begin{figure}
