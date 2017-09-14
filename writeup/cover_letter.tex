@@ -41,38 +41,35 @@ and, within each layer, estimates a rate at which relatedness decays with distan
 This model explicitly addresses the ``clines vs. clusters" problem in 
 modeling population genetic variation by jointly accommodating 
 continuous and discrete patterns of differentiation. 
-We demonstrate the utility of this approach using both simulations 
-and empirical applications, with datasets from poplars and black bears. 
+We demonstrate the utility of this approach using simulations 
+and two empirical applications. %, with datasets from poplars and black bears. 
 We also release an associated R package, called \texttt{conStruct}, 
 for ``\emph{con}tinuous \emph{struct}ure."
 
-This work is motivated by two observations:
-first, that patterns of isolation by distance (IBD) are ubiquitous in nature; 
-and second, that existing model-based clustering methods, 
-such as \texttt{STRUCTURE} (Pritchard \emph{et al.} 2000) 
+This work is motivated by the failure of existing model-based clustering methods, 
+such as \texttt{STRUCTURE} (Pritchard \emph{et al.} 2000)
 or \texttt{ADMIXTURE} (Alexander \emph{et al.} 2009), 
-can only describe continuous patterns of variation using discrete clusters, 
-and so must use a possibly large number of clusters
-to describe continuous population differentiation.
-Inference of these spurious clusters can throw a 
+to model continuous patterns of geographical variaion (i.e., isolation by distance, or IBD).
+Such geographical patterns are ubiquitous in nature,
+but are described by these clustering methods using a possibly large number of discrete clusters.
+These clusters are spurious, and can throw a 
 wrench in the gears of efforts to describe and categorize natural variation, 
 one of the first steps in any analysis of genetic data, 
 and a principal mission of biology.  
 
-In this manuscript,
+Besides presenting a solution to this problem,
 we use simulations and empirical data to demonstrate 
 the ways in which nonspatial clustering approaches 
 fail in the presence of IBD; 
-we also present two different metrics for choosing an appropriate 
-number of layers to describe the data, 
-and, using both, 
-are able to establish that our method performs quite well.
+and provide two different metrics for choosing an appropriate 
+number of layers to describe the data.
 
-As of this submission, \texttt{STRUCTURE} alone has been cited more than 20,000 times, 
-and the ever-falling costs of sequencing are facilitating an explosion of next-generation sequence datasets.  
-The first step in the analysis of these data will, for most researchers, 
-involve a model-based clustering analysis.
-We therefore believe that our work represents an important and timely contribution to the field.  
+As of this submission, \texttt{STRUCTURE} alone has been cited more than 20,000 times.
+However, as the costs of sequencing continue to fall
+and good geospatial information becomes more readily available,
+the limitations we cite above will become more severe.
+Our method has the potential to fill this gap.
+% We therefore believe that our work represents an important and timely contribution to the field.
 
 John Novembre (jnovembre@uchicago.edu), \\
 Desislava Petkova (desislavka@gmail.com), \\
