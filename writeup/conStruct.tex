@@ -245,8 +245,8 @@ and so to make the statistic invariant under choices of reference allele,
 We discuss the derivation of Eqn. \eqref{allelic_covariance} further in the Appendix (\secref{allelic_cov}).
 As noted in \cite{EEMS},
 this covariance has a close relationship to the pairwise genetic distance:
-if $D_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
-then $\Omega_{i,j} = (1 - 2 D_{i,j})/4$.
+if $\pi_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
+then $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$.
 Therefore, 
 this allelic covariance is more affected in shape by singleton sites
 than the standard genetic covariance,
@@ -1149,26 +1149,28 @@ as in Eqn. \eqref{cross_layer_covariance}.
 The model above describes the simple case 
 in which samples draw 100\% of their ancestry from only a single layer each. 
 To accommodate admixture between layers, 
-we model allele frequencies within samples as linear combinations of the population-specific 
-drift terms across the layers from which they draw ancestry.
-To do so, we introduce a term $w^{(k)}_{i}$ that describes the
-admixture proportion of sample $i$ in layer $k$ ($\sum_{K}w^{(k)}_{i} = 1$),
-which can be interpreted as the proportion of the genome in the $i$th
+we model sampled genomes as drawn from
+allele frequencies that are weighted averages of the local frequencies in each layer
+from which they draw ancestry.
+The weights, $w^{(k)}_{i}$, describe the
+``admixture proportion'' of sample $i$ in layer $k$
+(Note that $\sum_{k=1}^K w^{(k)}_{i} = 1$ for each $i$.)
+These can be interpreted as the proportion of the genome in the $i$th
 sample that came from the $k$th layer 
-(or the probability that an allele at a locus is drawn from $k$).
+(or the probability that an allele at a locus is drawn from layer $k$).
 The allele frequency in the $i$th sample at the $\ell$th locus can therefore be written as:
 \begin{equation}
 F_{i,\ell} = \epsilon_{\ell} + \sum\limits_{K} w^{(k)}_{i}\left( 
-  \Delta^{(k)}_{\ell} + \Delta^{(k,i)}_{\ell}\right) + \Delta^{(i)}_{\ell}	
+  \Delta^{(k)}_{\ell} + \Delta^{(k,i)}_{\ell}\right) + \Delta^{(i)}_{\ell}	 ,
 \label{drift_terms_admix}
 \end{equation}
-and the covariance between $i$ and $j$ across loci is
+and so the covariance between $i$ and $j$ across loci is
 \begin{equation}
 \Omega_{i,j} = \text{Var}(\epsilon) + \sum_{k=1}^K w^{(k)}_iw^{(k)}_j
 \left(
   \text{Var}\left( \Delta^{(k)} \right) +
 \text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) 	\right) +
-\delta_{i=j} \text{Var}(\Delta_i)
+\delta_{i=j} \text{Var}(\Delta_i) .
 \label{admixed_spatial_cov}
 \end{equation}
 
@@ -1184,7 +1186,7 @@ between $i$ and $j$ decays as a function of the geographic distance
 between the pair, $D_{i,j}$,
 so that 
 \begin{equation}
-\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right)
+\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right) .
 \end{equation}
 We note that this form is chosen for its flexibility, 
 and not because it matches any explicit population genetic model of isolation by distance. 
@@ -1210,8 +1212,9 @@ Eqn. \eqref{allelic_covariance} comes from the calculation that
 The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
 then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
 which is $f_i^2 n/(n-1)$.
+
 \paragraph{Likelihood}
-If our allele frequency deviations are well approximated by a Gaussian, 
+If allele frequency deviations are well approximated by a Gaussian, 
 their sample allelic covariance is a sufficient statistic,
 so that calculating the likelihood of their sample allelic covariance is the same as 
 calculating the probability of the frequency data up to a constant. 
@@ -1219,9 +1222,10 @@ We can therefore model the covariance of the sample allele frequencies, $\wideha
 as a draw from a Wishart distribution with degrees of freedom equal to 
 the number of loci $L$ across which the sample allelic covariance is calculated:
 \begin{equation}
-\widehat{\Omega} \sim \mathcal{W}\left( L\Omega, L	\right)
+\widehat{\Omega} \sim \mathcal{W}\left( L\Omega, L	\right) 
 \label{wishart}
 \end{equation}
+where $\mathcal{W}$ is the Wishart likelihood function.
 
 A benefit of directly modeling the sample allelic covariance is that, 
 after the initial calculation of the sample covariance matrix,
@@ -1263,8 +1267,7 @@ For the nonspatial model, the single-cluster parametric covariance is:
 \end{equation}
 
 \paragraph{Priors}
-We use a Bayesian approach to parameter inference, 
-
+We use a Bayesian approach to parameter inference.
 A table of all parameters, their descriptions, and their priors is given in Table \ref{tab:param_prior_tab}.
 
 \begin{centering}
@@ -1304,8 +1307,9 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 
 \newpage
 \section{Cross validation}\label{Xvalidation}
-To perform model comparison, we employ a Monte Carlo cross-validation approach \citep{picard1984}.
-This cross-validation procedure generates a mean predictive accuracy for each model and each value of $K$, 
+
+We employ Monte Carlo cross-validation approach for model comparison \citep{picard1984}. 
+This procedure generates a mean predictive accuracy for each model and each value of $K$, 
 as well as a confidence interval around that mean,
 which can then be used for model comparison or selection.
 Briefly, we follow the following procedure:
@@ -1337,16 +1341,13 @@ Briefly, we follow the following procedure:
 
 \newpage
 \section{Calculating layer contributions}\label{layer_contribution}
-First, we describe the allelic covariance between two samples, $i$, and $j$.
-Note that this is the allelic covariance described in Eqn \eqref{allelic_covariance},
-in which we randomly polarize alleles,
-and not the genetic covariance, which subtracts mean allele frequencies.
-Let $A$ and $B$ be a randomly chosen alleles from the two samples, respectively,
+
+Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
 at a randomly chosen locus 
 (if the two populations are the same, then choose without replacement).
 Then, if we let $X=2(A-1/2)$ and $Y=2(B-1/2)$,
 since $X$ and $Y$ take the values $\pm 1$,
-and thanks to the random polarization, $\E[A] = \E[A] = 1/2$,
+and thanks to the random polarization, $\E[A] = \E[B] = 1/2$,
 $$\begin{aligned}
 \E[XY]
         &= \P\{ X=Y \} - \P\{ X \neq Y \} \\
@@ -1355,27 +1356,25 @@ $$\begin{aligned}
 \end{aligned}$$
 To translate, $\P\{ X=Y \}$ is the probability that the alleles from our two focal samples agree with each other,
 while $\P\{ X \neq Y \}$ is the probability that they disagree.
-For the first thing to happen, $i$ and $j$ must coalesce before coalescing with the reference samples,
-so for $X$ and $Y$ to agree they must be more closely related than typical in the population.
-The last part, $\P\{ XY \neq 0\}$, is the probability that both samples disagree from the references.
-(This implies that $\E[XY] = 1 - 2 D_{ij}$, 
-where $D_{ij}$ is the probability that two randomly chosen alleles differ, 
-which is the genetic divergence.) 
+This implies that $\E[XY] = 1 - 2 \pi_{ij}$, 
+where $\pi_{ij}$ is the probability that two randomly chosen alleles differ, 
+which is the genetic divergence.
 
 Now, here is a generative model that gives us the form of the covariance we have postulated.
 To decide whether or not $X$ and $Y$ will agree,
-first each sample randomly chooses a layer: call these $I$ and $J$.
-The probability that $X$ chooses layer $k$ is $\P({I=k})$, which is $w_i^{(k)}$, 
+first each sample randomly chooses a layer: call these layers $I$ and $J$.
+The probability that $X$ chooses layer $k$ is $\P({I=k})=w_i^{(k)}$, 
 the $i$th sample's admixture proportion in the $k$th layer.
 The same holds true for $Y$.
 If they do not choose the same layer, the probability that they agree is $p_\gamma$.
 If they do choose the same layer, 
 then they agree with a probability $p_\gamma + q^{(k)}_{ij}$ that depends on their distance apart.
-Here
-
+By the above,
+the probability of agreement is $\P\{A=B\} = 2 \cov[A,B] + 1/2$,
+and so
 $$\begin{aligned}
     p_\gamma &= (2 (\gamma + \delta_{ij} \eta_i) + 1/2) \\
-    q^{(k)}_{ij} &= \left(2 \alpha_0^{(k)} \exp\left( - \left(\alpha_D^{(k)} D_{ij}\right)^{\alpha_2^{(k)}} \right) + 2 \mu^{(k)}  + 1/2 \right) .
+    q^{(k)}_{ij} &= \left(2 \alpha_0^{(k)} \exp\left( - \left(\alpha_D^{(k)} D_{ij}\right)^{\alpha_2^{(k)}} \right) + 2 \phi^{(k)}  + 1/2 \right) .
 \end{aligned}$$
 
 One way to summarize the contribution of each layer is to partition the probability of agreement
@@ -1391,9 +1390,7 @@ relative contribution of the $k$th layer to the (model-based) kinship
 coefficient between $i$ and $j$.
 
 This suggests defining the overall contribution of layer $k$ to agreement, $\xi^{(k)}$, 
-to be the average of that quantity over $i$ and $j$.
-
-%
+to be the average of that quantity over $i$ and $j$:
 \begin{equation}
 \xi^{(k)} = 
 	\sum\limits_{i=1}^{N}
@@ -1404,23 +1401,22 @@ to be the average of that quantity over $i$ and $j$.
 						\left( \text{exp} 
 							\left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}\right) 
 						\right) + 2\phi^{(k)} + \frac{1}{2}
-				\right)
+				\right) ,
 \label{layer_contribution}
 \end{equation}
-%
 which is that layer's contribution to agreement between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
 We define the contribution of the $k$th layer, $\Xi^{(k)}$, 
 as the relative contribution of the $k$th layer to total agreement:
-%
 \begin{equation}
 \Xi^{(k)} = 
 \frac{\xi^{(k)}}
 	{\sum\limits_{k=1}^{K}
-	    	\xi^{(k)}}
+	    	\xi^{(k)}} .
 \label{rel_layer_contribution}
 \end{equation}
-%
+This is the quantity that is plotted in, e.g., Figures \ref{simK1_laycon} and \ref{bear_laycon}.
+
 
 \newpage
 \section{Simulation details}\label{sim_details}
