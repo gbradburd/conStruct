@@ -152,13 +152,22 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",widt
 			csr1.order <- 1:k
 		}
 		data.block$K <- k
-		plot.layer.curves(data.block = data.block, conStruct.results = output.list.sp[[k]][[1]], layer.cols=layer.colors[order(csr1.order)],sample.cols=NULL,add=FALSE)
+		plot.layer.curves(data.block = data.block, conStruct.results = output.list.sp[[k]][[1]], layer.cols=layer.colors[order(csr1.order)],add=FALSE,col.mat1=col.mat1,col.mat2=col.mat2)
 		box(lwd=2)
 		if(k==2){
 			mtext(side=2,text="allelic covariance",padj=-3)
+			legend(x="topright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))	
 		}
 		if(k==3){
 			mtext(side=1,text="pairwise geographic distance",padj=3)
+		}
+		if(k==4){
+			legend(x="topright",pch=21,
+					pt.bg=c(1,"forestgreen","forestgreen"),
+					col=c(1,1,"forestgreen"),
+					legend=c("balsamifera - balsamifera",
+							 "balsamifera - trichocarpa",
+							 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
 		}
 		mtext(side=1,text=bquote(paste("(",.(letters[k+2]),") ",italic("K")," = ",.(k))),padj=4.6,adj=0.4)
 	}

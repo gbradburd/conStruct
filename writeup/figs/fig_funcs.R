@@ -68,9 +68,15 @@ viz.admix.results <- function(sim.admix.props,conStruct.results,layer.order=NULL
 			# legend=c("true admixture proportion","99% credible interval"))
 }
 
-plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,sample.cols=NULL,add=FALSE){
+plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,add=FALSE,col.mat1=NULL,col.mat2=NULL){
 	if(is.null(layer.cols)){
 		layer.cols <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	}	
+	if(is.null(col.mat1)){
+		col.mat1 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
+	}
+	if(is.null(col.mat2)){
+		col.mat2 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
 	}
 	order.mat <- order(data.block$geoDist)
 	if(add==FALSE){
@@ -79,11 +85,13 @@ plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,sam
 	    							function(k){
 								        conStruct.results$MAP$layer.params[[k]]$layer.cov
 					})) + conStruct.results$MAP$gamma, 
-					data.block$obsCov))
+					data.block$obsCov)) + c(0,0.02)
 	    plot(data.block$geoDist[upper.tri(data.block$obsCov, diag = TRUE)], 
 	        data.block$obsCov[upper.tri(data.block$obsCov, diag = TRUE)], 
 	        xlim = range(data.block$geoDist), ylim = y.range,
-	        xlab="",ylab="",pch=19,col=adjustcolor(1,0.7))
+	        xlab="",ylab="",pch=21,cex=1.3,
+			col=adjustcolor(col.mat1[upper.tri(data.block$obsCov, diag = TRUE)],0.7),
+			bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7))
     }
     lapply(1:data.block$K, function(k) {
              lines(data.block$geoDist[order.mat],
