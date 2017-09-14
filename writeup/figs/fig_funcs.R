@@ -70,7 +70,7 @@ viz.admix.results <- function(sim.admix.props,conStruct.results,layer.order=NULL
 
 plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,sample.cols=NULL,add=FALSE){
 	if(is.null(layer.cols)){
-		layer.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+		layer.cols <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	}
 	order.mat <- order(data.block$geoDist)
 	if(add==FALSE){

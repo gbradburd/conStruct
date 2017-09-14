@@ -93,8 +93,6 @@ We demonstrate the utility of this approach using simulations
 and by applying it to empirical datasets of poplars and black bears in North America.
 \end{abstract}
 
-\plr{I felt like we said "continuous and discrete" too many times in the abstract.}
-
 \newpage
 \section*{Introduction}
 A fundamental quandary in the description of biological diversity is
@@ -103,8 +101,6 @@ For example, reasonable people can disagree about whether two
 populations are separate species, because the 
 process of speciation is usually gradual, and so there is no set point
 in the continuous divergence of populations when they unambiguously become discrete species.
-Descriptions of taxa using phylogenetic trees omit within-taxon variation,
-especially when these are intermingling subgroups.
 The issue of identifying meaningful biological subunits 
 extends below the species level, as patterns of phenotypic
 and genetic diversity within and among populations are shaped
@@ -120,8 +116,7 @@ from which individuals are sampled \citep{wright1949genetical}.
 Delineating populations is useful for systematics and for
 informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
 Furthermore, we often need to identify subsets of indivduals resulting from reasonably coherent
-evolutionary histories for downstream analyses to learn about population history and adaptation,
-\plr{as for example XXX?}
+evolutionary histories for downstream analyses to learn about population history and adaptation.
 Conversely,
 the substantial information available from continuous, geographic differentiation
 (e.g., adaptation along a climatic gradient)
@@ -251,7 +246,7 @@ Therefore,
 this allelic covariance is more affected in shape by singleton sites
 than the standard genetic covariance,
 so it may be advisable to filter these prior to analysis
-if these are likely to contain a large percentage of errors.
+if they are likely to contain a large percentage of errors.
 
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
@@ -284,9 +279,9 @@ homogenizes allele frequency changes that arise locally due to drift,
 but less effectively homogenizes geographic distant demes,
 resulting in a continuous pattern of isolation by distance within each layer.
 There is a fixed amount of covariance between layers, irrespective of spatial location.
-Within each layer allele frequencies are expected to change gradually with distance,
+Within each layer, allele frequencies are expected to change gradually with distance,
 but observed frequencies can change abruptly at many loci 
-if the proportions by which individuals' ancestry derive from each layer 
+if the proportions of ancestry individuals derive from each layer 
 (the ``admixture'' proportions) 
 do so as well. 
 
@@ -301,23 +296,24 @@ G^{(k)}_{i,j}
 where the superscript $(k)$ denotes parameters specific to the $k$th layer.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
 and the $\alpha^{(k)}$ parameters control the shape of the decay of
-covariance with distance in the cluster.
+covariance with distance in the layer.
 Our choice of a powered-exponential decay, 
 as parameterized by the $\alpha$s, 
 is a flexible and standard choice in spatial statistics \citep{Diggle1998}, 
 and is not chosen to match a particular population genetics model. 
 % (Analytical theory \citep{barton2002neutral} predicts the decay should be proportional to $\exp{-D}/\sqrt{D}$.)
-The $\phi^{(k)}$ is a parameter that describes the background covariance within the cluster. 
-If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
+The $\phi^{(k)}$ is a parameter that describes the background covariance within the layer. 
+If two samples draw 100\% of their ancestry from layer $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
 if they are furthermore geographically very close ($D_{i,j}=0$)
 they will have covariance $\alpha^{(k)}_0 +  \phi^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will be equal to to the background level $\phi^{(k)}$ within the cluster.
-%% plr: this is no longer true
-% The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
-% connecting the $k$th population to the population ancestral to all modeled
-% layers \citep[see for example ][]{patterson_ancient_2012,peter_fstats}. 
-In the methods section \ref{rationale} we lay out a
+their covariance will be equal to to the background level $\phi^{(k)}$ within the layer.
+The ``shared drift'' parameter $\phi^{(k)}$ is analogous to 
+the branch length connecting the $k$th population to the population ancestral to all modeled
+layers \citep[see for example ][]{patterson_ancient_2012,peter_fstats},
+although they cannot be directly compared because 
+we are modeling the allelic, rather than genetic, covariance. 
+In the Appendix section \ref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one layer.
@@ -412,7 +408,7 @@ We also provide an R package \citep{R} called \texttt{conStruct}
 
 A nice feature of our approach is that the model described in Eqn \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
-(see \secref{model_app} in the appendix for a more in-depth discussion). 
+(see \secref{model_app} in the Appendix for a more in-depth discussion). 
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
@@ -463,7 +459,7 @@ Prediction accuracy of a particular model (e.g., value of $K$)
 is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
-than others (see \secref{Xvalidation} of the appendix for more on our cross-validation procedure).
+than others (see \secref{Xvalidation} in the Appendix for more on our cross-validation procedure).
 In general, larger values of $K$ allows the model more flexibility,
 and thus increases the likelihood of the training partition, 
 but this improvement in the likelihood will plateau (or even peak), 
@@ -487,10 +483,6 @@ encouraging the model to ``not use" unnecessary layers,
 so that they will have a low contribution to overall covariance.
 We use the connection of allelic covariance to the probability of agreement (identity) between genotypes
 to calculate a measure of overall contribution of each layer to the model.
-XXX PLR XXX
-To calculate the overall contribution of the $k$th layer to the model,
-we use the connection between allelic covariance and 
-
 
 The contribution of the $k$th layer can be calculated as
 its contribution to the parametric covariance between samples 
@@ -673,10 +665,11 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2in]{figs/populus/Fig4_pop_sp_results.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/Fig4_pop_sp_results.pdf}}
 	\caption{
-	Map of admixture proportions estimated for the \textit{Populus} dataset 
-	using the spatial model for $K=2$ through 4.
+	Maps of admixture proportions estimated for the \textit{Populus} dataset 
+	using the spatial model for $K=2$ through 4 (a-c), 
+	as well as the corresponding layer-specific covariance curves estimated under each model (d-f).
     }\label{populus_pies}
 \end{figure}
 
@@ -703,9 +696,7 @@ This lack of substructure within the sampled \bals{} populations is largely in a
 \citet{keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
 and probably represents a recent, postglacial expansion.
 
-For values of $K<4$, the spatial model was strongly preferred over the nonspatial model (Fig \ref{populus_xvals}),
-the results of which were broadly concordant with those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}).
-\gb{come back to this}.
+For values of $K<4$, the spatial model was strongly preferred over the nonspatial model (Fig \ref{populus_xvals}).
 Most of this signal seems to derive from the \textit{P. trichocarpa} samples:
 covariance within predominantly \tri{} layers decays more quickly with distance
 than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_layer_covs}.  
@@ -727,6 +718,11 @@ begin to split out into their own layers.
 This may potentially be the result of introgression from southern \textit{Populus} species, 
 such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
 
+\gb{The results of the nonspatial analysis differed from those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}), 
+although both showcased the tendency of nonspatial models to describe continuous variation with multiple clusters.
+Replicate runs of the nonspatial \texttt{conStruct} model produced different results, 
+evidence of multimodality in the likelihood surface, 
+which we might expect given the poor correspondence of the model to the data.}
 
 \subsubsection*{Black bears}
 The American black bear, \textit{Ursus americanus}, is endemic to North America

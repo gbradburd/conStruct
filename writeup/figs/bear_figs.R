@@ -138,7 +138,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,h
 	make.bear.redux.result.plot.multipanel2(output.list = output.list.sp,
 											coords = data.block$coords,
 											lump.dist = 200,
-											layer.colors,csr1.order=NULL)
+											layer.colors,csr1.order=c(2,1))
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,height=10)
@@ -154,7 +154,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,
 	make.bear.redux.result.plot.multipanel2(output.list = output.list.nsp,
 											coords = data.block$coords,
 											lump.dist = 200,
-											layer.colors,csr1.order=c(2,1))
+											layer.colors,csr1.order=NULL)
 dev.off()
 
 

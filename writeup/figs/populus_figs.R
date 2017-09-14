@@ -102,9 +102,29 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",width=12,height=4,pointsize=14)
+pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
+	#quartz(width=12,height=8)
+	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
+	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list=output.list.sp,col.mat1=col.mat1,col.mat2=col.mat2)
+	par(xpd=NA)
+		legend(-0.5,0.06,pch=21,
+				pt.bg=c(1,"forestgreen","forestgreen"),
+				col=c(1,1,"forestgreen"),
+				legend=c("balsamifera - balsamifera",
+						 "balsamifera - trichocarpa",
+						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
+	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
+	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",width=12,height=8,pointsize=14)
+	#quartz(width=12,height=8,pointsize=14)
+	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	csr1.order <- NULL
-	par(mfrow=c(1,3),mar=c(5,5,1,1))
+	mar <- c(0,3,0,0)
+	par(mar=mar,oma=c(4,4,1,1))
 		for(k in 2:4){
 			csr <- output.list.sp[[k]][[1]]
 			if(k > 2){
@@ -114,13 +134,34 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",widt
 			if(is.null(csr1.order)){
 				csr1.order <- 1:k
 			}
-			map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
+			map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",mar=mar)
 			map.axes()
 			make.admix.pie.plot(output.list.sp[[k]][[1]]$MAP$admix.proportions[,csr1.order],
 								data.block$coords,layer.colors=layer.colors,radii=1.7,add=TRUE)
 			box(lwd=2)
-			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 		}
+	csr1.order <- NULL
+	for(k in 2:4){
+		csr <- output.list.sp[[k]][[1]]
+		if(k > 2){
+			tmp.csr <- output.list.sp[[k-1]][[1]]
+			csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		data.block$K <- k
+		plot.layer.curves(data.block = data.block, conStruct.results = output.list.sp[[k]][[1]], layer.cols=layer.colors[order(csr1.order)],sample.cols=NULL,add=FALSE)
+		box(lwd=2)
+		if(k==2){
+			mtext(side=2,text="allelic covariance",padj=-3)
+		}
+		if(k==3){
+			mtext(side=1,text="pairwise geographic distance",padj=3)
+		}
+		mtext(side=1,text=bquote(paste("(",.(letters[k+2]),") ",italic("K")," = ",.(k))),padj=4.6,adj=0.4)
+	}
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_pies.pdf",width=12,height=8,pointsize=14)
