@@ -883,25 +883,28 @@ instead of splitting these individuals out into successive clusters
 %%%%%%%%%
 \section*{Discussion}
 
-The pattern of isolation by distance is ubiquitous in nature;
-this is unsurprising, as mating opportunities are distance-limited in most species.
-This common pattern can flummox commonly used clustering methods, 
-which must use a possibly large number of discrete clusters
-to describe such continuous population differentiation.
-Inference of these spurious clusters can have implications for 
+The difficulty of dispersing across geography makes
+the pattern of isolation by distance ubiquitous in nature.
+% this is unsurprising, as mating opportunities are distance-limited in most species.
+% This common pattern can flummox 
+Commonly used clustering methods
+must use a possibly large number of discrete clusters
+to describe this simple pattern
+such continuous population differentiation.
+The resulting spurious clusters can have implications for 
 downstream analysis and interpretation of genetic data, 
 including conservation management decisions. 
-
-%and 
-%identification of the genetic basis of adaptation or disease traits.
+However, discrete groupings are also often produced by important biological processes.
 
 In this paper, we have presented a statistical framework, \texttt{conStruct}, for simultaneously 
 modeling continuous and discrete patterns of population structure.
 By employing the sensible default assumption
 that relatedness ought to decay with geographic distance, even within a population, 
 we avoid erroneously ascribing population differentiation to discrete population clusters.
-We also present a cross-validation approach for comparing between models, 
-although we stress the limits of this or any model selection procedure for genetic clustering.
+To aid comparison between models,
+we also present a cross-validation approach 
+and a way to describe the contribution of each spatial layer to the model
+(but caution against overly strict interpretation of these).
 
 The method performs well on simulated data:
 we accurately infer the admixture proportions used to simulate the data 
@@ -927,12 +930,14 @@ and
 will be common within populations.
 Given this, when should methods without spatial capability be used?
 One advantage these have over \texttt{conStruct} is speed when the number of samples is large.
-Although \texttt{conStruct}'s computation time is invariant 
-with the number of loci included in the dataset 
+Although \texttt{conStruct}'s computation time is independent
+of the number of loci included in the dataset 
 (after the initial calculation of the allelic covariance), 
 it currently scales poorly with number of samples.
 The computationally limiting step is the inversion of the parametric covariance, 
-which is an operation of order $O(n^3)$, 
+% actually it is like O(n^2.3) but I don't know which algorithm STAN uses
+% which is an operation of order $O(n^3)$, 
+which scales more than quadratically with the number of samples,
 whereas computation time for, e.g., STRUCTURE, 
 scales linearly with number of samples.
 Our speed, on datasets with large sample sizes, 
@@ -961,12 +966,15 @@ fastSTRUCTURE (or ADMIXTURE) would be much faster.
 \paragraph{Choosing the ``best" number of layers}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
 and using only that analysis to communicate results, 
-we emphasize that there is no true best value of $K$.
-The choice of best $K$ is always relative to the data in hand.
+we emphasize that 
+% there is no true best value of $K$. 
+% HOW ABOUT: there is no truth.
+the choice of best $K$ is always relative to the data in hand
+and the questions to be answered.
 %This means both that sampling different individuals or loci 
 %from the same populations may yield a different ``best" $K$, 
-From the statistical perspective, Unless the data were generated under the model itself 
-that the support for larger values of $K$ is likely to increase with increasing amounts of data
+From a statistical perspective, unless the data were generated under the model itself,
+the support for larger values of $K$ is likely to increase with increasing amounts of data.
 %(although perhaps only logarithmically).
 In the limit of infinite data, the best value of $K$ 
 may be the number of samples included in the dataset \citep{Patterson2006}.
@@ -1013,6 +1021,9 @@ may occur if these populations are currently
 (or were recently) exchanging migrants, 
 and thus might emphasize the importance of maintaining habitat corridors between demes, 
 or of implementing an integrated conservation plan across multiple demes within a layer.
+Conversely, two populations that are easily distinguishable based on abundant genetic data
+need not be strongly differentiated --
+cluster assignment is not a replacement for absolute measures of genetic divergence.
 
 \paragraph{Caveats and considerations}
 There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
@@ -1032,7 +1043,7 @@ A second caveat is that, in some instances,
 membership in the same layer may not mean that samples are particularly related.
 If covariance within a layer decays sharply with distance, 
 and the layer-specific relatedness parameter $\phi^{(k)}$ is low, 
-individuals at a far spatial remove may be in the same layer but have very low pairwise relatedness.
+individuals at a large spatial distance may be in the same layer but have very low pairwise relatedness.
 It is possible that this is happening in Fig \ref{populus_sp_pies}. 
 At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold layer, 
 whose other neighbors are to the north, with an intervening group of populations in the red layer, 
@@ -1044,7 +1055,7 @@ and to examine the spatial covariance functions within layers when interpreting 
 There are several ways in which the model described in this paper might be extended or improved.  
 For example, we currently assume that all layers within a model are equally unrelated 
 (a star population phylogeny, although the branches can have different lengths thanks to the $\phi^{(k)}$ parameter), 
-similar to the F-model in \citep{falush2003}.
+similar to the F-model in \citet{falush2003}.
 However, we could extend the existing model by implementing 
 a relatedness structure between the layers by, for example, 
 estimating a population phylogeny between them
@@ -1056,12 +1067,12 @@ A natural extension would be to attempt to ``geo-locate''
 the ancestry of samples without geographic coordinates \citep{Wasser2004}. 
 We could also imagine letting samples draw ancestry from other geographic coordinates, 
 as we have done in a previous approach \citep{spacemix} to model long distance dispersal. 
-Indeed, we could allow entire layers to bud off of a particular location on another layer. 
-This would enable us to model scenarios of range expansion or domestication, 
+We could even allow entire layers to bud off of a particular location on another layer. 
+This would enable more explicit modeling of range expansion or domestication, 
 in which a set of individuals are thought to have ancestry that originated from
 a particular geographic location embedded in a larger pattern of IBD.
 
-A final direction is to model relatedness within a layer as a spatiotemporal process, 
+A final direction would be to model relatedness within a layer as a spatiotemporal process, 
 in which covariance decays both with distance in space and in time.  
 As the number of genotyped historical or ancient samples increases, 
 it is becoming possible to ask whether there is genetic continuity at a point in space across time, 
@@ -1085,7 +1096,7 @@ This work was supported in part by
 the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
 the National Institute of General Medical Sciences of the National
 Institutes of Health under award numbers NIH R01-GM108779 to GC,
-and the National Science Foundation under award numbers NSF \# 1148897 and \# 1402725 to GB.
+and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
 
 \newpage
 \section*{Appendix}
