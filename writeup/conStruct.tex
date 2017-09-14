@@ -749,12 +749,13 @@ perhaps due to introgression from the southern neighbors
 
 
 \subsubsection*{Black bears}
+
 The American black bear, \textit{Ursus americanus}, is endemic to North America
 and has a broad distribution across the continent.
 During the last glacial maximum, 
 black bears were confined to isolated glacial refugia, 
 from which they subsequently expanded to occupy their current range
-\citep{WoodingWard1997,Byun1997,Stone2000,Puckett2015}.
+\citep{WoodingWard1997,Byun1997,Stone2000,Puckett2015},
 %The retreat of the glaciers was relatively recent in units of 
 %black bear generation times \citep{Onorato2004}, 
 %so we might reasonably expect the divergence accrued between refugia 
@@ -763,19 +764,19 @@ from which they subsequently expanded to occupy their current range
 %but they are distributed across most of the continent, 
 %so we may therefore expect them to experience distance-limited 
 %mating opportunities and exhibit a pattern of IBD.
-As with the poplars described above, 
-this system is likely to present patterns of genetic structure 
-that are both continuous and discrete, 
-making it well-suited as a test for our method.
-We organize the results of our analyses of 
-the complicated landscape of genetic structure in black bears 
-around the following questions:
+likely leading to both continuous and discrete patterns of genetic structure.
+We organize our results around the following questions:
 \begin{enumerate}
-\item How many historical populations are reflected in modern patterns of genetic variation?
-\item Do we see support for a pattern of isolation by distance within each of the inferred discrete groups?
+    \item How many distinct populations (probably, distinct glacial refugia)
+        are reflected in modern patterns of genetic variation?
+    \item How strong is isolation by distance within each inferred group?
 \end{enumerate}
+Differing strengths of isolation by distance might indicate 
+different levels of habitat connectivity,
+dispersal behavior,
+or different postglacial histories.
 
-Our data, from \cite{Puckett2015}, consist of 95 individuals 
+We use data from \cite{Puckett2015}, consisting of 95 individuals 
 sampled across the United States and on the West coast of Canada,
 genotyped at just under 22,000 bi-allelic loci.
 The distribution of missing data across these individuals was uneven, 
@@ -825,7 +826,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
     }\label{bear_laycon}
 \end{figure}
 
-Bears in the sample are partitioned into two main groups ($K \geq 2$):
+The results partition the sampled bears into two main groups:
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
 the other primarily west of the Rockies (blue).
@@ -836,16 +837,17 @@ through the intervening (unsampled) northern Great Plains and Canadian Shield,
 with the blue layer presumably then stretching up into British Columbia.
 
 Additional layers in the spatial model have strong statistical support 
-up until around $K=5$ or 6 (Fig \ref{bear_xvals}).
-However, upon examining layer contributions (Fig \ref{bear_laycon}),
-it is clear that the additional spatial layers beyond $K=2$ are contributing only a very small amount toward 
-total covariance between individuals.
-The locations of the individuals inferred to be admixed between the two layers 
-provide information about a possible zone of contact and migration between these groups 
-along the northwestern coast of North America and near the Cascade Range in the northern U.S.
-These findings are consistent with a scenario of postglacial expansion from two refugia, 
+up until around $K=5$ or 6 (Fig \ref{bear_xvals}),
+but additional spatial layers beyond $K=2$ contribute little to total covariance (Fig \ref{bear_laycon}).
+% However, upon examining layer contributions (Fig \ref{bear_laycon}),
+% it is clear that the additional spatial layers beyond $K=2$ are contributing only a very small amount toward total covariance between individuals.
+The locations admixed individuals 
+% between the two layers provide information about a possible zone of contact and migration between these groups 
+% along the northwestern coast of North America and near the Cascade Range in the northern U.S.
+are consistent with a scenario of postglacial expansion from two refugia, 
 one in the American Southwest and one in the American Southeast, 
-but lack of any samples from Canada and Mexico, 
+meeting near the Northwest coast of North America and the Cascade Range.
+However, lack of any samples from Canada and Mexico, 
 and lack of denser sampling across northern North America, 
 make more detailed interpretations untrustworthy.
 %In addition, our model is not an explicit test of any demographic scenario, 
@@ -857,7 +859,7 @@ of nonspatial clustering algorithms to describe continuous spatial patterns of d
 using gradients of admixture between clusters.
 For example, in Fig \ref{bear_K3}b, 
 the third cluster (in green) exhibits a clear East-West gradient that 
-is overlain across the discrete structure between the Southwest cluster and the Southeast.
+overlays the discrete structure between the Southwest cluster and the Southeast.
 The results from fastSTRUCTURE are are not identical to 
 those obtained using the nonspatial model, 
 but they do showcase the same tendency: 
@@ -866,8 +868,8 @@ out of the cluster with the eastern samples,
 and at $K=4$, it splits them into their own cluster entirely \ref{bear_fastStr}.
 
 Across all values of $K$ for which we ran \texttt{conStruct},
-we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}),
-indicating the isolation by distance seems to be a prominent feature of the data.
+we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}).
+% indicating the isolation by distance seems to be a prominent feature of the data.
 This pattern may resolve a discrepancy between our results and 
 previous analyses that split Alaskan and British Columbian bears out 
 into their own cluster with an inferred Beringian glacial refugium
