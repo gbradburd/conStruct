@@ -69,26 +69,31 @@ A classic problem in population genetics is the characterization
 of discrete population structure in the presence of 
 continuous patterns of genetic differentiation.
 Especially when sampling is discontinuous, 
-clustering or assignment methods may incorrectly ascribe differentiation 
-due to continuous processes (e.g., isolation by distance) 
+the use of clustering or assignment methods may incorrectly ascribe
+differentiation due to continuous processes (e.g., geographic isolation by distance)
 to discrete processes, such as geographic, ecological, or reproductive barriers 
 between populations.
-This is partly a result of the difficulty of sampling uniformly and continuously 
-across the range of a population or species, 
-but more, it reflects a shortcoming of current methods for inferring and 
-visualizing population structure from genetic data in the face of data 
-that are characterized by both continuous and discrete population structure.
+% This is partly a result of the difficulty of sampling uniformly and continuously 
+% across the range of a population or species, but more, it 
+This reflects a shortcoming of current methods for inferring and 
+visualizing population structure when applied to genetic data
+deriving from geographically distributed populations.
 Here, we present a novel statistical framework for the simultaneous inference 
 of continuous and discrete patterns of population structure.
 The method estimates ancestry proportions for each 
-sample from a set of discrete population layers, 
+sample from a set of two-dimensional population layers, 
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This model explicitly addresses the ``clines vs. clusters" problem in 
-modeling population genetic variation by jointly accommodating both 
-continuous and discrete patterns of differentiation. 
-We demonstrate the utility of this approach using both simulations and empirical applications.
+modeling population genetic variation.
+% by jointly accommodating both continuous and discrete patterns of differentiation. 
+The method produces useful descriptions of structure in genetic relatedness
+in situations where separated, geographically distributed populations interact,
+as after a range expansion or secondary contact.
+We demonstrate the utility of this approach using simulations 
+and by applying it to empirical datasets of poplars and black bears in North America.
 \end{abstract}
 
+\plr{I felt like we said "continuous and discrete" too many times in the abstract.}
 
 \newpage
 \section*{Introduction}
@@ -98,12 +103,16 @@ For example, reasonable people can disagree about whether two
 populations are separate species, because the 
 process of speciation is usually gradual, and so there is no set point
 in the continuous divergence of populations when they unambiguously become discrete species.
+Descriptions of taxa using phylogenetic trees omit within-taxon variation,
+especially when these are intermingling subgroups.
 The issue of identifying meaningful biological subunits 
 extends below the species level, as patterns of phenotypic
 and genetic diversity within and among populations are shaped
 by continuous migration and drift, as well as by more discrete events, 
 such as geographic barriers, rapid expansions, bottlenecks, and rare
 long-distance migration. 
+Both discrete and continuous components
+are required to accurately describe most species' patterns of genetic relatedness.
 
 From a practical standpoint, even while acknowledging continuous
 processes, we often need to identify somewhat separable populations 
@@ -111,7 +120,13 @@ from which individuals are sampled \citep{wright1949genetical}.
 Delineating populations is useful for systematics and for
 informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
 Furthermore, we often need to identify subsets of indivduals resulting from reasonably coherent
-evolutionary histories for downstream analyses to learn about population history and adaptation. 
+evolutionary histories for downstream analyses to learn about population history and adaptation,
+\plr{as for example XXX?}
+Conversely,
+the substantial information available from continuous, geographic differentiation
+(e.g., adaptation along a climatic gradient)
+can be confounded by discrete historical processes (e.g., admixture),
+requiring methods that can disentangle the two.
 
 There have been many methods proposed to characterize population
 genetic structure,
@@ -125,7 +140,8 @@ FINESTRUCTURE, fastStructure, huelsenbeck2007inference,
 Corander2003,TESS,geneland}, among others.
 Each of these methods perform best in particular situations,
 but many can give misleading results when applied to data 
-that show a continuous pattern of isolation by distance 
+that show a continuous pattern of differentiation,
+as that produced by geographic isolation by distance 
 \citep{Wright1943, novembre_interpreting_2008, Frantz2009}.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
 Existing model-based clustering methods model each individual's genotypes 
@@ -140,15 +156,21 @@ but this does not address the underlying issue that
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
 
-A pattern of isolation by distance (IBD) arises when migration in a
-population is spatially limited, and slow enough between distant
-locations that genetic drift can build up differentiation between them
+\emph{Isolation by distance} refers to a pattern of increasing genetic differentiation
+with geographic separation,
+which occurs when geographically restricted dispersal allows
+genetic drift to build up differentiation between distant locations
 \citep{Wright1943}. 
-IBD has been modeled in both spatially continuous frameworks 
-\citep{malecot1969mathematics,Slatkin1985}, 
-in which an individual's parents are found within some radius of that individual's location,
-and discrete, ``stepping-stone'' frameworks \citep{kimura1964stepping},
-in which migration occurs only between neighboring demes.
+Theoretical work,
+mostly derived from ``stepping-stone'' models 
+\citep{kimura1964stepping,sawyer1976stepping,shiga1984stepping},
+gives us some analytical predictions for isolation by distance
+\citep{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
+but substantial work remains to be done \citep{barton2002neutral,barton2013modelling}.
+% IBD has been modeled in both spatially continuous frameworks 
+% in which an individual's parents are found within some radius of that individual's location,
+% and discrete, ``stepping-stone'' frameworks \citep{kimura1964stepping},
+% in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
 it is unsurprising that IBD is very widespread in nature \citep{meirmans2012,Sexton_etal_2014}.
 
@@ -172,10 +194,10 @@ a model-based clustering method that, when possible, uses isolation by distance
 to explain observed genetic variation.
 With an explicit spatial component, discrete population structure need only be invoked when genetic differentiation 
 in the data deviates significantly from that expected given geographic separation.
-
-In this paper, we present a statistical method for simultaneously 
-modeling continuous and discrete patterns of population structure.
-We model genetic variation in genotyped individuals as 
+In this paper, 
+% we present a statistical method for simultaneously 
+% modeling continuous and discrete patterns of population structure.
+we model genetic variation in genotyped individuals as 
 partitioned within or admixed across a specified number of discrete layers,
 within each of which relatedness decays as a parametric function of the distance between samples.
 We also implement a cross-validation approach for comparing and selecting models across different numbers of layers,
@@ -200,8 +222,9 @@ then dividing the number of observations of that counted allele by the total num
 in sample $n$.
 The choice of allele does not affect subsequent calculations, and so may be arbitrary.
 We then calculate the \emph{allelic covariance} between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
-as the expected covariance of distinct individual alleles chosen from each of the two samples at a random locus,
-choosing a random allele to code as `1' (and the other as `0').
+as the expected covariance of distinct individual alleles 
+chosen from each of the two samples at a random locus,
+coding the counted allele as `1' (and the other as `0').
 Concretely, this is
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
@@ -241,13 +264,15 @@ Here we add a spatial component within each such discrete historical component,
 which we refer to as a set of ``layers'' that overlay the modern map.
 We imagine each layer as a geographically distributed population 
 that extends over the entire sampled range of the populations. 
-Each sample is composed of a mixture of contributions from each of
-these layers. 
-See Figure \ref{schematic} for a cartoon representation of our model. 
+As depicted in Figure \ref{schematic},
+each sample is composed of a mixture of contributions from each of these layers,
+with the relative contributions of each layer described by
+a set of ``admixture proportions'' (the $w_i^{(k)}$).
 These layers thus take the place of ``clusters'' in clustering methods,
 but we do not adopt this term, 
 as ``spatial cluster'' suggests a clustering in space, 
-while our layers may be present at all sampled locations.
+while our layers may contribute to genetic variation 
+across the entire geographic range.
 
 %they connote a lack of geographical separation within each.
 
@@ -262,7 +287,7 @@ There is a fixed amount of covariance between layers, irrespective of spatial lo
 Within each layer allele frequencies are expected to change gradually with distance,
 but observed frequencies can change abruptly at many loci 
 if the proportions by which individuals' ancestry derive from each layer 
-(the ``admixture'' coefficients) 
+(the ``admixture'' proportions) 
 do so as well. 
 
 To allow flexibility in the form of the decay of allelic covariance with geographic distance within each layer, 
@@ -275,28 +300,31 @@ G^{(k)}_{i,j}
 \end{equation}
 where the superscript $(k)$ denotes parameters specific to the $k$th layer.
 The quantity $D_{i,j}$ is the observed geographic distance between samples $i$ and $j$,
-the $\alpha^{(k)}$ parameters control the shape of the decay of
-covariance with distance in the layer.
+and the $\alpha^{(k)}$ parameters control the shape of the decay of
+covariance with distance in the cluster.
 Our choice of a powered-exponential decay, 
 as parameterized by the $\alpha$s, 
 is a flexible and standard choice in spatial statistics \citep{Diggle1998}, 
 and is not chosen to match a particular population genetics model. 
-The $\phi^{(k)}$ is a parameter that describes the background covariance within the layer. 
-If two samples draw 100\% of their ancestry from layer $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
+% (Analytical theory \citep{barton2002neutral} predicts the decay should be proportional to $\exp{-D}/\sqrt{D}$.)
+The $\phi^{(k)}$ is a parameter that describes the background covariance within the cluster. 
+If two samples draw 100\% of their ancestry from cluster $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
 if they are furthermore geographically very close ($D_{i,j}=0$)
 they will have covariance $\alpha^{(k)}_0 +  \phi^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will be equal to to the background level $\phi^{(k)}$ within the layer.
-The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
-connecting the $k$th population to the population ancestral to all modeled
-layers \citep[see for example ][]{patterson_ancient_2012,
-  peter_fstats}. In the methods section \ref{rationale} we lay out a
+their covariance will be equal to to the background level $\phi^{(k)}$ within the cluster.
+%% plr: this is no longer true
+% The ``shared drift'' parameter $\phi^{(k)}$ can be interpreted as the branch length 
+% connecting the $k$th population to the population ancestral to all modeled
+% layers \citep[see for example ][]{patterson_ancient_2012,peter_fstats}. 
+In the methods section \ref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one layer.
 The ``admixture'' proportion of the $i$th sample in the $k$th layer, denoted $w^{(k)}_i$,
 gives the genome-wide proportion of alleles from sample $i$ that derive from
-layer $k$ (and so $\sum_K w^{(k)}_i =1$).
+layer 
+$k$ (and so $\sum_{k=1}^K w^{(k)}_i =1$).
 A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 
 \begin{figure}
@@ -304,7 +332,7 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 		{\includegraphics[width=4in,height=2.5in]{figs/schematic/method_schematic.png}}
 		\caption{Schematic of our method, using $K=3$ as an example.
 			     The pattern of isolation by distance within each layer is denoted by their color gradients, 
-			     and $\phi_{(k)}$ denotes the covariance shared by samples with ancestry entirely in the $k$th layer.
+			     and $\phi^{(k)}$ denotes the covariance shared by samples with ancestry entirely in the $k$th layer.
 			     Sampled populations on the landscape are inferred to be admixed between these layers; 
 			     the $i$th sample draws proportion $w^{(k)}_i$ of its ancestry from layer $k$.
 			     For convenience, each layer is depicted as a small square, but in fact, 
@@ -318,7 +346,7 @@ We can then describe the covariance between samples $i$ and $j$ across all layer
 by summing their within-layer spatial covariances ($G_{i,j}^{(k)}$ in layer $k$) across all $K$ layers,
 weighted by the relevant admixture proportions.
 \begin{equation}
-\Omega_{i,j} = \gamma + \sum\limits_K w^{(k)}_i w^{(k)}_j
+    \Omega_{i,j} = \gamma + \sum_{k=1}^K w^{(k)}_i w^{(k)}_j
 G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
 \label{cross_layer_covariance}
 \end{equation}
@@ -336,20 +364,24 @@ This term on the diagonal of the parametric covariance matrix captures processes
 such as inbreeding and the sampling process.
 
 \paragraph{Likelihood and inference}
-Assuming that the allele frequencies at each locus
-are independent between loci and multivariate normally distributed across populations, 
+If the allele frequencies at each locus
+were independent between loci and multivariate normally distributed across populations, 
 their allelic covariance $\widehat{\Omega}$ 
 would be Wishart distributed with degrees of freedom equal to $L$, 
 the number of loci genotyped.
 We use this as a convenient approximation to the true distribution described above,
 and so define the likelihood of the allelic covariance to be
 \begin{equation}
-P(\widehat{\Omega} \; | \; \Omega) = \mathcal{W} \left( L\widehat{\Omega} \; | \; \Omega,L\right) .
+    P(\widehat{\Omega} \; | \; \Omega) 
+    = 
+    \mathcal{W} \left( L\widehat{\Omega} \; | \; \Omega,L\right) ,
 \end{equation}
-Linkage disequilibrium (LD) between loci will decrease the effective
+where $\mathcal{W}$ is the Wishart likelihood function.
+Statistical nonindependence between loci (linkage disequilibrium)
+will decrease the effective
 number of degrees of freedom.  
-One possible solution, which we have not yet implemented, 
-is to estimate an \emph{effective} number of loci 
+One possible solution, which we have not yet found necessary to implement,
+would be to estimate an \emph{effective} number of loci 
 by introducing a parameter to modify the given degrees of freedom 
 and thereby informally model linkage between loci \citep[e.g.][]{EEMS}.
 
@@ -359,9 +391,10 @@ $w,\alpha,\phi,\eta,\gamma$ and on the (observed) geographic distances $D$
 with the notation $\Omega(w,\alpha,\phi,\eta,\gamma,D)$,
 we denote the posterior probability density of the parameters as:
 \begin{equation}
-P\left( w,\alpha,\phi,\eta,\gamma \;	| \; \widehat{\Omega}, L \right) \propto
-P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\phi,\eta,\gamma,D) \right)
-P(w)P(\alpha)P(\phi)P(\eta)P(\gamma) ,
+P\left( w,\alpha,\phi,\eta,\gamma \;|\; \widehat{\Omega} \right) 
+    \propto
+    P\left(\widehat{\Omega} \; | \; \Omega(w,\alpha,\phi,\eta,\gamma,D) \right)
+    P(w)P(\alpha)P(\phi)P(\eta)P(\gamma) ,
 \end{equation}
 where $P(w)$, $P(\alpha)$, $P(\phi)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
 All parameters are given (half-)Gaussian priors 
@@ -379,15 +412,16 @@ We also provide an R package \citep{R} called \texttt{conStruct}
 
 A nice feature of our approach is that the model described in Eqn \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
-(see \secref{model_app} for a more in-depth discussion). 
+(see \secref{model_app} in the appendix for a more in-depth discussion). 
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
-This model is strongly conceptually similar to that of STRUCTURE \citep{STRUCTURE} 
+This model is very similar to that of STRUCTURE \citep{STRUCTURE} 
 and related models \citep[e.g.][]{ADMIXTURE}; 
 the only difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
 while the standard assignment methods assume that the error is binomially distributed \citep{Engelhardt2012}.  
+(We make this approximation for the substantial advantages in computational speed.)
 Therefore, we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
@@ -429,7 +463,7 @@ Prediction accuracy of a particular model (e.g., value of $K$)
 is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
-than others (see \secref{Xvalidation} for more on our cross-validation procedure).
+than others (see \secref{Xvalidation} of the appendix for more on our cross-validation procedure).
 In general, larger values of $K$ allows the model more flexibility,
 and thus increases the likelihood of the training partition, 
 but this improvement in the likelihood will plateau (or even peak), 
@@ -444,13 +478,20 @@ However, we remind users that ``statistical significance does not imply real-wor
 and so small but statistically significant differences between models
 should probably not be relied on too strongly.
 
-An additional heuristic to evaluate the inclusion of additional layers is to calculate 
-each layer's relative contribution to total covariance, 
+Another way to describe how additional layers contribute to model fit
+is to calculate each layer's relative contribution to total covariance, 
 and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
-Because the prior on admixture proportions is a Dirichlet distribution 
-that is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
-the model will tend to ``not use" unnecessary layers, 
-and they will have a low contribution to overall covariance.
+The Dirichlet prior on admixture proportions
+is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
+encouraging the model to ``not use" unnecessary layers, 
+so that they will have a low contribution to overall covariance.
+We use the connection of allelic covariance to the probability of agreement (identity) between genotypes
+to calculate a measure of overall contribution of each layer to the model.
+XXX PLR XXX
+To calculate the overall contribution of the $k$th layer to the model,
+we use the connection between allelic covariance and 
+
+
 The contribution of the $k$th layer can be calculated as
 its contribution to the parametric covariance between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
@@ -1090,7 +1131,7 @@ F_{i,\ell} = \epsilon_{\ell} + \sum\limits_{K} w^{(k)}_{i}\left(
 \end{equation}
 and the covariance between $i$ and $j$ across loci is
 \begin{equation}
-\Omega_{i,j} = \text{Var}(\epsilon) + \sum\limits_K w^{(k)}_iw^{(k)}_j
+\Omega_{i,j} = \text{Var}(\epsilon) + \sum_{k=1}^K w^{(k)}_iw^{(k)}_j
 \left(
   \text{Var}\left( \Delta^{(k)} \right) +
 \text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) 	\right) +
@@ -1307,9 +1348,9 @@ $$\begin{aligned}
 One way to summarize the contribution of each layer is to partition the probability of agreement
 into contributions due to agreement ``in" each layer.
 So, the contribution from layer $k$ to agreement between $i$ and $j$ is 
-$w_i^{(k)} w_j^{(k)} q^{(k)}_{ij} / (p_\gamma + \sum_K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$,
+$w_i^{(k)} w_j^{(k)} q^{(k)}_{ij} / (p_\gamma + \sum_{k=1}^K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$,
 which is the probability, given that they agree, that they agree thanks to layer $k$.
-Similarly, the ``background" contribution is $p_\gamma / (p_\gamma + \sum_K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$.
+Similarly, the ``background" contribution is $p_\gamma / (p_\gamma + \sum_{k=1}^K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$.
 Because our signal comes from \emph{variation} in covariance, we omit
 the $p_\gamma$ terms. 
 Stated in this way, this quantity is the
