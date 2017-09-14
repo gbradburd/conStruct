@@ -35,9 +35,9 @@
 \title{Inferring Continuous and Discrete Population Genetic Structure Across Space}
 \date{\vspace{-5ex}}
 \author{
-Gideon S. Bradburd$^{1,a}$, 
-Graham M. Coop$^{2,b}$,
-Peter L. Ralph$^{3,c}$}
+Gideon S.\ Bradburd$^{1,a}$, 
+Graham M.\ Coop$^{2,b}$,
+Peter L.\ Ralph$^{3,c}$}
 
 \begin{document}
 
@@ -620,10 +620,14 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 		}\label{simK1_laycon}
 \end{figure}
 
+
 \subsection*{Empirical Applications}
+
 To demonstrate the utility of this method, we analyzed empirical population genomic data from two systems:
 a contact zone between two poplar species in northwestern North America,
 and a large North American sample of black bears.
+
+
 
 \subsubsection*{Poplars}
 
@@ -632,31 +636,46 @@ are distributed throughout the Northern Hemisphere;
 species in the genus regularly co-occur and, 
 where they do, they frequently hybridize \citep{eckenwalder1984, Cronk2005}.
 
-Here, we focus on two \textit{Populus} species in the Pacific Northwest: 
 \textit{Populus trichocarpa}, the black cottonwood,
-and \textit{Populus balsamifera}, the balsam poplar.
-These species have a broad zone of overlap and are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
+and \textit{Populus balsamifera}, the balsam poplar,
+have a broad zone of overlap in the Pacific Northwest,
+where they are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
 and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
-making the system well-suited to test an analysis designed to describe
-how genetic structure is partitioned both discretely across populations (or species)
-and continuously with geographic distance.
+making the system well-suited for application of our method.
+% to test an analysis designed to describe
+% how genetic structure is partitioned both discretely across populations (or species)
+% and continuously with geographic distance.
 We organize the results of our analyses around the following questions: 
 \begin{enumerate}
-\item Given the known history of hybridization between this pair of poplar species, 
-is there support for two discrete populations, 
-rather than a single cline of ancestry across their overlap zone?
-\item If there is evidence for discrete population structuring, 
-does it fall solely along species boundaries, 
-or is there sub-structuring between different populations of the same species?
-\item Is there support for a pattern of isolation by distance within
-the inferred layers, and, if so, 
-does it differ between different layers?
+
+    \item To what degree has hybridization blurred the boundaries between 
+        \textit{trichocarpa} and \textit{balsamifera}?
+        (As an extreme case, does genetic differentiation support these as separate species,
+        as opposed to a single cline of ancestry?)
+    % Given the known history of hybridization between this pair of poplar species, 
+    % is there support for two discrete populations, 
+    % rather than a single cline of ancestry across their overlap zone?
+
+    \item Does the only significant boundary of population structure
+        fall along the species boundary (if any),
+        % If there is evidence for discrete population structuring, 
+        % does it fall solely along species boundaries, 
+        or is there sub-structuring within species?
+
+    \item Does the strength of isolation by distance differ between inferred layers?
+        This may indicate, e.g., different speeds of postglacial expansion
+        or primary modes of dispersal.
+        % Is there support for a pattern of isolation by distance within
+        % the inferred layers, and, if so, 
+        % does it differ between different layers?
+
 \end{enumerate}
 
-Our data, from \cite{geraldes_etal_2014}, 
-consist of 434 individuals sampled from 35 drainages 
-and genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
+We use data from \cite{geraldes_etal_2014}, 
+consisting of 434 individuals sampled from 35 drainages 
+genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
+\plr{How do the indivs partition across the drainages?  Perhaps give range of number of indivs per drainage?}
 The data were generated using RAD-seq, 
 and showed a strong pattern of bias in allelic dropout 
 (the majority of missing data were from drainages with only \textit{Populus balsamifera} individuals).
@@ -677,7 +696,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 		{\includegraphics[width=6in,height=2in]{figs/populus/Fig4_pop_sp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the \textit{Populus} dataset 
-	using the spatial model for $K=2$ through 4.
+    using the spatial \texttt{conStruct} model for $K=2$ through 4.
     }\label{populus_pies}
 \end{figure}
 
@@ -694,39 +713,39 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 
 All models with $K>1$ assigned the majority of each of the two species
 to distinct layers, with some populations drawing ancestry from multiple layers.
+Based on cross-validation results, we view the $K=3$ spatial model 
+as a sufficient description of the data,
+with additional structure of uncertain significance.
 This provides strong support for discrete population structure between the two species,
 with some admixture,
 rather than a single, continuous cline of ancestry.
 At all values of $K>1$, discrete population structure was mostly partitioned along species lines; 
 at values of $K$ above 2, further discrete substructure was inferred within the \textit{P. trichocarpa} samples, 
-while \bals{} samples displayed no substructure up to $K=7$.
-This lack of substructure within the sampled \bals{} populations is largely in agreement with results from 
-\citet{keller_etal_2010}, who found that \bals{} in the region is characterized by relatively low diversity, 
-and probably represents a recent, postglacial expansion.
-
-For values of $K<4$, the spatial model was strongly preferred over the nonspatial model (Fig \ref{populus_xvals}),
-the results of which were broadly concordant with those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}).
-\gb{come back to this}.
+with no substructure within \bals{}.
 Most of this signal seems to derive from the \textit{P. trichocarpa} samples:
-covariance within predominantly \tri{} layers decays more quickly with distance
-than within the majority \bals{} layer, as seen in Fig \ref{populus_sp_layer_covs}.  
-This indicates that, although isolation by distance is a feature of the dataset as a whole, 
-its magnitude varies considerably across biological units - 
-an aspect of the data \texttt{conStruct} is able capture well.
-Based on our cross-validation results we view the $K=3$ spatial model 
-as a sufficient description of the data. 
+% covariance within predominantly \tri{} layers decays more quickly with distance than within the majority \bals{} layer, 
+as seen in Fig \ref{populus_sp_layer_covs},
+there is almost no isolation by distance within the \bals{} layer ($\alpha_D \approx 0$).
+Both points are
+in agreement with \citet{keller_etal_2010}, 
+who found low diversity within the region's \bals{},
+probably as the result of a recent postglacial expansion.
+
+For all values of $K$, the spatial model was preferred over the nonspatial model (Fig \ref{populus_xvals}) (strongly for $K<4$).
+The nonspatial results were broadly concordant with those of the fastSTRUCTURE runs (Fig \ref{populus_fastStr}).
+\gb{come back to this}.
 
 A consistent split between layers within \tri{} fell along the ``no-cottonwood belt," 
 a region along the central coast of British Columbia in which black
 cottonwood is absent (the break between yellow and red, for $K \geq 3$). 
-The no-cottonwood belt is hypothesized to divide the species' distribution 
+The no-cottonwood belt is hypothesized to divide the species' distribution
 into northern and southern groups, which, in a provenance test, 
 were experimentally shown to display differences in ecologically relevant phenotypes 
 \citep[e.g., pathogen resistance,][]{xie2009,xie2012}.  
 At higher values of $K$, drainages at the southern tip of \tri{} sampling 
-begin to split out into their own layers.  
-This may potentially be the result of introgression from southern \textit{Populus} species, 
-such as \textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
+begin to split out into their own layers,
+perhaps due to introgression from the southern neighbors
+\textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
 
 
 \subsubsection*{Black bears}
