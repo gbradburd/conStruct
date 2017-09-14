@@ -414,11 +414,19 @@ we obtain a nonspatial model in which each cluster has its own allele frequency 
 and individuals draw a proportion of their ancestry from each cluster. 
 This model is very similar to that of STRUCTURE \citep{STRUCTURE} 
 and related models \citep[e.g.][]{ADMIXTURE}; 
-the only difference is that our likelihood assumes that allele frequencies are normally distributed 
+the \gc{main} difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
 while the standard assignment methods assume that the error is binomially distributed \citep{Engelhardt2012}.  
-(We make this approximation for the substantial advantages in computational speed.)
-Therefore, we can compare the fit of the different models 
+(We make this approximation for the substantial advantages in
+computational speed.)
+\gc{The second small difference is that unlike the original STRUCTURE where
+  allele frequencies at a locus are independently drawn for each
+  cluster \citep{STRUCTURE}, our non-spatial model of allele
+  frequencies at locus assumes that each layer has an allele frequency
+  that deviates away ( due to drift) from some shared
+  global allele frequency. Our model of allele frequencies is therefore more
+  closely related to the F-model prior for allele frequencies of \citet{falush2003}.
+As these differences are relatively small,} we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
 We also validate our claim that the results of our nonspatial method 
