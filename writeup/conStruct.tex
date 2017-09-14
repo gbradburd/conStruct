@@ -478,26 +478,21 @@ However, we remind users that ``statistical significance does not imply real-wor
 and so small but statistically significant differences between models
 should probably not be relied on too strongly.
 
-Another way to describe how additional layers contribute to model fit
+Another way to describe the practical significance of additional layers
 is to calculate each layer's relative contribution to total covariance, 
 and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
 The Dirichlet prior on admixture proportions
 is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
-encouraging the model to ``not use" unnecessary layers, 
+encouraging the model to ``not use" unnecessary layers if they are present, 
 so that they will have a low contribution to overall covariance.
-We use the connection of allelic covariance to the probability of agreement (identity) between genotypes
-to calculate a measure of overall contribution of each layer to the model.
-XXX PLR XXX
-To calculate the overall contribution of the $k$th layer to the model,
-we use the connection between allelic covariance and 
-
-
-The contribution of the $k$th layer can be calculated as
-its contribution to the parametric covariance between samples 
-summed over the upper triangle (excluding the diagonal) of the covariance matrix.
-The contribution of the $k$th layer is its absolute contribution relative to those of all other layers, 
-i.e., its contribution divided by the sum of the contributions of all $K$ layers
-(for details on calculating this contribution, see Appendix \secref{layer_contribution}). 
+To do this, we use the following alternative description of our covariance model:
+the genomes of any pair of individuals \emph{agree} with some background probability,
+but this probability of agreement is increased on any segment of genome 
+that both have inherited through the same layer.
+(The amount it increases depends on how far apart they are.)
+We use this characterization to quantify the relative contributions of each layer,
+by computing the average contribution to increased probability of agreement
+as described in Appendix \secref{layer_contribution}). 
 This layer contribution is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
@@ -505,86 +500,92 @@ so we take that into account when calculating each layer's contribution to the w
 \section*{Results}
 
 \subsection*{Simulations}
-We first test the method with scenarios generated using the coalescent simulator \texttt{ms} \citep{Hudson2002}.
-To generate discrete population structure, we simulate $K$ distinct populations,
-each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
-without subsequent migration between them.
-To generate continuous differentiation within each layer,
-at time $\tau_{\text{e}}$ in the past,
-each of these discrete populations instantaneously colonizes an
-independent lattice of demes,
-for which we use a stepping stone model with symmetric migration 
-to nearest neighbors (eight neighbors, including diagonals).
+
+To test the method, we first generated data using the coalescent simulator \texttt{ms} \citep{Hudson2002}.
+In each simulation,
+we split a single ancestral population into $K$ subpopulations $\tau_{\text{s}}$ units of coalescent time in the past,
+and at time $\tau_{\text{e}}$ in the past,
+each of these discrete populations instantaneously colonized a
+separate $6 \times 6$ square lattice of demes.
+Migration on each lattice was to nearest neighbors (eight neighbors, including diagonals).
 Finally, at time $\tau_{\text{a}}$ in the past 
-we generate a single dataset 
-by collapsing those $K$ discrete layers into a single grid of demes 
-that have various amounts of admixture from these different layers
+we collapsed those $K$ discrete layers into a single grid of demes,
+choosing various amounts of admixture from these different layers
 (see Fig \ref{sim_setup}). 
-We collapse the layers together using random admixture proportions 
-that are spatially autocorrelated (see Appendix \secref{sim_details} for details), 
+We collapsed the layers together using random admixture, spatially autocorrelated proportions 
+(see Appendix \secref{sim_details} for details), 
 so that both the frequencies in layers and the layer memberships are
 spatially autocorrelated. 
 We simulated datasets using $K=1$, 2, and 3 layers,
 in each sampling 10,000 unlinked loci from each of 20 haploid individuals from every deme.
+We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simulated dataset with $K$ between 1 and 7,
+and compared predictive performance of the models using cross-validation to compare the predictive performance.
+% To confirm that results from our nonspatial model were qualitatively similar to those of 
+% other nonspatial model-based clustering algorithms, 
+For comparison,
+we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, using $K=2--4$.
+% inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
 
-We ran \texttt{conStruct} analyses on each of these simulated datasets, 
-specifying both a spatial and nonspatial model for $K = $ 1 through 7, 
-then used cross-validation to compare the predictive performance of the models.
-In Fig \ref{simK1_pies}, we show the results of the analyses of the dataset simulated under $K=1$, 
-contrasting the results of the nonspatial model runs with 2 - 4 layers 
-with those of spatial model with 2 - 4 layers.
-In Fig \ref{sim_xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
-The results of all analyses run on datasets simulated using $K=1$ through 3 are shown in 
-Figs \ref{simK1_nsp_pies}-\ref{simK3_adprop_fit}.
-To confirm that results from our nonspatial model were qualitatively similar to those of 
-other nonspatial model-based clustering algorithms, 
-we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, 
-inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}-\ref{fastStr_simK3}).
+\plr{rearranged this to focus more on take-homes}
 
-A number of results are immediately clear from these tests with simulated data.
-First, \texttt{conStruct} performs well on all simulated scenarios.
-Across all values of K and for all simulations, 
-the spatial model is correctly preferred over the nonspatial model
-(Fig \ref{sim_xvals}). Second, the predictive accuracy of the nonspatial model increases 
-with the number of layers in the model, 
-as it describes continuous, spatial patterns of relatedness between demes within the same cluster 
-using gradients of admixture across more and more discrete clusters.
-This behavior of the nonspatial model is highlighted in 
-the analyses of data simulated under $K=1$ (Fig \ref{simK1_pies} and \ref{simK1_nsp_pies}):
-as $K$ in the model increases, 
-the sampled area is increasingly divvied up between clusters 
-with ``centers of mass" in the $K$ geographical extremes of the simulated space.
-At $K=2$, the clusters are centered in opposite corners on the map; 
-at $K=3$, in the lower two corners and the top half; 
-at $K=4$, all four corners, and so on.
-These results are qualitatively similar to those generated using fastSTRUCTURE \citep{fastStructure}, 
-which also describes continuous differentiation using admixture between clusters
- (Fig \ref{fastStr_simK1}-\ref{fastStr_simK3}).
-While it is true that each non-spatial cluster is genetically more similar within itself
-than it is to other clusters,
-we know that these boundaries are arbitrary,
-since the data were simulated with no such boundaries.
+% In Fig \ref{simK1_pies}, we show the results of the dataset simulated with $K=1$, 
+% contrasting the results of the nonspatial model runs with 2--4 layers 
+% with those of spatial model with 2--4 layers.
+% 
+% In Fig \ref{sim_xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
+% The results of all analyses run on datasets simulated using $K=1$ through 3 are shown in 
+% Figs \ref{simK1_nsp_pies}-\ref{simK3_adprop_fit}.
+% 
+% To confirm that results from our nonspatial model were qualitatively similar to those of 
+% other nonspatial model-based clustering algorithms, 
+% we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, 
+% inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
 
-In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
-either plateaus at or declines from the true value of $K$ used to simulate the data 
-(Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).
-And, as $K$ in the spatial model increases, 
-deme membership in layers beyond the number used to simulate the data does not appreciably increase 
-(Fig \ref{simK1_sp_pies}, \ref{simK2_sp_pies}, \ref{simK3_sp_pies}).
+With these simulations,
+spatial \texttt{conStruct} does not create spurious clusters when there are none:
+Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
+show that subsequent layers beyond the number used for simulation are unused 
+when data is simulated with $K=1$ but analyzed with $K>1$ --
+the layers are present, but contribute very little to any population.
 Even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
 Moreover, the method infers the true admixture proportions with high accuracy, tight precision, and good coverage 
 (Figs \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit}).
 
-Finally, we calculated layer contribution for 
-analyses run in each simulation 
-(Fig \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}).
+In contrast, the nonspatial model describes geographic variation
+using gradients of admixture between more and more discrete clusters
+to better approximate the continuous, spatial patterns of relatedness
+(depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}).
+% as $K$ in the model increases, 
+% the sampled area is increasingly divvied up between clusters 
+% with ``centers of mass" in the $K$ geographical extremes of the simulated space.
+% At $K=2$, the clusters are centered in opposite corners on the map; 
+% at $K=3$, in the lower two corners and the top half; 
+% at $K=4$, all four corners, and so on.
+The fastSTRUCTURE results are qualitatively similar, as shown in Figs \ref{fastStr_simK1}-\ref{fastStr_simK3}.
+Each non-spatial cluster is in truth genetically more similar within itself
+than it is to other clusters,
+but we know that these boundaries are arbitrary,
+since the data were simulated with no such boundaries.
+
+The spatial model's better fit is reflected by increased predictive accuracy:
+as shown in Fig \ref{sim_xvals},
+across all models and choices of $K$, the spatial model is correctly preferred over the nonspatial model.
+As desired, predictive accuracy of the spatial model increases until the true value of $K$,
+and then plateaus or declines
+(Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}),
+while the predictive accuracy of the nonspatial model increases as subsequent clusters are added.
+
+% In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
+% either plateaus at or declines from the true value of $K$ used to simulate the data 
+% (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).
+
+The unimportance of spurious layers can be seen in plots of layer contributions,
+Figs \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}.
 In the spatial analyses, once we pass the true $K$, 
 subsequent layers add little in terms of (co)variance explained; 
-in contrast, additional clusters in the nonspatial analyses continue to
-be important for describing variation, 
-as they are forced to partition up the spatial patterns within clusters.
+in contrast, additional clusters in the nonspatial analyses continue to contribute substantially.
 
 \begin{figure}
 	\centering
