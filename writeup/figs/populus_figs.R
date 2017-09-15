@@ -119,7 +119,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/Fig4_pop_sp_results.pdf",width=12,height=8,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/pop_sp_results.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8,pointsize=14)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	csr1.order <- NULL

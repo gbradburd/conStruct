@@ -106,7 +106,7 @@ for(k in 2:7){
 }
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/Fig6_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
 	layout(cbind(matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
 				 matrix(2+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE)))
 	par(mar=c(5,5,1,1))
