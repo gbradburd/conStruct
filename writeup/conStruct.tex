@@ -373,7 +373,7 @@ In this paper,
 we model genetic variation in genotyped individuals as 
 partitioned within or admixed across a specified number of discrete layers,
 within each of which relatedness decays as a parametric function of the distance between samples.
-We also implement a cross-validation approach for comparing and selecting models across different numbers of layers,
+We also implement a cross-validation approach for comparing and selecting models across different numbers of layers/clusters,
 and we demonstrate the utility of our approach using both simulated and empirical data.
 The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
 is available as an R package at 
@@ -513,7 +513,7 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 			     For convenience, each layer is depicted as a small square, but in fact, 
 			     each layer exists everywhere in the sampled area,
 			     so the small dashed circles on each layer show where 
-			     the location of the highlighted, admixed sample intersects each layer.
+			     the location of the highlighted admixed sample intersects each layer.
 			    }\label{schematic}
 \end{figure}
 
@@ -593,19 +593,19 @@ we obtain a nonspatial model in which each cluster has its own allele frequency 
 and individuals draw a proportion of their ancestry from each cluster. 
 This model is very similar to that of STRUCTURE \cite{STRUCTURE} 
 and related models (e.g., \cite{ADMIXTURE}); 
-the \gc{main} difference is that our likelihood assumes that allele frequencies are normally distributed 
+the main difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
 while the standard assignment methods assume that the error is binomially distributed \cite{Engelhardt2012}.  
 (We make this approximation for the substantial advantages in
 computational speed.)
-\gc{The second small difference is that in the original STRUCTURE model,
-  allele frequencies at each locus are independently drawn for each
-  cluster \cite{STRUCTURE}, while in conStruct's non-spatial model,
-  it is more natural to envision each layer's allele frequency
-  as being drifted away from a single, global allele frequency. 
-  This makes our model more
-  closely related to the ``$F$-model'' prior for allele frequencies \cite{falush2003}.
-As these differences are relatively small,} we can compare the fit of the different models 
+The second small difference is that, in the original STRUCTURE model, 
+allele frequencies at each locus are independently drawn for each 
+cluster \cite{STRUCTURE}, while in conStruct's non-spatial model, 
+it is more natural to envision each cluster's allele frequency 
+as being drifted away from a single, global allele frequency. 
+This makes our model more
+closely related to the ``$F$-model'' prior for allele frequencies of \cite{falush2003}.
+As these differences are relatively small, we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
 We also validate our claim that the results of our nonspatial method 
@@ -615,7 +615,7 @@ are a close match to those of STRUCTURE-based approaches.
 There are a number of reasons 
 why there is no true (or right) number of layers for real datasets,
 discussed further in the Discussion.
-However, it is still important to assess whether additional spatial layers (larger $K$)
+However, it is still important to assess whether additional layers (larger $K$)
 meaningfully model patterns in the data
 or merely explain spurious variation introduced by noise
 -- in other words, whether additional model complexity
@@ -667,16 +667,16 @@ and to choose a value of $K$ where all layers have a contribution above some cut
 The Dirichlet prior on admixture proportions
 is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
 encouraging the model to ``not use" unnecessary layers if they are
-present \gc{in the model'}, 
+present in the model, 
 so that they will have a low contribution to overall covariance.
 
 To calculate layer contributions, we use the following alternative description of our covariance model:
 the genomes of any pair of individuals \emph{agree} with some
-background probability \gc{at a locus},
+background probability at a locus,
 but this probability of agreement is increased on any segment of genome 
-that both have inherited \gc{from} the same layer 
+that both have inherited from the same layer 
 (the amount it increases depends on how far apart they are
-\gc{geographically and the decay of IBD}.)
+geographically and on the decay of IBD).
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
 as described in \secref{layer_contribution}). 
@@ -728,7 +728,7 @@ we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}
 % inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
 
 With these simulations,
-spatial \texttt{conStruct} does not create spurious clusters when there are none:
+spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
 Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
 When data are simulated with $K=1$ but analyzed with $K>1$ 
@@ -798,11 +798,12 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK1_laycon_barplots.pdf}}
 		\caption{
-			Layer contributions (i.e., how much total covariance is contributed by each layer), 
+			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
-			for the spatial model (left) and the nonspatial model (right).
+			for the spatial model (left),
+			and for all clusters using the nonspatial model (right).
 			Data were simulated using $K=1$.
-			For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
+			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK1_laycon}
 \end{figure}
 
@@ -880,7 +881,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/Fig4_pop_sp_results.pdf}}
+		{\includegraphics[width=6in,height=4in]{figs/populus/pop_sp_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 4 (a-c), 
@@ -987,7 +988,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/bears/Fig6_sp_vs_nsp.pdf}}
+		{\includegraphics[width=6in,height=3in]{figs/bears/bears_sp_vs_nsp.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
 	using the spatial model (left) and the nonspatial model (right) for $K=3$.
@@ -1012,10 +1013,11 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 	\centering
 		{\includegraphics[width=6in,height=3in]{figs/bears/bears_laycon_barplots.pdf}}
 	\caption{
-	Layer contributions (i.e., how much total covariance is contributed by each layer), 
+	Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 	for all layers estimated in runs using $K = 1$ through 7 
-	for the spatial model (left) and the nonspatial model (right).
-	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
+	for the spatial model (left),
+	and for all clusters using the nonspatial model (right).
+	For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 	Colors are consistent with Fig \ref{bear_K3}.
     }\label{bear_laycon}
 \end{figure}
@@ -1186,7 +1188,7 @@ Calculating layer contributions may also be a useful heuristic,
 as it can reveal layers with statistical support but small biological import.
 
 Although we believe our model adds spatial realism to the groups used by clustering methods,
-it is important to note that the clusters/layers detected by our method 
+it is important to note that the layers detected by our method 
 do not necessarily correspond  to distinct, ancestral populations; 
 nor does a non-zero admixture proportion indicate that admixture 
 (i.e. gene flow) must have occurred. 
@@ -1215,7 +1217,7 @@ and thus might emphasize the importance of maintaining habitat corridors between
 or of implementing an integrated conservation plan across multiple demes within a layer.
 Conversely, two populations that are easily distinguishable based on abundant genetic data
 need not be strongly differentiated --
-cluster assignment is not a replacement for absolute measures of genetic divergence.
+pouplation assignment is not a replacement for absolute measures of genetic divergence.
 
 \paragraph{Caveats and considerations}
 There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
@@ -1581,7 +1583,7 @@ to be the average of that quantity over $i$ and $j$:
 							\left( -(\alpha^{(k)}_D D_{i,j}) ^ {\alpha^{(k)}_2}\right) 
 						\right) + 2\phi^{(k)} + \frac{1}{2}
 				\right) ,
-\label{layer_contribution}
+\label{abs_layer_contribution}
 \end{equation}
 which is that layer's contribution to agreement between samples 
 summed over the upper triangle (excluding the diagonal) of the covariance matrix.
@@ -1713,11 +1715,12 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK2_laycon_barplots.pdf}}
 		\caption{
-			Layer contributions (i.e., how much total covariance is contributed by each layer), 
+			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
-			for the spatial model (left) and the nonspatial model (right).
+			for the spatial model (left), 
+			and for all clusters using the nonspatial model (right).
 			Data were simulated using $K=2$.
-			For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
+			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK2_laycon}
 \end{figure}
 
@@ -1763,11 +1766,12 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK3_laycon_barplots.pdf}}
 		\caption{
-			Layer contributions (i.e., how much total covariance is contributed by each layer), 
+			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
-			for the spatial model (left) and the nonspatial model (right).
+			for the spatial model (left), 
+			and for all clusters using the nonspatial model (right).
 			Data were simulated using $K=3$.
-			For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
+			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK3_laycon}
 \end{figure}
 
@@ -1863,10 +1867,10 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_layer_covs.pdf}}
 	\caption{
-	Plots showing the layer-specific parametric covariances 
+	Plots showing the cluster-specific parametric covariances 
 	estimated for the \textit{Populus} data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
-	Line colors are consistent with layer colors in Fig \ref{populus_nsp_pies}.
+	Line colors are consistent with cluster colors in Fig \ref{populus_nsp_pies}.
 	Points are colored by the species they are a covariance between:
 	black on black points are sample covariances between populations of \textit{Populus balsamifera};
 	green on black points are sample covariances between \bals{} and \tri{};
@@ -1878,10 +1882,11 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=3in]{figs/populus/populus_laycon_barplots.pdf}}
 	\caption{
-	Layer contributions (i.e., how much total covariance is contributed by each layer), 
+	Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 	for all layers estimated in runs using $K = 1$ through 7 
-	for the spatial model (left) and the nonspatial model (right).
-	For each value of $K$ along the x-axis, there are an equal number of layer contributions plotted.
+	for the spatial model (left), 
+	and for all clusters using the nonspatial model (right).
+	For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_layer_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_layer_covs}.
     }\label{populus_laycon}
 \end{figure}
@@ -1927,7 +1932,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_layer_covs.pdf}}
 	\caption{
-	Plots showing the layer-specific parametric covariances 
+	Plots showing the cluster-specific parametric covariances 
 	estimated for the black bear data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
     }\label{bear_nsp_layer_covs}
