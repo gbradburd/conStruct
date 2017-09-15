@@ -77,7 +77,7 @@
 
 %% added PLR
 \newif\ifsubmissionversion
-% \submissionversionfalse
+%\submissionversionfalse
 \submissionversiontrue
 \newif\ifincludesupplement
 \includesupplementtrue
@@ -319,7 +319,7 @@ We predict that our method will be an important tool for the analysis of genetic
 A fundamental quandary in the description of biological diversity is
 the fact that diversity shows both discrete and continuous patterns. 
 For example, reasonable people can disagree about whether two 
-populations are separate species, because the 
+populations are separate species because the 
 process of speciation is usually gradual, and so there is no set point
 in the continuous divergence of populations when they unambiguously become discrete species.
 The issue of identifying meaningful biological subunits 
@@ -347,9 +347,9 @@ requiring methods that can disentangle the two.
 There have been many methods proposed to characterize population
 genetic structure,
 including generating population phylogenies \cite{CavalliSforza1975, treemix},
-dimensionality-reduction approaches \cite{meirmans2009genodive}, 
+dimensionality-reduction approaches, 
 such as principal components analysis 
-\cite{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
+\cite{meirmans2009genodive,menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches 
 (e.g., \cite{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, 
 FINESTRUCTURE, fastStructure, huelsenbeck2007inference, 
@@ -372,7 +372,7 @@ but this does not address the underlying issue that
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
 
-\emph{Isolation by distance} refers to a pattern of increasing genetic differentiation
+\emph{Isolation by distance} (IBD) refers to a pattern of increasing genetic differentiation
 with geographic separation,
 which occurs when geographically restricted dispersal allows
 genetic drift to build up differentiation between distant locations
@@ -416,7 +416,7 @@ In this paper,
 we model genetic variation in genotyped individuals as 
 partitioned within or admixed across a specified number of discrete layers,
 within each of which relatedness decays as a parametric function of the distance between samples.
-We also implement a cross-validation approach for comparing and selecting models across different numbers of layers/clusters,
+We also implement a cross-validation approach for comparing and selecting models across different numbers of layers,
 and we demonstrate the utility of our approach using both simulated and empirical data.
 The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
 is available as an R package at 
@@ -468,7 +468,7 @@ Therefore,
 this allelic covariance is more affected in shape by singleton sites
 than the standard genetic covariance,
 so it may be advisable to filter these prior to analysis
-if they are likely to contain a large percentage of errors.
+if they are likely to contain a large percentage of errors \cite{linck_battey2017}.
 
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
@@ -529,13 +529,13 @@ If two samples draw 100\% of their ancestry from layer $k$, then their covarianc
 if they are furthermore geographically very close ($D_{i,j}=0$)
 they will have covariance $\alpha^{(k)}_0 +  \phi^{(k)}$.
 If the geographic distance between them is very large, 
-their covariance will be equal to to the background level $\phi^{(k)}$ within the layer.
+their covariance will be equal to the background level $\phi^{(k)}$ within the layer.
 The ``shared drift'' parameter $\phi^{(k)}$ is analogous to 
 the branch length connecting the $k$th population to the population ancestral to all modeled
 layers (see for example \cite{patterson_ancient_2012,peter_fstats}),
 although they cannot be directly compared because 
 we are modeling the allelic, rather than genetic, covariance. 
-In \ref{rationale} we lay out a
+In \secref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one layer.
@@ -617,13 +617,13 @@ P\left( w,\alpha,\phi,\eta,\gamma \;|\; \widehat{\Omega} \right)
 where $P(w)$, $P(\alpha)$, $P(\phi)$, $P(\eta)$, and $P(\gamma)$, are prior distributions.
 All parameters are given (half-)Gaussian priors 
 except for $\alpha_2$, which is uniform on $(0,2)$, 
-and $w$, for which we use an independent Dirichlet of dimension $K$ for each individual
+and $w$, for which we use an independent Dirichlet of dimension $K$ for each sample
 (see Table \ref{tab:param_prior_tab} for specifics).
 Parameters are independent between layers.
 We use Hamiltonian Monte Carlo as implemented in STAN \cite{stan, NUTS, stan_lib, rstan} 
 to estimate the posterior distribution on the parameters.
 We also provide an R package \cite{R} called \texttt{conStruct} 
-(for ``continuous structure") that functions as a wrapper around this inference machinery.
+(for ``\emph{con}tinuous \emph{struct}ure") that functions as a wrapper around this inference machinery.
 
 
 \paragraph{Relationship of this model to nonspatial structure models}
@@ -690,17 +690,17 @@ is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
 than others (see \secref{Xvalidation} for more on our cross-validation procedure).
-In general, larger values of $K$ allows the model more flexibility,
+In general, larger values of $K$ allow the model more flexibility,
 and thus increases the likelihood of the training partition, 
 but this improvement in the likelihood will plateau (or even peak), 
-since above a certain $K$ the model only fits noise specific to the training data 
+as above a certain $K$ the model only fits noise specific to the training data 
 rather than generalizable patterns.
 At any value of $K$, support for the spatial model over the nonspatial model 
 means that isolation by distance is likely a feature of the data.
 
 Cross-validation provides a valuable summary of how much explanatory power
 is added by spatial structure within each layer, and each additional layer.
-However, we remind users that ``statistical significance does not imply real-world significance'',
+However, we remind users that ``statistical significance does not imply real-world significance','
 and so small but statistically significant differences between models
 should probably not be relied on too strongly.
 
@@ -774,7 +774,7 @@ With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
 Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
-When data are simulated with $K=1$ but analyzed with $K>1$ 
+When data are simulated with $K=1$ but analyzed with $K>1$, 
 the layers are present, but contribute very little to any population.
 Even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
@@ -796,7 +796,7 @@ The fastSTRUCTURE results are qualitatively similar, as shown in Figs \ref{fastS
 Each nonspatial cluster is in truth genetically more similar within itself
 than it is to other clusters,
 but we know that these boundaries are arbitrary,
-because the data were simulated with no such boundaries.
+because the data were simulated without them.
 
 The spatial model's better fit is reflected by increased predictive accuracy:
 as shown in Fig \ref{sim_xvals},
@@ -853,7 +853,8 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 
 \subsection*{Empirical Applications}
 
-To demonstrate the utility of this method, we analyzed empirical population genomic data from two systems:
+To further demonstrate the utility of this method, 
+we also analyzed empirical population genomic data from two systems:
 a contact zone between two poplar species in northwestern North America,
 and a large North American sample of black bears.
 
@@ -981,7 +982,7 @@ Across multiple replicate runs,
 both nonspatial \texttt{conStruct} and fastSTRUCTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
 The details of each were somewhat different 
-(e.g. Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_fastStr}), 
+(Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_fastStr}), 
 and also differed across the replicate analyses.
 
 
@@ -1068,7 +1069,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 The results partition the sampled bears into two main groups:
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
-the other primarily west of the Rockies (blue).
+the other primarily west of the Rockies (blue)  (Fig \ref{bear_K3}a).
 The disjointed range of the blue layer likely reflects the fact
 that Canada was not sampled, 
 and so the red layer may extend
@@ -1415,7 +1416,7 @@ We note that this form is chosen for its flexibility,
 and not because it matches any explicit population genetic model of isolation by distance. 
 
 \section*{Allelic covariance}\label{allelic_cov}
-To see how to arrive at our empirical variance-covariance expression, Eq.\ \eqref{allelic_covariance},
+To see how to arrive at our empirical variance-covariance expression (Eq.\ \eqref{allelic_covariance})
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
 If $i=j$, then these are chosen \emph{without} replacement.
@@ -1544,7 +1545,7 @@ Briefly, we follow the following procedure:
 				\item $m$: the spatial and the nonspatial model
 				\item $k$: the number of layers/clusters 1 through $K$
 			\end{enumerate}	
-	\item calculate the mean log likelihood of the testing data partition, 
+	\item calculate the mean log likelihood of the testing data partition  
 	over the posterior distribution of training-estimated parameters for each model 
 	($\bar{\mathcal{L}}(F^x_2 \mid \theta_{mk})$, henceforth $\bar{\mathcal{L}}_{xmk}$) \label{lnL}
 	\item generate standardized mean log likelihoods, $\mathcal{Z}_{xmk}$, across models: \label{standardize}
@@ -1731,7 +1732,7 @@ whose votes determined the name of the method.
 \fi
 
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
