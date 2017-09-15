@@ -140,7 +140,7 @@
 \renewcommand{\figurename}{Fig}
 
 % Use the PLoS provided BiBTeX style
-\bibliographystyle{plos2015}
+\bibliographystyle{latex/plos2015}
 
 % Remove brackets from numbering in List of References
 \makeatletter
@@ -157,7 +157,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \setlength{\headheight}{27.023pt}
-\lhead{\includegraphics[width=2.0in]{PLOS-submission.eps}}
+\lhead{\includegraphics[width=2.0in]{latex/PLOS-submission.eps}}
 \rfoot{\thepage/\pageref{LastPage}}
 \renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
 \fancyheadoffset[L]{2.25in}
@@ -172,11 +172,20 @@
 \newcommand{\tri}{\textit{trichocarpa}} 
 \newcommand{\bals}{\textit{balsamifera}}
 
-\include{macros}
 
 \newcommand{\gb}[1]{{\it\color{magenta}{(#1)}}}
 \newcommand{\plr}[1]{{\it\color{purple}{(#1)}}}
 \newcommand{\gc}[1]{{\it\color{blue}{(#1)}}}
+
+
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\var}{\mathop{\mbox{Var}}}
+\newcommand{\cov}{\mathop{\mbox{cov}}}
+\newcommand{\supp}{\mathop{\mbox{supp}}}
+\newcommand{\sgn}{\mathop{\mbox{sgn}}}
+\newcommand{\bone}{\mathbf{1}}
 
 %% END MACROS SECTION
 
@@ -281,9 +290,9 @@ are required to accurately describe most species' patterns of genetic relatednes
 
 From a practical standpoint, even while acknowledging continuous
 processes, we often need to identify somewhat separable populations 
-from which individuals are sampled \citep{wright1949genetical}.
+from which individuals are sampled \cite{wright1949genetical}.
 Delineating populations is useful for systematics and for
-informing conservation priorities \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
+informing conservation priorities \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
 Furthermore, we often need to identify subsets of indivduals resulting from reasonably coherent
 evolutionary histories for downstream analyses to learn about population history and adaptation.
 Conversely,
@@ -294,19 +303,19 @@ requiring methods that can disentangle the two.
 
 There have been many methods proposed to characterize population
 genetic structure,
-including generating population phylogenies \citep{CavalliSforza1975, treemix},
-dimensionality-reduction approaches \citep{meirmans2009genodive}, 
+including generating population phylogenies \cite{CavalliSforza1975, treemix},
+dimensionality-reduction approaches \cite{meirmans2009genodive}, 
 such as principal components analysis 
-\citep{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
+\cite{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches 
-\citep[e.g.][]{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, 
+(e.g., \cite{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, 
 FINESTRUCTURE, fastStructure, huelsenbeck2007inference, 
-Corander2003,TESS,geneland}, among others.
+Corander2003,TESS,geneland}), among others.
 Each of these methods perform best in particular situations,
 but many can give misleading results when applied to data 
 that show a continuous pattern of differentiation,
 as that produced by geographic isolation by distance 
-\citep{Wright1943, novembre_interpreting_2008, Frantz2009}.
+\cite{Wright1943, novembre_interpreting_2008, Frantz2009}.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
 Existing model-based clustering methods model each individual's genotypes 
 as random draws from a set of underlying, unobserved population clusters, 
@@ -315,7 +324,7 @@ These underlying frequencies are identical
 for all individuals assigned to a cluster, 
 \emph{regardless} of their spatial location. 
 Spatial information has been incorporated into some of these methods, 
-by, for example, placing spatial priors on cluster memberships \citep{geneland,TESS}, 
+by, for example, placing spatial priors on cluster memberships \cite{geneland,TESS}, 
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
@@ -324,19 +333,19 @@ are constant in a cluster across the species' range.
 with geographic separation,
 which occurs when geographically restricted dispersal allows
 genetic drift to build up differentiation between distant locations
-\citep{Wright1943}. 
+\cite{Wright1943}. 
 Theoretical work,
 mostly derived from ``stepping-stone'' models 
-\citep{kimura1964stepping,sawyer1976stepping,shiga1984stepping},
+\cite{kimura1964stepping,sawyer1976stepping,shiga1984stepping},
 gives us some analytical predictions for isolation by distance
-\citep{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
-but substantial work remains to be done \citep{barton2002neutral,barton2013modelling}.
+\cite{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
+but substantial work remains to be done \cite{barton2002neutral,barton2013modelling}.
 % IBD has been modeled in both spatially continuous frameworks 
 % in which an individual's parents are found within some radius of that individual's location,
-% and discrete, ``stepping-stone'' frameworks \citep{kimura1964stepping},
+% and discrete, ``stepping-stone'' frameworks \cite{kimura1964stepping},
 % in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
-it is unsurprising that IBD is very widespread in nature \citep{meirmans2012,Sexton_etal_2014}.
+it is unsurprising that IBD is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
 
 The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
 as it is frequently difficult to determine whether observed patterns of genetic variation are 
@@ -344,11 +353,11 @@ continuously distributed across a landscape, or instead are partitioned in discr
 This problem can be compounded if sampling is done unevenly or discretely across a population or species' range,
 and has given rise to a debate in the population genetic literature
 about how best to describe sets of individuals using continuous clines and discrete clusters 
-\citep[e.g.][]{SerrePaabo2004,rosenberg2005clines}.
+(e.g., \cite{SerrePaabo2004,rosenberg2005clines}).
 
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, and so tend to erroneously describe continuously distributed variation with multiple clusters that 
-show spatially autocorrelated cluster membership \citep{Frantz2009,meirmans2012}.
+show spatially autocorrelated cluster membership \cite{Frantz2009,meirmans2012}.
 In analyses of empirical datasets, which often are characterized by IBD,
 model-based clustering approaches will therefore tend to overestimate
 the number of discrete clusters present. 
@@ -403,7 +412,7 @@ of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
 The diagonal (where $i=j$) does not have this interpretation, 
 and reflects the covariance between individual alleles drawn from within the population.
 
-This definition of covariance differs from the usual ``genetic covariance'' \citep{mcvean_genealogical_2009}
+This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
 and so to make the statistic invariant under choices of reference allele, 
 (b) we randomly choose an allele to count at each locus.
@@ -469,9 +478,9 @@ and the $\alpha^{(k)}$ parameters control the shape of the decay of
 covariance with distance in the layer.
 Our choice of a powered-exponential decay, 
 as parameterized by the $\alpha$s, 
-is a flexible and standard choice in spatial statistics \citep{Diggle1998}, 
+is a flexible and standard choice in spatial statistics \cite{Diggle1998}, 
 and is not chosen to match a particular population genetics model. 
-% (Analytical theory \citep{barton2002neutral} predicts the decay should be proportional to $\exp{-D}/\sqrt{D}$.)
+% (Analytical theory \cite{barton2002neutral} predicts the decay should be proportional to $\exp{-D}/\sqrt{D}$.)
 The $\phi^{(k)}$ is a parameter that describes the background covariance within the layer. 
 If two samples draw 100\% of their ancestry from layer $k$, then their covariance under the model is $G^{(k)}_{i,j}$;
 if they are furthermore geographically very close ($D_{i,j}=0$)
@@ -480,7 +489,7 @@ If the geographic distance between them is very large,
 their covariance will be equal to to the background level $\phi^{(k)}$ within the layer.
 The ``shared drift'' parameter $\phi^{(k)}$ is analogous to 
 the branch length connecting the $k$th population to the population ancestral to all modeled
-layers \citep[see for example ][]{patterson_ancient_2012,peter_fstats},
+layers (see for example \cite{patterson_ancient_2012,peter_fstats}),
 although they cannot be directly compared because 
 we are modeling the allelic, rather than genetic, covariance. 
 In \ref{rationale} we lay out a
@@ -549,7 +558,7 @@ number of degrees of freedom.
 One possible solution, which we have not yet found necessary to implement,
 would be to estimate an \emph{effective} number of loci 
 by introducing a parameter to modify the given degrees of freedom 
-and thereby informally model linkage between loci \citep[e.g.][]{EEMS}.
+and thereby informally model linkage between loci (e.g., \cite{EEMS}).
 
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
@@ -568,9 +577,9 @@ except for $\alpha_2$, which is uniform on $(0,2)$,
 and $w$, for which we use an independent Dirichlet of dimension $K$ for each individual
 (see Table \ref{tab:param_prior_tab} for specifics).
 Parameters are independent between layers.
-We use Hamiltonian Monte Carlo as implemented in STAN \citep{stan, NUTS, stan_lib, rstan} 
+We use Hamiltonian Monte Carlo as implemented in STAN \cite{stan, NUTS, stan_lib, rstan} 
 to estimate the posterior distribution on the parameters.
-We also provide an R package \citep{R} called \texttt{conStruct} 
+We also provide an R package \cite{R} called \texttt{conStruct} 
 (for ``continuous structure") that functions as a wrapper around this inference machinery.
 
 
@@ -582,20 +591,20 @@ contains a nonspatial assignment model as a special case
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
-This model is very similar to that of STRUCTURE \citep{STRUCTURE} 
-and related models \citep[e.g.][]{ADMIXTURE}; 
+This model is very similar to that of STRUCTURE \cite{STRUCTURE} 
+and related models (e.g., \cite{ADMIXTURE}); 
 the \gc{main} difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
-while the standard assignment methods assume that the error is binomially distributed \citep{Engelhardt2012}.  
+while the standard assignment methods assume that the error is binomially distributed \cite{Engelhardt2012}.  
 (We make this approximation for the substantial advantages in
 computational speed.)
 \gc{The second small difference is that in the original STRUCTURE model,
   allele frequencies at each locus are independently drawn for each
-  cluster \citep{STRUCTURE}, while in conStruct's non-spatial model,
+  cluster \cite{STRUCTURE}, while in conStruct's non-spatial model,
   it is more natural to envision each layer's allele frequency
   as being drifted away from a single, global allele frequency. 
   This makes our model more
-  closely related to the ``$F$-model'' prior for allele frequencies of \citet{falush2003}.
+  closely related to the ``$F$-model'' prior for allele frequencies \cite{falush2003}.
 As these differences are relatively small,} we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
@@ -617,17 +626,17 @@ and between the spatial and nonspatial models.
 
 Several approaches have been used as model choice criteria 
 for the number of discrete clusters in population genetic data, including: 
-information theoretic criteria \citep[e.g.][]{ADMIXTURE}, such as AIC or BIC;
+information theoretic criteria (e.g., \cite{ADMIXTURE}), such as AIC or BIC;
 comparisons of the likelihood of the data across different values of $K$, 
-with various criteria on how to choose a single value (e.g., \citep{Evanno2005});
+with various criteria on how to choose a single value (e.g., \cite{Evanno2005});
 or comparisons of the marginal likelihood, 
-generated either via various approximations \citep[e.g.][]{STRUCTURE}
-or via a more rigorous and computationally intensive approach such as thermodynamic integration \citep{verity_nichols2016}
-or inference using a Dirichlet process prior \citep{huelsenbeck2007inference}.
+generated either via various approximations (e.g., \cite{STRUCTURE})
+or via a more rigorous and computationally intensive approach such as thermodynamic integration \cite{verity_nichols2016}
+or inference using a Dirichlet process prior \cite{huelsenbeck2007inference}.
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
 between several methods.
 
-We use cross-validation \citep[similar in spirit to][]{ADMIXTURE_xval} to attack this problem.
+We use cross-validation (similar in spirit to \cite{ADMIXTURE_xval}) to attack this problem.
 To do this,
 we use a ``training" partition of the data (in practice, a random 90\% subset of the loci)
 to estimate the posterior distribution of the parameters,
@@ -657,14 +666,17 @@ is to calculate each layer's relative contribution to total covariance,
 and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
 The Dirichlet prior on admixture proportions
 is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
-encouraging the model to ``not use" unnecessary layers if they are present, 
+encouraging the model to ``not use" unnecessary layers if they are
+present \gc{in the model'}, 
 so that they will have a low contribution to overall covariance.
 
 To calculate layer contributions, we use the following alternative description of our covariance model:
-the genomes of any pair of individuals \emph{agree} with some background probability,
+the genomes of any pair of individuals \emph{agree} with some
+background probability \gc{at a locus},
 but this probability of agreement is increased on any segment of genome 
-that both have inherited through the same layer 
-(the amount it increases depends on how far apart they are.)
+that both have inherited \gc{from} the same layer 
+(the amount it increases depends on how far apart they are
+\gc{geographically and the decay of IBD}.)
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
 as described in \secref{layer_contribution}). 
@@ -676,7 +688,7 @@ so we take that into account when calculating each layer's contribution to the w
 
 \subsection*{Simulations}
 
-To test the method, we first generated data using the coalescent simulator \texttt{ms} \citep{Hudson2002}.
+To test the method, we first generated data using the coalescent simulator \texttt{ms} \cite{Hudson2002}.
 In each simulation,
 we split a single ancestral population into $K$ subpopulations $\tau_{\text{s}}$ units of coalescent time in the past,
 and at time $\tau_{\text{e}}$ in the past,
@@ -698,7 +710,7 @@ and compared predictive performance of the models using cross-validation.
 % To confirm that results from our nonspatial model were qualitatively similar to those of 
 % other nonspatial model-based clustering algorithms, 
 For comparison,
-we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, using $K=2-4$.
+we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, using $K=2-4$.
 % inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
 
 
@@ -712,7 +724,7 @@ we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure
 % 
 % To confirm that results from our nonspatial model were qualitatively similar to those of 
 % other nonspatial model-based clustering algorithms, 
-% we also analyzed each simulated dataset using fastSTRUCTURE \citep{fastStructure}, 
+% we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, 
 % inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
 
 With these simulations,
@@ -808,14 +820,14 @@ and a large North American sample of black bears.
 Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
 are distributed throughout the Northern Hemisphere;
 species in the genus regularly co-occur and, 
-where they do, they frequently hybridize \citep{eckenwalder1984, Cronk2005}.
+where they do, they frequently hybridize \cite{eckenwalder1984, Cronk2005}.
 
 \textit{Populus trichocarpa}, the black cottonwood,
 and \textit{Populus balsamifera}, the balsam poplar,
 have a broad zone of overlap in the Pacific Northwest,
-where they are hypothesized to hybridize \citep{geraldes_etal_2014, suarezgonzalez_etal_2016}.
+where they are hypothesized to hybridize \cite{geraldes_etal_2014, suarezgonzalez_etal_2016}.
 Both species are sampled over a large geographic region, 
-and show spatial patterns of genetic and phenotypic variation \citep{slavov_etal_2012, mckown_etal_2013},
+and show spatial patterns of genetic and phenotypic variation \cite{slavov_etal_2012, mckown_etal_2013},
 making the system well-suited for application of our method.
 % to test an analysis designed to describe
 % how genetic structure is partitioned both discretely across populations (or species)
@@ -860,7 +872,7 @@ resulting in just over 20,200 loci retained for analysis.
 We then analyzed these data, grouped by drainage, using both the spatial and nonspatial \texttt{conStruct} models, 
 using $K = 1$ through 7,
 and compared these models using cross-validation.
-For comparison, we also ran fastSTRUCTURE \citep{fastStructure} 
+For comparison, we also ran fastSTRUCTURE \cite{fastStructure} 
 using $K = 1$ through 7.
 The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
@@ -904,7 +916,7 @@ but most of this signal seems to derive from the \textit{P. trichocarpa} samples
 as seen in Figs \ref{populus_pies}d-f and \ref{populus_sp_layer_covs},
 there is almost no isolation by distance within the \bals{} layer ($\alpha_D \approx 0$).
 Both points are
-in agreement with \citet{keller_etal_2010}, 
+in agreement with \cite{keller_etal_2010}, 
 who found low diversity within the region's \bals{},
 probably as the result of a recent postglacial expansion.
 
@@ -914,11 +926,11 @@ cottonwood is absent (the break between yellow and red, for $K \geq 3$).
 The no-cottonwood belt is hypothesized to divide the species' distribution
 into northern and southern groups, which, in a provenance test, 
 were experimentally shown to display differences in ecologically relevant phenotypes 
-\citep[e.g., pathogen resistance,][]{xie2009,xie2012}.  
+(e.g., pathogen resistance, \cite{xie2009,xie2012}).  
 At higher values of $K$, drainages at the southern tip of \tri{} sampling 
 begin to split out into their own layers,
 perhaps due to introgression from the southern neighbors
-\textit{P. angustifolia} or \textit{fremontii} \citep{Zhou2012,geraldes_etal_2014}
+\textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
 
 
 Across multiple replicate runs, 
@@ -937,12 +949,12 @@ and has a broad distribution across the continent.
 During the last glacial maximum, 
 black bears were confined to isolated glacial refugia, 
 from which they subsequently expanded to occupy their current range
-\citep{WoodingWard1997,Byun1997,Stone2000,Puckett2015},
+\cite{WoodingWard1997,Byun1997,Stone2000,Puckett2015},
 %The retreat of the glaciers was relatively recent in units of 
-%black bear generation times \citep{Onorato2004}, 
+%black bear generation times \cite{Onorato2004}, 
 %so we might reasonably expect the divergence accrued between refugia 
 %to be reflected in discrete genetic structure between extant populations.
-%Black bears are strong dispersers \citep{Moore2014}, 
+%Black bears are strong dispersers \cite{Moore2014}, 
 %but they are distributed across most of the continent, 
 %so we may therefore expect them to experience distance-limited 
 %mating opportunities and exhibit a pattern of IBD.
@@ -968,7 +980,7 @@ resulting in a final dataset of 78 individuals.
 We then analyzed these data, treating individuals as the unit of analysis, 
 using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of between 1 and 7, 
 and compared these models using cross-validation.
-We also ran fastSTRUCTURE \citep{fastStructure} on the same dataset, 
+We also ran fastSTRUCTURE \cite{fastStructure} on the same dataset, 
 using $K = 2$ through 4.
 The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
 as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary Materials.
@@ -1055,7 +1067,7 @@ we see strong support for the spatial model over the nonspatial model (Fig \ref{
 This pattern may resolve a discrepancy between our results and 
 previous analyses that split Alaskan and British Columbian bears out 
 into their own cluster with an inferred Beringian glacial refugium
-\citep{Byun1997,Stone2000,Puckett2015}.
+\cite{Byun1997,Stone2000,Puckett2015}.
 Our model, which explicitly incorporates a spatial decay of relatedness, 
 allows somewhat genetically differentiated individuals 
 that are sampled far from one another to belong to the same layer,
@@ -1123,7 +1135,7 @@ scales linearly with number of samples.
 Our speed, on datasets with large sample sizes, 
 could be improved by adopting rank-one updates 
 to the inverse of the covariance matrix 
-\citep[e.g.][]{woodbury1950,sherman_morrison1950}
+(e.g., \cite{woodbury1950,sherman_morrison1950})
 when updating a sample's admixture proportions, 
 which alters only a single row/column of the covariance matrix. 
 We have not implemented this yet, 
@@ -1157,7 +1169,7 @@ From a statistical perspective, unless the data were generated under the model i
 the support for larger values of $K$ is likely to increase with increasing amounts of data.
 %(although perhaps only logarithmically).
 In the limit of infinite data, the best value of $K$ 
-may be the number of samples included in the dataset \citep{Patterson2006}.
+may be the number of samples included in the dataset \cite{Patterson2006}.
 
 From a biological perspective, 
 it is important to stress that patterns of relatedness between individuals and populations 
@@ -1180,7 +1192,7 @@ nor does a non-zero admixture proportion indicate that admixture
 (i.e. gene flow) must have occurred. 
 Both groupings and admixture proportions
 should be viewed as hypotheses that should be subject to further testing
-\citep[see][for an in-depth discussion of these points]{Falush:16}.
+(see \cite{Falush:16} for an in-depth discussion of these points).
 
 \paragraph{Implications for management and conservation}
 If isolation by distance is common, 
@@ -1190,7 +1202,7 @@ will be collapsed into each other.
 This ``lumping" might better reflect biological reality, 
 but may also have implications for management decisions and conservation policy, 
 both of which are often predicated on the identification of discrete ``management units" (MUs) 
-identified using genetic data \citep{Moritz1994,Waples_1998,Moritz_etal_2002}.
+identified using genetic data \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
 
 It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
 may be quite genetically diverged from one another, 
@@ -1212,7 +1224,7 @@ Although there is flexibility built into the model about the shape of that covar
 inference may be misleading if the sampling geography departs radically from the way 
 the sampled organisms disperse (or have dispersed) on their landscape.
 For example, if we were to run a \texttt{conStruct} analysis using geographic distances between 
-sampled individuals of greenish warblers \citep{Irwin2001} or \textit{Ensatina} salamanders \citep{wake_schneider1998} 
+sampled individuals of greenish warblers \cite{Irwin2001} or \textit{Ensatina} salamanders \cite{wake_schneider1998} 
 --- two canonical examples of rings species --- 
 we might get misleading results.
 This is because distance between locations on either side of the species' distributions
@@ -1235,18 +1247,18 @@ and to examine the spatial covariance functions within layers when interpreting 
 There are several ways in which the model described in this paper might be extended or improved.  
 For example, we currently assume that all layers within a model are equally unrelated 
 (a star population phylogeny, although the branches can have different lengths thanks to the $\phi^{(k)}$ parameter), 
-similar to the F-model in \citet{falush2003}.
+similar to the F-model of \cite{falush2003}.
 However, we could extend the existing model by implementing 
 a relatedness structure between the layers by, for example, 
 estimating a population phylogeny between them
-\citep[e.g.][]{treemix}.
+(e.g, \cite{treemix}).
 
 In addition, here we have assumed that samples have known geographic coordinates, 
 and that they draw ancestry from layers only at those sampled locations. 
 A natural extension would be to attempt to ``geo-locate'' 
-the ancestry of samples without geographic coordinates \citep{Wasser2004}. 
+the ancestry of samples without geographic coordinates \cite{Wasser2004}. 
 We could also imagine letting samples draw ancestry from other geographic coordinates, 
-as we have done in a previous approach \citep{spacemix} to model long distance dispersal. 
+as we have done in a previous approach \cite{spacemix} to model long distance dispersal. 
 We could even allow entire layers to bud off of a particular location on another layer. 
 This would enable more explicit modeling of range expansion or domestication, 
 in which a set of individuals are thought to have ancestry that originated from
@@ -1256,7 +1268,7 @@ A final direction would be to model relatedness within a layer as a spatiotempor
 in which covariance decays both with distance in space and in time.  
 As the number of genotyped historical or ancient samples increases, 
 it is becoming possible to ask whether there is genetic continuity at a point in space across time, 
-or whether populations are being replaced \citep{lazaridis_ancient_2014, Haak2015, slatkin_racimo2016, Nielsen2017, Schraiber2017}.
+or whether populations are being replaced \cite{lazaridis_ancient_2014, Haak2015, slatkin_racimo2016, Nielsen2017, Schraiber2017}.
 However, we expect allele frequencies to change through time in a population, 
 even without replacement, simply due to drift.
 Therefore, a natural way to test for population replacement is to estimate the rates 
@@ -1307,7 +1319,7 @@ If we have two samples $i$ and $j$ drawn from layer $k$,
 their covariance across loci will be 
 \begin{equation}
 \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right) +
-\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right)\ \\
+\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right),
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
 as in Eq.\ \eqref{cross_layer_covariance}.
@@ -1475,7 +1487,7 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \newpage
 \section*{Cross validation}\label{Xvalidation}
 
-We employ Monte Carlo cross-validation approach for model comparison \citep{picard1984}. 
+We employ Monte Carlo cross-validation approach for model comparison \cite{picard1984}. 
 This procedure generates a mean predictive accuracy for each model and each value of $K$, 
 as well as a confidence interval around that mean,
 which can then be used for model comparison or selection.
@@ -1597,7 +1609,7 @@ but no unambiguous ancestry proportions for admixed populations.
 Here, we describe in more detail the procedure we use to simulate our test dataset, 
 using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
 
-Using the program \texttt{ms} \citep{Hudson2002}, 
+Using the program \texttt{ms} \cite{Hudson2002}, 
 we generated discrete population structure by simulating $K$ distinct populations,
 each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
 without subsequent migration between them.
@@ -1782,7 +1794,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK1_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK1}
 \end{figure}
@@ -1791,7 +1803,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK2_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK2}
 \end{figure}
@@ -1800,7 +1812,7 @@ as might be expected if a spatial process were mediating admixture between diver
 	\centering
 		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK3_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK3}
 \end{figure}
@@ -1879,7 +1891,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=4in]{figs/populus/poplar_fastStr_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
-	using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 7.
+	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 7.
     }\label{populus_fastStr}
 \end{figure}
 
@@ -1926,7 +1938,7 @@ as might be expected if a spatial process were mediating admixture between diver
 		{\includegraphics[width=6in,height=2in]{figs/bears/bear_fastStr_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
-	using fastSTRUCTURE \citep{fastStructure} for $K=2$ through 4.
+	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
     }\label{bear_fastStr}
 \end{figure}
 
