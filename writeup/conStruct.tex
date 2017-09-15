@@ -1,22 +1,170 @@
-\documentclass[12pt]{article}
-\usepackage{graphicx}
-\usepackage{float}
-\usepackage{hyperref}
-\usepackage{mathtools}
-\usepackage[usenames,dvipsnames]{xcolor}
-\usepackage[authoryear]{natbib}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{bigints}
+% Template for PLoS
+% Version 3.4 January 2017
+%
+% % % % % % % % % % % % % % % % % % % % % %
+%
+% -- IMPORTANT NOTE
+%
+% This template contains comments intended 
+% to minimize problems and delays during our production 
+% process. Please follow the template instructions
+% whenever possible.
+%
+% % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Once your paper is accepted for publication, 
+% PLEASE REMOVE ALL TRACKED CHANGES in this file 
+% and leave only the final text of your manuscript. 
+% PLOS recommends the use of latexdiff to track changes during review, as this will help to maintain a clean tex file.
+% Visit https://www.ctan.org/pkg/latexdiff?lang=en for info or contact us at latex@plos.org.
+%
+%
+% There are no restrictions on package use within the LaTeX files except that 
+% no packages listed in the template may be deleted.
+%
+% Please do not include colors or graphics in the text.
+%
+% The manuscript LaTeX source should be contained within a single file (do not use \input, \externaldocument, or similar commands).
+%
+% % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- FIGURES AND TABLES
+%
+% Please include tables/figure captions directly after the paragraph where they are first cited in the text.
+%
+% DO NOT INCLUDE GRAPHICS IN YOUR MANUSCRIPT
+% - Figures should be uploaded separately from your manuscript file. 
+% - Figures generated using LaTeX should be extracted and removed from the PDF before submission. 
+% - Figures containing multiple panels/subfigures must be combined into one image file before submission.
+% For figure citations, please use "Fig" instead of "Figure".
+% See http://journals.plos.org/plosone/s/figures for PLOS figure guidelines.
+%
+% Tables should be cell-based and may not contain:
+% - spacing/line breaks within cells to alter layout or alignment
+% - do not nest tabular environments (no tabular environments within tabular environments)
+% - no graphics or colored text (cell background color/shading OK)
+% See http://journals.plos.org/plosone/s/tables for table guidelines.
+%
+% For tables that exceed the width of the text column, use the adjustwidth environment as illustrated in the example table in text below.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- EQUATIONS, MATH SYMBOLS, SUBSCRIPTS, AND SUPERSCRIPTS
+%
+% IMPORTANT
+% Below are a few tips to help format your equations and other special characters according to our specifications. For more tips to help reduce the possibility of formatting errors during conversion, please see our LaTeX guidelines at http://journals.plos.org/plosone/s/latex
+%
+% For inline equations, please be sure to include all portions of an equation in the math environment.  For example, x$^2$ is incorrect; this should be formatted as $x^2$ (or $\mathrm{x}^2$ if the romanized font is desired).
+%
+% Do not include text that is not math in the math environment. For example, CO2 should be written as CO\textsubscript{2} instead of CO$_2$.
+%
+% Please add line breaks to long display equations when possible in order to fit size of the column. 
+%
+% For inline equations, please do not include punctuation (commas, etc) within the math environment unless this is part of the equation.
+%
+% When adding superscript or subscripts outside of brackets/braces, please group using {}.  For example, change "[U(D,E,\gamma)]^2" to "{[U(D,E,\gamma)]}^2". 
+%
+% Do not use \cal for caligraphic font.  Instead, use \mathcal{}
+%
+% % % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Please contact latex@plos.org with any questions.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
+
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
+
+% amsmath and amssymb packages, useful for mathematical formulas and symbols
+\usepackage{amsmath,amssymb}
+
+% Use adjustwidth environment to exceed column width (see example table in text)
+\usepackage{changepage}
+
+% Use Unicode characters when possible
+\usepackage[utf8x]{inputenc}
+
+% textcomp package and marvosym package for additional characters
+\usepackage{textcomp,marvosym}
+
+% cite package, to clean up citations in the main text. Do not remove.
+\usepackage{cite}
+
+% Use nameref to cite supporting information files (see Supporting Information section for more info)
+\usepackage{nameref,hyperref}
+
+% line numbers
+\usepackage[right]{lineno}
+
+% ligatures disabled
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+
+% color can be used to apply background shading to table cells only
+\usepackage[table]{xcolor}
+
+% array package and thick rules for tables
 \usepackage{array}
-\usepackage{tikz}
-\usepackage{longtable}
-\usepackage{geometry}
 
-\bibliographystyle{plainnat}
+% create "+" rule type for thick vertical lines
+\newcolumntype{+}{!{\vrule width 2pt}}
 
-\setlength{\parskip}{\baselineskip}
-\setlength{\parindent}{0pt}
+% create \thickcline for thick horizontal lines of variable length
+\newlength\savedwidth
+\newcommand\thickcline[1]{%
+  \noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+  \cline{#1}%
+  \noalign{\vskip\arrayrulewidth}%
+  \noalign{\global\arrayrulewidth\savedwidth}%
+}
+
+% \thickhline command for thick horizontal lines that span the table
+\newcommand\thickhline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+\hline
+\noalign{\global\arrayrulewidth\savedwidth}}
+
+
+% Remove comment for double spacing
+%\usepackage{setspace} 
+%\doublespacing
+
+% Text layout
+\raggedright
+\setlength{\parindent}{0.5cm}
+\textwidth 5.25in 
+\textheight 8.75in
+
+% Bold the 'Figure #' in the caption and separate it from the title/caption with a period
+% Captions will be left justified
+\usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
+\renewcommand{\figurename}{Fig}
+
+% Use the PLoS provided BiBTeX style
+\bibliographystyle{plos2015}
+
+% Remove brackets from numbering in List of References
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+
+% Leave date blank
+\date{}
+
+% Header and Footer with logo
+\usepackage{lastpage,fancyhdr,graphicx}
+\usepackage{epstopdf}
+\pagestyle{myheadings}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{27.023pt}
+\lhead{\includegraphics[width=2.0in]{PLOS-submission.eps}}
+\rfoot{\thepage/\pageref{LastPage}}
+\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+\fancyheadoffset[L]{2.25in}
+\fancyfootoffset[L]{2.25in}
+\lfoot{\sf PLOS}
+
+%% Include all macros below
 
 \newcommand{\e}[1]{{\mathbb E}\left[ #1 \right]}
 \newcommand{\given}{\mid}
@@ -30,41 +178,54 @@
 \newcommand{\plr}[1]{{\it\color{purple}{(#1)}}}
 \newcommand{\gc}[1]{{\it\color{blue}{(#1)}}}
 
-\geometry{a4paper}
+%% END MACROS SECTION
 
-\title{Inferring Continuous and Discrete Population Genetic Structure Across Space}
-\date{\vspace{-5ex}}
-\author{
-Gideon S.\ Bradburd$^{1,a}$, 
-Graham M.\ Coop$^{2,b}$,
-Peter L.\ Ralph$^{3,c}$}
 
 \begin{document}
+\vspace*{0.2in}
 
-\maketitle
-
-\textsuperscript{1}
+% Title must be 250 characters or less.
+\begin{flushleft}
+{\Large
+\textbf\newline{Inferring continuous and discrete population genetic structure across space}
+}
+\newline
+% Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
+\\
+Gideon S.\  Bradburd\textsuperscript{1,a},
+Graham M.\  Coop\textsuperscript{2,b,\Yinyang},
+Peter L.\  Ralph\textsuperscript{3,c,\Yinyang},
+\\
+\bigskip
+\textbf{1}
 Department of Integrative Biology, 
 Ecology, Evolutionary Biology, and Behavior Graduate Group,
 Michigan State University, MI 48824
-
-\textsuperscript{2}
+\\
+\textbf{2}
 Center for Population Biology,
 Department of Evolution and Ecology, 
 University of California, Davis, CA 95616
-
-\textsuperscript{3}
+\\
+\textbf{3} 
 Institute of Ecology and Evolution,
-Department of Mathematics,
+Departments of Mathematics and Biology,
 University of Oregon, Eugene, OR 97403
+\\
+\textbf{a} bradburd@msu.edu; \\
+\textbf{b} gmcoop@ucdavis.edu;\\
+\textbf{c} plr@uoregon.edu\\
 
-\textsuperscript{a}bradburd@msu.edu; 
-\textsuperscript{b}gmcoop@ucdavis.edu;
-\textsuperscript{c}plr@uoregon.edu\\\\\
+\bigskip
 
-\newpage
- 
-\begin{abstract}
+%
+% Primary Equal Contribution Note
+\Yinyang These authors contributed equally to this work.
+
+\end{flushleft}
+% Please keep the abstract below 300 words
+\section*{Abstract}
+
 A classic problem in population genetics is the characterization 
 of discrete population structure in the presence of 
 continuous patterns of genetic differentiation.
@@ -91,7 +252,15 @@ in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
 We demonstrate the utility of this approach using simulations 
 and by applying it to empirical datasets of poplars and black bears in North America.
-\end{abstract}
+
+% Please keep the Author Summary between 150 and 200 words
+% Use first person. PLOS ONE authors please skip this step. 
+% Author Summary not valid for PLOS ONE submissions.   
+\section*{Author summary}
+\plr{WRITE AUTHOR SUMMARY}
+
+\linenumbers
+
 
 \newpage
 \section*{Introduction}
@@ -201,7 +370,8 @@ The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \
 is available as an R package at 
 \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
 
-\section*{Methods}
+% \section*{Methods}
+\section*{Results}
 
 \paragraph{Data}
 The statistical framework of our approach is conceptually similar to that in \cite{Wasser2004}, \cite{BEDASSLE}, and \cite{spacemix},
@@ -237,7 +407,7 @@ This definition of covariance differs from the usual ``genetic covariance'' \cit
 in that (a) we do not subtract locus means,
 and so to make the statistic invariant under choices of reference allele, 
 (b) we randomly choose an allele to count at each locus.
-We discuss the derivation of Eqn. \eqref{allelic_covariance} further in the Appendix (\secref{allelic_cov}).
+We discuss the derivation of Eq.\ \eqref{allelic_covariance} further in \secref{allelic_cov}.
 As noted in \cite{EEMS},
 this covariance has a close relationship to the pairwise genetic distance:
 if $\pi_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
@@ -313,7 +483,7 @@ the branch length connecting the $k$th population to the population ancestral to
 layers \citep[see for example ][]{patterson_ancient_2012,peter_fstats},
 although they cannot be directly compared because 
 we are modeling the allelic, rather than genetic, covariance. 
-In the Appendix section \ref{rationale} we lay out a
+In \ref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one layer.
@@ -406,9 +576,9 @@ We also provide an R package \citep{R} called \texttt{conStruct}
 
 \paragraph{Relationship of this model to nonspatial structure models}
 
-A nice feature of our approach is that the model described in Eqn \eqref{cross_layer_covariance} 
+A nice feature of our approach is that the model described in Eq.\ \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
-(see \secref{model_app} in the Appendix for a more in-depth discussion). 
+(see \secref{model_app} for a more in-depth discussion). 
 By setting $\alpha_0^{(k)}$ to zero for all $k$, 
 we obtain a nonspatial model in which each cluster has its own allele frequency at each SNP, 
 and individuals draw a proportion of their ancestry from each cluster. 
@@ -467,7 +637,7 @@ Prediction accuracy of a particular model (e.g., value of $K$)
 is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
-than others (see \secref{Xvalidation} in the Appendix for more on our cross-validation procedure).
+than others (see \secref{Xvalidation} for more on our cross-validation procedure).
 In general, larger values of $K$ allows the model more flexibility,
 and thus increases the likelihood of the training partition, 
 but this improvement in the likelihood will plateau (or even peak), 
@@ -497,12 +667,12 @@ that both have inherited through the same layer
 (the amount it increases depends on how far apart they are.)
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
-as described in Appendix \secref{layer_contribution}). 
+as described in \secref{layer_contribution}). 
 This layer contribution is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
 
-\section*{Results}
+% \section*{Results}
 
 \subsection*{Simulations}
 
@@ -518,7 +688,7 @@ we collapsed those $K$ discrete layers into a single grid of demes,
 choosing various amounts of admixture from these different layers
 (see Fig \ref{sim_setup}). 
 We collapsed the layers together using random admixture with spatially autocorrelated proportions 
-(see Appendix \secref{sim_details} for details), 
+(see \secref{sim_details} for details), 
 so that both the frequencies in layers and the layer memberships are
 spatially autocorrelated. 
 We simulated datasets using $K=1$, 2, and 3 layers;
@@ -1093,36 +1263,23 @@ Therefore, a natural way to test for population replacement is to estimate the r
 at which relatedness within a layer decays with time in the same way we do in the current model with space, 
 in which case a change in discrete population structure across space is comparable to population replacement across time.
 
-\section*{Acknowledgements}
-
-We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
-Mariah Meek, Doc Edge, and Matthew Stephens 
-for invaluable comments on the method and manuscript, 
-as well as Quentin Cronk, who provided input on the \textit{Populus} analyses, 
-and Emily Puckett, who provided input on the black bear analyses.
-We also thank the attendees at the 2017 SSE Meeting in Portland, OR, 
-whose votes determined the name of the method.
-This work was supported in part by 
-the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
-the National Institute of General Medical Sciences of the National
-Institutes of Health under award numbers NIH R01-GM108779 to GC,
-and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
-
 \newpage
-\section*{Appendix}
-\pagenumbering{gobble}
-\renewcommand{\theequation}{A\arabic{equation}}
-\setcounter{equation}{0}
-\renewcommand{\thetable}{A\arabic{table}}
-\setcounter{table}{0}
-\renewcommand{\thefigure}{A\arabic{figure}}
-\setcounter{figure}{0}
-\renewcommand{\thesection}{A\arabic{section}}
-\setcounter{section}{0}
+\section*{Materials and Methods}
+
+% \section*{Appendix}
+% \pagenumbering{gobble}
+% \renewcommand{\theequation}{A\arabic{equation}}
+% \setcounter{equation}{0}
+% \renewcommand{\thetable}{A\arabic{table}}
+% \setcounter{table}{0}
+% \renewcommand{\thefigure}{A\arabic{figure}}
+% \setcounter{figure}{0}
+% \renewcommand{\thesection}{A\arabic{section}}
+% \setcounter{section}{0}
 
 
-\section{Model rationale}
-\subsection{Drift, admixture, and space} \label{rationale}
+\section*{Model rationale}
+\subsection*{Drift, admixture, and space} \label{rationale}
 Here we sketch a simple model of allele frequencies and their
 covariances, to justify the form given in the main text.
 \paragraph{Drift} 
@@ -1153,7 +1310,7 @@ their covariance across loci will be
 \text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right)\ \\
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
-as in Eqn. \eqref{cross_layer_covariance}.
+as in Eq.\ \eqref{cross_layer_covariance}.
 
 \paragraph{Admixture} 
 The model above describes the simple case 
@@ -1201,8 +1358,8 @@ so that
 We note that this form is chosen for its flexibility, 
 and not because it matches any explicit population genetic model of isolation by distance. 
 
-\section{Allelic covariance}\label{allelic_cov}
-To see how to arrive at our empirical variance-covariance expression, Eqn. \eqref{allelic_covariance},
+\section*{Allelic covariance}\label{allelic_cov}
+To see how to arrive at our empirical variance-covariance expression, Eq.\ \eqref{allelic_covariance},
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
 If $i=j$, then these are chosen \emph{without} replacement.
@@ -1214,7 +1371,7 @@ sampling without replacement makes the statistic insensitive to sample size,
 and random allele flipping makes it independent of the choice of reference allele.
 By conditioning on the flip,
 and using the fact that $\E[X] = \E[Y] = 1/2$,
-Eqn. \eqref{allelic_covariance} comes from the calculation that
+Eq.\ \eqref{allelic_covariance} comes from the calculation that
 \begin{align}
 \cov[X,Y] &= \E[XY] - 1/4 = (1/2)\E[AB + (1-A)(1-B)] - 1/4\\\notag
 &= \E[(A-1/2)(B-1/2)]
@@ -1243,12 +1400,12 @@ the computation time of the likelihood is not a function of the number of loci,
 so inference can theoretically be done using whole genome data.
 
 
-\section{Models, parameters, and priors}\label{model_app}
+\section*{Models, parameters, and priors}\label{model_app}
 \paragraph{Spatial vs. nonspatial}
 In this paper, we discuss two types of models, spatial and nonspatial, 
 each of which can be implemented with different numbers of layers/clusters.
-The spatial model is parameterized as in Eqn \eqref{admixed_spatial_cov},
-and the nonspatial model is described in Eqn \eqref{admixed_discrete_covariance}.
+The spatial model is parameterized as in Eq.\ \eqref{admixed_spatial_cov},
+and the nonspatial model is described in Eq.\ \eqref{admixed_discrete_covariance}.
 The nonspatial model is a special case of the spatial model, 
 in which the value of all $\alpha$ parameters is set to 0.
 The nonspatial model therefore has $3K$ fewer parameters than the spatial model,
@@ -1316,7 +1473,7 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \end{centering}
 
 \newpage
-\section{Cross validation}\label{Xvalidation}
+\section*{Cross validation}\label{Xvalidation}
 
 We employ Monte Carlo cross-validation approach for model comparison \citep{picard1984}. 
 This procedure generates a mean predictive accuracy for each model and each value of $K$, 
@@ -1350,7 +1507,7 @@ Briefly, we follow the following procedure:
 \end{enumerate}
 
 \newpage
-\section{Calculating layer contributions}\label{layer_contribution}
+\section*{Calculating layer contributions}\label{layer_contribution}
 
 Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
 at a randomly chosen locus 
@@ -1429,7 +1586,7 @@ This is the quantity that is plotted in, e.g., Figures \ref{simK1_laycon} and \r
 
 
 \newpage
-\section{Simulation details}\label{sim_details}
+\section*{Simulation details}\label{sim_details}
 We wished to simulate data under a model that had some biological realism, 
 but at the same time had unambiguous true admixture proportions 
 (so as to test the behavior of the method).
@@ -1483,7 +1640,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \clearpage
 \newpage
-\section*{Supplementary Materials}
+\section*{Supplementary Information}
 \renewcommand{\theequation}{S\arabic{equation}}
 \setcounter{equation}{0}
 \renewcommand{\thetable}{S\arabic{table}}
@@ -1773,11 +1930,26 @@ as might be expected if a spatial process were mediating admixture between diver
     }\label{bear_fastStr}
 \end{figure}
 
+\section*{Acknowledgements}
+
+We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
+Mariah Meek, Doc Edge, and Matthew Stephens 
+for invaluable comments on the method and manuscript, 
+as well as Quentin Cronk, who provided input on the \textit{Populus} analyses, 
+and Emily Puckett, who provided input on the black bear analyses.
+We also thank the attendees at the 2017 SSE Meeting in Portland, OR, 
+whose votes determined the name of the method.
+This work was supported in part by 
+the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
+the National Institute of General Medical Sciences of the National
+Institutes of Health under award numbers NIH R01-GM108779 to GC,
+and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
+
 \newpage
 \clearpage
 \bibliography{reference.library.tex.bib}
 
-\newpage
 
 \end{document}
+
 
