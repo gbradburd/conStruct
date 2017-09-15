@@ -77,6 +77,7 @@
 
 %% added PLR
 \newif\ifsubmissionversion
+% \submissionversionfalse
 \submissionversiontrue
 \newif\ifincludesupplement
 \includesupplementtrue
@@ -108,9 +109,7 @@
 \usepackage[hidelinks]{hyperref}
 
 % line numbers
-\ifsubmissionversion
 \usepackage[right]{lineno}
-\fi
 
 % ligatures disabled
 \usepackage{microtype}
@@ -145,10 +144,14 @@
 %\doublespacing
 
 % Text layout
-\raggedright
-\setlength{\parindent}{0.5cm}
-\textwidth 5.25in 
-\textheight 8.75in
+\ifsubmissionversion
+    \raggedright
+    \setlength{\parindent}{0.5cm}
+    \textwidth 5.25in 
+    \textheight 8.75in
+\else
+    \usepackage{fullpage}
+\fi
 
 % Bold the 'Figure #' in the caption and separate it from the title/caption with a period
 % Captions will be left justified
@@ -167,18 +170,21 @@
 \date{}
 
 % Header and Footer with logo
-\usepackage{lastpage,fancyhdr,graphicx}
-\usepackage{epstopdf}
-\pagestyle{myheadings}
-\pagestyle{fancy}
-\fancyhf{}
-\setlength{\headheight}{27.023pt}
-\lhead{\includegraphics[width=\textwidth]{latex/PLOS-submission.eps}}
-\rfoot{\thepage/\pageref{LastPage}}
-\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
-\fancyheadoffset[L]{2.25in}
-\fancyfootoffset[L]{2.25in}
-\lfoot{\sf PLOS}
+\usepackage{graphicx}
+\ifsubmissionversion
+    \usepackage{lastpage,fancyhdr}
+    \usepackage{epstopdf}
+    \pagestyle{myheadings}
+    \pagestyle{fancy}
+    \fancyhf{}
+    \setlength{\headheight}{27.023pt}
+    \lhead{\includegraphics[width=\textwidth]{latex/PLOS-submission.eps}}
+    \rfoot{\thepage/\pageref{LastPage}}
+    \renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+    \fancyheadoffset[L]{2.25in}
+    \fancyfootoffset[L]{2.25in}
+    \lfoot{\sf PLOS}
+\fi
 
 %% Include all macros below
 
@@ -309,7 +315,9 @@ where they can be described by continuous patterns of variation.
 %and also demonstrate that our new method works well.  
 %We predict that our method will be an important tool for the analysis of genetic data.
 
+\ifsubmissionversion
 \linenumbers
+\fi
 
 \newpage
 \section*{Introduction}
@@ -1728,7 +1736,6 @@ whose votes determined the name of the method.
 \fi
 
 
-\newpage
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
@@ -2013,7 +2020,7 @@ whose votes determined the name of the method.
     }\label{bear_fastStr}
 \end{figure}
 
-%%% BEGIN IF INCLUDE SUPPLEMENT
+%%% END IF INCLUDE SUPPLEMENT
 \fi
 
 \end{document}
