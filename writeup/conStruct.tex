@@ -75,6 +75,19 @@
 \documentclass[10pt,letterpaper]{article}
 \usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
 
+%% added PLR
+\newif\ifsubmissionversion
+\submissionversiontrue
+\newif\ifincludesupplement
+\includesupplementtrue
+\newif\iffloatsatend
+\floatsatendfalse
+
+\iffloatsatend
+\usepackage{endfloat}
+\fi
+%% end added PLR
+
 % amsmath and amssymb packages, useful for mathematical formulas and symbols
 \usepackage{amsmath,amssymb}
 
@@ -91,10 +104,13 @@
 \usepackage{cite}
 
 % Use nameref to cite supporting information files (see Supporting Information section for more info)
-\usepackage{nameref,hyperref}
+\usepackage{nameref}
+\usepackage[hidelinks]{hyperref}
 
 % line numbers
+\ifsubmissionversion
 \usepackage[right]{lineno}
+\fi
 
 % ligatures disabled
 \usepackage{microtype}
@@ -157,7 +173,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \setlength{\headheight}{27.023pt}
-\lhead{\includegraphics[width=2.0in]{latex/PLOS-submission.eps}}
+\lhead{\includegraphics[width=\textwidth]{latex/PLOS-submission.eps}}
 \rfoot{\thepage/\pageref{LastPage}}
 \renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
 \fancyheadoffset[L]{2.25in}
@@ -504,7 +520,7 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=4in,height=2.5in]{figs/schematic/method_schematic.png}}
+		{\includegraphics[width=\textwidth]{figs/schematic/method_schematic.png}}
 		\caption{Schematic of our method, using $K=3$ as an example.
 			     The pattern of isolation by distance within each layer is denoted by their color gradients, 
 			     and $\phi^{(k)}$ denotes the covariance shared by samples with ancestry entirely in the $k$th layer.
@@ -775,7 +791,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/Fig2_simK1_sp_vs_nsp.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/Fig2_simK1_sp_vs_nsp.pdf}}
 	\caption{
 	Map of admixture proportions estimated using the nonspatial model for $K=2$ through 4 (top row)
 	and also the spatial model for $K=2$ through 4 (bottom row).
@@ -785,7 +801,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2in]{figs/sims/sim_xvals.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/sim_xvals.pdf}}
 	\caption{
 	Cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
 	comparing the spatial and nonspatial \texttt{conStruct} models 
@@ -796,7 +812,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK1_laycon_barplots.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_laycon_barplots.pdf}}
 		\caption{
 			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
@@ -881,7 +897,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/pop_sp_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/pop_sp_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 4 (a-c), 
@@ -891,7 +907,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/populus/populus_std_xval.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_std_xval.pdf}}
 	\caption{
 	Cross-validation results for \textit{Populus} dataset 
 	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
@@ -988,7 +1004,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/bears/bears_sp_vs_nsp.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bears_sp_vs_nsp.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
 	using the spatial model (left) and the nonspatial model (right) for $K=3$.
@@ -1000,7 +1016,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/bears/bear_std_xval.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_std_xval.pdf}}
 	\caption{
 	Cross-validation results for black bear dataset 
 	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
@@ -1011,7 +1027,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/bears/bears_laycon_barplots.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bears_laycon_barplots.pdf}}
 	\caption{
 	Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 	for all layers estimated in runs using $K = 1$ through 7 
@@ -1277,7 +1293,6 @@ Therefore, a natural way to test for population replacement is to estimate the r
 at which relatedness within a layer decays with time in the same way we do in the current model with space, 
 in which case a change in discrete population structure across space is comparable to population replacement across time.
 
-\newpage
 \section*{Materials and Methods}
 
 % \section*{Appendix}
@@ -1486,7 +1501,6 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \end{table}
 \end{centering}
 
-\newpage
 \section*{Cross validation}\label{Xvalidation}
 
 We employ Monte Carlo cross-validation approach for model comparison \cite{picard1984}. 
@@ -1520,7 +1534,6 @@ Briefly, we follow the following procedure:
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
 \end{enumerate}
 
-\newpage
 \section*{Calculating layer contributions}\label{layer_contribution}
 
 Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
@@ -1599,7 +1612,6 @@ as the relative contribution of the $k$th layer to total agreement:
 This is the quantity that is plotted in, e.g., Figures \ref{simK1_laycon} and \ref{bear_laycon}.
 
 
-\newpage
 \section*{Simulation details}\label{sim_details}
 We wished to simulate data under a model that had some biological realism, 
 but at the same time had unambiguous true admixture proportions 
@@ -1642,7 +1654,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=4in,height=2.5in]{figs/sims/sim_setup.png}}
+		{\includegraphics[width=\textwidth]{figs/sims/sim_setup.png}}
 		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
 			    Going forward in time, the $K$ populations split from a common ancestor at time $\tau_{\text{s}}$,
 			    then expand to each  colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
@@ -1651,6 +1663,30 @@ as might be expected if a spatial process were mediating admixture between diver
 			    or admixed between them.
 			    }\label{sim_setup}
 \end{figure}
+
+\section*{Acknowledgements}
+
+We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
+Mariah Meek, Doc Edge, and Matthew Stephens 
+for invaluable comments on the method and manuscript, 
+as well as Quentin Cronk, who provided input on the \textit{Populus} analyses, 
+and Emily Puckett, who provided input on the black bear analyses.
+We also thank the attendees at the 2017 SSE Meeting in Portland, OR, 
+whose votes determined the name of the method.
+% This work was supported in part by 
+% the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
+% the National Institute of General Medical Sciences of the National
+% Institutes of Health under award numbers NIH R01-GM108779 to GC,
+% and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
+
+
+\newpage
+\clearpage
+\bibliography{reference.library.tex.bib}
+
+
+%%% BEGIN IF INCLUDE SUPPLEMENT
+\ifincludesupplement
 
 \clearpage
 \newpage
@@ -1662,10 +1698,16 @@ as might be expected if a spatial process were mediating admixture between diver
 \renewcommand{\thefigure}{S\arabic{figure}}
 \setcounter{figure}{0}
 
+% \linespread{1}
+\iffloatsatend
+\processdelayedfloats
+\fi
+
+
 \newpage
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_nsp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
@@ -1674,7 +1716,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK1_sp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
@@ -1683,7 +1725,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK1_std_xval.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
 		\caption{
 			Cross-validation results for data simulated under $K=1$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
@@ -1695,7 +1737,7 @@ as might be expected if a spatial process were mediating admixture between diver
 \newpage
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_nsp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
@@ -1704,7 +1746,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK2_sp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
@@ -1713,7 +1755,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK2_laycon_barplots.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
 		\caption{
 			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
@@ -1726,7 +1768,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK2_std_xval.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
 		\caption{
 			Cross-validation results for data simulated under $K=2$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
@@ -1736,7 +1778,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=4in,height=4in]{figs/sims/simK2_adprop_fit.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_adprop_fit.pdf}}
 		\caption{
 			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
 			Results are from an analysis with a spatial model using $K=2$.
@@ -1745,7 +1787,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_nsp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
@@ -1754,7 +1796,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/sims/simK3_sp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
@@ -1764,7 +1806,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK3_laycon_barplots.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
 		\caption{
 			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
@@ -1777,7 +1819,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=5in,height=2.5in]{figs/sims/simK3_std_xval.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
 		\caption{
 			Cross-validation results for data simulated under $K=3$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
@@ -1787,7 +1829,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=4in,height=4in]{figs/sims/simK3_adprop_fit.pdf}}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
 		\caption{
 			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
 			Results are from an analysis with a spatial model using $K=3$.
@@ -1796,7 +1838,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK1_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK1_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
@@ -1805,7 +1847,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK2_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK2_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
@@ -1814,7 +1856,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2.25in]{figs/fastStr/fastStr_simK3_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK3_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
@@ -1823,7 +1865,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=5in]{figs/populus/populus_sampling_map.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_sampling_map.pdf}}
 	\caption{
 	Map of the sampled \textit{Populus} populations included in the analysis.
 	The color of the sampling location denotes the putative species.
@@ -1832,7 +1874,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_pies.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial model for $K=2$ through 7.
@@ -1841,7 +1883,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_pies.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the nonspatial model for $K=2$ through 7.
@@ -1850,7 +1892,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_sp_layer_covs.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_layer_covs.pdf}}
 	\caption{
 	Plots showing the layer-specific parametric covariance IBD-curves 
 	estimated for the \textit{Populus} data using 
@@ -1865,7 +1907,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/populus_nsp_layer_covs.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_layer_covs.pdf}}
 	\caption{
 	Plots showing the cluster-specific parametric covariances 
 	estimated for the \textit{Populus} data using 
@@ -1880,7 +1922,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=3in]{figs/populus/populus_laycon_barplots.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/populus_laycon_barplots.pdf}}
 	\caption{
 	Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 	for all layers estimated in runs using $K = 1$ through 7 
@@ -1893,7 +1935,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/populus/poplar_fastStr_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/poplar_fastStr_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 7.
@@ -1902,7 +1944,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sp_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the spatial model for $K=2$ through 7.
@@ -1911,7 +1953,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the nonspatial model for $K=2$ through 7.
@@ -1920,7 +1962,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_sp_layer_covs.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_layer_covs.pdf}}
 	\caption{
 	Plots showing the layer-specific parametric covariance IBD-curves 
 	estimated for the black bear data using 
@@ -1930,7 +1972,7 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=4in]{figs/bears/bear_nsp_layer_covs.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_layer_covs.pdf}}
 	\caption{
 	Plots showing the cluster-specific parametric covariances 
 	estimated for the black bear data using 
@@ -1940,32 +1982,15 @@ as might be expected if a spatial process were mediating admixture between diver
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=6in,height=2in]{figs/bears/bear_fastStr_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_fastStr_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
 	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
     }\label{bear_fastStr}
 \end{figure}
 
-\section*{Acknowledgements}
-
-We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
-Mariah Meek, Doc Edge, and Matthew Stephens 
-for invaluable comments on the method and manuscript, 
-as well as Quentin Cronk, who provided input on the \textit{Populus} analyses, 
-and Emily Puckett, who provided input on the black bear analyses.
-We also thank the attendees at the 2017 SSE Meeting in Portland, OR, 
-whose votes determined the name of the method.
-This work was supported in part by 
-the National Science Foundation under award number NSF \#1262645 (DBI) to PR and GC, 
-the National Institute of General Medical Sciences of the National
-Institutes of Health under award numbers NIH R01-GM108779 to GC,
-and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
-
-\newpage
-\clearpage
-\bibliography{reference.library.tex.bib}
-
+%%% BEGIN IF INCLUDE SUPPLEMENT
+\fi
 
 \end{document}
 

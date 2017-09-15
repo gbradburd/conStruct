@@ -1,11 +1,11 @@
-.PHONY: all, clean
+.PHONY: all, clean, epsfigs
 
 all: conStruct.pdf
 
 conStruct.pdf : reference.library.tex.bib
 
 clean: 
-	rm problem_statement-1_0.pdf problem_statement-1.asy problem_statement-1.pre problem_statement-1.tex problem_statement.aux problem_statement.fdb_latexmk problem_statement.fls problem_statement.log problem_statement.pdf problem_statement.pre
+	-rm *.aux *.log *.lof *.lot *.fff *.ttt *.out *.bbl *.blg
 
 %.pdf : %.tex %.bbl
 	while ( pdflatex $<;  grep -q "Rerun to get" $*.log ) do true ; done
@@ -28,3 +28,9 @@ clean:
 %.pdf : %.ink.svg
 	inkscape $< --export-pdf=$@
 
+%.eps : %.pdf
+	inkscape --without-gui --export-eps=$@ $<
+
+epsfigs : 
+	-mkdir -p eps_figs
+	for x in  $$(grep includegr conStruct.tex | sed -e 's/.*{//' | sed -e 's/}//g'); do y=$$(echo $$x | sed -e 's/pdf/eps/'); make $$y; mv $$y eps_figs; done
