@@ -419,13 +419,13 @@ around their expectations,
 while the standard assignment methods assume that the error is binomially distributed \citep{Engelhardt2012}.  
 (We make this approximation for the substantial advantages in
 computational speed.)
-\gc{The second small difference is that unlike the original STRUCTURE where
-  allele frequencies at a locus are independently drawn for each
-  cluster \citep{STRUCTURE}, our non-spatial model of allele
-  frequencies at locus assumes that each layer has an allele frequency
-  that deviates away ( due to drift) from some shared
-  global allele frequency. Our model of allele frequencies is therefore more
-  closely related to the F-model prior for allele frequencies of \citet{falush2003}.
+\gc{The second small difference is that in the original STRUCTURE model,
+  allele frequencies at each locus are independently drawn for each
+  cluster \citep{STRUCTURE}, while in conStruct's non-spatial model,
+  it is more natural to envision each layer's allele frequency
+  as being drifted away from a single, global allele frequency. 
+  This makes our model more
+  closely related to the ``$F$-model'' prior for allele frequencies of \citet{falush2003}.
 As these differences are relatively small,} we can compare the fit of the different models 
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
@@ -1201,7 +1201,7 @@ so that
 We note that this form is chosen for its flexibility, 
 and not because it matches any explicit population genetic model of isolation by distance. 
 
-\section{Allelic Covariance}\label{allelic_cov}
+\section{Allelic covariance}\label{allelic_cov}
 To see how to arrive at our empirical variance-covariance expression, Eqn. \eqref{allelic_covariance},
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
@@ -1780,3 +1780,4 @@ as might be expected if a spatial process were mediating admixture between diver
 \newpage
 
 \end{document}
+
