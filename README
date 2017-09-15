@@ -1,3 +1,16 @@
 conStruct (continuous Structure) ReadMe
 ========================================
 
+This repo contains the manuscript, data files, analyses, and code for the method 
+conStruct - a statistical model for modeling continuous and discrete population 
+genetic structure.
+
+To install the R package:
+
+	> library(devtools)
+	
+	> install_github("gbradburd/conStruct/code/conStruct")
+	
+Note that this package is still in beta.
+
+Direct all queries to bradburd (at) msu.edu.
