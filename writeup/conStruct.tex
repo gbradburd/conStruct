@@ -148,7 +148,7 @@
     \raggedright
     \setlength{\parindent}{0.5cm}
     \textwidth 5.25in 
-    \textheight 8.75in
+    \textheight 8.25in
 \else
     \usepackage{fullpage}
 \fi
@@ -243,9 +243,9 @@ Institute of Ecology and Evolution,
 Departments of Mathematics and Biology,
 University of Oregon, Eugene, OR 97403
 \\
-\textbf{a} bradburd@msu.edu; \\
-\textbf{b} gmcoop@ucdavis.edu;\\
-\textbf{c} plr@uoregon.edu\\
+\textbf{a} bradburd@msu.edu; 
+\textbf{b} gmcoop@ucdavis.edu;
+\textbf{c} plr@uoregon.edu
 
 \bigskip
 
@@ -270,12 +270,12 @@ between populations.
 This reflects a shortcoming of current methods for inferring and 
 visualizing population structure when applied to genetic data
 deriving from geographically distributed populations.
-Here, we present a novel statistical framework for the simultaneous inference 
+Here, we present a statistical framework for the simultaneous inference 
 of continuous and discrete patterns of population structure.
 The method estimates ancestry proportions for each 
 sample from a set of two-dimensional population layers, 
 and, within each layer, estimates a rate at which relatedness decays with distance.
-This model explicitly addresses the ``clines vs. clusters" problem in 
+This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation.
 % by jointly accommodating both continuous and discrete patterns of differentiation. 
 The method produces useful descriptions of structure in genetic relatedness
@@ -284,7 +284,9 @@ as after a range expansion or secondary contact.
 We demonstrate the utility of this approach using simulations 
 and by applying it to empirical datasets of poplars and black bears in North America.
 
+\ifsubmissionversion
 \newpage
+\fi
 
 
 % Please keep the Author Summary between 150 and 200 words
@@ -352,7 +354,7 @@ requiring methods that can disentangle the two.
 There have been many methods proposed to characterize population
 genetic structure,
 including generating population phylogenies \cite{CavalliSforza1975, treemix},
-dimensionality-reduction approaches \cite{meirmans2009genodive}, 
+dimensionality reduction approaches \cite{meirmans2009genodive}
 such as principal components analysis 
 \cite{menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches 
@@ -388,12 +390,12 @@ mostly derived from ``stepping-stone'' models
 gives us some analytical predictions for isolation by distance
 \cite{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
 but substantial work remains to be done \cite{barton2002neutral,barton2013modelling}.
-% IBD has been modeled in both spatially continuous frameworks 
+% Isolation by distance has been modeled in both spatially continuous frameworks 
 % in which an individual's parents are found within some radius of that individual's location,
 % and discrete, ``stepping-stone'' frameworks \cite{kimura1964stepping},
 % in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
-it is unsurprising that IBD is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
+it is unsurprising that isolation by distance is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
 
 The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
 as it is frequently difficult to determine whether observed patterns of genetic variation are 
@@ -406,7 +408,7 @@ about how best to describe sets of individuals using continuous clines and discr
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, and so tend to erroneously describe continuously distributed variation with multiple clusters that 
 show spatially autocorrelated cluster membership \cite{Frantz2009,meirmans2012}.
-In analyses of empirical datasets, which often are characterized by IBD,
+In analyses of empirical datasets, which often show strong isolation by distance,
 model-based clustering approaches will therefore tend to overestimate
 the number of discrete clusters present. 
 
@@ -462,7 +464,7 @@ and reflects the covariance between individual alleles drawn from within the pop
 
 This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
-and so to make the statistic invariant under choices of reference allele, 
+and so to make the statistic invariant under choice of reference allele, 
 (b) we randomly choose an allele to count at each locus.
 We discuss the derivation of Eq.\ \eqref{allelic_covariance} further in \secref{allelic_cov}.
 As noted in \cite{EEMS},
@@ -540,7 +542,7 @@ the branch length connecting the $k$th population to the population ancestral to
 layers (see for example \cite{patterson_ancient_2012,peter_fstats}),
 although they cannot be directly compared because 
 we are modeling the allelic, rather than genetic, covariance. 
-In \ref{rationale} we lay out a
+In \secref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
 
 We then allow samples to draw their ancestry from more than one layer.
@@ -548,13 +550,13 @@ The ``admixture'' proportion of the $i$th sample in the $k$th layer, denoted $w^
 gives the genome-wide proportion of alleles from sample $i$ that derive from
 layer 
 $k$ (and so $\sum_{k=1}^K w^{(k)}_i =1$).
-A visual representation of the method mechanics is shown in Fig \ref{schematic}.
+A visual representation of the method is shown in Fig \ref{schematic}.
 
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/schematic/method_schematic.png}}
 		\caption{Schematic of our method, using $K=3$ as an example.
-			     The pattern of isolation by distance within each layer is denoted by their color gradients, 
+                 Spatial autocorrelation of allele frequencies within each layer is depicted by color gradients, 
 			     and $\phi^{(k)}$ denotes the covariance shared by samples with ancestry entirely in the $k$th layer.
 			     Sampled populations on the landscape are inferred to be admixed between these layers; 
 			     the $i$th sample draws proportion $w^{(k)}_i$ of its ancestry from layer $k$.
@@ -565,8 +567,8 @@ A visual representation of the method mechanics is shown in Fig \ref{schematic}.
 			    }\label{schematic}
 \end{figure}
 
-We can then describe the covariance between samples $i$ and $j$ across all layers, $\Omega_{i,j}$,
-by summing their within-layer spatial covariances ($G_{i,j}^{(k)}$ in layer $k$) across all $K$ layers,
+We can then describe the covariance between samples $i$ and $j$ across all $K$ layers, $\Omega_{i,j}$,
+by summing their within-layer spatial covariances ($G_{i,j}^{(k)}$ in layer $k$),
 weighted by the relevant admixture proportions.
 \begin{equation}
     \Omega_{i,j} = \gamma + \sum_{k=1}^K w^{(k)}_i w^{(k)}_j
@@ -587,7 +589,7 @@ This term on the diagonal of the parametric covariance matrix captures processes
 such as inbreeding and the sampling process.
 
 \paragraph{Likelihood and inference}
-If the allele frequencies at each locus
+If the allele frequency deviations at each locus
 were independent between loci and multivariate normally distributed across populations, 
 their allelic covariance $\widehat{\Omega}$ 
 would be Wishart distributed with degrees of freedom equal to $L$, 
@@ -627,8 +629,8 @@ and $w$, for which we use an independent Dirichlet of dimension $K$ for each ind
 Parameters are independent between layers.
 We use Hamiltonian Monte Carlo as implemented in STAN \cite{stan, NUTS, stan_lib, rstan} 
 to estimate the posterior distribution on the parameters.
-We also provide an R package \cite{R} called \texttt{conStruct} 
-(for ``continuous structure") that functions as a wrapper around this inference machinery.
+Our R package, \texttt{conStruct},
+functions as a wrapper around this inference machinery.
 
 
 \paragraph{Relationship of this model to nonspatial structure models}
@@ -674,9 +676,9 @@ and between the spatial and nonspatial models.
 
 Several approaches have been used as model choice criteria 
 for the number of discrete clusters in population genetic data, including: 
-information theoretic criteria (e.g., \cite{ADMIXTURE}), such as AIC or BIC;
-comparisons of the likelihood of the data across different values of $K$, 
-with various criteria on how to choose a single value (e.g., \cite{Evanno2005});
+comparisons of the likelihood of the data across different values of $K$,
+with various criteria on how to choose a single value (e.g., \cite{Evanno2005}),
+or with information theoretic penalizations such as AIC or BIC (e.g., \cite{ADMIXTURE});
 or comparisons of the marginal likelihood, 
 generated either via various approximations (e.g., \cite{STRUCTURE})
 or via a more rigorous and computationally intensive approach such as thermodynamic integration \cite{verity_nichols2016}
@@ -724,7 +726,7 @@ background probability at a locus,
 but this probability of agreement is increased on any segment of genome 
 that both have inherited from the same layer 
 (the amount it increases depends on how far apart they are
-geographically and on the decay of IBD).
+geographically and on the decay of isolation by distance).
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
 as described in \secref{layer_contribution}). 
@@ -747,10 +749,9 @@ Finally, at time $\tau_{\text{a}}$ in the past,
 we collapsed those $K$ discrete layers into a single grid of demes,
 choosing various amounts of admixture from these different layers
 (see Fig \ref{sim_setup}). 
-We collapsed the layers together using random admixture with spatially autocorrelated proportions 
-(see \secref{sim_details} for details), 
-so that both the frequencies in layers and the layer memberships are
-spatially autocorrelated. 
+We collapsed the layers together using random, spatially autocorrelated admixture proportions 
+(see \secref{sim_details}).
+% so that both the frequencies in layers and the layer memberships are spatially autocorrelated. 
 We simulated datasets using $K=1$, 2, and 3 layers;
 in each simulation we sampled 10,000 unlinked loci from each of 20 haploid individuals from every deme.
 We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simulated dataset with $K$ between 1 and 7,
@@ -780,7 +781,7 @@ spatial \texttt{conStruct} does not create spurious discrete groupings when ther
 Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
 When data are simulated with $K=1$ but analyzed with $K>1$ 
-the layers are present, but contribute very little to any population.
+additional layers are present, but contribute very little to any population.
 Even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
@@ -809,7 +810,7 @@ across all models and choices of $K$, the spatial model is correctly preferred o
 As desired, predictive accuracy of the spatial model increases until the true value of $K$,
 and then plateaus or declines
 (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}),
-while the predictive accuracy of the nonspatial model increases as subsequent clusters are added.
+while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
 
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
@@ -1006,7 +1007,7 @@ from which they subsequently expanded to occupy their current range
 %Black bears are strong dispersers \cite{Moore2014}, 
 %but they are distributed across most of the continent, 
 %so we may therefore expect them to experience distance-limited 
-%mating opportunities and exhibit a pattern of IBD.
+%mating opportunities and exhibit a pattern of isolation by distance.
 likely leading to both continuous and discrete patterns of genetic structure.
 We organize our results around the following questions:
 \begin{enumerate}
@@ -1312,7 +1313,7 @@ as we have done in a previous approach \cite{spacemix} to model long distance di
 We could even allow entire layers to bud off of a particular location on another layer. 
 This would enable more explicit modeling of range expansion or domestication, 
 in which a set of individuals are thought to have ancestry that originated from
-a particular geographic location embedded in a larger pattern of IBD.
+a particular geographic location embedded in a larger pattern of isolation by distance.
 
 A final direction would be to model relatedness within a layer as a spatiotemporal process, 
 in which covariance decays both with distance in space and in time.  
@@ -1339,8 +1340,8 @@ in which case a change in discrete population structure across space is comparab
 % \setcounter{section}{0}
 
 
-\section*{Model rationale}
-\subsection*{Drift, admixture, and space} \label{rationale}
+\section*{Model rationale} \label{rationale}
+\subsection*{Drift, admixture, and space}
 Here we sketch a simple model of allele frequencies and their
 covariances, to justify the form given in the main text.
 \paragraph{Drift} 
@@ -1925,7 +1926,7 @@ whose votes determined the name of the method.
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_layer_covs.pdf}}
 	\caption{
-	Plots showing the layer-specific parametric covariance IBD-curves 
+	Plots showing the layer-specific parametric covariance curves
 	estimated for the \textit{Populus} data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
 	Line colors are consistent with layer colors in Fig \ref{populus_sp_pies}.
@@ -1995,7 +1996,7 @@ whose votes determined the name of the method.
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_layer_covs.pdf}}
 	\caption{
-	Plots showing the layer-specific parametric covariance IBD-curves 
+	Plots showing the layer-specific parametric covariance curves 
 	estimated for the black bear data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
 	 }\label{bear_sp_layer_covs}
