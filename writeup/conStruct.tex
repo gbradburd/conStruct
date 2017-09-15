@@ -487,14 +487,17 @@ is to calculate each layer's relative contribution to total covariance,
 and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
 The Dirichlet prior on admixture proportions
 is quite harsh against intermediate admixture values (see Table \ref{tab:param_prior_tab}),  
-encouraging the model to ``not use" unnecessary layers if they are present, 
+encouraging the model to ``not use" unnecessary layers if they are
+present \gc{in the model'}, 
 so that they will have a low contribution to overall covariance.
 
 To calculate layer contributions, we use the following alternative description of our covariance model:
-the genomes of any pair of individuals \emph{agree} with some background probability,
+the genomes of any pair of individuals \emph{agree} with some
+background probability \gc{at a locus},
 but this probability of agreement is increased on any segment of genome 
-that both have inherited through the same layer 
-(the amount it increases depends on how far apart they are.)
+that both have inherited \gc{from} the same layer 
+(the amount it increases depends on how far apart they are
+\gc{geographically and the decay of IBD}.)
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
 as described in Appendix \secref{layer_contribution}). 
