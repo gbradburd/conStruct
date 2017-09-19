@@ -36,18 +36,18 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK1_pies.pdf",width
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(4,2))
-			mtext(side=3,font=2,text="K=2")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",2)))
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK3.3.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(2,"goldenrod1",4))
-			mtext(side=3,font=2,text="K=3")
-			mtext(side=1,font=2,text="true K = 1",cex=1.2,padj=2.7)
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",3)))
+			mtext(side=1,font=2,text=bquote(paste("true ",italic("K")," = ",1)),cex=1.2,padj=2.7)
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK1/simK1_estK4.4.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c("goldenrod1",4,2,"forestgreen"))
-			mtext(side=3,font=2,text="K=4")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",4)))
 dev.off()
 
 
@@ -59,18 +59,18 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK2_pies.pdf",width
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(4,2))
-			mtext(side=3,font=2,text="K=2")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",2)))
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK3.3.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(4,2,"goldenrod1"))
-			mtext(side=3,font=2,text="K=3")
-			mtext(side=1,font=2,text="true K = 2",cex=1.2,padj=2.7)
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",3)))
+			mtext(side=1,font=2,text=bquote(paste("true ",italic("K")," = ",2)),cex=1.2,padj=2.7)
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK2/simK2_estK4.4.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(2,4,"goldenrod1","forestgreen"))
-			mtext(side=3,font=2,text="K=4")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",4)))
 dev.off()
 			
 load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")
@@ -80,17 +80,17 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/fastStr/fastStr_simK3_pies.pdf",width
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(4,2))
-			mtext(side=3,font=2,text="K=2")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",2)))
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK3.3.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(4,"goldenrod1",2))
-			mtext(side=3,font=2,text="K=3")
-			mtext(side=1,font=2,text="true K = 3",cex=1.2,padj=2.7)
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",3)))
+			mtext(side=1,font=2,text=bquote(paste("true ",italic("K")," = ",3)),cex=1.2,padj=2.7)
 		pie.plot(Q.file = "~/Dropbox/conStruct/sims/structure/datasets/simK3/simK3_estK4.4.meanQ",
 				 coords = sim.dataset$coords,
 				 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 				 layer.colors = c(2,4,"goldenrod1","forestgreen"))
-			mtext(side=3,font=2,text="K=4")
+			mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",4)))
 dev.off()
 

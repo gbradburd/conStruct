@@ -18,7 +18,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,hei
 	plot.xval.CIs(xval.CIs,K,ylim=c(-200,0),jitter=0.1,xlim=c(3.75,7.25),xaxt='n')
 		axis(1,at=c(4:7))
 		legend(x="bottomright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of layers",side=1,adj=-1.1,padj=4,font=2)
+	mtext("number of layers",side=1,adj=-0.9,padj=4,font=2)
 	mtext("Cross-validation results (Bears)",side=3,adj=10.5,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
@@ -163,7 +163,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf")
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
 	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.sp,col.mat1=NULL,col.mat2=NULL)
-	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-6.2)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
@@ -173,7 +173,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf"
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
 	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.nsp,col.mat1=NULL,col.mat2=NULL,output.list.sp=output.list.sp)
-	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-6.2)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 

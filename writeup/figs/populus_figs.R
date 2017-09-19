@@ -18,7 +18,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_std_xval.pdf",width=1
 	mtext("Predictive accuracy",side=2,padj=-5,font=2)
 	plot.xval.CIs(xval.CIs,K,ylim=c(-40,0),jitter=0.1,xlim=c(1.75,7.25))
 		legend(x="bottomright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of layers",side=1,adj=-1.1,padj=4,font=2)
+	mtext("number of layers",side=1,adj=-0.9,padj=4,font=2)
 	mtext("Cross-validation results (Populus)",side=3,adj=5,padj=-2.5,font=2,cex=1.2)
 dev.off()
 
@@ -98,7 +98,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
 	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
-	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
@@ -115,7 +115,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
 	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
-	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-6.2)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
@@ -159,7 +159,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/pop_sp_results.pdf",width=12,
 			legend(x="topright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))	
 		}
 		if(k==3){
-			mtext(side=1,text="pairwise geographic distance",padj=3)
+			mtext(side=1,text="pairwise geographic distance (mi)",padj=3)
 		}
 		if(k==4){
 			legend(x="topright",pch=21,
@@ -231,7 +231,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_layer_covs
 						 "balsamifera - trichocarpa",
 						 "trichocarpa - trichocarpa"),cex=0.9,pt.cex=1.5)
 	legend(-11,0.057,pch=c(19,NA),lty=c(NA,1),lwd=c(NA,4),legend=c("sample covariance","layer covariance"))
-	mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-6.2)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 

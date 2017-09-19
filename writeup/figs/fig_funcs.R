@@ -52,7 +52,7 @@ viz.admix.results <- function(sim.admix.props,conStruct.results,layer.order=NULL
 	plot(sim.admix.props,conStruct.results$MAP$admix.proportions[,layer.order],type='n',
 			xlab="true admixture proportions",
 			ylab="estimated admixture proportions",
-			main=sprintf("Fitting admixture parameters (K = %s)",K))
+			main=bquote(paste("Fitting admixture parameters (true ",italic("K")," = ",.(K),")")))
 		abline(0,1,col=1,lty=2)
 		for(k in 1:K){
 			segments(sim.admix.props[,layer.order[k]],
@@ -91,7 +91,9 @@ plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,add
 	        xlim = range(data.block$geoDist), ylim = y.range,
 	        xlab="",ylab="",pch=21,cex=1.3,
 			col=adjustcolor(col.mat1[upper.tri(data.block$obsCov, diag = TRUE)],0.7),
-			bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7))
+			bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7),xaxt='n')
+	    axis(side=1,at=c(seq(min(data.block$geoDist),max(data.block$geoDist),length.out=5)),
+	    		round(seq(min(data.block$geoDist),max(data.block$geoDist),length.out=5) * sd(fields::rdist.earth(data.block$coords)),0))
     }
     lapply(1:data.block$K, function(k) {
              lines(data.block$geoDist[order.mat],
@@ -144,10 +146,12 @@ if(is.null(col.mat2)){
 			        xlim = range(data.block$geoDist), ylim = y.range,
 			        xlab="",ylab="",pch=21,cex=1.3,
 			        col=adjustcolor(col.mat1[upper.tri(data.block$obsCov, diag = TRUE)],0.7),
-			        bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7))
+			        bg=adjustcolor(col.mat2[upper.tri(data.block$obsCov, diag = TRUE)],0.7),xaxt='n')
+			    axis(side=1,at=c(seq(min(data.block$geoDist),max(data.block$geoDist),length.out=5)),
+			    		round(seq(min(data.block$geoDist),max(data.block$geoDist),length.out=5) * sd(fields::rdist.earth(data.block$coords)),0))
 				plot.layer.curves(data.block, csr, layer.cols=layer.colors[order(csr1.order)],add=TRUE)
 		}
-		mtext(text="geographic distance",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
+		#mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-3.55)
 		mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 }
 
@@ -164,8 +168,8 @@ plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 	mtext("Predictive accuracy",side=2,padj=-5)
 	plot.xval.CIs(xval.CIs,K,ylim=y.lim)
 		legend(x="bottomleft",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of layers",side=1,adj=-0.95,padj=4)
-	mtext(sprintf("Cross-validation results (K=%s)",simK),side=3,adj=70,padj=-2.5,font=2,cex=1.2)
+	mtext("number of layers",side=1,adj=-0.85,padj=4)
+	mtext(bquote(paste("Cross-validation results (true ",italic("K"),"=",.(simK),")")),side=3,adj=9.25,padj=-2,font=2,cex=1.2)
 }
 
 plot.sim.pies <- function(data.block,K,output.list,file.name){
@@ -188,7 +192,7 @@ plot.sim.pies <- function(data.block,K,output.list,file.name){
 	}
 }
 
-plot.sim.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
+plot.sim.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL,trueK){
 	#recover()
 	layer.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 	csr1.order <- NULL
@@ -203,6 +207,9 @@ plot.sim.pies.multipanel <- function(data.block,K,output.list,radii,mar=NULL){
 			csr1.order <- 1:k
 		}
 		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar=mar)
+		if(k==3){
+			mtext(side=3,text=bquote(paste("True ",italic("K")," = ",.(trueK))),cex=1.5,padj=-0.7)
+		}
 			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 	}
 }

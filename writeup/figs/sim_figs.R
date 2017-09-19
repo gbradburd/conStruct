@@ -54,35 +54,36 @@ plot.sim.pies(data.block = data.block,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K")
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.nsp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=1)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.sp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=1)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/Fig2_simK1_sp_vs_nsp.pdf",width=8,height=5.34,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/Fig2_simK1_sp_vs_nsp.pdf",width=8,height=6.3,pointsize=14)
 	#quartz(width=6,height=4,pointsize=14)
 	radii <- 1.7
-	mar <- c(5,3,1,3)
-	par(mfrow=c(2,3))
+	mar <- c(4,2,1,2)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 		make.admix.pie.plot(output.list.nsp[[2]][[1]]$MAP$admix.proportions,
 								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
 			mtext(side=1,text=expression(paste("(a) ",italic("K")," = 2")),padj=2.7,adj=0.4)
 		make.admix.pie.plot(output.list.nsp[[3]][[1]]$MAP$admix.proportions[,c(2,3,1)],
 								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
 			mtext(side=1,text=expression(paste("(b) ",italic("K")," = 3")),padj=2.7,adj=0.4)
+			mtext(side=3,text=bquote(paste("True ",italic("K")," = 1")),cex=1.5,padj=-0.7)
 		make.admix.pie.plot(output.list.nsp[[4]][[1]]$MAP$admix.proportions[,c(4,2,3,1)],
 								data.block$coords,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar= mar)
 			mtext(side=1,text=expression(paste("(c) ",italic("K")," = 4")),padj=2.7,adj=0.4)
@@ -137,6 +138,7 @@ for(k in 1:K){
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+	#quartz(width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=layer.colors,
@@ -145,7 +147,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width
 			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
-			mtext(side=3,text="Layer contributions (K=1)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
+			mtext(side=3,text=bquote(paste("Layer contributions (true ",italic("K"),"=1)")),padj=-1.3,adj=12,font=2,cex=1.2)
 dev.off()
 
 
@@ -198,22 +200,22 @@ plot.sim.pies(data.block = data.block,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.nsp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=2)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.sp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=2)
 dev.off()
 
 K <- 7
@@ -264,7 +266,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width
 			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
-			mtext(side=3,text="Layer contributions (K=2)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
+			mtext(side=3,text=bquote(paste("Layer contributions (true ",italic("K"),"=2)")),padj=-1.3,adj=12,font=2,cex=1.2)
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_adprop_fit.pdf",width=6,height=6,pointsize=14)
@@ -322,22 +324,22 @@ plot.sim.pies(data.block = data.block,
 			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.nsp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=3)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies.pdf",width=8,height=5.34,pointsize=14)
-	par(mfrow=c(2,3))
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
 							 output.list = output.list.sp,
 							 radii = 1.7,
-							 mar = c(5,3,1,3))
+							 mar = c(4,2,1,2),trueK=3)
 dev.off()
 
 K <- 7
@@ -388,7 +390,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width
 			col=layer.colors,
 			xlab="",ylab="")
 			mtext(side=1,text="number of layers",padj=4.25,adj=-1)
-			mtext(side=3,text="Layer contributions (K=3)",padj=-2.25,adj=-21.5,font=2,cex=1.2)
+			mtext(side=3,text=bquote(paste("Layer contributions (true ",italic("K"),"=3)")),padj=-1.3,adj=12,font=2,cex=1.2)
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_adprop_fit.pdf",width=6,height=6,pointsize=14)
@@ -426,7 +428,8 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 						# },
 					# x=c(3,7),y=c(-620,-3e2))
 	legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"),cex=1.2)
-	mtext("K = 1",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
+	mtext(bquote(paste("True ",italic("K")," = 1")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
+
 #K2
 setwd("~/Dropbox/gid_runs/mc_runs/sims/simK2")
 n.reps <- 10
@@ -450,7 +453,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							box(lwd=1.2,lty=1,bty="l")
 						},
 					x=c(2.5,6.6),y=c(-12.5e3,-3e3))
-	mtext("K = 2",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
+	mtext(bquote(paste("True ",italic("K")," = 2")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 	mtext("number of layers",side=1,padj=3.4)
 #K3
 setwd("~/Dropbox/gid_runs/mc_runs/sims/simK3")
@@ -475,5 +478,5 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							box(lwd=1.2,lty=1,bty="l")
 						},
 					x=c(3.2,6.6),y=c(-1.5e4,-4e3))
-	mtext("K = 3",side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
+	mtext(bquote(paste("True ",italic("K")," = 3")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 dev.off()
