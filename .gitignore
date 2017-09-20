@@ -40,3 +40,8 @@ sims/cross_validation/K_2/runs
 sims/cross_validation/K_3/runs
 sims/missing_data
 data/poplars/poplar.dataset.Robj
+writeup/*.fff
+writeup/*.lof
+writeup/*.lot
+writeup/*.ttt
+writeup/cover_letter.pdf
