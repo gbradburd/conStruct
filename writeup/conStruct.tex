@@ -81,8 +81,10 @@
 \submissionversiontrue
 \newif\ifincludesupplement
 \includesupplementtrue
+%\includesupplementfalse
 \newif\iffloatsatend
 \floatsatendfalse
+%\floatsatendtrue
 
 \iffloatsatend
 \usepackage{endfloat}
@@ -1012,7 +1014,7 @@ We organize our results around the following questions:
         are reflected in modern patterns of genetic variation?
     \item How strong is isolation by distance within each inferred group?
 \end{enumerate}
-Distinct popualations likely represent different glacial refugia,
+Distinct populations likely represent different glacial refugia,
 and differing strengths of isolation by distance might indicate 
 different levels of habitat connectivity,
 dispersal behavior,
@@ -1737,8 +1739,9 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \processdelayedfloats
 \fi
 
+\clearpage
 
-\begin{figure}[h]
+\begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
@@ -1746,6 +1749,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_nsp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1755,6 +1759,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_sp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1765,9 +1770,8 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK1_xval}
 \end{figure}
+\clearpage
 
-
-\newpage
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
@@ -1776,6 +1780,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_nsp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1785,6 +1790,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_sp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1798,6 +1804,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK2_laycon}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1808,6 +1815,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK2_xval}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1817,6 +1825,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			Results are from an analysis with a spatial model using $K=2$.
 		}\label{simK2_adprop_fit}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1826,6 +1835,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_nsp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1849,6 +1859,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK3_laycon}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1859,6 +1870,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK3_xval}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1868,6 +1880,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			Results are from an analysis with a spatial model using $K=3$.
 		}\label{simK3_adprop_fit}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1877,6 +1890,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK1}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1886,6 +1900,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK2}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1895,6 +1910,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{fastStr_simK3}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1904,6 +1920,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The color of the sampling location denotes the putative species.
     }\label{populus_map}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1913,6 +1930,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using the spatial model for $K=2$ through 7.
     }\label{populus_sp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1922,6 +1940,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using the nonspatial model for $K=2$ through 7.
     }\label{populus_nsp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1937,6 +1956,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_sp_layer_covs}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1952,6 +1972,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_nsp_layer_covs}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1965,6 +1986,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_layer_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_layer_covs}.
     }\label{populus_laycon}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1974,6 +1996,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 7.
     }\label{populus_fastStr}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1983,6 +2006,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using the spatial model for $K=2$ through 7.
     }\label{bear_sp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -1992,6 +2016,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using the nonspatial model for $K=2$ through 7.
     }\label{bear_nsp_pies}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -2002,6 +2027,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
 	 }\label{bear_sp_layer_covs}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
@@ -2012,6 +2038,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
     }\label{bear_nsp_layer_covs}
 \end{figure}
+\clearpage
 
 \begin{figure}
 	\centering
