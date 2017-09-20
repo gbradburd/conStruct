@@ -265,8 +265,6 @@ the use of clustering or assignment methods may incorrectly ascribe
 differentiation due to continuous processes (e.g., geographic isolation by distance)
 to discrete processes, such as geographic, ecological, or reproductive barriers 
 between populations.
-% This is partly a result of the difficulty of sampling uniformly and continuously 
-% across the range of a population or species, but more, it 
 This reflects a shortcoming of current methods for inferring and 
 visualizing population structure when applied to genetic data
 deriving from geographically distributed populations.
@@ -277,7 +275,6 @@ sample from a set of two-dimensional population layers,
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation.
-% by jointly accommodating both continuous and discrete patterns of differentiation. 
 The method produces useful descriptions of structure in genetic relatedness
 in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
@@ -1657,6 +1654,18 @@ but no unambiguous ancestry proportions for admixed populations.
 Here, we describe in more detail the procedure we use to simulate our test dataset, 
 using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
 
+\begin{figure}[!ht]
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/sim_setup.png}}
+		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
+			    Going forward in time, the $K$ populations split from a common ancestor at time $\tau_{\text{s}}$,
+			    then expand to each  colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
+			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
+			    with ancestry entirely in one or the other of the populations,
+			    or admixed between them.
+			    }\label{sim_setup}
+\end{figure}
+
 Using the program \texttt{ms} \cite{Hudson2002}, 
 we generated discrete population structure by simulating $K$ distinct populations,
 each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
@@ -1685,18 +1694,6 @@ for deme $i$ in layer $k$ is inversely proportional to the distance between deme
 This creates a pattern in which the admixture proportions in a given layer decreases 
 with the distance from that layer's focus, 
 as might be expected if a spatial process were mediating admixture between diverged populations.
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/sim_setup.png}}
-		\caption{Schematic of how we simulate datasets with continuous and discrete differentiation, using $K=2$ as an example.  
-			    Going forward in time, the $K$ populations split from a common ancestor at time $\tau_{\text{s}}$,
-			    then expand to each  colonize a lattice of demes with nearest-neighbor symmetric migration at time $\tau_{\text{e}}$,
-			    then finally at time $\tau_{\text{a}}$ collapse into a single lattice consisting of demes 
-			    with ancestry entirely in one or the other of the populations,
-			    or admixed between them.
-			    }\label{sim_setup}
-\end{figure}
 
 \section*{Acknowledgements}
 
