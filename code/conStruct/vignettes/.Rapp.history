@@ -1,0 +1,4 @@
+library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd")
+library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd")
+library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd")
+library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd")
