@@ -68,4 +68,3 @@ uses Monte Carlo cross-validation to determine the statistical
 support for models with different numbers of layers or 
 with and without a spatial component.
 }
-

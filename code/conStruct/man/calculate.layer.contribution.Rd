@@ -45,4 +45,3 @@ This function calculates the contribution of each layer to
 		choosing a value of \code{K} or comparing the spatial and 
 		nonspatial models).
 }
-

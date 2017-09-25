@@ -60,10 +60,10 @@ x.validation <- function(train.prop=0.9,n.reps,K,freqs,geoDist,coords,prefix,n.i
 										 prefix,
 										 n.iter,
 										 make.figs,
-										 save.files)
+										 save.files) ; 
 					})
 	names(x.val) <- paste0("rep_",1:n.reps)
-	x.val <- standardize.xvals(x.val)
+	x.val <- lapply(x.val,standardize.xvals)
 	return(x.val)
 }
 
@@ -247,7 +247,9 @@ x.validation.rep <- function(rep.no,train.prop,K,freqs,geoDist,coords,prefix,n.i
 	names(test.lnl.nsp) <- K
 	test.lnl <- list("sp" = test.lnl.sp,
 					 "nsp" = test.lnl.nsp)
-	save(test.lnl,file=paste0(prefix,"rep",rep.no,"_test.lnl.Robj"))
+	if(save.files){
+		save(test.lnl,file=paste0(prefix,"rep",rep.no,"_test.lnl.Robj"))
+	}
 	return(test.lnl)
 }
 
