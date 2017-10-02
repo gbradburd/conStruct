@@ -1,0 +1,245 @@
+---
+title: "How to run a conStruct analysis"
+author: "Gideon Bradburd"
+date: "2 October 2017"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{run-conStruct}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+<!-- library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/format-data.Rmd",html_vignette(toc=TRUE))	-->
+
+## Introduction
+This document describes the format of the data used in 
+a `conStruct` analysis.
+
+Throughout the document, I'll be referring to the 
+example dataset included with the package:
+
+```{r}
+library(conStruct)
+data(conStruct.data)
+```
+
+## conStruct data
+
+There are 3 data objects you need to run a `conStruct` analysis:
+
+1. [allele frequency data]
+
+2. [geographic sampling coordinates]
+
+3. [geographic distance matrix]
+
+In the sections below, I walk through the specific format required for each.
+
+### Allele frequency data
+
+You must specify a matrix of allele frequency data for your samples.
+(Make sure the data are of class `matrix`, and that it's not a `data.frame`.)
+I assume that the data consist of bi-allelic SNPs.
+At each locus, you pick an allele to count across all samples
+(it doesn't matter whether it's randomly chosen or 
+whether it's always the major or minor allele).
+The frequency of the counted allele at a locus in a sample 
+is the number of times the counted allele is observed at a locus 
+divided by the number of chromosomes genotyped in that sample.
+A sample can consist of a single individual or multiple individuals 
+lumped together.
+So, a successfully genotyped diploid individual heterozygous at a
+particular locus would have an allele frequency of 0.5.
+If the sample is a population of 13 haploids, of which 12 have the 
+counted allele at a given locus, the frequency in that sample at that 
+locus would be 12/13.
+
+The matrix of allele frequencies should have one row per sample and 
+one column per locus.  Missing data should be denoted with the value `NA`.
+An small example allele frequency data matrix is shown below:
+
+| Sample | Locus1 | Locus2 | Locus3 | Locus4 | Locus5 | Locus6 | Locus7 | Locus8 | Locus9 | Locus10 |
+|:------|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|  Pop1  | 0   | 1    | NA | 0.8 | 0.7 | 0  | 0   | 0.6 | 0   | 1   | 
+|  Pop2  | 0   | 1    | 1  | 0.9 | 1   | 1  | 0.1 | 0.6 | 0   | 0.9 |
+|  Pop3  | 0.2 | 0.75 | 0  | 1   | 1   | NA | 1   | 1   | 0.1 | 1   |
+|  Pop4  | 0.1 | 0.9  | 1  | 1   | 0.8 | 1  | 0.2 | 0.7 | 0.1 | 0.3 |
+|  Pop5  | 0   | 1    | 1  | 1   | 1   | 1  | 0.3 | 0.9 | 0.3 | NA  |
+
+An full example allele frequency data matrix is included in the 
+`conStruct.data` object included with the package.
+
+```{r}
+# load the example data object
+data(conStruct.data)
+
+# look at the allele frequency data 
+#	for the first 5 populations and 10 loci
+conStruct.data$allele.frequencies[1:5,1:10]
+```
+
+### Geographic sampling coordinates
+
+You must specify a matrix of geographic sampling coordinates, 
+which will be used for plotting the results of the analysis.
+This should be a matrix with two columns that give the sample 
+x-coordinates (longitude) and y-coordinates (latitude), 
+respectively.  The order of rows of the matrix should be the same 
+as the order of the rows of the allele frequencies matrix.
+If you specify longitude and latitude, they should be in 
+decimal degrees.
+
+A full example sampling coordinate data matrix is included 
+in the `conStruct.data` object included with the package.
+
+```{r}
+# load the example data object
+data(conStruct.data)
+
+# look at the geographic sampling coordinates 
+#	for the first 5 populations
+conStruct.data$coords[1:5,]
+```
+
+### Geographic distance matrix 
+
+If you choose to run the spatial model implemented in `conStruct`, 
+you must specify a matrix of pairwise geographic distance between 
+all samples.  If the coordinates of the samples are real locations 
+on Earth (as opposed to simulated coordinates), I recommend 
+calculating pairwise great-circle distance between sampling 
+coordinates (using, e.g., `fields::rdist.earth`).
+
+The order of the samples in the geographic distance matrix should 
+match both that of the geographic coordinates and that of the 
+allele frequency data matrix, and all three matrices should have 
+the same number of rows.
+
+# Other formats to conStruct
+
+For convenience, I've written a function to convert population 
+genetic data in STRUCTURE format to that used in `conStruct`.
+
+## STRUCTURE to conStruct
+
+The program STRUCTURE is one of the most widely used 
+methods for model-based clustering in population genetics. 
+Many existing programs, including plink (v1.9 and above) 
+and PgdSpider, convert data from diverse formats (including 
+.vcf files) into STRUCTURE format.  In this section of the 
+vignette, I walk through an example of converting a STRUCTURE 
+format data file into a `conStruct` format data file.
+
+### STRUCTURE data format
+More extensive documentation on STRUCTURE's data format 
+can be found in [the STRUCTURE manual](https://web.stanford.edu/group/pritchardlab/structure_software/release_versions/v2.3.4/structure_doc.pdf).
+An example STRUCTURE-formatted dataset is shown below:
+
+|        |     | Loc1 | Loc1 | Loc2 | Loc2 | Loc3 | Loc3 | Loc4 | Loc4 |
+|:------:|:---:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|  Ind1  |  1  |  1   |  1   |  2   |  2   |   1  |  2   |  -9  |  -9  |
+|  Ind2  |  1  |  1   |  2   |  2   |  2   |   2  |  2   |   2  |   2  |
+|  Ind3  |  1  |  1   |  1   |  2   |  2   |   2  |  2   |   2  |   2  |
+|  Ind4  |  2  |  -9  |  -9  |  1   |  2   |   1  |  1   |   1  |   1  |
+|  Ind5  |  2  |  2   |  1   |  2   |  2   |   1  |  1   |   1  |   2  |
+
+	Example STRUCTURE format dataset, with one row per individual 
+	and two columns per locus. The first column gives sample names, the 
+	second refers to the sample locations, and the last 8 columns give 
+	genotype data for four loci. The numbers in the genotype data refer to 
+	the allele present at that locus: A1 = `1`, A2 = `2`, missing = `-9`.
+
+To convert a STRUCTURE format file to `conStruct` format, 
+you can use the function `structure2conStruct`, included in the 
+`conStruct` package.
+
+Below, I give an example of the usage of this function, assuming 
+that the file containing the STRUCTURE format data is called 
+"myStructureData.str", and that it's on the "desktop" directory 
+on the computer.  I also assume that the data are formatted as in 
+the table above, with the genotype data starting at the 3rd column 
+of the data matrix, and missing data denoted with a value of -9.
+
+```{r,eval=FALSE}
+conStruct.data <- structure2conStruct(infile = "~/Desktop/myStructureData.str",
+									  start.loci = 3,
+				 					  missing.datum = -9,
+									  outfile = "~/Desktop/myConStructData")
+
+```
+
+Further documentation for this function is in its help page, 
+which you can go to using the command `help(structure2conStruct)`.
+
+If you wish to group multiple individuals together into a single 
+sample for analysis you can collapse rows of the `conStruct` format 
+data file.  For example, if you have 12 individuals from 4 
+locations (3 individuals from each location), and you wish to 
+analyze the data treating populations at a sampling location 
+as the unit of analysis,  you can do something like the
+following:
+
+```{r,eval=FALSE}
+pop.data.matrix <- matrix(NA,nrow=4,ncol=ncol(conStruct.data))
+for(i in 1:nrow(pop.data.matrix)){
+	pop.data.matrix[i,] <- colMeans(
+								conStruct.data[
+									which(pop.index==i),,
+									drop=FALSE
+								]
+							)
+}
+```
+where `pop.index` is a vector that gives the population of origin 
+for each of the individuals sampled.  In the example above, with 
+12 individuals sampled from 4 locations (3 from each), 
+`pop.index` would be `c(1,1,1,2,2,2,3,3,3,4,4,4)`.
+
+
+## Microsatellites
+
+This method is designed to run on large datasets consisting of 
+bi-allelic SNPs.  If you have a microsatellite dataset and you 
+wish to run `conStruct`, the first consideration is whether you 
+have sufficient data.  You should have more loci than samples 
+in your data matrix (i.e., your data matrix should have more 
+columns than rows).
+
+If that's the case, the second consideration is how to format your 
+microsat data so that you can run conStruct.  There are two standard 
+ways of "SNP-ifying" a microsat dataset.
+
+The first is to lump all microsatellite alleles present at a locus 
+into two categories: "major" and "other".  The "major" allele is the 
+allele that occurs most frequently at a particular locus; all other 
+alleles are put in the "other" bin.  You then can create a dataset 
+in which you only report the frequency of the major allele, 
+effectively reducing the number of alleles per locus to 2. 
+This method has the disadvantage of throwing out data, but 
+acknowledges the simplex relationships between alleles at a locus 
+(the sum of the frequencies of all alleles at a locus must be 1).
+
+The second approach, introduced by Cavalli-Sforza, is to split out 
+each allele at a locus into a separate pseudo-locus consisting of only 
+that allele.  That is, if you had 4 alleles present in the genotyped 
+sample at a particular locus, at frequencies {0.4,0.3,0.1,0.2}, 
+you would split those out into 4 separate columns in your data matrix 
+(pseudo-loci), with frequencies in the sampled population of 
+{0.4,0.3,0.1,0.2}.  This approach has the advantage of not throwing 
+data away, but does not acknowledge the inter-allele dependence 
+structure in frequencies, and therefore introduces some 
+pseudoreplication into the dataset. This pseudoreplication may make 
+you overconfident in your results, as the credible intervals on 
+parameter estimates may be artificially narrow.
+
+I would recommend trying both approaches, and comparing the 
+estimates of pairwise relatedness you get from each to those 
+derived from the raw microsatellite data to see which best 
+recovers the patterns of relatedness in the data.  I also recommend 
+running `conStruct` on datasets SNP-ified using both approaches, 
+and comparing the results.
