@@ -9,8 +9,18 @@ To install the R package:
 
 	> library(devtools)
 	
-	> install_github("gbradburd/conStruct/code/conStruct")
+	> install_github("gbradburd/conStruct/code/conStruct",build_vignettes=TRUE)
 	
+There is a vignette walking through the data format used in conStruct analyses, 
+which you can walk through using the command:
+
+	> vignette(topic="format-data",package="conStruct")
+
+There is also an example data file included in the package, which you can 
+load using the command:
+
+	> data(conStruct.data)
+
 Note that this package is still in beta.
 
 Direct all queries to bradburd (at) msu.edu.
