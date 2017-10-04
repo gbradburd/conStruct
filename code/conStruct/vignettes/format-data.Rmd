@@ -1,12 +1,12 @@
 ---
-title: "How to run a conStruct analysis"
+title: "How to format data for a conStruct analysis"
 author: "Gideon Bradburd"
 date: "2 October 2017"
 output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{run-conStruct}
+  %\VignetteIndexEntry{format-data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -119,6 +119,19 @@ The order of the samples in the geographic distance matrix should
 match both that of the geographic coordinates and that of the 
 allele frequency data matrix, and all three matrices should have 
 the same number of rows.
+
+A full example geographic distance matrix between all samples 
+is in the `conStruct.data` object included with the package.
+
+```{r}
+# load the example data object
+data(conStruct.data)
+
+# look at pariwise geographic distance 
+#	between the first 5 populations
+conStruct.data$geoDist[1:5,1:5]
+```
+
 
 # Other formats to conStruct
 
