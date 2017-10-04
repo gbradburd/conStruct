@@ -1,0 +1,164 @@
+---
+title: "How to run a conStruct analysis"
+author: "Gideon Bradburd"
+date: "2 October 2017"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{run-conStruct}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+<!-- library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
+
+## Introduction
+This document describes how to run a `conStruct analysis`.
+
+Throughout the document, I'll be referring to the 
+example dataset included with the package:
+
+```{r}
+library(conStruct)
+data(conStruct.data)
+```
+
+The format for the data you need to run a `conStruct` 
+analysis is covered in a separate vignette in this 
+package. You can view that vignette using the command: 
+`vignette(package="conStruct",topic="format-data")`
+
+## Running a conStruct analysis
+
+The function you use to run a `conStruct` analysis 
+is called, fittingly, `conStruct`. This vignette 
+walks through the use of this function in detail, 
+and should be used in concert with the documentation 
+for the function, which can be viewed using the command: 
+`help(conStruct)`.
+
+### Spatial Model
+
+The default model in the conStruct package is 
+the spatial model, which allows relatedness 
+within a layer to decay as a function of the distance 
+between samples drawing ancestry from that layer.
+
+Below, I show an example of how to run a `conStruct` 
+analysis using the spatial model.
+
+```{r,eval=FALSE}
+# load the example dataset
+data(conStruct.data)
+
+# run a conStruct analysis
+
+#	you have to specify:
+#		the number of layers (K)
+#		the allele frequency data (freqs)
+#		the geographic distance matrix (geoDist)
+#		the sampling coordinates (coords)
+
+conStruct(spatial = TRUE, 
+	  K = 3, 
+	  freqs = conStruct.data$allele.frequencies, 
+	  geoDist = conStruct.data$geoDist, 
+	  coords = conStruct.data$coords,
+	  prefix = "spK3")
+```
+
+The function call above runs `conStruct`'s spatial model 
+using 3 discrete layers. All output files will be have "spK3" 
+prepended to their names. To vary the number of layers 
+in the spatial model, you need only change the value of `K`.
+
+### Nonspatial Model
+
+You can also run a nonspatial model using the `conStruct` 
+function, in which relatedness within each of the K clusters 
+does not decay with distance.  This model is analogous to 
+the model implemented in STRUCTURE.
+
+Below, I show an example of how to run a `conStruct` 
+analysis using the nonspatial model.
+
+```{r,eval=FALSE}
+# load the example dataset
+data(conStruct.data)
+
+# run a conStruct analysis
+
+#	you have to specify:
+#		the number of layers (K)
+#		the allele frequency data (freqs)
+#		the sampling coordinates (coords)
+#
+#	if you're running the nonspatial model, 
+#		you do not have to specify 
+#		the geographic distance matrix (geoDist)
+
+conStruct(spatial = FALSE, 
+	  K = 2, 
+	  freqs = conStruct.data$allele.frequencies, 
+	  geoDist = NULL, 
+	  coords = conStruct.data$coords,
+	  prefix = "nspK2")
+```
+
+The function call above runs `conStruct`'s nonspatial model 
+using 2 discrete layers. All output files will be have "nspK2" 
+prepended to their names. As with the spatial model, if you 
+want to vary the number of layers, you change the value of `K`.
+
+### Other function options
+
+The `conStruct` function has other arguments that 
+have default values, for which you don't have to 
+specify any values.  However, you may wish to alter 
+these defaults, so we describe them below:
+
+The full function call for the spatial model with 3 layers is:
+
+```{r,eval=FALSE}
+conStruct(spatial = TRUE, 
+	K =3 , 
+	freqs = conStruct.data$allele.frequencies, 
+	geoDist = conStruct.data$geoDist, 
+	coords = conStruct.data$coords, 
+	prefix = "spK3", 
+    n.chains = 1, 
+    n.iter = 1000, 
+    make.figs = TRUE, 
+    save.files = TRUE)
+```
+
+The other options are `n.chains`, `n.iter`, `make.figs`, `save.files`; 
+I describe each of them below:
+
+* `n.chains` - gives the number of independent MCMCs to be run for this model. 
+The default is `1`, but you may wish to run multiple independent chains to 
+make sure you get consistent results across them.
+
+* `n.iter` - gives the number of iterations per MCMC. The default is `1000`.
+If you have more genotyped samples, you generally need more iterations 
+to describe the posterior probability surface well. There are no 
+hard and fast rules on how many iterations you should run. 
+I **strongly recommend** examining model output to assess convergence; 
+if you don't see good convergence, you can run the analysis using a 
+larger number of iterations.
+
+* `make.figs` - determines whether or not to automatically make figures 
+describing the results. The default is `TRUE`. However, if you're running 
+lots of independent analyses, or if you're running on a cluster with limited 
+disk space, you may wish to set this option to `FALSE` and make the figures 
+later on your own.
+
+* `save.files` - determines whether or not to automatically save all output 
+files.  The default is `TRUE`.  However, again, there may be circumstances 
+in which you don't want to automatically save these files, and instead want 
+to capture the results of the analysis, which are the returned value of the 
+`conStruct` function call.
