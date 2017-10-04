@@ -16,6 +16,11 @@ which you can walk through using the command:
 
 	> vignette(topic="format-data",package="conStruct")
 
+A second vignette, which walks through how to run a conStruct analysis, can 
+be viewed using the command:
+
+	> vignette(topic="run-conStruct",package="conStruct")
+
 There is also an example data file included in the package, which you can 
 load using the command:
 
