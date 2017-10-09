@@ -17,7 +17,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 <!-- library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
 
 ## Introduction
-This document describes how to run a `conStruct analysis`.
+This document describes how to run a `conStruct` analysis.
 
 Throughout the document, I'll be referring to the 
 example dataset included with the package:
@@ -162,3 +162,94 @@ files.  The default is `TRUE`.  However, again, there may be circumstances
 in which you don't want to automatically save these files, and instead want 
 to capture the results of the analysis, which are the returned value of the 
 `conStruct` function call.
+
+## Model diagnosis
+
+As with any statistical model, it is important to assess the 
+performance of the inference method. Below, I briefly walk 
+through some of the important things to look out for when 
+you run a `conStruct` analysis.
+
+### MCMC diagnosis
+
+Although the Hamiltonian Monte Carlo algorithm implemented in STAN 
+is quite robust, it's always a good idea to look at the results of 
+the analysis to diagnose MCMC performance. If the chain is mixing 
+well, the trace plots for the different parameters and the posterior 
+probability will resemble a “fuzzy caterpillar,” as in panel (a) 
+below. If the trace plots have not plateaued (as in panel (b)), 
+it is an indication that the chain has not converged on the 
+stationary distribution, and that it should be run longer. 
+If the chain appears to be bouncing between two or more modes, 
+as in panel (c) below, that may be an indication of a multi-modal 
+likelihood surface, with multiple points in parameter space that 
+have equal or similar posterior probability given the data. 
+
+
+```{r,echo=FALSE,fig.width=7,fig.height=2.7}
+par(mfrow=c(1,3),mar=c(4,3,1.5,1))
+	plot(c(0,rnorm(500,1,0.2)),type='l',
+		xlab="",yaxt='n',ylab="")
+		mtext(side=2,text="parameter estimate",padj=-1)
+		mtext(side=3,text="(a) looks good",padj=-0.1)
+	plot(c(0,rnorm(500,c(log(seq(0,1,length.out=500))),0.2)),type='l',
+		xlab="",yaxt='n',ylab="")
+		mtext(side=1,text="mcmc iterations",padj=2.6)
+		mtext(side=3,text="(b) hasn't converged",padj=-0.1)
+	plot(c(0,rnorm(150,1,0.2),rnorm(200,3,0.2),rnorm(150,1,0.2)),type='l',
+		xlab="",yaxt='n',ylab="")
+		mtext(side=3,text="(c) multi-modal",padj=-0.1)
+```
+
+### Independent runs
+
+Above, I highlight the importance of evaluating performance of 
+individual MCMC runs, but it's also a good idea to run multiple, 
+independent analyses and compare results across them.  Ideally, 
+multiple independent runs converge on the same stationary distribution, 
+with similar parameter estimates and posterior probabilities.  
+If different runs give very different results, you can check whether 
+there's a mixing problem or a truly multi-modal posterior probability 
+surface by comparing the values of the posterior probability across 
+runs. If two runs have very different parameter estimates but their 
+posterior probability distributions are indistinguishable, that's an 
+indication of multi-modality. If multiple runs show different parameter 
+estimates, but the posterior probabilities for a subset of the runs that 
+show consistent results are higher than those of a different subset that 
+gives conflicting results, that indicates that some of the runs are not 
+mixing well.
+
+### Missing data
+
+Missing data can affect the sample allelic covariance, and 
+therefore the results of a `conStruct` analysis. This is 
+especially the case when the distribution of missing data is 
+biased - that is, when individuals of particular ancestry are 
+more likely to be missing data at a locus. This pattern 
+is expected when, for example, allelic dropout occurs in a 
+RADseq dataset.
+
+In some empirical datasets with missing data that I used to 
+test `conStruct`, I observed a phenomenon of "homogeneous 
+minimum layer membership," (HMLM) in which all samples had troublingly 
+similar admixture proportions in a particular cluster (see 
+membership in the blue layer in the figure below).
+
+\
+
+```{r,echo=FALSE,fig.width=7,fig.height=3}
+w <- matrix(rnorm(40,sample(2:10,40,replace=TRUE),1),
+			nrow=20,ncol=2)
+w <- w/rowSums(w)
+w <- cbind(pmax(rnorm(20,0.15,0.005),0),w)
+w <- w/rowSums(w)
+conStruct::make.structure.plot(w)
+```
+
+\
+
+Users are advised to check the results of their analyses carefully 
+for this HMLM behavior. If you encounter this issue, try reducing 
+the amount of missing data in your dataset, either by dropping 
+poorly genotyped samples or poorly genotyped loci (rows and columns 
+of the allele frequency data matrix, respectively).
