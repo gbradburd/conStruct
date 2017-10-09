@@ -279,6 +279,9 @@ process.freq.data <- function(freqs){
 	freqs <- drop.missing(freqs)
 	n.loci <- ncol(freqs)
 	obsCov <- calc.covariance(freqs)
+	if(any(is.na(obsCov))){
+		stop("\n\nAfter dropping invariant loci, one or more pairs of samples have no genotyped loci in common, so relatedness between them cannot be assessed.\n\n")
+	}
 	freq.data <- list("freqs" = freqs,
 					  "obsCov" = obsCov,
 					  "n.loci" = n.loci)
@@ -329,8 +332,10 @@ check.call <- function(args){
 	if(class(args[["freqs"]]) != "matrix" | any(args[["freqs"]] > 1,na.rm=TRUE) | any(args[["freqs"]] < 0,na.rm=TRUE)){	
 		stop("\nyou have specified an invalid value for the \"freqs\" argument \n")
 	}
-	if(class(args[["geoDist"]]) != "matrix" | length(unique(dim(args[["geoDist"]]))) > 1 | any(args[["D"]] < 0)){	
-		stop("\nyou have specified an invalid value for the \"geoDist\" argument \n")
+	if(args[["spatial"]]){
+		if(class(args[["geoDist"]]) != "matrix" | length(unique(dim(args[["geoDist"]]))) > 1 | any(args[["geoDist"]] < 0)){	
+			stop("\nyou have specified an invalid value for the \"geoDist\" argument \n")
+		}
 	}
 	if(class(args[["coords"]]) != "matrix" | ncol(args[["coords"]]) > 2){	
 		stop("\nyou have specified an invalid value for the \"coords\" argument \n")
