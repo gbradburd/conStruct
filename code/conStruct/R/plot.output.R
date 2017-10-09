@@ -399,10 +399,12 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,la
 			plot.admix.props(data.block,conStruct.results,layer.colors)
 		}
 	grDevices::dev.off()
-	grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"))
-		plot.model.fit.CIs(data.block,conStruct.results)
-	grDevices::dev.off()
-	if(data.block$spatial | data.block$K > 1){
+	if(!is.null(data.block$geoDist)){
+		grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"))
+			plot.model.fit.CIs(data.block,conStruct.results)
+		grDevices::dev.off()
+	}
+	if(data.block$spatial | (data.block$K > 1 & !is.null(data.block$geoDist))){
 		grDevices::pdf(file=paste0(prefix,"_layer.cov.curves.chain_",chain.no,".pdf"),width=5,height=5)
 			plot.layer.covariances(data.block,conStruct.results,layer.colors)
 		grDevices::dev.off()
