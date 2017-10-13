@@ -48,23 +48,25 @@
 #' 		each value of K specified in \code{K}.
 #' }
 #'@export
-x.validation <- function(train.prop=0.9,n.reps,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
-	x.val <- lapply(1:n.reps,
-					function(i){
-						x.validation.rep(rep.no = i,
-										 train.prop,
-										 K,
-										 freqs,
-										 geoDist,
-										 coords,
-										 prefix,
-										 n.iter,
-										 make.figs,
-										 save.files) ; 
-					})
-	names(x.val) <- paste0("rep_",1:n.reps)
-	x.val <- lapply(x.val,standardize.xvals)
-	return(x.val)
+x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE){
+	models <- compile.models()
+    x.val <- lapply(1:n.reps, 
+    				function(i) {
+        				x.validation.rep(models, 
+        								 rep.no = i, 
+        								 train.prop, 
+        								 K, 
+        								 freqs, 
+        								 geoDist, 
+        								 coords, 
+        								 prefix, 
+        								 n.iter, 
+        								 make.figs, 
+        								 save.files)        				
+    		 })
+    names(x.val) <- paste0("rep_", 1:n.reps)
+    x.val <- lapply(x.val, standardize.xvals)
+    return(x.val)
 }
 
 #' Match layers up across independent conStruct runs
@@ -197,60 +199,112 @@ calculate.layer.contribution <- function(conStruct.results,data.block,layer.orde
 	return(layer.contributions)
 }
 
-x.validation.rep <- function(rep.no,train.prop,K,freqs,geoDist,coords,prefix,n.iter,make.figs=FALSE,save.files=FALSE){
-	freqs <- drop.invars(freqs)
-	train.loci <- sample(1:ncol(freqs),ncol(freqs)*(train.prop))
-	test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
-	train.data <- freqs[,train.loci]
-	test.data <- freqs[,test.loci]
-		save(train.data,file=paste0(prefix,"_rep",rep.no,"_training.dataset.Robj"))
-		save(test.data,file=paste0(prefix,"_rep",rep.no,"_testing.dataset.Robj"))
-	training.runs.sp <- lapply(K,function(k){
-								conStruct(spatial = TRUE,
-											 K = k,
-											 freqs = train.data,
-											 geoDist = geoDist,
-											 coords = coords,
-											 prefix = paste0(prefix,"_sp_","rep",rep.no,"K",k),
-											 n.iter = n.iter,
-											 make.figs = make.figs,
-											 save.files = save.files)
-						})
-	names(training.runs.sp) <- paste0("K",K)
-	if(save.files){
-		save(training.runs.sp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.sp.Robj"))
+compile.models <- function(){
+	basic <- rstan::stan_model(model_code = oneK.stan.block,verbose=FALSE)
+	multiK <- rstan::stan_model(model_code = multiK.stan.block,verbose=FALSE)
+	space <- rstan::stan_model(model_code = space.oneK.stan.block,verbose=FALSE)
+	space_multiK <- rstan::stan_model(model_code = space.multiK.stan.block,verbose=FALSE)
+	conStr.models <- list("basic" = basic,
+						  "multiK" = multiK,
+						  "space" = space,
+						  "space_multiK" = space_multiK)
+	return(conStr.models)
+}
+
+xval.process.data <- function(freqs,train.prop,rep.no,prefix){
+    freqs <- drop.invars(freqs)
+    train.loci <- sample(1:ncol(freqs), ncol(freqs) * (train.prop))
+    test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
+    train.data <- freqs[, train.loci]
+    test.data <- freqs[, test.loci]
+    xval.freq.data <- list("training" = train.data,
+    					   "testing" = test.data)
+    save(xval.freq.data, file = paste0(prefix, "_rep", rep.no, "_xval.dataset.Robj"))
+    return(xval.freq.data)
+}
+
+xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+    call.check <- check.call(args <- as.list(environment()))
+    freq.data <- process.freq.data(freqs)
+    data.block <- make.data.block(K, freq.data, coords, spatial, geoDist, temp = NULL)
+    if (save.files) {
+        save(data.block, file = paste0(prefix, "_data.block.Robj"))
+    }
+    stan.block <- pick.stan.model(spatial=spatial,k=K,models=models)
+    model.fit <- rstan::sampling(object = stan.block, 
+    							 refresh = min(n.iter/10,500), 
+    							 data = data.block, 
+    							 iter = n.iter, 
+    							 chains = n.chains, 
+        						 thin = ifelse(n.iter/500 > 1, n.iter/500, 1), 
+        						 save_warmup = FALSE)
+    if (save.files) {
+        save(model.fit, file = paste(prefix, "model.fit.Robj", 
+            sep = "_"))
+    }
+    conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
+    if (save.files) {
+        save(conStruct.results, file = paste(prefix, "conStruct.results.Robj", 
+            sep = "_"))
+    }
+    if (make.figs) {
+        make.all.the.plots(conStruct.results, data.block, prefix,layer.colors = NULL)
+    }
+    return(conStruct.results)
+}
+
+pick.stan.model <- function(spatial,k,models){
+	if(k == 1 & !spatial){
+		stan.model <- models$basic
+	} else if(k == 1 & spatial){
+		stan.model <- models$space
+	} else if(k > 1 & !spatial){
+		stan.model <- models$multiK
+	} else if(k > 1 & spatial){
+		stan.model <- models$space_multiK
 	}
-	training.runs.nsp <- lapply(K,function(k){
-								conStruct(spatial = FALSE,
-											 K = k,
-											 freqs = train.data,
-											 geoDist = geoDist,
-											 coords = coords,
-											 prefix = paste0(prefix,"_nsp_","rep",rep.no,"K",k),
-											 n.iter = n.iter,
-											 make.figs = make.figs,
-											 save.files = save.files)
-						})
-	names(training.runs.nsp) <- paste0("K",K)
-	if(save.files){
-		save(training.runs.nsp,file=paste0(prefix,"_rep",rep.no,"_","training.runs.nsp.Robj"))
-	}
-	test.lnl.sp <- lapply(training.runs.sp,
-						function(x){
-							fit.to.test(test.data,x[[1]])
-						})
-	names(test.lnl.sp) <- K						
-	test.lnl.nsp <- lapply(training.runs.nsp,
-						function(x){
-							fit.to.test(test.data,x[[1]])
-						})
-	names(test.lnl.nsp) <- K
-	test.lnl <- list("sp" = test.lnl.sp,
-					 "nsp" = test.lnl.nsp)
-	if(save.files){
-		save(test.lnl,file=paste0(prefix,"rep",rep.no,"_test.lnl.Robj"))
-	}
-	return(test.lnl)
+	return(stan.model)
+}
+
+x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
+	xval.freq.data <- xval.process.data(freqs,train.prop,rep.no,prefix)
+    training.runs.sp <- lapply(K, function(k) {
+        xval.conStruct(models = models, spatial = TRUE, K = k, 
+					   freqs = xval.freq.data$training, 
+					   geoDist = geoDist, coords = coords, 
+					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
+					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
+    })
+    names(training.runs.sp) <- paste0("K", K)
+    if (save.files) {
+        save(training.runs.sp, file = paste0(prefix, "_rep", 
+            rep.no, "_", "training.runs.sp.Robj"))
+    }
+    training.runs.nsp <- lapply(K, function(k) {
+        xval.conStruct(models = models, spatial = FALSE, K = k, 
+					   freqs = xval.freq.data$training, 
+					   geoDist = geoDist, coords = coords, 
+					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 
+					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
+    })
+    names(training.runs.nsp) <- paste0("K", K)
+    if (save.files) {
+        save(training.runs.nsp, file = paste0(prefix, "_rep", 
+            rep.no, "_", "training.runs.nsp.Robj"))
+    }
+    test.lnl.sp <- lapply(training.runs.sp, function(x) {
+        fit.to.test(xval.freq.data$testing, x[[1]])
+    })
+    	names(test.lnl.sp) <- K
+    test.lnl.nsp <- lapply(training.runs.nsp, function(x) {
+        fit.to.test(xval.freq.data$testing, x[[1]])
+    })
+    	names(test.lnl.nsp) <- K
+    test.lnl <- list(sp = test.lnl.sp, nsp = test.lnl.nsp)
+    if (save.files) {
+        save(test.lnl, file = paste0(prefix, "rep", rep.no, "_test.lnl.Robj"))
+    }
+    return(test.lnl)
 }
 
 standardize.xvals <- function(x.val){
@@ -350,21 +404,6 @@ log.likelihood <- function(obsCov,inv.par.cov,log.det,n.loci){
 	lnL <- -0.5 * (sum( inv.par.cov * obsCov) + n.loci * log.det)
 	return(lnL)
 }
-
-
-determine.log.shift <- function(chunk.lnls){
-	if(diff(range(unlist(chunk.lnls))) > 700){
-		message("the difference between the min and max lnLs may be inducing underflow")
-	}
-	return(max(unlist(chunk.lnls)))
-}
-
-
-shift.chunk.lnls <- function(chunk.lnls,A,n.iter){
-	shift.chunk.lnls <- log(sum(exp(chunk.lnls-A))) + A - log(n.iter)
-	return(shift.chunk.lnls)
-}
-
 
 calc.lnl.x.MCMC <- function(cov.chunk,pp.par.cov,chunk.size){
 	lnl.x.mcmc <- lapply(pp.par.cov,
