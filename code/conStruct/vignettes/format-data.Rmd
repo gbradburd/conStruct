@@ -120,6 +120,10 @@ match both that of the geographic coordinates and that of the
 allele frequency data matrix, and all three matrices should have 
 the same number of rows.
 
+The geographic distance matrix you specify should be the full 
+matrix (that is, not the upper- or lower-triangles), with values 
+of `0` on the diagonal entries.
+
 A full example geographic distance matrix between all samples 
 is in the `conStruct.data` object included with the package.
 
