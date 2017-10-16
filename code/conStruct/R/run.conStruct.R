@@ -14,7 +14,7 @@
 #' @param freqs A \code{matrix} of allele frequencies with one column per 
 #'				locus and one row per sample.
 #' 				Missing data should be indicated with \code{NA}.
-#' @param geoDist A \code{matrix} of geographic distance between samples. 
+#' @param geoDist A full \code{matrix} of geographic distance between samples. 
 #'					If \code{NULL}, user can only run the nonspatial model.
 #' @param coords A \code{matrix} giving the longitude and latitude 
 #'					(or X and Y coordinates) of the samples.
@@ -334,7 +334,7 @@ check.call <- function(args){
 		stop("\nyou have specified an invalid value for the \"freqs\" argument \n")
 	}
 	if(args[["spatial"]]){
-		if(class(args[["geoDist"]]) != "matrix" | length(unique(dim(args[["geoDist"]]))) > 1 | any(args[["geoDist"]] < 0)){	
+		if(class(args[["geoDist"]]) != "matrix" | length(unique(dim(args[["geoDist"]]))) > 1 | any(args[["geoDist"]] < 0) | !isSymmetric(args[["geoDist"]])){	
 			stop("\nyou have specified an invalid value for the \"geoDist\" argument \n")
 		}
 	}
