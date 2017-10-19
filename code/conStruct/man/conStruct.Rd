@@ -18,7 +18,7 @@ included in the analysis.}
 locus and one row per sample.
     Missing data should be indicated with \code{NA}.}
 
-\item{geoDist}{A \code{matrix} of geographic distance between samples. 
+\item{geoDist}{A full \code{matrix} of geographic distance between samples. 
 If \code{NULL}, user can only run the nonspatial model.}
 
 \item{coords}{A \code{matrix} giving the longitude and latitude 
