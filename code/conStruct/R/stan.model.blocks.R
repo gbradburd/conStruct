@@ -8,9 +8,9 @@ functions {
 		parCov = parCov + Nug_mat;
 		return parCov;	
 	}
-	real dWish(real temp, int L, matrix obsCov, matrix parCov){
+	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
 		real lnL;
-		lnL = wishart_lpdf(L*obsCov | L,parCov) * temp;
+		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
 		return lnL;
 	}
 }
@@ -28,13 +28,14 @@ parameters {
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
 	parCov = Cov(N, nugget, gamma);
 }
 model {
 	nugget ~ normal(0,1);										// prior on nugget
 	gamma ~ normal(varMeanFreqs,0.5);
-	L*obsCov ~ wishart(L,parCov);								// likelihood function
-	target += dWish(temp, L, obsCov, parCov);					// likelihood function
+	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
 }
 "
 
@@ -54,9 +55,9 @@ functions {
 		parCov = gamma + parCov + Nug_mat;
 		return parCov;	
 	}
-	real dWish(real temp, int L, matrix obsCov, matrix parCov){
+	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
 		real lnL;
-		lnL = wishart_lpdf(L*obsCov | L,parCov) * temp;
+		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
 		return lnL;
 	}	
 }
@@ -78,6 +79,8 @@ parameters {
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
 	parCov = spCov(N, alpha0, alphaD, alpha2, geoDist, nugget, gamma);
 }
 model {
@@ -86,7 +89,7 @@ model {
 	alpha2 ~ uniform(0,2);										// prior on alpha2
 	nugget ~ normal(0,1);										// prior on nugget
 	gamma ~ normal(varMeanFreqs,0.5);							// prior on global covariance
-	target += dWish(temp, L, obsCov, parCov);					// likelihood function
+	target += dWish(temp, L, LobsCov, parCov);						// likelihood function
 }
 "
 
@@ -110,9 +113,9 @@ functions {
 		}
 		return w_mat;
 	}
-	real dWish(real temp, int L, matrix obsCov, matrix parCov){
+	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
 		real lnL;
-		lnL = wishart_lpdf(L*obsCov | L,parCov) * temp;
+		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
 		return lnL;
 	}
 }
@@ -134,6 +137,8 @@ transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	matrix[N,K] w_mat;
 	vector[K] dirConPar;
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;	
 	dirConPar = rep_vector(0.1,K);	
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, w_mat, nugget, phi, gamma);
@@ -143,7 +148,7 @@ model {
 	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
 	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
-	target += dWish(temp, L, obsCov, parCov);					// likelihood function
+	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
 }
 "
 
@@ -177,9 +182,9 @@ functions {
 		}
 		return w_mat;
 	}
-	real dWish(real temp, int L, matrix obsCov, matrix parCov){
+	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
 		real lnL;
-		lnL = wishart_lpdf(L*obsCov | L,parCov) * temp;
+		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
 		return lnL;
 	}	
 }
@@ -205,6 +210,8 @@ transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	vector[K] dirConPar;
 	matrix[N,K] w_mat;
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
 	dirConPar = rep_vector(0.1,K);
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, alpha0, alphaD, alpha2, geoDist, w_mat, nugget, phi, gamma);
@@ -217,6 +224,6 @@ model {
 	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
 	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
-	target += dWish(temp, L, obsCov, parCov);					// likelihood function
+	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
 }
 "
