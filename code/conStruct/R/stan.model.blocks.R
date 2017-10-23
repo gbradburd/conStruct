@@ -22,14 +22,16 @@ data {
 	real varMeanFreqs;
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
+transformed data {
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
+}
 parameters {
 	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
-	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
-	LobsCov  = L * obsCov;
 	parCov = Cov(N, nugget, gamma);
 }
 model {
@@ -70,6 +72,10 @@ data {
 	real varMeanFreqs;
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood
 }
+transformed data {
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
+}
 parameters {
 	real<lower=0> alpha0;								// sill of the parametric covariance in layer k
 	real<lower=0> alphaD;								// effect of geographic distance in the parametric covariance in layer k
@@ -79,8 +85,6 @@ parameters {
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
-	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
-	LobsCov  = L * obsCov;
 	parCov = spCov(N, alpha0, alphaD, alpha2, geoDist, nugget, gamma);
 }
 model {
@@ -127,6 +131,10 @@ data {
 	real varMeanFreqs;
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
+transformed data {
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
+}
 parameters {
 	positive_ordered[K] phi;				// shared drift effect in layer k
 	real<lower=0> gamma;				// covariance between all layers
@@ -137,8 +145,6 @@ transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	matrix[N,K] w_mat;
 	vector[K] dirConPar;
-	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
-	LobsCov  = L * obsCov;	
 	dirConPar = rep_vector(0.1,K);	
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, w_mat, nugget, phi, gamma);
@@ -197,6 +203,10 @@ data {
 	real varMeanFreqs;
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
+transformed data {
+	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	LobsCov  = L * obsCov;
+}
 parameters {
 	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in layer k
 	vector<lower=0>[K] alphaD;								// effect of geographic distance in the parametric covariance in layer k
@@ -210,8 +220,6 @@ transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	vector[K] dirConPar;
 	matrix[N,K] w_mat;
-	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
-	LobsCov  = L * obsCov;
 	dirConPar = rep_vector(0.1,K);
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, alpha0, alphaD, alpha2, geoDist, w_mat, nugget, phi, gamma);
