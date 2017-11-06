@@ -324,22 +324,76 @@ make.data.block <- function(K,freq.data,coords,spatial,geoDist=NULL,temp=NULL){
 }
 
 check.call <- function(args){
+	check.spatial.arg(args)
+	check.K.arg(args)
+	check.freqs.arg(args)
+	check.geoDist.arg(args)
+	check.coords.arg(args)
+	return(invisible("args checked"))		
+}
+
+check.spatial.arg <- function(args){
 	if(args[["spatial"]] != TRUE & args[["spatial"]] != FALSE){
-		stop("\nyou have specified an invalid value for the \"spatial\" argument \n")
+		stop("\nthe \"spatial\" argument must be either TRUE or FALSE\n")
 	}
-	if(length(args[["K"]]) > 1 | class(args[["K"]]) == "character"){
-		stop("\nyou have specified an invalid value for the \"K\" argument \n")
+	return(invisible("spatial arg checked"))
+}
+
+check.K.arg <- function(args){
+	if(length(args[["K"]]) > 1){
+		stop("\nyou have specified more than one value for the \"K\" argument\n")
+	} 
+	if(class(args[["K"]]) != "numeric"){
+		stop("\nyou have specified a non-numeric value for the \"K\" argument\n")
 	}
-	if(class(args[["freqs"]]) != "matrix" | any(args[["freqs"]] > 1,na.rm=TRUE) | any(args[["freqs"]] < 0,na.rm=TRUE)){	
-		stop("\nyou have specified an invalid value for the \"freqs\" argument \n")
+	return(invisible("K arg checked"))
+}
+
+check.freqs.arg <- function(args){
+	if(class(args[["freqs"]]) != "matrix"){
+		stop("\nthe \"freqs\" argument must be of class \"matrix\"\n")
 	}
+	if(any(args[["freqs"]] > 1,na.rm=TRUE)){
+		stop("\nall values of the the \"freqs\" argument must be less than 1\n")	
+	}
+	if(any(args[["freqs"]] < 0,na.rm=TRUE)){	
+		stop("\nall values of the the \"freqs\" argument must be greater than 0\n")
+	}
+	return(invisible("freqs arg checked"))
+}
+
+check.geoDist.arg <- function(args){
 	if(args[["spatial"]]){
-		if(class(args[["geoDist"]]) != "matrix" | length(unique(dim(args[["geoDist"]]))) > 1 | any(args[["geoDist"]] < 0) | !isSymmetric(args[["geoDist"]])){	
-			stop("\nyou have specified an invalid value for the \"geoDist\" argument \n")
+		if(is.null(args[["geoDist"]])){
+			stop("\nif the \"spatial\" argument is TRUE, you must specify a \"geoDist\" argument\n")
 		}
 	}
-	if(class(args[["coords"]]) != "matrix" | ncol(args[["coords"]]) > 2){	
-		stop("\nyou have specified an invalid value for the \"coords\" argument \n")
+	if(!is.null(args[["geoDist"]])){
+		if(class(args[["geoDist"]]) != "matrix"){
+			stop("\nthe \"geoDist\" argument must be of class \"matrix\"\n")
+		}
+		if(length(unique(dim(args[["geoDist"]]))) > 1){
+			stop("\nyou have specified a \"geoDist\" argument with an unequal number of rows and columns\n")	
+		}
+		if(any(args[["geoDist"]] < 0)){
+			stop("\nall values of the \"geoDist\" argument must be greater than 0\n")
+		}
+		tmp.geoDist <- args[["geoDist"]]
+		row.names(tmp.geoDist) <- NULL
+		colnames(tmp.geoDist) <- NULL
+		if(!isSymmetric(tmp.geoDist)){	
+			stop("\nyou must specify a symmetric matrix for the \"geoDist\" argument \n")
+		}
 	}
-	return(invisible("args checked"))		
+	return(invisible("geoDist arg checked"))
+}
+
+check.coords.arg <- function(args){
+	if(class(args[["coords"]]) != "matrix"){
+		stop("\nthe \"coords\" argument must be of class \"matrix\"\n")
+	}
+	if(ncol(args[["coords"]]) > 2){
+		stop("\nthe \"coords\" argument must be a matrix with two columns\n")
+	}
+	return(invisible("coords arg checked"))
 }
