@@ -204,6 +204,9 @@ validate.data.block <- function(data.block){
 		validate.n.samples(data.block)
 	message(sprintf("\treading %s samples",data.block$N))
 	message(sprintf("\treading %s loci",data.block$L))
+	if(!data.block$L > data.block$N){
+		stop("\nyour data must have a greater number of loci than there are samples\n")
+	}
 	message("\nchecking specified model\n")
 		validate.model(data.block)
 	if(data.block$spatial){
