@@ -57,3 +57,4 @@ This function compares admixture proportions in layers across
 			this function to sync up plotting colors/order across the output 
 			of more than two \code{conStruct} runs.
 }
+
