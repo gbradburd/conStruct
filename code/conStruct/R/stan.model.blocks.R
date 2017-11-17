@@ -133,7 +133,9 @@ data {
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	vector[K] dirConPar;
 	LobsCov  = L * obsCov;
+	dirConPar = rep_vector(0.1,K);
 }
 parameters {
 	positive_ordered[K] phi;				// shared drift effect in layer k
@@ -144,8 +146,6 @@ parameters {
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	matrix[N,K] w_mat;
-	vector[K] dirConPar;
-	dirConPar = rep_vector(0.1,K);	
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, w_mat, nugget, phi, gamma);
 }
@@ -205,7 +205,9 @@ data {
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
+	vector[K] dirConPar;
 	LobsCov  = L * obsCov;
+	dirConPar = rep_vector(0.1,K);
 }
 parameters {
 	vector<lower=0>[K] alpha0;								// sill of the parametric covariance in layer k
@@ -218,9 +220,7 @@ parameters {
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
-	vector[K] dirConPar;
 	matrix[N,K] w_mat;
-	dirConPar = rep_vector(0.1,K);
 	w_mat = make_w_matrix(N,K,w);
 	parCov = admixed_covariance(N, K, alpha0, alphaD, alpha2, geoDist, w_mat, nugget, phi, gamma);
 }
