@@ -222,6 +222,8 @@ University of Oregon, Eugene, OR 97403
 % Primary Equal Contribution Note
 \Yinyang These authors contributed equally to this work.
 \end{flushleft}
+
+
 % Please keep the abstract below 300 words
 \section*{Abstract}
 A classic problem in population genetics is the characterization 
@@ -247,9 +249,13 @@ in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
 We demonstrate the utility of this approach using simulations 
 and by applying it to empirical datasets of poplars and black bears in North America.
+
+
 \ifsubmissionversion
 \newpage
 \fi
+
+
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
 % Author Summary not valid for PLOS ONE submissions.   
@@ -276,10 +282,13 @@ where they can be described by continuous patterns of variation.
 %Using simulated data, we show how current approaches can be misleading, 
 %and also demonstrate that our new method works well.  
 %We predict that our method will be an important tool for the analysis of genetic data.
+
 \ifsubmissionversion
 \linenumbers
 \fi
 \newpage
+
+
 \section*{Introduction}
 A fundamental quandary in the description of biological diversity is
 the fact that diversity shows both discrete and continuous patterns. 
@@ -380,8 +389,11 @@ and we demonstrate the utility of our approach using both simulated and empirica
 The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
 is available as an R package at 
 \href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
+
+
 % \section*{Methods}
 \section*{Results}
+
 \paragraph{Data}
 The statistical framework of our approach is conceptually similar to that in \cite{Wasser2004}, \cite{BEDASSLE}, and \cite{spacemix},
 although we use a somewhat different summary statistic than in this previous work.
@@ -425,6 +437,7 @@ this allelic covariance is more affected in shape by singleton sites
 than the standard genetic covariance,
 so it may be advisable to filter these prior to analysis
 if they are likely to contain a large percentage of errors \cite{linck_battey2017}.
+
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
 are useful because population history can often be meaningfully described on a coarse scale
@@ -530,6 +543,7 @@ In the final term, $\delta_{i,j}$ is an indicator variable that takes a value of
 and $\eta_i$ adds variance specific to sample $i$.
 This term on the diagonal of the parametric covariance matrix captures processes shaping variance within the sampled deme, 
 such as inbreeding and the sampling process.
+
 \paragraph{Likelihood and inference}
 If the allele frequency deviations at each locus
 were independent between loci and multivariate normally distributed across populations, 
@@ -572,6 +586,7 @@ We use Hamiltonian Monte Carlo as implemented in STAN \cite{stan, NUTS, stan_lib
 to estimate the posterior distribution on the parameters.
 Our R package, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"),
 functions as a wrapper around this inference machinery.
+
 \paragraph{Relationship of this model to nonspatial structure models}
 A nice feature of our approach is that the model described in Eq.\ \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
@@ -598,6 +613,7 @@ As these differences are relatively small, we can compare the fit of the differe
 by comparing their performance in a common framework. 
 We also validate our claim that the results of our nonspatial method 
 are a close match to those of STRUCTURE-based approaches.
+
 \paragraph{Choice of layer number and cross-validation}
 There are a number of reasons 
 why there is no true (or right) number of layers for real datasets,
@@ -665,7 +681,10 @@ as described in \secref{layer_contribution}).
 This layer contribution is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
+
+
 % \section*{Results}
+
 \subsection*{Simulations}
 To test the method, we first generated data using the coalescent simulator \texttt{ms} \cite{Hudson2002}.
 In each simulation,
@@ -743,6 +762,7 @@ The unimportance of spurious layers can be seen in plots of layer contributions
 In the spatial analyses, once we pass the true $K$, 
 subsequent layers add little in terms of (co)variance explained; 
 in contrast, additional clusters in the nonspatial analyses continue to contribute substantially.
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -757,6 +777,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
     in all cases, while the nonspatial model creates spurious clusters.
     }\label{simK1_pies}
 \end{figure}
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -770,6 +791,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
     The spatial model shows better model fit at every value of $K$.
     }\label{sim_xvals}
 \end{figure}
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -784,11 +806,13 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
             (additional bars are present but not visible).
 		}\label{simK1_laycon}
 \end{figure}
+
 \subsection*{Empirical Applications}
 To further demonstrate the utility of this method, 
 we also applied \texttt{conStruct} to empirical population genomic data from two systems:
 a contact zone between two poplar species in northwestern North America,
 and a large North American sample of black bears.
+
 \subsubsection*{Poplars}
 Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
 are distributed throughout the Northern Hemisphere;
@@ -844,6 +868,7 @@ using $K = 1$ through 7.
 The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
 as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Supplementary Materials.
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -855,6 +880,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 	as well as the corresponding layer-specific covariance curves estimated under each model (d-f).
     }\label{populus_pies}
 \end{figure}
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -867,6 +893,7 @@ as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Suppleme
 	the second panel zooms in on the results from analyses run with $K = 2$ through 7.
     }\label{populus_xvals}
 \end{figure}
+
 All models with $K>1$ assigned the majority of each of the two species
 to distinct layers, with some populations drawing ancestry from multiple layers.
 Based on cross-validation results, we view the $K=3$ spatial model 
@@ -903,6 +930,8 @@ the successive partitioning of space and the clines of admixture seen in the sim
 The details of each were somewhat different 
 (Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_fastStr}), 
 and also differed across the replicate analyses.
+
+
 \subsubsection*{Black bears}
 The American black bear, \textit{Ursus americanus}, is endemic to North America
 and has a broad distribution across the continent.
@@ -944,6 +973,7 @@ We also ran fastSTRUCTURE \cite{fastStructure} on the same dataset,
 using $K = 2$ through 4.
 The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
 as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary Materials.
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -957,6 +987,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 	shown in the plot above.
     }\label{bear_K3}
 \end{figure}
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -969,6 +1000,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7.
     }\label{bear_xvals}
 \end{figure}
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -983,6 +1015,7 @@ as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary 
 	Colors are consistent with Fig \ref{bear_K3}.
     }\label{bear_laycon}
 \end{figure}
+
 The results partition the sampled bears into two main groups:
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
@@ -1033,6 +1066,8 @@ allows somewhat genetically differentiated individuals
 that are sampled far from one another to belong to the same layer,
 instead of splitting these individuals out into successive clusters 
 (e.g., Fig \ref{bear_sp_pies}d vs \ref{bear_nsp_pies}d).
+
+
 %%%%%%%%%
 \section*{Discussion}
 % The difficulty of dispersing across geography makes
@@ -1067,6 +1102,7 @@ with a biologically realistic model of isolation by distance.
 We anticipate that \texttt{conStruct} will be useful for identifying populations 
 and determining samples' ancestry in and across them, 
 especially when the populations exhibit spatial patterns of relatedness.
+
 \paragraph{Comparison to nonspatial model-based clustering}
 Above, we showed that 
 (a) the nonspatial \texttt{conStruct} model recapitulates results of 
@@ -1106,6 +1142,7 @@ On the same machine and dataset,
 a fastSTRUCTURE run with $K=4$ took 90.2 hours.
 However, for a large number of samples, 
 fastSTRUCTURE (or ADMIXTURE) would be much faster.
+
 \paragraph{Choosing the ``best" number of layers}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
 and using only that analysis to communicate results, 
@@ -1142,6 +1179,7 @@ nor does a non-zero admixture proportion indicate that admixture
 Both groupings and admixture proportions
 should be viewed as hypotheses that should be subject to further testing
 (see \cite{Falush:16} for an in-depth discussion of these points).
+
 \paragraph{Implications for management and conservation}
 Because isolation by distance is common, 
 a likely result of applying \texttt{conStruct} to existing data is that some
@@ -1163,6 +1201,7 @@ or of implementing an integrated conservation plan across multiple demes within 
 % Conversely, two populations that are easily distinguishable based on abundant genetic data
 % need not be strongly differentiated --
 % population assignment is not a replacement for absolute measures of genetic divergence.
+
 \paragraph{Caveats and considerations}
 There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
 First, we have modeled allelic covariance within a layer as a spatial process.
@@ -1187,6 +1226,7 @@ whose other neighbors are to the north, with an intervening group of populations
 and at $K=5$, those southernmost samples split out and become their own layer.
 Again, we encourage users to run analyses across multiple values of $K$, 
 and to examine the spatial covariance functions within layers when interpreting results.
+
 \paragraph{Extensions and future directions}
 There are several ways in which the model described in this paper might be extended or improved.  
 For example, we currently assume that all layers within a model are equally unrelated 
@@ -1216,6 +1256,7 @@ even without replacement, simply due to drift.
 Therefore, a natural way to test for population replacement is to estimate the rates 
 at which relatedness within a layer decays with time in the same way we do in the current model with space, 
 in which case a change in discrete population structure across space is comparable to population replacement across time.
+
 \section*{Materials and Methods}
 % \section*{Appendix}
 % \pagenumbering{gobble}
@@ -1227,10 +1268,14 @@ in which case a change in discrete population structure across space is comparab
 % \setcounter{figure}{0}
 % \renewcommand{\thesection}{A\arabic{section}}
 % \setcounter{section}{0}
+
+
 \section*{Model rationale} \label{rationale}
+
 \subsection*{Drift, admixture, and space}
 Here we sketch a simple model of allele frequencies and their
 covariances, to justify the form given in the main text.
+
 \paragraph{Drift} 
 We first provide a simple model of allele frequencies within a layer. 
 Imagine a sample $i$ that draws all of its ancestry from layer $k$.
@@ -1259,6 +1304,7 @@ their covariance across loci will be
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
 as in Eq.\ \eqref{cross_layer_covariance}.
+
 \paragraph{Admixture} 
 The model above describes the simple case 
 in which samples draw 100\% of their ancestry from only a single layer each. 
@@ -1287,6 +1333,7 @@ and so the covariance between $i$ and $j$ across loci is
 \delta_{i=j} \text{Var}(\Delta_i) .
 \label{admixed_spatial_cov}
 \end{equation}
+
 \paragraph{Space}
 Under our nonspatial model, 
 we assume that $\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell})=0$,
@@ -1303,6 +1350,8 @@ so that
 \end{equation}
 We note that this form is chosen for its flexibility, 
 and not because it matches any explicit population genetic model of isolation by distance. 
+
+
 \section*{Allelic covariance}\label{allelic_cov}
 To see how to arrive at our empirical variance-covariance expression (Eq.\ \eqref{allelic_covariance})
 pick a random locus and
@@ -1324,6 +1373,7 @@ Eq.\ \eqref{allelic_covariance} comes from the observation that
 The factor of $\delta_{i,j}/(N_i-1)$ comes from the fact that if $i=j$,
 then $\E[AB]$ is the probability that both alleles drawn without replacement are reference,
 which is $f_i^2 n/(n-1)$.
+
 \paragraph{Likelihood}
 If allele frequency deviations are well approximated by a Gaussian, 
 their sample allelic covariance is a sufficient statistic,
@@ -1341,7 +1391,10 @@ A benefit of directly modeling the sample allelic covariance is that,
 after the initial calculation of the sample covariance matrix,
 the computation time of the likelihood is not a function of the number of loci,
 so inference can theoretically be done using whole genome data.
+
+
 \section*{Models, parameters, and priors}\label{model_app}
+
 \paragraph{Spatial versus nonspatial}
 In this paper, we discuss two types of models, spatial and nonspatial, 
 each of which can be implemented with different numbers of layers/clusters.
@@ -1351,6 +1404,7 @@ is a special case of the spatial model with all $\alpha$ parameters is set to 0.
 % is described in Eq.\ \eqref{admixed_discrete_covariance}.  % that's not the right eq'n
 The nonspatial model therefore has $3K$ fewer parameters than the spatial model,
 because there are three $\alpha$ parameters that describe the continuous differentiation effect of distance in each layer.
+
 \paragraph{Single layer}
 Each of these models can be run with a single layer ($K=1$), 
 in which case the layer-specific covariance parameter $\phi^{(k)}$ 
@@ -1369,11 +1423,13 @@ and for the nonspatial model, it is:
 \Omega_{i,j} = \text{Var}(\epsilon) + \delta_{i=j} \text{Var}(\Delta^{(i)}) .
 \label{admixed_discrete_covariance}
 \end{equation}
+
 \paragraph{Priors}
 We use a Bayesian approach to parameter inference.
 A table of all parameters, their descriptions, and their priors is given in Table \ref{tab:param_prior_tab}.
-\begin{centering}
+
 \begin{table}
+\begin{centering}
 \ifincludefigs
 \begin{tabular}{| >{\centering\arraybackslash}m{2.1cm} | m{5.2cm} | >{\centering\arraybackslash}m{5.1cm} |}
 	\hline
@@ -1406,8 +1462,10 @@ A table of all parameters, their descriptions, and their priors is given in Tabl
 List of parameters used in the \texttt{conStruct} model, along with their descriptions and priors.
 The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance of the sample mean allele frequencies across loci.
 }\label{tab:param_prior_tab}
-\end{table}
 \end{centering}
+\end{table}
+
+
 \section*{Cross validation}\label{Xvalidation}
 We employ Monte Carlo cross-validation approach for model comparison \cite{picard1984}. 
 This procedure generates a mean predictive accuracy for each model and each value of $K$, 
@@ -1439,6 +1497,8 @@ Briefly, we follow the following procedure:
 	as well its standard error ($SE_{\bar{\mathcal{Z}}_{mk}}$) and
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
 \end{enumerate}
+
+
 \section*{Calculating layer contributions}\label{layer_contribution}
 Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
 at a randomly chosen locus 
@@ -1512,6 +1572,8 @@ as the relative contribution of the $k$th layer to total agreement:
 \label{rel_layer_contribution}
 \end{equation}
 This is the quantity that is plotted in, e.g., Figures \ref{simK1_laycon} and \ref{bear_laycon}.
+
+
 \section*{Simulation details}\label{sim_details}
 We wished to simulate data under a model that had some biological realism, 
 but at the same time had unambiguous true admixture proportions 
@@ -1522,6 +1584,7 @@ which would have more biological realism,
 but no unambiguous ancestry proportions for admixed populations.
 Here, we describe in more detail the procedure we use to simulate our test dataset, 
 using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
+
 \begin{figure}[!ht]
 	\centering
 	\ifincludefigs
@@ -1535,6 +1598,7 @@ using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
 			    or admixed between them.
 			    }\label{sim_setup}
 \end{figure}
+
 Using the program \texttt{ms} \cite{Hudson2002}, 
 we generated discrete population structure by simulating $K$ distinct populations,
 each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
@@ -1562,6 +1626,8 @@ for deme $i$ in layer $k$ is inversely proportional to the distance between deme
 This creates a pattern in which the admixture proportions in a given layer decreases 
 with the distance from that layer's focus, 
 as might be expected if a spatial process were mediating admixture between diverged populations.
+
+
 \section*{Acknowledgements}
 We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
 Mariah Meek, Doc Edge, and Matthew Stephens 
@@ -1578,9 +1644,13 @@ the National Institute of General Medical Sciences of the National
 Institutes of Health under award numbers NIH R01-GM108779 to GC,
 and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
 \fi
+
 \newpage
 \clearpage
+
 \bibliography{reference.library.tex.bib}
+
+
 %%% BEGIN IF INCLUDE SUPPLEMENT
 \ifincludesupplement
 \clearpage
@@ -1594,6 +1664,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \setcounter{figure}{0}
 % \linespread{1}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
@@ -1603,6 +1674,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK1_nsp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_sp_pies.pdf}}
@@ -1612,6 +1684,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK1_sp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
@@ -1622,6 +1695,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK1_xval}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
@@ -1631,6 +1705,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK2_nsp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_sp_pies.pdf}}
@@ -1640,6 +1715,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK2_sp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
@@ -1653,6 +1729,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK2_laycon}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
@@ -1663,6 +1740,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK2_xval}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_adprop_fit.pdf}}
@@ -1672,6 +1750,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK2_adprop_fit}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
@@ -1681,6 +1760,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK3_nsp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
@@ -1690,6 +1770,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{simK3_sp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
@@ -1703,6 +1784,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK3_laycon}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
@@ -1713,6 +1795,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK3_xval}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
@@ -1722,6 +1805,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		}\label{simK3_adprop_fit}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK1_pies.pdf}}
@@ -1731,6 +1815,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{fastStr_simK1}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK2_pies.pdf}}
@@ -1740,6 +1825,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{fastStr_simK2}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK3_pies.pdf}}
@@ -1749,6 +1835,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{fastStr_simK3}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sampling_map.pdf}}
@@ -1758,6 +1845,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_map}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_pies.pdf}}
@@ -1767,6 +1855,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_sp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_pies.pdf}}
@@ -1776,6 +1865,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_nsp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_layer_covs.pdf}}
@@ -1791,6 +1881,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_sp_layer_covs}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_layer_covs.pdf}}
@@ -1806,6 +1897,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_nsp_layer_covs}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_laycon_barplots.pdf}}
@@ -1819,6 +1911,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_laycon}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/poplar_fastStr_results.pdf}}
@@ -1828,6 +1921,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{populus_fastStr}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_results.pdf}}
@@ -1837,6 +1931,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{bear_sp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_results.pdf}}
@@ -1846,6 +1941,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{bear_nsp_pies}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_layer_covs.pdf}}
@@ -1856,6 +1952,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	 }\label{bear_sp_layer_covs}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_layer_covs.pdf}}
@@ -1866,6 +1963,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
     }\label{bear_nsp_layer_covs}
 \end{figure}
 \clearpage
+
 \begin{figure}
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_fastStr_results.pdf}}
@@ -1874,6 +1972,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
     }\label{bear_fastStr}
 \end{figure}
+
 %%% END IF INCLUDE SUPPLEMENT
 \fi
 \iffloatsatend
@@ -1883,4 +1982,5 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \setcounter{figure}{0}
 \processdelayedfloats
 \fi
+
 \end{document}
