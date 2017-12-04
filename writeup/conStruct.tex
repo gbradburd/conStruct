@@ -441,43 +441,49 @@ The model works with allele frequencies at $L$ unlinked, bi-allelic single nucle
 Each ``sample'' may be a single individual,  
 a collection of individuals from a location, 
 or frequencies estimated from pooled sequencing.
-We write $N_i$ for the number of chromosomes sequenced in the $i^\text{th}$ sample.
+From these we compute the \emph{allelic covariance} 
+between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
+as the expected covariance of distinct individual alleles 
+chosen from each of the two samples at a random locus.
+More precisely, suppose that we pick a random locus uniformly,
+pick a random ``reference'' allelic state from the two seen at that locus,
+and in each sample draw a two random alleles without replacement,
+recording $X_i = 1$ if the first allele drawn in sample $i$ matches the random reference,
+and $X_i = 0$ otherwise;
+and $\widetilde X_i = 1$ or $0$ for the second allele.
+Then, 
+\begin{equation} \label{eqn:first_allelic_cov}
+    \widehat{\Omega}_{i,j} = \cov[X_i, \widetilde X_j] .
+\end{equation}
+
+Although we describe this as a covariance between individually drawn alleles,
+$\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequencies
+of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
+The diagonal (where $i=j$) does not have this interpretation, 
+and reflects the covariance between individual alleles drawn from within the population.
+To compute it from allele frequencies, first
+write $N_i$ for the number of chromosomes sequenced in the $i^\text{th}$ sample.
 The \emph{sample frequency} at locus $\ell$ in sample $n$, denoted $f_{n,\ell}$, 
 is calculated by first arbitrarily choosing one of the observed alleles at locus $\ell$ to count, 
 then dividing the number of observations of that counted allele by the total number of chromosomes genotyped at that locus
 in sample $n$.
 The choice of allele does not affect subsequent calculations, and so may be arbitrary.
-We then calculate the \emph{allelic covariance} between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
-as the expected covariance of distinct individual alleles 
-chosen from each of the two samples at a random locus,
-coding the counted allele as `1' (and the other as `0').
-Concretely, this is
+Then $\widehat \Omega$ can be calculated as a covariance
+(derived in \secref{allelic_cov}):
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
     \frac{1}{L} \sum_{\ell=1}^L \left( (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) - \delta_{i,j} f_{i,\ell}^2 / (N_i-1) \right),
 \label{allelic_covariance}
 \end{equation}
 where $\delta_{i,j}=1$ if $i=j$ and is 0 otherwise.
-Although we describe this as a covariance between individually drawn alleles,
-$\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequencies
-of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
-The diagonal (where $i=j$) does not have this interpretation, 
-and reflects the covariance between individual alleles drawn from within the population.
-
 This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
-and so to make the statistic invariant under choice of reference allele, 
-(b) we randomly choose an allele to count at each locus.
-We discuss the derivation of Eq.\ \eqref{allelic_covariance} further in \secref{allelic_cov}.
+and so to make the statistic insensitive to choice of reference allele, 
+(b) we randomly choose a reference allele at each locus.
 As noted in \cite{EEMS},
-this covariance has a close relationship to the pairwise genetic distance:
-if $\pi_{i,j}$ is the mean density of sites at which random samples from $i$ and $j$ differ at a randomly chosen locus,
-then $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$.
-Therefore, 
-this allelic covariance is more affected in shape by singleton sites
-than the standard genetic covariance,
-so it may be advisable to filter these prior to analysis
-if they are likely to contain a large percentage of errors \cite{linck_battey2017}.
+this can also be calculated as $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$,
+where $\pi_{i,j}$ is the genetic distance,
+i.e., mean density of sites at which random samples from $i$ and $j$ differ.
 
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
@@ -1291,6 +1297,19 @@ or of implementing an integrated conservation plan across multiple demes within 
 % need not be strongly differentiated --
 % population assignment is not a replacement for absolute measures of genetic divergence.
 
+\paragraph{Allelic or genetic covariance?}
+The choice of allelic covariance, rather than genetic covariance,
+was motivated by two considerations.
+First, it captures within-population variance in a manner more suited to the modeling approach here,
+which led to better performance on test data.
+Second, it is less affected by sample configuration --
+the genetic covariance is calculated after subtracting the mean from the entire sample,
+which is more strongly affected by densely sampled locations.
+However, note that allelic covariance is more affected by singleton sites
+than the standard genetic covariance,
+so it may be advisable to filter these prior to analysis
+if they are likely to contain a large percentage of errors \cite{linck_battey2017}.
+
 \paragraph{Caveats and considerations}
 There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
 First, we have modeled allelic covariance within a layer as a spatial process.
@@ -1447,14 +1466,17 @@ and not because it matches any explicit population genetic model of isolation by
 
 
 \section*{Allelic covariance}\label{allelic_cov}
-To see how to arrive at our empirical variance-covariance expression (Eq.\ \eqref{allelic_covariance})
+To see why equations
+\eqref{eqn:first_allelic_cov} and \eqref{allelic_covariance}
+for the allelic covariance are equivalent,
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
 If $i=j$, then these are chosen \emph{without} replacement.
 Suppose these are each coded as `0' or `1` (where `0' denotes a reference allele),
 but we randomly ``flip'' this coding, so that we let $X=A$ and $Y=B$ with probability 1/2,
 but otherwise we let $X=1-A$ and $Y=1-B$.
-We then let $\widehat{\Omega}_{i,j} = \cov[X,Y]$. 
+These are $X_i$ and $\widetilde X_j$ in equation \eqref{eqn:first_allelic_cov},
+so that $\widehat{\Omega}_{i,j} = \cov[X,Y]$. 
 Sampling without replacement makes the statistic insensitive to sample size,
 and random allele flipping makes it independent of the choice of reference allele.
 By conditioning on the flip,
