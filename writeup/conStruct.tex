@@ -71,8 +71,10 @@
 % Please contact latex@plos.org with any questions.
 %
 % % % % % % % % % % % % % % % % % % % % % % % %
+
 \documentclass[10pt,letterpaper]{article}
 \usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
+
 %% added PLR
 \newif\ifsubmissionversion
 %\submissionversionfalse
@@ -90,30 +92,42 @@
 \usepackage[nomarkers]{endfloat}
 \fi
 %% end added PLR
+
 % amsmath and amssymb packages, useful for mathematical formulas and symbols
 \usepackage{amsmath,amssymb}
+
 % Use adjustwidth environment to exceed column width (see example table in text)
 \usepackage{changepage}
+
 % Use Unicode characters when possible
 \usepackage[utf8x]{inputenc}
+
 % textcomp package and marvosym package for additional characters
 \usepackage{textcomp,marvosym}
+
 % cite package, to clean up citations in the main text. Do not remove.
 \usepackage{cite}
+
 % Use nameref to cite supporting information files (see Supporting Information section for more info)
 \usepackage{nameref}
 \usepackage[hidelinks]{hyperref}
+
 % line numbers
 \usepackage[right]{lineno}
+
 % ligatures disabled
 \usepackage{microtype}
 \DisableLigatures[f]{encoding = *, family = * }
+
 % color can be used to apply background shading to table cells only
 \usepackage[table]{xcolor}
+
 % array package and thick rules for tables
 \usepackage{array}
+
 % create "+" rule type for thick vertical lines
 \newcolumntype{+}{!{\vrule width 2pt}}
+
 % create \thickcline for thick horizontal lines of variable length
 \newlength\savedwidth
 \newcommand\thickcline[1]{%
@@ -122,13 +136,17 @@
   \noalign{\vskip\arrayrulewidth}%
   \noalign{\global\arrayrulewidth\savedwidth}%
 }
+
 % \thickhline command for thick horizontal lines that span the table
 \newcommand\thickhline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
 \hline
 \noalign{\global\arrayrulewidth\savedwidth}}
+
+
 % Remove comment for double spacing
 %\usepackage{setspace} 
 %\doublespacing
+
 % Text layout
 \ifsubmissionversion
     \raggedright
@@ -138,18 +156,23 @@
 \else
     \usepackage{fullpage}
 \fi
+
 % Bold the 'Figure #' in the caption and separate it from the title/caption with a period
 % Captions will be left justified
 \usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
 \renewcommand{\figurename}{Fig}
+
 % Use the PLoS provided BiBTeX style
 \bibliographystyle{latex/plos2015}
+
 % Remove brackets from numbering in List of References
 \makeatletter
 \renewcommand{\@biblabel}[1]{\quad#1.}
 \makeatother
+
 % Leave date blank
 \date{}
+
 % Header and Footer with logo
 \usepackage{graphicx}
 \ifsubmissionversion
@@ -166,15 +189,21 @@
     \fancyfootoffset[L]{2.25in}
     \lfoot{\sf PLOS}
 \fi
+
 %% Include all macros below
+
 \newcommand{\e}[1]{{\mathbb E}\left[ #1 \right]}
 \newcommand{\given}{\mid}
 \newcommand{\secref}[1]{``\nameref{#1}''}
 \newcommand{\tri}{\textit{trichocarpa}} 
 \newcommand{\bals}{\textit{balsamifera}}
+
+
 \newcommand{\gb}[1]{{\it\color{magenta}{(#1)}}}
 \newcommand{\plr}[1]{{\it\color{purple}{(#1)}}}
 \newcommand{\gc}[1]{{\it\color{blue}{(#1)}}}
+
+
 \newcommand{\R}{\mathbb{R}}
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
@@ -183,9 +212,13 @@
 \newcommand{\supp}{\mathop{\mbox{supp}}}
 \newcommand{\sgn}{\mathop{\mbox{sgn}}}
 \newcommand{\bone}{\mathbf{1}}
+
 %% END MACROS SECTION
+
+
 \begin{document}
 \vspace*{0.2in}
+
 % Title must be 250 characters or less.
 \begin{flushleft}
 {\Large
@@ -217,15 +250,17 @@ University of Oregon, Eugene, OR 97403
 \textbf{a} bradburd@msu.edu; 
 \textbf{b} gmcoop@ucdavis.edu;
 \textbf{c} plr@uoregon.edu
+
 \bigskip
+
 %
 % Primary Equal Contribution Note
 \Yinyang These authors contributed equally to this work.
+
 \end{flushleft}
-
-
 % Please keep the abstract below 300 words
 \section*{Abstract}
+
 A classic problem in population genetics is the characterization 
 of discrete population structure in the presence of 
 continuous patterns of genetic differentiation.
@@ -249,7 +284,6 @@ in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
 We demonstrate the utility of this approach using simulations 
 and by applying it to empirical datasets of poplars and black bears in North America.
-
 
 \ifsubmissionversion
 \newpage
@@ -279,6 +313,7 @@ one that describes variation as a combination of continuous and discrete pattern
 We demonstrate that this method works well and can capture patterns in
 population genomic data without resorting to splitting populations
 where they can be described by continuous patterns of variation.
+
 %Using simulated data, we show how current approaches can be misleading, 
 %and also demonstrate that our new method works well.  
 %We predict that our method will be an important tool for the analysis of genetic data.
@@ -286,9 +321,8 @@ where they can be described by continuous patterns of variation.
 \ifsubmissionversion
 \linenumbers
 \fi
+
 \newpage
-
-
 \section*{Introduction}
 A fundamental quandary in the description of biological diversity is
 the fact that diversity shows both discrete and continuous patterns. 
@@ -304,6 +338,7 @@ such as geographic barriers, rapid expansions, bottlenecks, and rare
 long-distance migration. 
 Both discrete and continuous components
 are required to accurately describe most species' patterns of genetic relatedness.
+
 From a practical standpoint, even while acknowledging continuous
 processes, we often need to identify somewhat separable populations 
 from which individuals are sampled \cite{wright1949genetical}.
@@ -316,6 +351,7 @@ the substantial information available from continuous, geographic differentiatio
 (e.g., adaptation along a climatic gradient)
 can be confounded by discrete historical processes (e.g., admixture),
 requiring methods that can disentangle the two.
+
 There have been many methods proposed to characterize population
 genetic structure,
 including generating population phylogenies \cite{CavalliSforza1975, treemix},
@@ -343,6 +379,7 @@ by, for example, placing spatial priors on cluster memberships \cite{geneland,TE
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
+
 \emph{Isolation by distance} (IBD) refers to a pattern of increasing genetic differentiation
 with geographic separation,
 which occurs when geographically restricted dispersal allows
@@ -360,6 +397,7 @@ but substantial work remains to be done \cite{barton2002neutral,barton2013modell
 % in which migration occurs only between neighboring demes.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
 it is unsurprising that isolation by distance is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
+
 The ubiquity of isolation by distance presents a challenge for models of discrete population structure,
 as it is frequently difficult to determine whether observed patterns of genetic variation are 
 continuously distributed across a landscape, or instead are partitioned in discrete clusters.
@@ -367,12 +405,14 @@ This problem can be compounded if sampling is done unevenly or discretely across
 and has given rise to a debate in the population genetic literature
 about how best to describe sets of individuals using continuous clines and discrete clusters 
 (e.g., \cite{SerrePaabo2004,rosenberg2005clines}).
+
 Existing model-based clustering approaches can only describe continuous patterns of variation using
 discrete clusters, and so tend to erroneously describe continuously distributed variation with multiple clusters that 
 show spatially autocorrelated cluster membership \cite{Frantz2009,meirmans2012}.
 In analyses of empirical datasets, which often show strong isolation by distance,
 model-based clustering approaches will therefore tend to overestimate
 the number of discrete clusters present. 
+
 To address this, we set out to develop
 a model-based clustering method that, when possible, uses isolation by distance 
 to explain observed genetic variation.
@@ -423,6 +463,7 @@ $\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequ
 of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
 The diagonal (where $i=j$) does not have this interpretation, 
 and reflects the covariance between individual alleles drawn from within the population.
+
 This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
 and so to make the statistic invariant under choice of reference allele, 
@@ -458,7 +499,9 @@ but we do not adopt this term,
 as ``spatial cluster'' suggests a clustering in space, 
 while our layers may contribute to genetic variation 
 across the entire geographic range.
+
 %they connote a lack of geographical separation within each.
+
 Within each of these layers,
 allele frequencies have positive covariance at geographically close locations,
 but this covariance is allowed to decay as geographic distance increases.
@@ -472,6 +515,7 @@ but observed frequencies can change abruptly at many loci
 if the proportions of ancestry individuals derive from each layer 
 (the ``admixture'' proportions) 
 do so as well. 
+
 To allow flexibility in the form of the decay of allelic covariance with geographic distance within each layer, 
 we define the covariance within layer $k$ between samples $i$ and $j$ to be:
 \begin{equation}
@@ -502,12 +546,14 @@ although they cannot be directly compared because
 we are modeling the allelic, rather than genetic, covariance. 
 In \secref{rationale} we lay out a
 simple model of allele frequencies underlying this covariance model.
+
 We then allow samples to draw their ancestry from more than one layer.
 The ``admixture'' proportion of the $i$th sample in the $k$th layer, denoted $w^{(k)}_i$,
 gives the genome-wide proportion of alleles from sample $i$ that derive from
 layer 
 $k$ (and so $\sum_{k=1}^K w^{(k)}_i =1$).
 A visual representation of the method is shown in Fig \ref{schematic}.
+
 \begin{figure}
 	\centering
 	\ifincludefigs
@@ -524,6 +570,7 @@ A visual representation of the method is shown in Fig \ref{schematic}.
 			     the location of the highlighted admixed sample intersects each layer.
 			    }\label{schematic}
 \end{figure}
+
 We can then describe the covariance between samples $i$ and $j$ across all $K$ layers, $\Omega_{i,j}$,
 by summing their within-layer spatial covariances ($G_{i,j}^{(k)}$ in layer $k$),
 weighted by the relevant admixture proportions.
@@ -534,6 +581,7 @@ G^{(k)}_{i,j} + \delta_{i,j}\eta_i .
 \end{equation}
 In this equation, $w^{(k)}_i w^{(k)}_j$ is the proportion of alleles that \emph{both}
 sample $i$ and sample $j$ have inherited from layer $k$.
+
 In addition to the admixture-weighted sum of the within-layer spatial covariances,
 this function contains two terms, $\gamma$ and $\delta_{i,j}\eta_i$.
 The first, $\gamma$, describes the global allelic covariance between all samples, 
@@ -565,6 +613,7 @@ One possible solution, which we have not yet found necessary to implement,
 would be to estimate an \emph{effective} number of loci 
 by introducing a parameter to modify the given degrees of freedom 
 and thereby informally model linkage between loci (e.g., \cite{EEMS}).
+
 We estimate the values of the parameters of the model using a Bayesian approach.
 Acknowledging the dependence of the parametric covariance matrix $\Omega$ on its constituent parameters
 $w,\alpha,\phi,\eta,\gamma$ and on the (observed) geographic distances $D$ 
@@ -587,7 +636,9 @@ to estimate the posterior distribution on the parameters.
 Our R package, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"),
 functions as a wrapper around this inference machinery.
 
+
 \paragraph{Relationship of this model to nonspatial structure models}
+
 A nice feature of our approach is that the model described in Eq.\ \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
 (see \secref{model_app} for a more in-depth discussion). 
@@ -626,6 +677,7 @@ provides significant explanatory power.
 Toward that end, we have implemented a method for 
 statistically comparing \texttt{conStruct} results across different values of $K$ 
 and between the spatial and nonspatial models.
+
 Several approaches have been used as model choice criteria 
 for the number of discrete clusters in population genetic data, including: 
 comparisons of the likelihood of the data across different values of $K$,
@@ -637,6 +689,7 @@ or via a more rigorous and computationally intensive approach such as thermodyna
 or inference using a Dirichlet process prior \cite{huelsenbeck2007inference}.
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
 between several methods.
+
 We use cross-validation (similar in spirit to \cite{ADMIXTURE_xval}) to attack this problem.
 To do this,
 we use a ``training" partition of the data (in practice, a random 90\% subset of the loci)
@@ -655,11 +708,13 @@ as above a certain $K$ the model only fits noise specific to the training data
 rather than generalizable patterns.
 At any value of $K$, support for the spatial model over the nonspatial model 
 means that isolation by distance is likely a feature of the data.
+
 Cross-validation provides a valuable summary of how much explanatory power
 is added by spatial structure within each layer, and each additional layer.
 However, we remind users that ``statistical significance does not imply real-world significance','
 and so small but statistically significant differences between models
 should probably not be relied on too strongly.
+
 Another way to describe the practical significance of additional layers
 is to calculate each layer's relative contribution to total covariance, 
 and to choose a value of $K$ where all layers have a contribution above some cutoff (e.g. 0.1\%).
@@ -668,6 +723,7 @@ is quite harsh against intermediate admixture values (see Table \ref{tab:param_p
 encouraging the model to ``not use" unnecessary layers if they are
 present in the model, 
 so that they will have a low contribution to overall covariance.
+
 To calculate layer contributions, we use the following alternative description of our covariance model:
 the genomes of any pair of individuals \emph{agree} with some
 background probability at a locus,
@@ -686,6 +742,7 @@ so we take that into account when calculating each layer's contribution to the w
 % \section*{Results}
 
 \subsection*{Simulations}
+
 To test the method, we first generated data using the coalescent simulator \texttt{ms} \cite{Hudson2002}.
 In each simulation,
 we split a single ancestral population into $K$ subpopulations $\tau_{\text{s}}$ units of coalescent time in the past,
@@ -709,6 +766,8 @@ and compared predictive performance of the models using cross-validation.
 For comparison,
 we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, using $K=2-4$.
 % inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
+
+
 % In Fig \ref{simK1_pies}, we show the results of the dataset simulated with $K=1$, 
 % contrasting the results of the nonspatial model runs with 2--4 layers 
 % with those of spatial model with 2--4 layers.
@@ -721,6 +780,7 @@ we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}
 % other nonspatial model-based clustering algorithms, 
 % we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, 
 % inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
+
 With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
 Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
@@ -732,6 +792,7 @@ the inferred admixture proportions are nearly identical to
 those estimated under the true value of $K$ for each simulation.
 Moreover, the method infers the true admixture proportions with high accuracy, tight precision, and good coverage 
 (Figs \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit}).
+
 In contrast, the nonspatial model describes geographic variation
 using gradients of admixture between more and more discrete clusters
 to better approximate the continuous, spatial patterns of relatedness
@@ -747,6 +808,7 @@ Each nonspatial cluster is in truth genetically more similar within itself
 than it is to other clusters,
 but we know that these boundaries are arbitrary,
 because the data were simulated without them.
+
 The spatial model's better fit is reflected by increased predictive accuracy:
 as shown in Fig \ref{sim_xvals},
 across all models and choices of $K$, the spatial model is correctly preferred over the nonspatial model.
@@ -754,9 +816,11 @@ As desired, predictive accuracy of the spatial model increases until the true va
 and then plateaus or declines
 (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}),
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
+
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
 % (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).
+
 The unimportance of spurious layers can be seen in plots of layer contributions
 (Figs \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}).
 In the spatial analyses, once we pass the true $K$, 
@@ -807,17 +871,21 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 		}\label{simK1_laycon}
 \end{figure}
 
+
 \subsection*{Empirical Applications}
+
 To further demonstrate the utility of this method, 
 we also applied \texttt{conStruct} to empirical population genomic data from two systems:
 a contact zone between two poplar species in northwestern North America,
 and a large North American sample of black bears.
 
 \subsubsection*{Poplars}
+
 Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
 are distributed throughout the Northern Hemisphere;
 species in the genus regularly co-occur and, 
 where they do, they frequently hybridize \cite{eckenwalder1984, Cronk2005}.
+
 \textit{Populus trichocarpa}, the black cottonwood,
 and \textit{Populus balsamifera}, the balsam poplar,
 have a broad zone of overlap in the Pacific Northwest,
@@ -830,6 +898,7 @@ making the system well-suited for application of our method.
 % and continuously with geographic distance.
 We organize the results of our analyses around the following questions: 
 \begin{enumerate}
+
     \item To what degree has hybridization blurred the boundaries between 
         \textit{trichocarpa} and \textit{balsamifera}?
         (As an extreme case, does genetic differentiation support these as separate species,
@@ -837,18 +906,22 @@ We organize the results of our analyses around the following questions:
     % Given the known history of hybridization between this pair of poplar species, 
     % is there support for two discrete populations, 
     % rather than a single cline of ancestry across their overlap zone?
+
     \item Does the only significant boundary of population structure
         fall along the species boundary (if any),
         % If there is evidence for discrete population structuring, 
         % does it fall solely along species boundaries, 
         or is there sub-structuring within species?
+
     \item Does the strength of isolation by distance differ between inferred layers?
         This may indicate, e.g., different speeds of postglacial expansion
         or primary modes of dispersal.
         % Is there support for a pattern of isolation by distance within
         % the inferred layers, and, if so, 
         % does it differ between different layers?
+
 \end{enumerate}
+
 We use data from \cite{geraldes_etal_2014}, 
 consisting of 434 individuals sampled from 35 drainages 
 genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
@@ -914,6 +987,7 @@ Both points are
 in agreement with \cite{keller_etal_2010}, 
 who found low diversity within the region's \bals{},
 probably as the result of a recent postglacial expansion.
+
 A consistent split between layers within \tri{} fell along the ``no-cottonwood belt," 
 a region along the central coast of British Columbia in which black
 cottonwood is absent (the break between yellow and red, for $K \geq 3$). 
@@ -925,14 +999,16 @@ At higher values of $K$, drainages at the southern tip of \tri{} sampling
 begin to split out into their own layers,
 perhaps due to introgression from the southern neighbors
 \textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
+
+
 Both nonspatial \texttt{conStruct} and fastSTRUCTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
 The details of each were somewhat different 
 (Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_fastStr}), 
 and also differed across the replicate analyses.
 
-
 \subsubsection*{Black bears}
+
 The American black bear, \textit{Ursus americanus}, is endemic to North America
 and has a broad distribution across the continent.
 During the last glacial maximum, 
@@ -959,6 +1035,7 @@ and differing strengths of isolation by distance might indicate
 different levels of habitat connectivity,
 dispersal behavior,
 or different postglacial histories.
+
 We use data from \cite{Puckett2015}, consisting of 95 individuals 
 sampled across the United States and on the West coast of Canada,
 genotyped at just under 22,000 bi-allelic loci.
@@ -1025,6 +1102,7 @@ that Canada was not sampled,
 and so the red layer may extend
 through the intervening (unsampled) northern Great Plains and Canadian Shield, 
 with the blue layer presumably then stretching up into British Columbia.
+
 Additional layers in the spatial model have strong statistical support 
 up until around $K=5$ or 6 (Fig \ref{bear_xvals}),
 but additional spatial layers beyond $K=2$ contribute little to total covariance (Fig \ref{bear_laycon}).
@@ -1042,6 +1120,7 @@ make more detailed interpretations untrustworthy.
 %In addition, our model is not an explicit test of any demographic scenario, 
 %and also uses a dataset that consists solely of nuclear (rather than
 %mitochondrial) DNA. WHY DO WE CARE about BEAR MTDNS
+
 Results from the nonspatial model clearly exhibit the tendency 
 of nonspatial clustering algorithms to describe continuous spatial patterns of divergence 
 using gradients of admixture between clusters.
@@ -1054,6 +1133,7 @@ but they do show the same tendency:
 e.g., at $K=3$, fastSTRUCTURE splits the westernmost Alaskan samples 
 out of the cluster with the eastern samples, 
 and at $K=4$, it splits them into their own cluster entirely (Fig \ref{bear_fastStr}).
+
 Across all values of $K$ for which we ran \texttt{conStruct},
 we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}).
 % indicating the isolation by distance seems to be a prominent feature of the data.
@@ -1070,6 +1150,7 @@ instead of splitting these individuals out into successive clusters
 
 %%%%%%%%%
 \section*{Discussion}
+
 % The difficulty of dispersing across geography makes
 % the pattern of isolation by distance ubiquitous in nature.
 % % this is unsurprising, as mating opportunities are distance-limited in most species.
@@ -1080,6 +1161,7 @@ instead of splitting these individuals out into successive clusters
 % The resulting spurious clusters can have implications for 
 % downstream analysis and interpretation of genetic data, 
 % including conservation management decisions. 
+
 In this paper, we have presented a statistical framework, \texttt{conStruct}, for simultaneously 
 modeling continuous and discrete patterns of population structure.
 By employing the sensible default assumption
@@ -1089,6 +1171,7 @@ To aid comparison between models,
 we present a cross-validation approach 
 as well as a way to describe the contribution of each spatial layer to the model
 (but caution against overly strict interpretation of either).
+
 The method performs well on simulated data:
 we accurately infer the admixture proportions used to simulate the data 
 and accurately pick the simulating model as the best model using our cross-validation procedure.
@@ -1097,6 +1180,7 @@ yield reasonable results,
 and demonstrate that,
 by acknowledging isolation by distance,
 real datasets can be better described using fewer layers.
+
 The proposed method combines the utility of model-based clustering algorithms 
 with a biologically realistic model of isolation by distance.
 We anticipate that \texttt{conStruct} will be useful for identifying populations 
@@ -1131,6 +1215,7 @@ which alters only a single row/column of the covariance matrix.
 We have not implemented this yet, 
 as it would likely mean losing the ability to do efficient,  
 Hamiltonian Monte Carlo sampling of our parameters.
+
 For a relatively small number of samples, 
 \texttt{conStruct} can be much faster than other nonspatial clustering methods.
 On a desktop machine, using a single 4.2 GHz Intel Core i7 processor, 
@@ -1142,6 +1227,7 @@ On the same machine and dataset,
 a fastSTRUCTURE run with $K=4$ took 90.2 hours.
 However, for a large number of samples, 
 fastSTRUCTURE (or ADMIXTURE) would be much faster.
+
 
 \paragraph{Choosing the ``best" number of layers}
 Although we recognize the utility of choosing a single, ``best'' value of $K$, 
@@ -1158,6 +1244,7 @@ the support for larger values of $K$ is likely to increase with increasing amoun
 %(although perhaps only logarithmically).
 In the limit of infinite data, the best value of $K$ 
 may be the number of samples included in the dataset \cite{Patterson2006}.
+
 From a biological perspective, 
 it is important to stress that patterns of relatedness between individuals and populations 
 are shaped by complex spatial and hierarchical processes.
@@ -1171,6 +1258,7 @@ cross-sections of the population phylogeny),
 and also to take the results of the proposed cross-validation procedure with a large grain of salt.
 Calculating layer contributions may also be a useful heuristic, 
 as it can reveal layers with statistical support but small biological import.
+
 Although we believe our model adds spatial realism to the groups used by clustering methods,
 it is important to note that the layers detected by our method 
 do not necessarily correspond  to distinct, ancestral populations; 
@@ -1189,6 +1277,7 @@ This ``lumping'' might better reflect biological reality,
 but may also have implications for management decisions and conservation policy, 
 both of which are often predicated on the identification of discrete ``management units'' (MUs) 
 identified using genetic data \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
+
 It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
 may be quite genetically diverged from one another, 
 perhaps especially at loci underlying adaptive traits, % \citep{toews2016plumage}, 
@@ -1215,6 +1304,7 @@ we might get misleading results.
 This is because distance between locations on either side of the species' distributions
 (across the Tibetan plateau and the Central Valley, respectively) 
 is not representative of the path traversed in the coalescent of a pair of alleles sampled at those locations.
+
 A second caveat is that, in some instances, 
 membership in the same layer may not mean that samples are particularly related.
 If covariance within a layer decays sharply with distance, 
@@ -1236,6 +1326,7 @@ However, we could extend the existing model by implementing
 a relatedness structure between the layers by, for example, 
 estimating a population phylogeny between them
 (e.g, \cite{treemix}).
+
 In addition, here we have assumed that samples have known geographic coordinates, 
 and that they draw ancestry from layers only at those sampled locations. 
 A natural extension would be to attempt to ``geo-locate'' 
@@ -1246,6 +1337,7 @@ We could even allow entire layers to bud off of a particular location on another
 This would enable more explicit modeling of range expansion or domestication, 
 in which a set of individuals are thought to have ancestry that originated from
 a particular geographic location embedded in a larger pattern of isolation by distance.
+
 A final direction would be to model relatedness within a layer as a spatiotemporal process, 
 in which covariance decays both with distance in space and in time.  
 As the number of genotyped historical or ancient samples increases, 
@@ -1258,6 +1350,7 @@ at which relatedness within a layer decays with time in the same way we do in th
 in which case a change in discrete population structure across space is comparable to population replacement across time.
 
 \section*{Materials and Methods}
+
 % \section*{Appendix}
 % \pagenumbering{gobble}
 % \renewcommand{\theequation}{A\arabic{equation}}
@@ -1296,6 +1389,7 @@ The final term is the deviation specific to the $i$th sample,
 which captures drift not shared by all samples at the population level
 (i.e., subpopulation-specific drift due to, e.g., inbreeding). 
 We will assume that these four deviations are all uncorrelated with each other.
+
 If we have two samples $i$ and $j$ drawn from layer $k$, 
 their covariance across loci will be 
 \begin{equation}
@@ -1387,6 +1481,7 @@ the number of loci $L$ across which the sample allelic covariance is calculated:
 \label{wishart}
 \end{equation}
 where $\mathcal{W}$ is the Wishart likelihood function.
+
 A benefit of directly modeling the sample allelic covariance is that, 
 after the initial calculation of the sample covariance matrix,
 the computation time of the likelihood is not a function of the number of loci,
@@ -1465,8 +1560,8 @@ The mean of the Normal prior on $\gamma$, $\text{Var}(\bar{f})$, is the variance
 \end{centering}
 \end{table}
 
-
 \section*{Cross validation}\label{Xvalidation}
+
 We employ Monte Carlo cross-validation approach for model comparison \cite{picard1984}. 
 This procedure generates a mean predictive accuracy for each model and each value of $K$, 
 as well as a confidence interval around that mean,
@@ -1499,7 +1594,9 @@ Briefly, we follow the following procedure:
 \end{enumerate}
 
 
+
 \section*{Calculating layer contributions}\label{layer_contribution}
+
 Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
 at a randomly chosen locus 
 (if the two populations are the same, then choose without replacement).
@@ -1518,6 +1615,7 @@ while $\P\{ U \neq V \}$ is the probability that they disagree.
 This implies that $\E[UV] = 1 - 2 \pi_{ij}$, 
 where $\pi_{ij}$ is the probability that two randomly chosen alleles differ, 
 which is the genetic divergence.
+
 Now, here is a generative model that gives us the form of the covariance we have postulated.
 To decide whether or not $A$ and $B$ will agree,
 first each sample randomly chooses a layer: call these layers $I$ and $J$.
@@ -1534,6 +1632,7 @@ $$\begin{aligned}
     p_\gamma &= (2 (\gamma + \delta_{ij} \eta_i) + 1/2) \\
     q^{(k)}_{ij} &= \left(2 \alpha_0^{(k)} \exp\left( - \left(\alpha_D^{(k)} D_{ij}\right)^{\alpha_2^{(k)}} \right) + 2 \phi^{(k)}  + 1/2 \right) .
 \end{aligned}$$
+
 One way to summarize the contribution of each layer is to partition the probability of agreement
 into contributions due to agreement ``in" each layer.
 So, the contribution from layer $k$ to agreement between $i$ and $j$ is 
@@ -1545,6 +1644,7 @@ the $p_\gamma$ terms.
 Stated in this way, this quantity is the
 relative contribution of the $k$th layer to the (model-based) kinship
 coefficient between $i$ and $j$.
+
 This suggests defining the overall contribution of layer $k$ to agreement, $\xi^{(k)}$, 
 to be the average of that quantity over $i$ and $j$:
 \begin{equation}
@@ -1609,6 +1709,7 @@ each of these discrete populations instantaneously colonizes an
 independent lattice of demes,
 for which we use a stepping stone model with symmetric migration 
 to nearest neighbors (eight neighbors, including diagonals).
+
 Finally, at time $\tau_{\text{a}}$ in the past 
 we generate a single dataset 
 by collapsing those $K$ discrete lattices into a single grid of demes 
@@ -1627,8 +1728,8 @@ This creates a pattern in which the admixture proportions in a given layer decre
 with the distance from that layer's focus, 
 as might be expected if a spatial process were mediating admixture between diverged populations.
 
-
 \section*{Acknowledgements}
+
 We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
 Mariah Meek, Doc Edge, and Matthew Stephens 
 for invaluable comments on the method and manuscript, 
@@ -1645,14 +1746,15 @@ Institutes of Health under award numbers NIH R01-GM108779 to GC,
 and the National Science Foundation under award numbers NSF \#1148897 and \#1402725 to GB.
 \fi
 
+
 \newpage
 \clearpage
-
 \bibliography{reference.library.tex.bib}
 
 
 %%% BEGIN IF INCLUDE SUPPLEMENT
 \ifincludesupplement
+
 \clearpage
 \newpage
 \section*{Supplementary Information}
@@ -1662,7 +1764,12 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \setcounter{table}{0}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \setcounter{figure}{0}
+
 % \linespread{1}
+% \iffloatsatend
+% \processdelayedfloats
+% \fi
+
 \clearpage
 
 \begin{figure}
