@@ -48,13 +48,13 @@ This being said, I have serious concerns about the submitted manuscript.
 
 \begin{itemize}
 \item First, many results concern comparisons between clustering based on the spatial and non-spatial models of construct (Figs 2, 3, 4, 6, 7, 9). However the authors should rather compare their spatial approach to existing software for model-based clustering, which do not account for space (Structure, fastSTRUCTURE, ADMIXTURE,...). Results obtained with one of these software should not be available in supplementary material but should rather be visible in the main text.\\\\
-\gb{}\\
+\gb{double axis bringing in marginal likelihood of fastSTRUCTURE for Fig 3, or throw in suppmat}\\
 
 \item Second, the simulation scenario should correspond to a real biological scenario. Here this layer-based simulation scenario is very difficult to understand. I would be more interesting to stick to more classic spatially explicit simulations such as range expansion, or secondary contact scenarios.\\\\
-\gb{}\\
+\gb{trade off w/ space w/ empirical applications, moving the adprop fit figs into the main text}\\
 
 \item Third, I think that the main point of the paper should be more explicit. Non-spatial model based approaches are prone to overfitting when K is too large and this can be avoided when using spatial-based approaches. \\\\
-\gb{We disagree that this is the main point of the paper.}\\
+\gb{}\\
 
 \item Last, there are other software that account for space when performing model-based clustering and they should be included in the comparisons (BAPS, Geneland, TESS,...). Right now, they are only mentioned in the introduction and we would like to see results comparing these different model-based approaches.\\\\
 \gb{
@@ -64,7 +64,7 @@ and/or cluster membership,
 but like STRUCTURE, they assume that allele frequencies 
 within a cluster are constant across space.
 Therefore, although spatially explicit, this parameterization does not 
-account for space in a way that avoids the problem we describe in the paper: 
+account for space in a way that avoids the problem we describe in our manuscript: 
 the characterization of spatially continuous differentiation 
 as clines of admixture across spurious clusters.
 STRUCTURE is the canonical model-based clustering algorithm
@@ -75,10 +75,11 @@ within a faster inference framework,
 provides the best comparison to our method.}\\
 
 \item In the introduction, the authors write ``placing spatial priors on cluster memberships'' when referring to other methods that deal with ancestry proportions instead of cluster memberships.\\\\
-\gb{We have edited our wording for clarity.}\\
+\gb{We have edited our wording for clarity (see Lines XX-XX) in the revised manuscript.}\\
 
 \item Formula (1) about the covariance is difficult to understand. It does not correspond to a classic definition of a covariance. Does this correspond to the covariance of some random variables? The discussion following the definition of the covariance looks like a discussion and should be moved to the discussion.\\\\
-\gb{}\\
+\gb{nice property of being invariant w/r/t who's in the sample and invariant w/r/t choice of major or minor allele
+also we've updated the eqns}\\
 
 \end{itemize}
 
@@ -88,7 +89,7 @@ In this paper, Bradburd et al. present a novel analysis method for the joint cha
 \begin{itemize}
 \item One issue I am wondering about is whether there are some issues with ``outlier individuals'', that e.g. represent poorly sampled clusters, which might be an issue with the Alaskan/NW-Canadian bears. In particular, consider the case where the two layers were only fitted from the samples from the 48-states. Presumably, the resulting covariance curve would be similar to Fig S26b (assuming the two layer case). If we then added those NW-pacific samples, we might expect them to be most likely added to the cluster with the flatter right tail, even if they were essentially unrelated. This issue can also arise in kriging (Figure 6 in the first version of the preprint of Caye et al (https://www.biorxiv.org/content/biorxiv/early/2016/10/12/080291.full.pdf is the example I am thinking of). Could this interpretation be excluded somehow?
 \\\\
-\gb{}\\
+\gb{make sure it's in the disco}\\
 
 \item Another thing that could be added are some additional simulations in more complex demographic models, such as expansions, temporally/spatially heterogeneous migration, or sparser sampling schemes. However, as the paper is already rather long (at almost 20 single-spaced pages), and the space of scenarios for which the model is relevant is enormous, I hope the authors consider further exploring their model in a follow-up study.\\\\
 \gb{}\\
@@ -110,13 +111,13 @@ In this paper, Bradburd et al. present a novel analysis method for the joint cha
 \gb{Fixed.}\\
 
 \item Fig S4: Could the colors be made to correspond each other (e.g. panel e vs 3). In general, is the exchangeability of layers a practical concern, or similar to the original structure, does the MCMC never ``switch'' two layer labels?\\\\
-\gb{}\\
+\gb{shoutout label-switching }\\
 
 \item Fig S26: maybe keep Y-axis scale consistent between panels?\\\\
 \gb{}\\
 
 \item Cross-Validation: As we all know SNP are not uncorrelated. I am wondering if that could influence the CV, as spurious patterns in the testing data might be partially explained by nearby SNP in the training data. Is that a concern?\\\\
-\gb{}\\
+\gb{shoutout about df of the Wish for CV, should sample SNPs in blocks}\\
 
 \end{itemize}
 

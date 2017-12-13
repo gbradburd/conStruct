@@ -330,7 +330,7 @@ These underlying frequencies are identical
 for all individuals assigned to a cluster, 
 \emph{regardless} of their spatial location. 
 Spatial information has been incorporated into some of these methods, 
-by, for example, placing spatial priors on cluster memberships \cite{geneland,TESS}, 
+by, for example, placing spatial priors on ancestry proportions \cite{geneland,TESS}, 
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
@@ -1522,6 +1522,7 @@ which would have more biological realism,
 but no unambiguous ancestry proportions for admixed populations.
 Here, we describe in more detail the procedure we use to simulate our test dataset, 
 using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
+
 \begin{figure}[!ht]
 	\centering
 	\ifincludefigs
@@ -1535,6 +1536,7 @@ using a cartoon schematic with $K=2$ as an example (Fig \ref{sim_setup}).
 			    or admixed between them.
 			    }\label{sim_setup}
 \end{figure}
+
 Using the program \texttt{ms} \cite{Hudson2002}, 
 we generated discrete population structure by simulating $K$ distinct populations,
 each of which split from a common ancestor $\tau_{\text{s}}$ units of coalescent time in the past,
