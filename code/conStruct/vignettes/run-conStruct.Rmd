@@ -1,7 +1,7 @@
 ---
 title: "How to run a conStruct analysis"
 author: "Gideon Bradburd"
-date: "2 October 2017"
+date: "14 December 2017"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -60,15 +60,17 @@ data(conStruct.data)
 #	you have to specify:
 #		the number of layers (K)
 #		the allele frequency data (freqs)
+#		the sample size data (sample.sizes)
 #		the geographic distance matrix (geoDist)
 #		the sampling coordinates (coords)
 
 conStruct(spatial = TRUE, 
-	  K = 3, 
-	  freqs = conStruct.data$allele.frequencies, 
-	  geoDist = conStruct.data$geoDist, 
-	  coords = conStruct.data$coords,
-	  prefix = "spK3")
+	 	  K = 3, 
+	  	  freqs = conStruct.data$allele.frequencies,
+	  	  sample.sizes = conStruct.data$sample.sizes,
+	  	  geoDist = conStruct.data$geoDist, 
+	  	  coords = conStruct.data$coords,
+	  	  prefix = "spK3")
 ```
 
 The function call above runs `conStruct`'s spatial model 
@@ -95,6 +97,7 @@ data(conStruct.data)
 #	you have to specify:
 #		the number of layers (K)
 #		the allele frequency data (freqs)
+#		the sample size data (sample.sizes)
 #		the sampling coordinates (coords)
 #
 #	if you're running the nonspatial model, 
@@ -104,6 +107,7 @@ data(conStruct.data)
 conStruct(spatial = FALSE, 
 	  K = 2, 
 	  freqs = conStruct.data$allele.frequencies, 
+	  sample.sizes = conStruct.data$sample.sizes,
 	  geoDist = NULL, 
 	  coords = conStruct.data$coords,
 	  prefix = "nspK2")
@@ -125,15 +129,16 @@ The full function call for the spatial model with 3 layers is:
 
 ```{r,eval=FALSE}
 conStruct(spatial = TRUE, 
-	K =3 , 
-	freqs = conStruct.data$allele.frequencies, 
-	geoDist = conStruct.data$geoDist, 
-	coords = conStruct.data$coords, 
-	prefix = "spK3", 
-    n.chains = 1, 
-    n.iter = 1000, 
-    make.figs = TRUE, 
-    save.files = TRUE)
+		  K = 3, 
+		  freqs = conStruct.data$allele.frequencies, 
+		  sample.sizes = conStruct.data$sample.sizes,
+		  geoDist = conStruct.data$geoDist, 
+		  coords = conStruct.data$coords, 
+		  prefix = "spK3", 
+		  n.chains = 1, 
+		  n.iter = 1000, 
+		  make.figs = TRUE, 
+		  save.files = TRUE)
 ```
 
 The other options are `n.chains`, `n.iter`, `make.figs`, `save.files`; 

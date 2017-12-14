@@ -1,7 +1,7 @@
 ---
 title: "How to format data for a conStruct analysis"
 author: "Gideon Bradburd"
-date: "2 October 2017"
+date: "14 December 2017"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -30,13 +30,15 @@ data(conStruct.data)
 
 ## conStruct data
 
-There are 3 data objects you need to run a `conStruct` analysis:
+There are 4 data objects you need to run a `conStruct` analysis:
 
 1. [allele frequency data]
 
-2. [geographic sampling coordinates]
+2. [sample size data]
 
-3. [geographic distance matrix]
+3. [geographic sampling coordinates]
+
+4. [geographic distance matrix]
 
 In the sections below, I walk through the specific format required for each.
 
@@ -81,6 +83,29 @@ data(conStruct.data)
 # look at the allele frequency data 
 #	for the first 5 populations and 10 loci
 conStruct.data$allele.frequencies[1:5,1:10]
+```
+
+### Sample size data
+
+You must specify a vector of sample sizes for your samples.
+(Make sure the data are of class `vector`, and that it's not a `list`.)
+The sample size gives the number of chromosomes genotyped in that sample.
+So, a successfully genotyped diploid individual would have a sample size 
+of 2, and a sample of 10 diploid individuals would have a sample size of 
+20. If the numbers of successfully genotyped chromosomes in a sample are
+highly variable across loci, you can give the average sample size across 
+loci.
+
+An example sample size data vector is included in the 
+`conStruct.data` object included with the package.
+
+```{r}
+# load the example data object
+data(conStruct.data)
+
+# look at the sample size data 
+#	for the first 5 populations
+conStruct.data$sample.sizes[1:5]
 ```
 
 ### Geographic sampling coordinates
