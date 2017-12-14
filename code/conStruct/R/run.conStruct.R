@@ -14,6 +14,10 @@
 #' @param freqs A \code{matrix} of allele frequencies with one column per 
 #'				locus and one row per sample.
 #' 				Missing data should be indicated with \code{NA}.
+#' @param sample.sizes A \code{vector} with one entry per sample giving the 
+#'				number of chromosomes genotyped in the sample.
+#'				E.g., for a diploid sample, the sample size would be 2; 
+#'				for a population of 10 diploids the sample size would be 20.
 #' @param geoDist A full \code{matrix} of geographic distance between samples. 
 #'					If \code{NULL}, user can only run the nonspatial model.
 #' @param coords A \code{matrix} giving the longitude and latitude 
@@ -105,9 +109,9 @@
 #'
 #' @import rstan
 #' @export
-conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
+conStruct <- function(spatial=TRUE,K,freqs,sample.sizes,geoDist=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
 	call.check <- check.call(args <- as.list(environment()))
-	freq.data <- process.freq.data(freqs)
+	freq.data <- process.freq.data(freqs,sample.sizes)
 	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp=NULL)
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
@@ -269,20 +273,20 @@ drop.missing <- function(freqs){
 	return(freqs)
 }
 
-calc.covariance <- function(freqs){
+calc.covariance <- function(freqs,sample.sizes){
 	x <- t(freqs)
 	allelic.covariance <- stats::cov(x,use="pairwise.complete.obs") - 
 									(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
 									(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
-	diag(allelic.covariance) <- 1/4
+	diag(allelic.covariance) <- diag(allelic.covariance) - colMeans(x^2) / (sample.sizes - 1)
 	return(allelic.covariance)
 }
 
-process.freq.data <- function(freqs){
+process.freq.data <- function(freqs,sample.sizes){
 	freqs <- drop.invars(freqs)
 	freqs <- drop.missing(freqs)
 	n.loci <- ncol(freqs)
-	obsCov <- calc.covariance(freqs)
+	obsCov <- calc.covariance(freqs,sample.sizes)
 	if(any(is.na(obsCov))){
 		stop("\n\nAfter dropping invariant loci, one or more pairs of samples have no genotyped loci in common, so relatedness between them cannot be assessed.\n\n")
 	}
@@ -330,6 +334,7 @@ check.call <- function(args){
 	check.spatial.arg(args)
 	check.K.arg(args)
 	check.freqs.arg(args)
+	check.sample.sizes.arg(args)
 	check.geoDist.arg(args)
 	check.coords.arg(args)
 	return(invisible("args checked"))		
@@ -363,6 +368,19 @@ check.freqs.arg <- function(args){
 		stop("\nall values of the the \"freqs\" argument must be greater than 0\n")
 	}
 	return(invisible("freqs arg checked"))
+}
+
+check.sample.sizes.arg <- function(args){
+	if(class(args[["sample.sizes"]]) != "vector"){
+		stop("\nthe \"sample.sizes\" argument must be of class \"vector\"\n")
+	}
+	if(class(args[["sample.sizes"]]) != "numeric"){
+		stop("\nyou have specified a non-numeric value for the \"sample.sizes\" argument\n")
+	}
+	if(any(args[["sample.sizes"]] < 0,na.rm=TRUE)){	
+		stop("\nall values of the the \"sample.sizes\" argument must be greater than 0\n")
+	}
+	return(invisible("sample.sizes arg checked"))
 }
 
 check.geoDist.arg <- function(args){
