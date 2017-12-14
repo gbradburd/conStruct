@@ -1,0 +1,147 @@
+# Allelic covariance
+
+## Math
+
+Suppose that we draw two alleles from a random biallelic site,
+and code these as numeric by picking a random reference allele.
+We want to compute the covariance between these numbers.
+The alleles are chosen without replacement, if drawn from the same population.
+
+First we describe how to compute the covariance of these quantities
+from the means and covariances *without* random choice of reference allele.
+Let $A$ and $B$ be the two alleles, and
+let $U = 1$ or 0 with probability 1/2 each.
+Then define
+$$ \begin{aligned}
+X &= U A + (1-U) (1-A) \\
+Y &= U B + (1-U) (1-B) .
+\end{aligned} $$
+Notice $\E[X] = \E[Y] = 1/2$, thanks to symmetry.
+We want to find
+$$\begin{aligned}
+\cov[X,Y]  
+&= \E[(X-1/2)(Y-1/2)] \\
+&= \E[XY] - \E[X]/2 - \E[Y]/2 + 1/4
+&= \E[XY] - 1/4 .
+\end{aligned}$$
+Now, averaging over U,
+$$\begin{aligned}
+\E[XY] 
+&= (1/2) \E[AB] + (1/2) \E[(1-A)(1-B)] \\
+&= \E[AB - (A+B)/2 + 1/2],
+\end{aligned}
+and so $\cov[X,Y] = \E[AB] - (\E[A] + \E[B])/2 + 1/4$
+and since $\E[AB] = \cov[A,B] + \E[A] \E[B]$,
+and hence $\cov[X,Y] = \cov[A,B] + \E[A] \E[B] - (1/2)(\E[A] + \E[B]) + 1/4$,
+we have
+$$\begin{aligned}
+\cov[X,Y] 
+&= \cov[A,B] - (1/2){ \E[A] (1 - \E[B]) + (1-\E[A]) \E[B] } + 1/4 ,
+\end{aligned}$$
+since 
+$\E[A] - \E[A] \E[B] = \E[A] (1 - \E[B])$.
+
+Now, how to compute this?
+If $A$ is drawn from a population with allele frequency $F_i$ at this randomly chosen site,
+then $\E[A] = F_i$.
+If $A$ and $B$ are chosen (independently) from different populations,
+and the frequency in $B$'s population is $F_j$,
+then we can replace $A$ and $B$ above by $F_i$ and $F_j$
+(since that is their conditional expectation), so that if $i \neq j$, then
+$$\begin{aligned}
+\hat \Omega_{ij}
+&= \cov[X,Y] 
+&= \cov[F_i,F_j] - (1/2){ \E[F_i] (1 - \E[F_j]) + (1-\E[F_i]) \E[F_j] } + 1/4 .
+\end{aligned}$$
+What if they are from the same population?
+For $AB$ to equal 1, both draws must be reference;
+if there are $k$ reference and $n-k$ nonreference, this happens with probability
+$(k/n)((k-1)/(n-1)) = f (f-1/n) (1 + 1/(n-1)) = f^2 - (1/(n-1)) f (1-f)$ with $f=k/n$.
+Therefore,
+$$\begin{aligned}
+\cov[A,B] 
+    &= \E[AB] - \E[A]\E[B] \\
+    &= \E[F_i (F_i - 1/N_i)] - \E[F_i]^2 \\
+    &= \var[F_i] - \frac{1}{N_i-1} \E[F_i (1-F_i)] .
+\end{aligned}$$
+This implies that we can extend the formula above to the diagonal, by including
+$$\begin{aligned}
+\hat \Omega_{ij}
+&= \cov[F_i,F_j] - (1/2){ \E[F_i] (1 - \E[F_j]) + (1-\E[F_i]) \E[F_j] } + 1/4 
+    - \delta_{ij} \frac{\E[F_i(1-F_i)]}{N_i-1} .
+\end{aligned}$$
+
+## Code
+
+Let's check, shall we?
+First, simulate data:
+```{r sim_data}
+nloci <- 1000
+npops <- 3
+sample_sizes <- c(4,7,11)
+global_freqs <- rbeta(nloci, 0.5, 0.5)
+freqs <- matrix(rep(global_freqs, npops), ncol=npops)
+freqs[,2] <- pmin(1, pmax(0, freqs + rnorm(nloci, sd=1e-3)))
+freqs[,npops] <- pmin(1, pmax(0, freqs + rnorm(nloci, sd=0.5)))
+counts <- matrix( rbinom(nloci*npops, size=rep(sample_sizes, each=nloci),
+                         prob=rep(global_freqs, npops)), ncol=npops)
+freqs <- sweep(counts, 2, sample_sizes, "/")
+```
+
+Here's what we think the allelic covariance should be:
+```{r analytic}
+allelic_cov <- function (x, sample_sizes) {
+    allelic_covariance <- ( stats::cov(x,use="pairwise.complete.obs") - 
+            (1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
+            (1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4 )
+    diag(allelic_covariance) <- diag(allelic_covariance) - colMeans(x*(1-x))/(sample_sizes-1)
+    return(allelic_covariance)
+}
+analytic <- allelic_cov(freqs, sample_sizes)
+```
+
+Here's a function to sample loci:
+```{r sample_loci}
+sample_loci <- function (n, i, j) {
+    # sample n loci from pops i and j without replacement
+    loci <- sample(1:nloci, n, replace=TRUE)
+    f <- counts[loci,i]/sample_sizes[i]
+    A <- rbinom(n, size=rep(1,n), prob=f)
+    if (i==j) { 
+        f <- (counts[loci,j]-A)/(sample_sizes[j]-1)
+    } else {
+        f <- counts[loci,j]/sample_sizes[j]
+    }
+    B <- rbinom(n, size=rep(1,n), prob=f)
+    return(cbind(A,B))
+}
+
+sample_cov <- function (n) {
+    # get the allelic covariance by actually drawing random alleles
+    out <- matrix(0, nrow=npops, ncol=npops)
+    for (i in 1:npops) {
+        for (j in i:npops) {
+            AB <- sample_loci(n, i, j)
+            out[i,j] <- out[j,i] <- cov(AB[,1], AB[,2])
+        }
+    }
+    return(out)
+}
+
+sampling <- lapply(1:10, function (i) sample_cov(100000))
+mean_sampling <- sampling[[1]]
+for (k in 2:length(sampling)) { mean_sampling <- mean_sampling + sampling[[k]] }
+mean_sampling <- mean_sampling/length(sampling)
+```
+
+Compare these:
+```{r comparison}
+analytic
+mean_sampling
+plot(as.vector(analytic), as.vector(mean_sampling), pch=20, col='red',
+        ylim=range(unlist(sampling)), xlab='analytic', ylab='sampling')
+for (k in 1:length(sampling)) {
+    points(as.vector(analytic), as.vector(sampling[[k]]))
+}
+abline(0,1)
+```
