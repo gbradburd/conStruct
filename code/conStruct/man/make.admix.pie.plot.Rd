@@ -56,4 +56,3 @@ where each sample is represented as a pie chart, and the proportion of
 the pie of each color represent that sample's 
 admixture proportion in that layer.
 }
-

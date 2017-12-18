@@ -60,14 +60,12 @@ data(conStruct.data)
 #	you have to specify:
 #		the number of layers (K)
 #		the allele frequency data (freqs)
-#		the sample size data (sample.sizes)
 #		the geographic distance matrix (geoDist)
 #		the sampling coordinates (coords)
 
 conStruct(spatial = TRUE, 
 	 	  K = 3, 
 	  	  freqs = conStruct.data$allele.frequencies,
-	  	  sample.sizes = conStruct.data$sample.sizes,
 	  	  geoDist = conStruct.data$geoDist, 
 	  	  coords = conStruct.data$coords,
 	  	  prefix = "spK3")
@@ -97,7 +95,6 @@ data(conStruct.data)
 #	you have to specify:
 #		the number of layers (K)
 #		the allele frequency data (freqs)
-#		the sample size data (sample.sizes)
 #		the sampling coordinates (coords)
 #
 #	if you're running the nonspatial model, 
@@ -107,7 +104,6 @@ data(conStruct.data)
 conStruct(spatial = FALSE, 
 	  K = 2, 
 	  freqs = conStruct.data$allele.frequencies, 
-	  sample.sizes = conStruct.data$sample.sizes,
 	  geoDist = NULL, 
 	  coords = conStruct.data$coords,
 	  prefix = "nspK2")
@@ -131,7 +127,6 @@ The full function call for the spatial model with 3 layers is:
 conStruct(spatial = TRUE, 
 		  K = 3, 
 		  freqs = conStruct.data$allele.frequencies, 
-		  sample.sizes = conStruct.data$sample.sizes,
 		  geoDist = conStruct.data$geoDist, 
 		  coords = conStruct.data$coords, 
 		  prefix = "spK3", 

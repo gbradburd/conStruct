@@ -51,4 +51,3 @@ This function takes a STRUCTURE format data file and
 		genotype data.  The genotype data should be bi-allelic 
 	single nucleotide polymorphisms (SNPs).
 }
-
