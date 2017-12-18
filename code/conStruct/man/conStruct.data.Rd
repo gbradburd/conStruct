@@ -24,4 +24,3 @@ and sampling coordinate data necessary to run a
 \code{conStruct} analysis.
 }
 \keyword{datasets}
-

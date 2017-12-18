@@ -69,4 +69,3 @@ see fit.  For each plot, one file is generated for each MCMC chain
 	}
 }
 }
-
