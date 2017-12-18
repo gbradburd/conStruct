@@ -123,4 +123,3 @@ This function acts as a wrapper around a STAN model block determined
 		If \code{make.figs=TRUE}, running \code{conStruct} will also generate many output figures, 
 		which are detailed in the function \code{make.all.the.plots} in this package.
 }
-

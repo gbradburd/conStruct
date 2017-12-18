@@ -55,4 +55,3 @@ is represented as a stacked bar plot, and the length of the
 bar plot segments of each color represent that sample's 
 admixture proportion in that layer.
 }
-
