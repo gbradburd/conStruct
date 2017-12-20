@@ -45,3 +45,6 @@ writeup/*.lof
 writeup/*.lot
 writeup/*.ttt
 writeup/cover_letter.pdf
+writeup/*_fig.pdf
+writeup/Fig*.pdf
+writeup/Table*.pdf
