@@ -18,14 +18,7 @@ x.validation <- function(test.pct,n.reps,K,freqs,geoDist,coords,prefix,n.iter){
 }
 
 
-load("poplar.dataset.Robj")
-freqs <- poplar.data$freqs[,!apply(poplar.data$freqs,2,function(x){any(is.na(x))})]
-
-poplar.data <- list("freqs" = freqs,
-					"coords" = poplar.data$coords,
-					"sp.ID" = poplar.data$sp.ID)
-
-save(poplar.data,file="poplar.data.redux.Robj")
+load("poplar.data.Robj")
 
 x.validation(test.pct = 0.10,
 			 n.reps = 10,

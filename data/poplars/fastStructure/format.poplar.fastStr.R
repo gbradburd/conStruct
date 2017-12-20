@@ -31,10 +31,10 @@ make.structure.data.file <- function(counts,sample.sizes){
 	return(cbind(PopData,LocData,geno.matrix))
 }
 
-load("~/Dropbox/conStruct/data/poplars/poplar.data.redux.Robj")
+load("~/Dropbox/conStruct/data/poplars/poplar.data.Robj")
 load("~/Dropbox/conStruct/data/poplars/fastStructure/poplar.sample.sizes.Robj")
 freqs <- poplar.data$freqs
 sample.sizes <- poplar.sample.sizes*2
 counts <- freqs*matrix(sample.sizes,nrow(freqs),ncol(freqs))
-str.data <- make.structure.data.file(counts,poplar.sample.sizes*2)
+str.data <- make.structure.data.file(counts,sample.sizes)
 write.table(str.data,file="~/Dropbox/conStruct/data/poplars/fastStructure/poplars.str",quote=FALSE,row.names=FALSE,col.names=FALSE)

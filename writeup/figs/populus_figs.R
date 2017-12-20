@@ -24,7 +24,7 @@ dev.off()
 
 
 library(maps)
-load("~/Dropbox/conStruct/data/poplars/poplar.data.redux.Robj")
+load("~/Dropbox/conStruct/data/poplars/poplar.data.Robj")
 col.mat1 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=TRUE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 col.mat2 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=FALSE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sampling_map.pdf",width=6,height=5,pointsize=13)
