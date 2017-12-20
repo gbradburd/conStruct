@@ -1,0 +1,50 @@
+
+@----------------------------------------------------------@
+|        PLINK!       |     v1.07      |   10/Aug/2009     |
+|----------------------------------------------------------|
+|  (C) 2009 Shaun Purcell, GNU General Public License, v2  |
+|----------------------------------------------------------|
+|  For documentation, citation & bug-report instructions:  |
+|        http://pngu.mgh.harvard.edu/purcell/plink/        |
+@----------------------------------------------------------@
+
+Web-based version check ( --noweb to skip )
+Recent cached web-check found... OK, v1.07 is current
+
++++ PLINK 1.9 is now available! See above website for details +++ 
+
+Writing this text to log file [ bear_data.log ]
+Analysis started: Sun Oct 30 16:05:37 2016
+
+Options in effect:
+	--bfile Puckett_etal_Uamer21k
+	--recodeA
+	--out bear_data
+
+Reading map (extended format) from [ Puckett_etal_Uamer21k.bim ] 
+21995 markers to be included from [ Puckett_etal_Uamer21k.bim ]
+Reading pedigree information from [ Puckett_etal_Uamer21k.fam ] 
+94 individuals read from [ Puckett_etal_Uamer21k.fam ] 
+0 individuals with nonmissing phenotypes
+Assuming a disease phenotype (1=unaff, 2=aff, 0=miss)
+Missing phenotype value is also -9
+0 cases, 0 controls and 94 missing
+0 males, 0 females, and 94 of unspecified sex
+Warning, found 94 individuals with ambiguous sex codes
+Writing list of these individuals to [ bear_data.nosex ]
+Reading genotype bitfile from [ Puckett_etal_Uamer21k.bed ] 
+Detected that binary PED file is v1.00 SNP-major mode
+Before frequency and genotyping pruning, there are 21995 SNPs
+94 founders and 0 non-founders found
+27784 heterozygous haploid genotypes; set to missing
+Writing list of heterozygous haploid genotypes to [ bear_data.hh ]
+Total genotyping rate in remaining individuals is nan
+0 SNPs failed missingness test ( GENO > 1 )
+0 SNPs failed frequency test ( MAF < 0 )
+After frequency and genotyping pruning, there are 21995 SNPs
+After filtering, 0 cases, 0 controls and 94 missing
+After filtering, 0 males, 0 females, and 94 of unspecified sex
+Writing recoded file to [ bear_data.raw ] 
+
+Analysis finished: Sun Oct 30 16:05:38 2016
+

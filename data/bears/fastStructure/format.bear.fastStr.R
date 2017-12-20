@@ -31,7 +31,7 @@ make.structure.data.file <- function(counts,sample.sizes){
 	return(cbind(PopData,LocData,geno.matrix))
 }
 
-load("~/Dropbox/conStruct/data/bears/bear.dataset.redux.Robj")
+load("~/Dropbox/conStruct/data/bears/bear.dataset.Robj")
 freqs <- bear.dataset$sample.freqs
 sample.sizes <- matrix(2,nrow(freqs),ncol(freqs))
 sample.sizes[which(is.na(freqs),arr.ind=TRUE)] <- 0

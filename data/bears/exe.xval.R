@@ -27,7 +27,7 @@ bear.dataset <- list("sample.freqs" = bear.dataset$sample.freqs[-too.much.missin
 					 "sample.sizes" = bear.dataset$sample.sizes[-too.much.missing.data],
 					 "sample.coords" = bear.dataset$sample.coords[-too.much.missing.data,])
 
-save(bear.dataset,file="bear.dataset.redux.Robj")
+save(bear.dataset,file="bear.dataset.Robj")
 x.validation(test.pct = 0.10,
 			 n.reps = 10,
 			 K = 1:7,

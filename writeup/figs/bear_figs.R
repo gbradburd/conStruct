@@ -23,7 +23,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,hei
 dev.off()
 
 library(maps)
-load("~/Dropbox/conStruct/data/bears/bear.dataset.redux.Robj")
+load("~/Dropbox/conStruct/data/bears/bear.dataset.Robj")
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sampling_map.pdf",width=6,height=4,pointsize=13)
 	#quartz(width=6,height=4,pointsize=13)
 	par(mar=c(1,1.5,0,0),oma=c(0,0,0,0))
