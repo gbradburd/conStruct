@@ -156,6 +156,7 @@ if(is.null(col.mat2)){
 }
 
 plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
+	recover()
 	for(n in 1:n.reps){
 		load(sprintf("simK%s_rep%s_test.lnl.Robj",simK,n))
 		assign(paste0("tl",n),test.lnl)
