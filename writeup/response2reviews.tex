@@ -26,12 +26,18 @@ and we believe the manuscript is substantially improved as a result
 of their critiques.
 
 Our detailed responses to those comments are inset below (in bold), 
-but, in brief, WE HAVE DONE SOME STUFF.
+but, in brief, we have implemented a more explicit comparison between 
+\texttt{conStruct}'s spatial model and existing, mainstream nonspatial model-based clustering methods.
+Specifically, we have analyzed all datasets (simulated and empirical) 
+included in the paper using the method ADMIXTURE (Alexander \textit{et al.} 2009),
+and used ADMIXTURE's $n$-fold cross-validation procedure (Alexander and Lange 2011)
+to compare model fit across values of $K$.
+As with the comparison between the spatial and nonspatial models in \texttt{conStruct}, 
+these results highlight both the tendency of nonspatial models 
+to describe continuous differentiation with multiple, spurious clusters, 
+and also the capacity of the spatial model to avoid this pitfall.
 
-We have also edited the text for 
-greater clarity.\\\\
-%
-We hope that the paper is now acceptable for publication.\\\\
+We have also edited the text for greater clarity, and we hope that the paper is now acceptable for publication.\\\\
 %
 Thank you for your consideration,\\
 Gideon Bradburd (for all of the authors).
@@ -48,13 +54,42 @@ This being said, I have serious concerns about the submitted manuscript.
 
 \begin{itemize}
 \item First, many results concern comparisons between clustering based on the spatial and non-spatial models of construct (Figs 2, 3, 4, 6, 7, 9). However the authors should rather compare their spatial approach to existing software for model-based clustering, which do not account for space (Structure, fastSTRUCTURE, ADMIXTURE,...). Results obtained with one of these software should not be available in supplementary material but should rather be visible in the main text.\\\\
-\gb{double axis bringing in marginal likelihood of fastSTRUCTURE for Fig 3, or throw in suppmat}\\
+\gb{The utility of the nonspatial model implemented in \texttt{conStruct} 
+is that its performance can be directly compared to that of the spatial model; 
+their cross-validation predictive accuracy values are in the same currency 
+because they use the same Wishart likelihood model.
+So, using it we can say not just that that the nonspatial model prefers 
+$K=X$ while the spatial model prefers $K=Y$, 
+but also, e.g., that the spatial model is preferred over the nonspatial model.
+However, as you note, it's important to compare \texttt{conStruct}'s performance to 
+that of existing nonspatial model-based clustering methods as well, 
+which is why we had also included analyses using fastSTRUCTURE.
+Your point here is well-taken though, because the fastSTRUCTURE analyses, 
+which included no model comparisons, did not provide a direct basis of comparison to \texttt{conStruct}.
+We have therefore analyzed all datasets included in the paper using ADMIXTURE, 
+and used ADMIXTURE's cross-validation procedure to compare model performance across values of $K$.  
+These results are discussed extensively throughout the updated manuscript ``Results" section; 
+however, due to the already extensive length of the manuscript (which Reviewer 2 points out), 
+the results of the ADMIXTURE analyses are given in the Supplementary Materials.}\\
 
 \item Second, the simulation scenario should correspond to a real biological scenario. Here this layer-based simulation scenario is very difficult to understand. I would be more interesting to stick to more classic spatially explicit simulations such as range expansion, or secondary contact scenarios.\\\\
-\gb{trade off w/ space w/ empirical applications, moving the adprop fit figs into the main text}\\
+\gb{We appreciate that the simulation scenario we ran is somewhat artificial, 
+and that it would be good to test the behavior of the method 
+under a classic ``isolation followed by expansion into a zone of secondary contact" model.
+However, as we discuss in the manuscript in the section ``Simulation details",
+we wanted to simulate datasets that had unambiguous true admixture proportions, 
+so that we could test \texttt{conStruct}'s ability to estimate admixture accurately 
+(shown in SuppMat figures XXX and XXX).
+A more organic simulation, with isolation followed by expansion, 
+secondary contact, and subsequent admixture, 
+would not facilitate that test in a straightforward way. 
+As mentioned by Reviewer 2, there are an enormous number 
+of possible simulations we could run to test \texttt{conStruct}'s performance, 
+but fully exploring them is beyond of the scope of this manuscript, 
+so we intend to pursue those in future work.}\\
 
 \item Third, I think that the main point of the paper should be more explicit. Non-spatial model based approaches are prone to overfitting when K is too large and this can be avoided when using spatial-based approaches. \\\\
-\gb{}\\
+\gb{WHAT TO SAY HERE}\\
 
 \item Last, there are other software that account for space when performing model-based clustering and they should be included in the comparisons (BAPS, Geneland, TESS,...). Right now, they are only mentioned in the introduction and we would like to see results comparing these different model-based approaches.\\\\
 \gb{
@@ -67,10 +102,13 @@ Therefore, although spatially explicit, this parameterization does not
 account for space in a way that avoids the problem we describe in our manuscript: 
 the characterization of spatially continuous differentiation 
 as clines of admixture across spurious clusters.
-STRUCTURE is the canonical model-based clustering algorithm
+
+\ A comprehensive comparison between \texttt{conStruct} 
+and all other model-based clustering methods is beyond the scope of this paper. 
+As STRUCTURE is the canonical model-based clustering algorithm
 (having been cited $>$ 20,000 times), but is too slow to be run 
 on the modern-scale SNP datasets we simulate, 
-so fastSTRUCTURE, which implements an extremely similar model 
+we feel that ADMIXTURE, which implements an extremely similar model 
 within a faster inference framework, 
 provides the best comparison to our method.}\\
 
@@ -79,9 +117,10 @@ provides the best comparison to our method.}\\
 
 \item Formula (1) about the covariance is difficult to understand. It does not correspond to a classic definition of a covariance. Does this correspond to the covariance of some random variables? The discussion following the definition of the covariance looks like a discussion and should be moved to the discussion.\\\\
 
-\gb{
-    The definition is a covariance of some random variables; we have made this fact more clear.
-    We have also moved some of this discussion to the Discussion (heading ``Allelic or genetic covariance?'').
+\gb{The definition given is a covariance of some random variables; we have made this fact more clear, 
+and we have substantially rewritten the section on the allelic covariance
+and have moved some of the intuition-building discussion to the Materials and Methods.
+We have also moved some of this discussion to the Discussion (heading ``Allelic or genetic covariance?'').
 }\\
 
 \end{itemize}
@@ -92,37 +131,85 @@ In this paper, Bradburd et al. present a novel analysis method for the joint cha
 \begin{itemize}
 \item One issue I am wondering about is whether there are some issues with ``outlier individuals'', that e.g. represent poorly sampled clusters, which might be an issue with the Alaskan/NW-Canadian bears. In particular, consider the case where the two layers were only fitted from the samples from the 48-states. Presumably, the resulting covariance curve would be similar to Fig S26b (assuming the two layer case). If we then added those NW-pacific samples, we might expect them to be most likely added to the cluster with the flatter right tail, even if they were essentially unrelated. This issue can also arise in kriging (Figure 6 in the first version of the preprint of Caye et al (https://www.biorxiv.org/content/biorxiv/early/2016/10/12/080291.full.pdf is the example I am thinking of). Could this interpretation be excluded somehow?
 \\\\
-\gb{make sure it's in the disco}\\
+\gb{This is a great point, and highlights a subtle problem.
+Although we feel that isolation-by-distance is a reasonable model for population differentiation, 
+it is possible that, by implementing a spatial model, 
+we can facilitate ``spurious" layer membership in far-flung samples, 
+who are sampled far enough away from all other samples 
+that their spatial covariance is negligible.  
+This situation is made less likely by the $\phi$ parameter in each layer, 
+which induces some amount of covariance between samples in a layer 
+regardless of their geographic separation.
+However, it is possible that $\phi$ in a layer might be estimated to be $\approx 0$. 
+We've discussed heuristics for highlighting such samples 
+(e.g., highlighting pairs of samples with $>$50\% membership in a given layer,
+ that, given their geographic separation, 
+ the parametric covariance curve in that layer, 
+ and the $\phi$ parameter in that layer, have effectively zero covariance), 
+ but we have not yet implemented or tested these checks.
+We are also currently developing a set of spatial \textit{f}-statistics, 
+analogous to those presented in Reich \emph{et al.} (2009) and discussed further in Peter (2016), 
+which could be useful in highlighting such ``outlier" samples.
+But, as you note, this manuscript is already quite long, 
+so this work will be a part of future projects.
+}\\
 
 \item Another thing that could be added are some additional simulations in more complex demographic models, such as expansions, temporally/spatially heterogeneous migration, or sparser sampling schemes. However, as the paper is already rather long (at almost 20 single-spaced pages), and the space of scenarios for which the model is relevant is enormous, I hope the authors consider further exploring their model in a follow-up study.\\\\
-\gb{}\\
+\gb{We completely agree, and further explorations of the behavior of the method 
+in different scenarios are being planned now.}\\
 
 \item 100: Is there a reason that allelic covariance is used instead of genetic covariance?\\\\
 \gb{
-    Good question; we've added a paragraph on this to the Discussion.
+    Good question; we've added some more text for this, 
+    both explaining what the allelic covariance is and why we use it in lieu of the genetic covariance,
+    (Lines XXX-XXX).
+    The short answer is that the allelic covariance is insensitive to the choice of reference allele, 
+    and, because it doesn't subtract off means like the genetic covariance, 
+    has a constant value between a pair of samples in the dataset, 
+    regardless of which other samples are included.
 }\\
 
 \item Could supp. figures be sorted according to first mentioning in ms?\\\\
-\gb{}\\
+\gb{MAKE SURE THIS IS RIGHT AFTER MAKING SUBMISSION MS}\\
 
 \item Fig3: increase label size\\\\
-\gb{}\\
+\gb{Fixed.}\\
 
 \item Last line in paragraph on p. 18: as the derivations are otherwise very detailed and easy to follow, it might be worth adding here that this follows from E[UV] = 4 Cov[A, B]\\\\
-\gb{}\\
+\gb{NOT SURE WHAT FOLLOWS FROM THIS}\\
 
 \item 634: Using ms,
 \\\\
 \gb{Fixed.}\\
 
 \item Fig S4: Could the colors be made to correspond each other (e.g. panel e vs 3). In general, is the exchangeability of layers a practical concern, or similar to the original structure, does the MCMC never ``switch'' two layer labels?\\\\
-\gb{shoutout label-switching }\\
+\gb{In STAN, we declare the vector of $\phi$ parameters to be an object of class ``positive ordered",
+	meaning that values of phi must all have values greater than zero, 
+	and must be in strictly increasing order.
+	In practice, I don't think that much label-switching would occur within the course of a single MCMC run 
+	(like in STRUCTURE), but inducing a specific order to the $\phi$ parameter makes that less likely still.
+	There can be label switching across independent runs for the same value of $K$, 
+	and of course there's label switching across runs with different numbers of $K$.
+	In the \texttt{conStruct} R package, we've included a function that uses the cluster matching 
+	algorithm described in CLUMPP (Jakobsson and Rosenberg 2007) to match layers across runs.
+	We used that algorithm to keep plotting colors consistent in our figures, including in Fig. XXXX.
+	However, something funny happens in that sequence of analyses between $K=5$ and $K=6$, 
+	where the ranking of cluster matching algorithm gives funny results, 
+	leading to the non-intuitive layer color matching.
+	We've tweaked that one by hand to keep the plotting nice.
+ }\\
 
 \item Fig S26: maybe keep Y-axis scale consistent between panels?\\\\
-\gb{}\\
+\gb{Fixed.}\\
 
 \item Cross-Validation: As we all know SNP are not uncorrelated. I am wondering if that could influence the CV, as spurious patterns in the testing data might be partially explained by nearby SNP in the training data. Is that a concern?\\\\
-\gb{shoutout about df of the Wish for CV, should sample SNPs in blocks}\\
+\gb{
+	This is a good point and it definitely could be a concern.
+	We've included a discussion of this in the cross-validation procedure description (Lines XXX-XXX), 
+	as well as a description of the CV procedure that should be used if you know LD between loci.
+	But, we also imagine that, for a while at least, the vast majority of \texttt{conStruct} users 
+	won't have genomic position information for their SNP data.
+}\\
 
 \end{itemize}
 
