@@ -48,3 +48,5 @@ writeup/*_fig.pdf
 writeup/Fig*.pdf
 writeup/Table*.pdf
 data/poplars/data/FOR_DRYAD_TandB_fwd_june2013_434.txt
+sims/structure/datasets/
+data/poplars/fastStructure/reps/
