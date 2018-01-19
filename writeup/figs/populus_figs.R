@@ -29,7 +29,7 @@ col.mat1 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen"
 col.mat2 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=FALSE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sampling_map.pdf",width=6,height=5,pointsize=13)
 	par(mar=c(4,4,1,1))
-	map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
+	map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",lforce="e")
 	points(poplar.data$coords,pch=19,cex=1.2,col=ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"))
 	legend(x="bottomleft",pch=19,col=c("forestgreen","black"),legend=c("P. trichocarpa","P. balsamifera"))
 	map.axes()
@@ -77,7 +77,7 @@ for(k in 2:7){
 	}
 	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp",k,".pdf"),width=5,height=5)
 		par(mar=c(5,5,1,1))
-		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray")
+		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",lforce="e")
 		map.axes()
 		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=2.5,add=TRUE)
 		box(lwd=2)
@@ -134,7 +134,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/pop_sp_results.pdf",width=12,
 			if(is.null(csr1.order)){
 				csr1.order <- 1:k
 			}
-			map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",mar=mar)
+			map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",mar=mar,lforce="e")
 			map.axes()
 			make.admix.pie.plot(output.list.sp[[k]][[1]]$MAP$admix.proportions[,csr1.order],
 								data.block$coords,layer.colors=layer.colors,radii=1.7,add=TRUE)
@@ -190,6 +190,52 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sp_pies.pdf",width=12
 								 output.list = output.list.sp,
 								 radii = 1.7,
 								 mar = c(5,3,0,1.5))
+dev.off()
+
+load("~/Dropbox/conStruct/data/poplars/fastStructure/poplar.sample.sizes.Robj")
+poplar.pop.vec <- unlist(lapply(1:length(poplar.sample.sizes),function(n){rep(n,poplar.sample.sizes[n])}))
+
+collapse.ind.Q <- function(Q,pop.vec){
+	n.pops <- length(unique(pop.vec))
+	admix.props <- matrix(NA,n.pops,ncol(Q))
+	for(i in 1:n.pops){
+		admix.props[i,] <- colMeans(Q[which(pop.vec==i),,drop=FALSE])
+	}
+	return(admix.props)
+}
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_admixture_results.pdf",width=12,height=8,pointsize=14)
+	par(mfrow=c(2,3),mar=c(5,3,0,1.5))
+	for(k in 2:7){
+		w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/admixture/poplar.%s.Q",k),stringsAsFactors=FALSE)),
+							pop.vec = poplar.pop.vec)
+		if(k == 2){
+			csr1.order <- c(1,2)
+		}
+		if(k > 2){
+		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/admixture/poplar.%s.Q",k-1),stringsAsFactors=FALSE)),
+								pop.vec = poplar.pop.vec)
+			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		par(mar=c(5,5,1,1))
+		map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",lforce="e")
+		map.axes()
+		make.admix.pie.plot(w[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=1.7,add=TRUE)
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplars_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
+	CV.error <- get.CV.error("~/Dropbox/conStruct/data/poplars/admixture/exe.admixture.Rout")
+	plot(CV.error,pch=19,col="orangered",
+			xlab="number of clusters",ylab="Cross-Validation Error",cex=2,
+			main="Poplar ADMIXTURE cross-validation results")
+	best <- which.min(CV.error)
+	points(best,CV.error[best],pch=8,cex=2)
+	legend(x="topright",pch=8,legend="model with minimum CV error")
 dev.off()
 
 if(FALSE){
@@ -323,3 +369,4 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_fastStr_results.pdf",w
 	}
 dev.off()
 }
+

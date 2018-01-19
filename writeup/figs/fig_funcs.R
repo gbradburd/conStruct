@@ -108,7 +108,7 @@ plot.layer.curves <- function(data.block, conStruct.results, layer.cols=NULL,add
     return(invisible("layer covs"))
 }
 
-plot.K.layer.curves <- function(Ks,data.block,output.list,col.mat1=NULL,col.mat2=NULL,output.list.sp=NULL){
+plot.K.layer.curves <- function(Ks,data.block,output.list,col.mat1=NULL,col.mat2=NULL,output.list.sp=NULL,y.range=NULL){
 layer.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
 if(is.null(col.mat1)){
 	col.mat1 <- matrix(adjustcolor(1,0.7),data.block$N,data.block$N)
@@ -135,12 +135,14 @@ if(is.null(col.mat2)){
 		}
 				par(mar=c(5,5,1,1))
 			    order.mat <- order(data.block$geoDist)
-			    y.range <- range(c(
-			    			unlist(lapply(1:data.block$K,
-			    							function(k){
-										        csr$MAP$layer.params[[k]]$layer.cov
-							})) + csr$MAP$gamma, 
-							data.block$obsCov))			
+			    if(is.null(y.range)){
+				    y.range <- range(c(
+				    			unlist(lapply(1:data.block$K,
+				    							function(k){
+											        csr$MAP$layer.params[[k]]$layer.cov
+								})) + csr$MAP$gamma, 
+								data.block$obsCov))
+				}
 			    plot(data.block$geoDist[upper.tri(data.block$obsCov, diag = TRUE)], 
 			        data.block$obsCov[upper.tri(data.block$obsCov, diag = TRUE)], 
 			        xlim = range(data.block$geoDist), ylim = y.range,
@@ -156,7 +158,7 @@ if(is.null(col.mat2)){
 }
 
 plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
-	recover()
+	#recover()
 	for(n in 1:n.reps){
 		load(sprintf("simK%s_rep%s_test.lnl.Robj",simK,n))
 		assign(paste0("tl",n),test.lnl)
@@ -338,7 +340,7 @@ make.bear.redux.result.plot.multipanel1 <- function(admix.proportions,coords,lum
 	bin.middles <- divvy.str.by.clump(unique.coords.list$focus.membership,yneg=-0.03,index.order=order(unique.coords.list$sampling.foci[,1]))
 	bin.mid.coords.X <- grconvertX(bin.middles[,1],to="ndc")
 	bin.mid.coords.Y <- grconvertY(bin.middles[,2],to="ndc")
-	map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5))
+	map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5),lforce="e")
 	make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
 						admix.proportions = collapse.rows(matrix=admix.proportions,index=unique.coords.list$focus.membership), 
 						layer.colors = layer.colors,
@@ -378,7 +380,7 @@ make.bear.redux.result.plot.multipanel2 <- function(output.list,coords,lump.dist
 		bin.middles <- divvy.str.by.clump(unique.coords.list$focus.membership,yneg=-0.03,index.order=order(unique.coords.list$sampling.foci[,1]))
 		bin.mid.coords.X <- grconvertX(bin.middles[,1],to="ndc")
 		bin.mid.coords.Y <- grconvertY(bin.middles[,2],to="ndc")
-		map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5))
+		map(xlim = range(coords[,1]) + c(-5,5), ylim = range(coords[,2])+c(-2,2), col="gray",mar=c(5,0.5,0.5,0.5),lforce="e")
 		make.admix.pie.plot(coords = unique.coords.list$sampling.foci, 
 							admix.proportions = collapse.rows(matrix=csr$MAP$admix.proportions,index=unique.coords.list$focus.membership), 
 							layer.colors = layer.colors[order(csr1.order)],
@@ -409,4 +411,18 @@ cluster.2.layer <- function(conStruct.results){
 				names(conStruct.results[[1]]$MAP$layer.params[[k]])[which(names(conStruct.results[[1]]$MAP$layer.params[[k]])=="cluster.cov")] <- "layer.cov"
 			}
 	return(conStruct.results)
+}
+
+get.CV.error <- function(Rout.file){
+	log <- scan(Rout.file,what="character",sep="\n")
+	CV.error <- as.numeric(
+					unlist(
+						lapply(
+							strsplit(
+								log[grepl("CV error",log)],
+								": "),
+						"[[",2)
+					)
+				)
+	return(CV.error)
 }

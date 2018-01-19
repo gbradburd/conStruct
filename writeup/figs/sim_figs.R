@@ -42,18 +42,6 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-if(FALSE){
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.nsp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies_K")
-
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.sp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies_K")
-}
-
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
@@ -188,25 +176,47 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-if(FALSE){
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.nsp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies_K")
-
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.sp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies_K")
-}
-
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+	K <- 7
+	output.list <- output.list.nsp
+	radii <- 1.7
+	trueK <- 2
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
-	plot.sim.pies.multipanel(data.block = data.block,
-							 K = 7,
-							 output.list = output.list.nsp,
-							 radii = 1.7,
-							 mar = c(4,2,1,2),trueK=2)
+	layer.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+	csr1.order <- NULL
+	for(k in 2:5){
+		data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		if(k > 2){
+			tmp.csr <- output.list[[k-1]][[1]]
+			csr1.order <- conStruct:::match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+			if(k ==4){
+				tmp.4.csr.order <- csr1.order
+			}
+		}
+		if(is.null(csr1.order)){
+			csr1.order <- 1:k
+		}
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar=c(4,2,1,2))
+		if(k==3){
+			mtext(side=3,text=bquote(paste("True ",italic("K")," = ",.(trueK))),cex=1.5,padj=-0.7)
+		}
+			mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	}
+	k <- 6
+	data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		tmp.csr <- output.list[[k-2]][[1]]
+		csr1.order <- conStruct:::match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,tmp.4.csr.order)
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar=c(4,2,1,2))
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
+	k <- 7
+	data.block$K <- k
+		csr <- output.list[[k]][[1]]
+		tmp.csr <- output.list[[k-1]][[1]]
+		csr1.order <- conStruct:::match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
+		make.admix.pie.plot(csr$MAP$admix.proportions[,csr1.order],data.block$coords,layer.colors=layer.colors,radii=radii,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5),mar=c(4,2,1,2))
+		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies.pdf",width=8,height=6.3,pointsize=14)
@@ -400,8 +410,23 @@ viz.admix.results(sim.admix.props = sim.dataset$admix.list$w,
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=16,height=5,pointsize=14)
-#	quartz(width=16,height=5)
+
+get.CV.error <- function(Rout.file){
+	log <- scan(Rout.file,what="character",sep="\n")
+	CV.error <- as.numeric(
+					unlist(
+						lapply(
+							strsplit(
+								log[grepl("CV error",log)],
+								": "),
+						"[[",2)
+					)
+				)
+	return(CV.error)
+}
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=14,height=5,pointsize=20)
+#	quartz(width=14,height=5)
 #K1
 setwd("~/Dropbox/gid_runs/mc_runs/sims/simK1")
 n.reps <- 10
@@ -413,20 +438,9 @@ for(n in 1:n.reps){
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
-	par(mfrow=c(1,3),mar=c(4.5,5,4,2))
+	par(mfrow=c(1,3),mar=c(4.5,4.5,4,1))
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
-		mtext("Predictive accuracy",side=2,padj=-4)
-	# rect(0.7,-120,7.2,20,lty=2)
-	# arrows(0.7,-120,3,-3e2,lty=1,length=0.2)
-	# arrows(7.2,-120,7,-3e2,lty=1,length=0.2)
-	# TeachingDemos::subplot(fun = {
-						# plot.xval.CIs(xval.CIs,K,k.range=c(1:7),axes=FALSE,cex=1,ylim=c(-120,0))
-							# axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=2)
-							# axis(2,at=seq(-120,0,length.out=6),labels=c(-120,"","","","",0),cex.axis=0.8,lty=2)
-							# box(lwd=1.2,lty=2)
-							# legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"),cex=0.8)
-						# },
-					# x=c(3,7),y=c(-620,-3e2))
+		mtext("Predictive accuracy",side=2,padj=-3)
 	legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"),cex=1.2)
 	mtext(bquote(paste("True ",italic("K")," = 1")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 
@@ -447,8 +461,8 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	arrows(7.2,-700,6.6,-3e3,lty=1,length=0.15)
 	TeachingDemos::subplot(fun = {
 						plot.xval.CIs(xval.CIs,K,k.range=c(1:7),xlim=c(0.7,7.2),ylim=c(-275,0),axes=FALSE,cex=1,jitter=0.1)
-							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=2)
-							axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=2)
+							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=1)
+							axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=1)
 							box(lwd=1.2,lty=2)
 							box(lwd=1.2,lty=1,bty="l")
 						},
@@ -472,8 +486,8 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	arrows(7.2,-700,6.6,-4e3,lty=1,length=0.1)
 	TeachingDemos::subplot(fun = {
 						plot.xval.CIs(xval.CIs,K,k.range=c(1:7),ylim=c(-140,0),xlim=c(0.7,7.3),axes=FALSE,cex=1,jitter=0.1)
-							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=2)
-							axis(2,at=seq(-140,0,length.out=6),labels=c(-140,"","","","",0),cex.axis=0.8,lty=2)
+							axis(1,at=1:7,labels=c(1,"","","","","",7),cex.axis=0.8,lty=1)
+							axis(2,at=seq(-140,0,length.out=6),labels=c(-140,"","","","",0),cex.axis=0.8,lty=1)
 							box(lwd=1.2,lty=2)
 							box(lwd=1.2,lty=1,bty="l")
 						},

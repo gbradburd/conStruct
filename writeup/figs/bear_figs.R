@@ -27,7 +27,7 @@ load("~/Dropbox/conStruct/data/bears/bear.dataset.Robj")
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sampling_map.pdf",width=6,height=4,pointsize=13)
 	#quartz(width=6,height=4,pointsize=13)
 	par(mar=c(1,1.5,0,0),oma=c(0,0,0,0))
-	map(xlim = range(bear.dataset$sample.coords[,1]) + c(-5,5), ylim = range(bear.dataset$sample.coords[,2])+c(-2,2), col="gray")
+	map(xlim = range(bear.dataset$sample.coords[,1]) + c(-5,5), ylim = range(bear.dataset$sample.coords[,2])+c(-2,2), col="gray",lforce="e")
 	points(bear.dataset$sample.coords,pch=19,cex=1.2)
 	map.axes()
 dev.off()
@@ -56,54 +56,6 @@ for(k in 1:7){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
 	}
 	output.list.nsp[[k]] <- conStruct.results
-}
-
-if(FALSE){
-csr1.order <- NULL
-for(k in 2:7){
-	data.block$K <- k
-	csr <- output.list.sp[[k]][[1]]
-	if(k > 2){
-		tmp.csr <- output.list.sp[[k-1]][[1]]
-		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
-	}
-	if(is.null(csr1.order)){
-		csr1.order <- 1:k
-	}
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp",k,".pdf"),width=7,height=7)
-		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
-									coords = bear.dataset$sample.coords,
-									lump.dist = 200,
-									layer.colors = layer.colors[order(csr1.order)],
-									layer.order=csr1.order,
-									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
-	dev.off()
-}
-
-csr1.order <- NULL
-for(k in 2:7){
-	data.block$K <- k
-	csr <- output.list.nsp[[k]][[1]]
-	if(k==2){
-		tmp.csr <- output.list.sp[[k]][[1]]
-		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
-	}
-	if(k > 2){
-		tmp.csr <- output.list.nsp[[k-1]][[1]]
-		csr1.order <- match.layers.x.runs(tmp.csr$MAP$admix.proportions,csr$MAP$admix.proportions,csr1.order)
-	}
-	if(is.null(csr1.order)){
-		csr1.order <- 1:k
-	}
-	pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp",k,".pdf"),width=7,height=7)
-		make.bear.redux.result.plot(admix.proportions = csr$MAP$admix.proportions,
-									coords = bear.dataset$sample.coords,
-									lump.dist = 200,
-									layer.colors = layer.colors[order(csr1.order)],
-									layer.order=csr1.order,
-									layout = matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE))
-	dev.off()
-}
 }
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
@@ -158,17 +110,17 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,
 dev.off()
 
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
-	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.sp,col.mat1=NULL,col.mat2=NULL)
+	plot.K.layer.curves(K=1:6,data.block=data.block,output.list= output.list.sp,col.mat1=NULL,col.mat2=NULL,y.range=c(0.15,0.25))
 	mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=4.5,adj=-6.2)
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
@@ -232,17 +184,26 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",widt
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width=15,height=5,pointsize=14)
-	layout(Reduce("cbind",lapply(1:3,function(x){
-			matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
-					nrow=5,ncol=5,byrow=TRUE)})))
-	for(k in 2:4){
-		w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k,k),stringsAsFactors=FALSE))
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_results.pdf",width=15,height=10,pointsize=14)
+	# layout(Reduce("cbind",lapply(1:3,function(x){
+			# matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					# nrow=5,ncol=5,byrow=TRUE)})))
+	layout(
+		rbind(
+			Reduce("cbind",lapply(1:3,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)})),
+			Reduce("cbind",lapply(4:6,function(x){
+				matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
+					nrow=5,ncol=5,byrow=TRUE)}))
+			))
+	for(k in 2:7){
+		w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/admixture/bears.%s.Q",k),stringsAsFactors=FALSE))
 		if(k <= 2){
-			csr1.order <- NULL
+			csr1.order <- c(2,1)
 		}
 		if(k > 2){
-			tmp.w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/fastStructure/bears_K%s.%s.meanQ",k-1,k-1),stringsAsFactors=FALSE))
+			tmp.w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/admixture/bears.%s.Q",k-1),stringsAsFactors=FALSE))
 			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
 		}
 		if(is.null(csr1.order)){
@@ -255,4 +216,14 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_fastStr_results.pdf",width
 												layer.order=NULL)
 		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=0.8,adj=0.4)
 	}
+dev.off()
+
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
+	CV.error <- get.CV.error("~/Dropbox/conStruct/data/bears/admixture/exe.admixture.Rout")
+	plot(CV.error,pch=19,col="orangered",
+			xlab="number of clusters",ylab="Cross-Validation Error",cex=2,
+			main="Bear ADMIXTURE cross-validation results")
+	best <- which.min(CV.error)
+	points(best,CV.error[best],pch=8,cex=2)
+	legend(x="topright",pch=8,legend="model with minimum CV error")
 dev.off()
