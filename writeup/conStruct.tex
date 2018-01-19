@@ -86,8 +86,8 @@
 \floatsatendfalse
 %\floatsatendtrue
 \newif\ifincludefigs
-%\includefigstrue
-\includefigsfalse
+\includefigstrue
+%\includefigsfalse
 \iffloatsatend
 \usepackage[nomarkers]{endfloat}
 \fi
@@ -762,22 +762,8 @@ and compared predictive performance of the models using cross-validation.
 % To confirm that results from our nonspatial model were qualitatively similar to those of 
 % other nonspatial model-based clustering algorithms, 
 For comparison,
-we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, using $K=2-4$.
-% inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
-
-
-% In Fig \ref{simK1_pies}, we show the results of the dataset simulated with $K=1$, 
-% contrasting the results of the nonspatial model runs with 2--4 layers 
-% with those of spatial model with 2--4 layers.
-% 
-% In Fig \ref{sim_xvals} we show the results of the cross-validation analysis for each of the three simulated datasets.
-% The results of all analyses run on datasets simulated using $K=1$ through 3 are shown in 
-% Figs \ref{simK1_nsp_pies}-\ref{simK3_adprop_fit}.
-% 
-% To confirm that results from our nonspatial model were qualitatively similar to those of 
-% other nonspatial model-based clustering algorithms, 
-% we also analyzed each simulated dataset using fastSTRUCTURE \cite{fastStructure}, 
-% inferring admixture under models with $K=2$ through 4 (Figs \ref{fastStr_simK1}--\ref{fastStr_simK3}).
+we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE}, using $K=1-7$, 
+and compared models using ADMIXTURE's cross-validation procedure with 50 data ``fold" subsets.
 
 With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
@@ -801,8 +787,8 @@ to better approximate the continuous, spatial patterns of relatedness
 % At $K=2$, the clusters are centered in opposite corners on the map; 
 % at $K=3$, in the lower two corners and the top half; 
 % at $K=4$, all four corners, and so on.
-The fastSTRUCTURE results are qualitatively similar, as shown in Figs \ref{fastStr_simK1}-\ref{fastStr_simK3}.
-Each nonspatial cluster is in truth genetically more similar within itself
+The ADMIXTURE results are qualitatively similar, as shown in Figs \ref{admix_simK1}-\ref{admix_simK3}.
+Each nonspatial cluster is genetically more similar within itself
 than it is to other clusters,
 but we know that these boundaries are arbitrary,
 because the data were simulated without them.
@@ -814,7 +800,9 @@ As desired, predictive accuracy of the spatial model increases until the true va
 and then plateaus or declines
 (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}),
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
-
+The same holds true for the ADMIXTURE cross-validation results,
+in which models that have the largest number of clusters are preferred over all other models,
+as shown in Fig \ref{sim_admix_CVerrors}.
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
 % (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).
@@ -931,14 +919,15 @@ and showed a strong pattern of bias in allelic dropout
 To ameliorate some of the problems that arise when there is a strong bias in which data are missing, 
 we dropped loci for which any data were missing, 
 resulting in just over 20,200 loci retained for analysis.  
-We then analyzed these data, grouped by drainage, using both the spatial and nonspatial \texttt{conStruct} models, 
-using $K = 1$ through 7,
+We then analyzed these data, grouped by drainage, 
+using both the spatial and nonspatial \texttt{conStruct} models with $K = 1$ through 7,
 and compared these models using cross-validation.
-For comparison, we also ran fastSTRUCTURE \cite{fastStructure} 
-using $K = 1$ through 7.
 The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
-as well as in Figs \ref{populus_sp_pies} - \ref{populus_fastStr} in the Supplementary Materials.
+as well as Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplementary Materials.
+For comparison, we also ran ADMIXTURE \cite{ADMIXTURE} 
+with $K = 1$ through 7, using 50-fold cross-validation to compare model performance
+(Figs \ref{populus_admixture} and \ref{poplar_admix_CVerrors}). 
 
 \begin{figure}
 	\centering
@@ -999,11 +988,13 @@ perhaps due to introgression from the southern neighbors
 \textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
 
 
-Both nonspatial \texttt{conStruct} and fastSTRUCTURE displayed 
+Both nonspatial \texttt{conStruct} and ADMIXTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
 The details of each were somewhat different 
-(Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_fastStr}), 
-and also differed across the replicate analyses.
+(Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_admixture}), 
+and also differed across the replicate analyses, 
+but each strongly favored the most cluster-rich model ran 
+(Figs \ref{populus_xvals} and \ref{poplar_admix_CVerrors}).
 
 \subsubsection*{Black bears}
 
@@ -1044,10 +1035,11 @@ resulting in a final dataset of 78 individuals.
 We then analyzed these data, treating individuals as the unit of analysis, 
 using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of between 1 and 7, 
 and compared these models using cross-validation.
-We also ran fastSTRUCTURE \cite{fastStructure} on the same dataset, 
-using $K = 2$ through 4.
+We also ran ADMIXTURE \cite{ADMIXTURE} on the same dataset, 
+using $K = 1$ through 7, and comparing models using 
+ADMIXTURE's cross-validation procedure with 50 data ``fold" subsets.
 The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
-as well as in Figs \ref{bear_sp_pies} - \ref{bear_fastStr} in the Supplementary Materials.
+as well as in Figs \ref{bear_sp_pies} - \ref{bear_admix_CVerrors} in the Supplementary Materials.
 
 \begin{figure}
 	\centering
@@ -1101,7 +1093,7 @@ and so the red layer may extend
 through the intervening (unsampled) northern Great Plains and Canadian Shield, 
 with the blue layer presumably then stretching up into British Columbia.
 
-Additional layers in the spatial model have strong statistical support 
+The spatial models have strong statistical support 
 up until around $K=5$ or 6 (Fig \ref{bear_xvals}),
 but additional spatial layers beyond $K=2$ contribute little to total covariance (Fig \ref{bear_laycon}).
 % However, upon examining layer contributions (Fig \ref{bear_laycon}),
@@ -1119,18 +1111,33 @@ make more detailed interpretations untrustworthy.
 %and also uses a dataset that consists solely of nuclear (rather than
 %mitochondrial) DNA. WHY DO WE CARE about BEAR MTDNS
 
-Results from the nonspatial model clearly exhibit the tendency 
-of nonspatial clustering algorithms to describe continuous spatial patterns of divergence 
+Results from the nonspatial model and from the ADMIXTURE analyses 
+clearly exhibit the tendency of nonspatial clustering algorithms 
+to describe continuous spatial patterns of divergence 
 using gradients of admixture between clusters.
 For example, in Fig \ref{bear_K3}b, 
 the third cluster (in gold) exhibits a clear East-West gradient that 
 overlays the discrete structure between the Southwest cluster and the Southeast.
-The results from fastSTRUCTURE are are not identical to 
+The results from ADMIXTURE are are not identical to 
 those obtained using the nonspatial model, 
 but they do show the same tendency: 
-e.g., at $K=3$, fastSTRUCTURE splits the westernmost Alaskan samples 
+e.g., at $K=3$ 
+-- the preferred model from the cross-validation 
+analysis shown in Fig \ref{bear_admix_CVerrors} -- 
+ADMIXTURE splits the westernmost Alaskan samples 
 out of the cluster with the eastern samples, 
-and at $K=4$, it splits them into their own cluster entirely (Fig \ref{bear_fastStr}).
+and at $K=4$, it subdivides the eastern cluster 
+into two geographically partitioned groups (Fig \ref{bear_admixture}).
+Interestingly, for the nonspatial model implemented in ADMIXTURE, 
+the preferred model has a smaller $K$ ($K=3$) than that of the 
+spatial model with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6). 
+However, comparing results of the two methods, it is clear that even at $K=3$, 
+ADMIXTURE is invoking clusters to describe what seems to be, 
+and is well described by \texttt{conStruct} as, 
+a continuous spatial pattern of genetic variation. 
+The third cluster (shown in gold in Fig \ref{bear_admixture}b), 
+shows  strong spatial autocorrelation in admixture proportions, 
+as would be expected if it is describing continuous spatial differentiation.
 
 Across all values of $K$ for which we ran \texttt{conStruct},
 we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}).
@@ -1144,7 +1151,6 @@ allows somewhat genetically differentiated individuals
 that are sampled far from one another to belong to the same layer,
 instead of splitting these individuals out into successive clusters 
 (e.g., Fig \ref{bear_sp_pies}d vs \ref{bear_nsp_pies}d).
-
 
 %%%%%%%%%
 \section*{Discussion}
@@ -1215,16 +1221,21 @@ as it would likely mean losing the ability to do efficient,
 Hamiltonian Monte Carlo sampling of our parameters.
 
 For a relatively small number of samples, 
-\texttt{conStruct} can be much faster than other nonspatial clustering methods.
+\texttt{conStruct} can be much faster than existing nonspatial Bayesian clustering methods.
 On a desktop machine, using a single 4.2 GHz Intel Core i7 processor, 
 an analysis of the black bear dataset (78 samples, 21,000 loci) 
 running \texttt{conStruct}'s spatial model with 4 layers for 5,000 MCMC iterations 
 (which was more than sufficient for convergence) 
 took 2.8 hours.
 On the same machine and dataset, 
-a fastSTRUCTURE run with $K=4$ took 90.2 hours.
+a fastSTRUCTURE \cite{fastStructure} run with $K=4$ took 90.2 hours.
 However, for a large number of samples, 
-fastSTRUCTURE (or ADMIXTURE) would be much faster.
+fastSTRUCTURE might be faster.
+And, for almost any dataset of any size, 
+the maximum likelihood algorithm implemented in ADMIXTURE 
+is also quite a bit faster than \texttt{conStruct}; 
+Running ADMIXTURE on the bear dataset over all values of $K$ from 1 to 7, 
+including 50-fold cross-validation for each value of $K$, took only 6.6 minutes.
 
 
 \paragraph{Choosing the ``best" number of layers}
@@ -1485,7 +1496,7 @@ give the form of the allelic covariance we model for the off-diagonal elements:
 $\widehat{\Omega}$ for $i \neq j$.
 The diagonal elements of $\widehat{\Omega}$ 
 describe the within-population allelic variance:
-$\var{X_i}$, where, as above, 
+$\var{\left(X_i\right)}$, where, as above, 
 $X_i$ gives the randomly `flipped' coding of the genotypes in sample $i$,
 to average over choice of reference allele.
 The within-population allelic variance in sample $i$ is equivalent 
@@ -1642,6 +1653,18 @@ Briefly, we follow the following procedure:
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
 \end{enumerate}
 
+\gb{If the spatial coordinates of the loci in the genome are known, 
+the training/testing partitioning should be designed to accommodate linkage disequilibrium (LD).
+Loci in strong LD do not represent independent instantiations of the coalescent process, 
+so if loci from a single linkage block are randomly split into both training and testing partitions, 
+the independence of the test in the testing partition will be compromised 
+(e.g., the parameters estimated from the training partition 
+might be describing process heterogeneity or noise 
+in a region of the genome that also has loci included in the testing partition).
+If genomic position or LD between SNPs is known, 
+the best practice for cross-validation is to make sure that 
+no loci in the testing dataset are in strong LD with, 
+or spatially proximate to, loci in the testing dataset.}
 
 
 \section*{Calculating layer contributions}\label{layer_contribution}
@@ -1964,31 +1987,46 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK1_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK1_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
-    }\label{fastStr_simK1}
+	The model with the lowest cross-validation error (i.e., the preferred model) is indicated with an asterisk.
+    }\label{admix_simK1}
 \end{figure}
 \clearpage
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK2_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK2_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
-    }\label{fastStr_simK2}
+	The model with the lowest cross-validation error (i.e., the preferred model) is indicated with an asterisk.
+    }\label{admix_simK2}
 \end{figure}
 \clearpage
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/fastStr/fastStr_simK3_pies.pdf}}
+		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK3_pies.pdf}}
 	\caption{
-	Map of admixture proportions estimated using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
+	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
-    }\label{fastStr_simK3}
+	The model with the lowest cross-validation error (i.e., the preferred model) is indicated with an asterisk.
+    }\label{admix_simK3}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/admixture/sims_CVerror.pdf}}
+	\caption{
+	ADMIXTURE cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
+	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
+	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
+    }\label{sim_admix_CVerrors}
 \end{figure}
 \clearpage
 
@@ -2070,11 +2108,22 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/populus/poplar_fastStr_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/populus/poplar_admixture_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
-	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 7.
-    }\label{populus_fastStr}
+	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
+    }\label{populus_admixture}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/populus/poplars_admixture_CVerror.pdf}}
+	\caption{
+	ADMIXTURE cross-validation results for poplar data, 
+	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
+    }\label{poplar_admix_CVerrors}
 \end{figure}
 \clearpage
 
@@ -2122,12 +2171,24 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/bears/bear_fastStr_results.pdf}}
+		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_results.pdf}}
 	\caption{
-	Maps of admixture proportions estimated for the black bear dataset 
-	using fastSTRUCTURE \cite{fastStructure} for $K=2$ through 4.
-    }\label{bear_fastStr}
+	Maps of admixture proportions estimated for the bear dataset 
+	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
+    }\label{bear_admixture}
 \end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_CVerror.pdf}}
+	\caption{
+	ADMIXTURE cross-validation results for bear data, 
+	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
+    }\label{bear_admix_CVerrors}
+\end{figure}
+\clearpage
 
 %%% END IF INCLUDE SUPPLEMENT
 \fi
