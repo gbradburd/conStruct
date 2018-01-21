@@ -453,26 +453,27 @@ Then,
 \begin{equation} \label{eqn:first_allelic_cov}
     \widehat{\Omega}_{i,j} = \cov[X_i, X_j] .
 \end{equation}
+Each $X_i$ behaves marginally as a fair coin --
+in particular, $\P\{X_i = 1\} = 1$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ --
+all information enters through \emph{correlations}.
+
 
 Although we describe this as a covariance between individually drawn alleles,
 $\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequencies
-of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$
-(we discuss the diagonal of $\widehat{\Omega}_{i,j}$
-further in \secref{allelic_cov}).
-
+of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
 The choice of allele does not affect subsequent calculations, and so may be arbitrary.
-The allelic covariance, $\widehat \Omega$, can be calculated as a covariance
+$\widehat \Omega$, can be calculated as a covariance
 (derived in \secref{allelic_cov}):
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
-    \frac{1}{L} \sum_{\ell=1}^L \left( (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) \right).
+    \frac{1}{L} \sum_{\ell=1}^L (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) \qquad \text{for } i \neq j.
 \label{allelic_covariance}
 \end{equation}
 This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means,
 and so to make the statistic insensitive to choice of reference allele, 
 (b) we randomly choose a reference allele at each locus.
-As noted in \cite{EEMS},
+As noted in \cite{EEMS}, for $i \neq j$,
 this can also be calculated as $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$,
 where $\pi_{i,j}$ is the genetic distance,
 i.e., mean density of sites at which random samples from $i$ and $j$ differ.
@@ -762,7 +763,7 @@ and compared predictive performance of the models using cross-validation.
 % To confirm that results from our nonspatial model were qualitatively similar to those of 
 % other nonspatial model-based clustering algorithms, 
 For comparison,
-we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE}, using $K=1-7$, 
+we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE} with $K$ between 1 and 7, 
 and compared models using ADMIXTURE's cross-validation procedure with 50 data ``fold" subsets.
 
 With these simulations,
@@ -993,7 +994,7 @@ the successive partitioning of space and the clines of admixture seen in the sim
 The details of each were somewhat different 
 (Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_admixture}), 
 and also differed across the replicate analyses, 
-but each strongly favored the most cluster-rich model ran 
+but each strongly favored the most cluster-rich model
 (Figs \ref{populus_xvals} and \ref{poplar_admix_CVerrors}).
 
 \subsubsection*{Black bears}
@@ -1475,7 +1476,7 @@ for the allelic covariance are equivalent,
 pick a random locus and
 let $A$ and $B$ be randomly drawn alleles at that locus from populations $i$ and $j$ respectively.
 %If $i=j$, then these are chosen \emph{without} replacement.
-Suppose these are each coded as `0' or `1` (where `0' denotes a reference allele),
+Suppose these are each coded as `0' or `1' (where `0' denotes a reference allele),
 but we randomly ``flip'' this coding, so that we let $X=A$ and $Y=B$ with probability 1/2,
 but otherwise we let $X=1-A$ and $Y=1-B$.
 These are $X_i$ and $X_j$ in equation \eqref{eqn:first_allelic_cov},
@@ -1491,21 +1492,10 @@ Eq.\ \eqref{allelic_covariance} comes from the observation that
     &= \E[(A-1/2)(B-1/2)] .
 \end{align}
 
-The discussion above and Equations \eqref{eqn:first_allelic_cov} and \eqref{allelic_covariance} 
-give the form of the allelic covariance we model for the off-diagonal elements:
-$\widehat{\Omega}$ for $i \neq j$.
-The diagonal elements of $\widehat{\Omega}$ 
-describe the within-population allelic variance:
-$\var{\left(X_i\right)}$, where, as above, 
-$X_i$ gives the randomly `flipped' coding of the genotypes in sample $i$,
-to average over choice of reference allele.
-The within-population allelic variance in sample $i$ is equivalent 
-to the variance of a series of Bernoulli draws across loci, 
-with a probability of `success' at locus $\ell$ given by 
-the allele frequency in $i$ at $\ell$ ($F_{i,\ell}$), with probability 1/2, 
-and $1-F_{i,\ell}$ with probability 1/2.
-With sufficient data, $\widehat{\Omega} \approx 0.25$ for all samples.
-
+Thanks to averaging over choice of alleles,
+the within-population allelic variance in sample $i$, $\widehat Omega_{i,i}$,
+is the variance of a series of Bernoulli($1/2$) draws across loci,
+and therefore $\widehat{\Omega}_{i,i} = 1/4$ for every sample $i$.
 Averaging over choice of reference allele therefore removes some information 
 about factors acting within populations that might otherwise leave signatures in, 
 e.g., the genetic covariance, 
