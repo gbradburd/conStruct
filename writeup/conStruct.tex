@@ -804,8 +804,8 @@ and then plateaus or declines
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
 The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
-as shown in Fig \ref{sim_xvals} (orange-red points),
-and in more detail in Fig \ref{sim_admix_CVerrors}.
+as shown in Fig \ref{sim_xvals} (vermilion points),
+and, in more detail, in Fig \ref{sim_admix_CVerrors}.
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
 % (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).
@@ -843,7 +843,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
     The spatial model shows better model fit at every value of $K$.
     The ADMIXTURE model with the lowest cross-validation error 
-    (i.e., the preferred model) is highlighted with an orange/red diamond.
+    (i.e., the preferred model) is highlighted with an vermilion diamond.
     In all simulations, the preferred ADMIXTURE model 
     was that with the largest number of clusters.
     }\label{sim_xvals}
@@ -1137,12 +1137,13 @@ and at $K=4$, it subdivides the eastern cluster
 into two geographically partitioned groups (Fig \ref{bear_admixture}).
 Interestingly, for the nonspatial model implemented in ADMIXTURE, 
 the preferred model has a smaller $K$ ($K=3$) than that of the 
-spatial model with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6). 
+spatial models with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6). 
 However, comparing results of the two methods, it is clear that even at $K=3$, 
 ADMIXTURE is invoking clusters to describe what seems to be, 
 and is well described by \texttt{conStruct} as, 
 a continuous spatial pattern of genetic variation. 
-The third cluster (shown in gold in Fig \ref{bear_admixture}b), 
+The third cluster in the ADMIXTURE analysis at $K=3$ 
+(shown in gold in Fig \ref{bear_admixture}b), 
 shows  strong spatial autocorrelation in admixture proportions, 
 as would be expected if it is describing continuous spatial differentiation.
 
@@ -1499,7 +1500,7 @@ Eq.\ \eqref{allelic_covariance} comes from the observation that
 \end{align}
 
 Thanks to averaging over choice of alleles,
-the within-population allelic variance in sample $i$, $\widehat Omega_{i,i}$,
+the within-population allelic variance in sample $i$, $\widehat{Omega_{i,i}}$,
 is the variance of a series of Bernoulli($1/2$) draws across loci,
 and therefore $\widehat{\Omega}_{i,i} = 1/4$ for every sample $i$.
 Averaging over choice of reference allele therefore removes some information 
