@@ -278,7 +278,7 @@ sample from a set of two-dimensional population layers,
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation,
-and avoids problems with overfitting that nonspatial models are prone to.
+and ameliorates the overfitting that nonspatial models are prone to.
 The method produces useful descriptions of structure in genetic relatedness
 in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
@@ -455,15 +455,15 @@ Then,
     \widehat{\Omega}_{i,j} = \cov[X_i, X_j] .
 \end{equation}
 Each $X_i$ behaves marginally as a fair coin --
-in particular, $\P\{X_i = 1\} = 1$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ --
+in particular, $\P\{X_i = 1\} = 1/2$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ --
 all information enters through \emph{correlations}.
 
 
 Although we describe this as a covariance between individually drawn alleles,
 $\widehat{\Omega}_{i,j}$ is in fact also the covariance between the allele frequencies
 of a randomly chosen allele in samples $i$ and $j$, as long as $i \neq j$.
-The choice of allele does not affect subsequent calculations, and so may be arbitrary.
-$\widehat \Omega$, can be calculated as a covariance
+The choice of allele does not affect subsequent calculations, and so may be arbitrary, 
+and $\widehat \Omega$ can be calculated as 
 (derived in \secref{allelic_cov}):
 \begin{equation}
 \widehat{\Omega}_{i,j} = 
