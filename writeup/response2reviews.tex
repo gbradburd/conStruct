@@ -37,8 +37,14 @@ these results highlight both the tendency of nonspatial models
 to describe continuous differentiation with multiple, spurious clusters, 
 and also the capacity of the spatial model to avoid this pitfall.
 
-We have also edited the text for greater clarity, and we hope that the paper is now acceptable for publication.\\\\
+We have also edited the description of the allelic covariance we model,
+both for clarity (in response to helpful suggestions from both reviewers), 
+and to bring the text into agreement with what we had actually implemented in the code.
+
+We hope that the paper is now acceptable for publication.\\\\
 %
+
+
 Thank you for your consideration,\\
 Gideon Bradburd (for all of the authors).
 
@@ -64,13 +70,18 @@ but also, e.g., that the spatial model is preferred over the nonspatial model.
 However, as you note, it's important to compare \texttt{conStruct}'s performance to 
 that of existing nonspatial model-based clustering methods as well, 
 which is why we had also included analyses using fastSTRUCTURE.
-Your point here is well-taken though, because the fastSTRUCTURE analyses, 
+
+\ Your point here is well-taken though, because the fastSTRUCTURE analyses, 
 which included no model comparisons, did not provide a direct basis of comparison to \texttt{conStruct}.
 We have therefore analyzed all datasets included in the paper using ADMIXTURE, 
 and used ADMIXTURE's cross-validation procedure to compare model performance across values of $K$.  
 These results are discussed extensively throughout the updated manuscript ``Results" section; 
-however, due to the already extensive length of the manuscript (which Reviewer 2 points out), 
-the results of the ADMIXTURE analyses are given in the Supplementary Materials.}\\
+and the model that minimizes the cross-validation error in the ADMIXTURE analyses on simulated data 
+is highlighted in the the simulation cross-validation results figure.
+ONLY KEEP THIS IN IF WE LIKE THE NEW FIG.
+However, due to the already extensive length of the manuscript (which Reviewer 2 points out), 
+the results of the ADMIXTURE analyses are given in the Supplementary Materials.
+}\\
 
 \item Second, the simulation scenario should correspond to a real biological scenario. Here this layer-based simulation scenario is very difficult to understand. I would be more interesting to stick to more classic spatially explicit simulations such as range expansion, or secondary contact scenarios.\\\\
 \gb{We appreciate that the simulation scenario we ran is somewhat artificial, 
@@ -131,7 +142,7 @@ We have also moved some of this discussion to the Discussion (heading ``Allelic 
 In this paper, Bradburd et al. present a novel analysis method for the joint characterization of discrete and continuous structure. Their model uses a mixed membership Gaussian process, adding a within layer (cluster) Isolation-by-distance-process. I do think that this paper is very clearly written, and presents the model and method in great detail. Besides the presentation of the method, a simulation and two application studies are performed, that lead to a comprehensive overview of the method. I would consider this model to be very valuable for a large audience in ecology and evolution, including biogeographers and conservation biologists, with the only drawback being the very high computational requirements. Overall, however I recommend the paper for acceptance with only very minor changes.
 
 \begin{itemize}
-\item One issue I am wondering about is whether there are some issues with ``outlier individuals'', that e.g. represent poorly sampled clusters, which might be an issue with the Alaskan/NW-Canadian bears. In particular, consider the case where the two layers were only fitted from the samples from the 48-states. Presumably, the resulting covariance curve would be similar to Fig S26b (assuming the two layer case). If we then added those NW-pacific samples, we might expect them to be most likely added to the cluster with the flatter right tail, even if they were essentially unrelated. This issue can also arise in kriging (Figure 6 in the first version of the preprint of Caye et al (https://www.biorxiv.org/content/biorxiv/early/2016/10/12/080291.full.pdf is the example I am thinking of). Could this interpretation be excluded somehow?
+\item One issue I am wondering about is whether there are some issues with ``outlier individuals'', that e.g. represent poorly sampled clusters, which might be an issue with the Alaskan/NW-Canadian bears. In particular, consider the case where the two layers were only fitted from the samples from the 48-states. Presumably, the resulting covariance curve would be similar to Fig S26b (assuming the two layer case). If we then added those NW-pacific samples, we might expect them to be most likely added to the cluster with the flatter right tail, even if they were essentially unrelated. This issue can also arise in kriging (Figure 6 in the first version of the preprint of Caye et al (on bioRxiv). Could this interpretation be excluded somehow?
 \\\\
 \gb{This is a great point, and highlights a subtle problem.
 Although we feel that isolation-by-distance is a reasonable model for population differentiation, 

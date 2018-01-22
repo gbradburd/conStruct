@@ -278,7 +278,7 @@ sample from a set of two-dimensional population layers,
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation,
-and ameliorates the overfitting that nonspatial models are prone to.
+and remedies the overfitting that nonspatial models are prone to.
 The method produces useful descriptions of structure in genetic relatedness
 in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
@@ -804,7 +804,8 @@ and then plateaus or declines
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
 The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
-as shown in Fig \ref{sim_admix_CVerrors}.
+as shown in Fig \ref{sim_xvals} (orange-red points),
+and in more detail in Fig \ref{sim_admix_CVerrors}.
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
 % (Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}).

@@ -322,17 +322,6 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-if(FALSE){
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.nsp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies_K")
-
-plot.sim.pies(data.block = data.block,
-			  K = 7,
-			  output.list = output.list.sp,
-			  file.name = "~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies_K")
-}
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
@@ -425,10 +414,15 @@ get.CV.error <- function(Rout.file){
 	return(CV.error)
 }
 
+CV.error1 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK1/exe.admixture.Rout")
+CV.error2 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK2/exe.admixture.Rout")
+CV.error3 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK3/exe.admixture.Rout")
+
+
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=14,height=5,pointsize=20)
 #	quartz(width=14,height=5)
 #K1
-setwd("~/Dropbox/gid_runs/mc_runs/sims/simK1")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_1")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
@@ -441,11 +435,11 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	par(mfrow=c(1,3),mar=c(4.5,4.5,4,1))
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
 		mtext("Predictive accuracy",side=2,padj=-3)
-	legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"),cex=1.2)
+	legend(x="bottomright",pch=c(19,19,5),col=c("blue","green","orangered"),legend=c("spatial","nonspatial","ADMIXTURE\nmin CV error"),cex=1)
 	mtext(bquote(paste("True ",italic("K")," = 1")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
-
+		points(which.min(CV.error1)+0.15,xval.CIs$nsp.means[which.min(CV.error1)],pch=5,col="orangered",cex=1.5)
 #K2
-setwd("~/Dropbox/gid_runs/mc_runs/sims/simK2")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_2")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
@@ -456,6 +450,7 @@ x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
+		points(which.min(CV.error2)+0.15,xval.CIs$nsp.means[which.min(CV.error2)],pch=5,col="orangered",cex=1.5)
 	rect(0.7,-700,7.3,400,lty=2)
 	arrows(0.7,-700,2.5,-3e3,lty=1,length=0.15)
 	arrows(7.2,-700,6.6,-3e3,lty=1,length=0.15)
@@ -465,12 +460,13 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							axis(2,at=seq(-275,0,length.out=6),labels=c(-275,"","","","",0),cex.axis=0.8,lty=1)
 							box(lwd=1.2,lty=2)
 							box(lwd=1.2,lty=1,bty="l")
+							points(which.min(CV.error2)+0.15,xval.CIs$nsp.means[which.min(CV.error2)],pch=5,col="orangered",cex=1)
 						},
 					x=c(2.5,6.6),y=c(-12.5e3,-3e3))
 	mtext(bquote(paste("True ",italic("K")," = 2")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 	mtext("number of layers",side=1,padj=3.4)
 #K3
-setwd("~/Dropbox/gid_runs/mc_runs/sims/simK3")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_3")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
@@ -481,6 +477,7 @@ x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
+		points(which.min(CV.error3)+0.15,xval.CIs$nsp.means[which.min(CV.error3)],pch=5,col="orangered",cex=1.5)
 	rect(0.7,-680,7.3,470,lty=2)
 	arrows(0.7,-680,3.2,-4e3,lty=1,length=0.1)
 	arrows(7.2,-700,6.6,-4e3,lty=1,length=0.1)
@@ -490,6 +487,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 							axis(2,at=seq(-140,0,length.out=6),labels=c(-140,"","","","",0),cex.axis=0.8,lty=1)
 							box(lwd=1.2,lty=2)
 							box(lwd=1.2,lty=1,bty="l")
+							points(which.min(CV.error3)+0.15,xval.CIs$nsp.means[which.min(CV.error3)],pch=5,col="orangered",cex=1)
 						},
 					x=c(3.2,6.6),y=c(-1.5e4,-4e3))
 	mtext(bquote(paste("True ",italic("K")," = 3")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
