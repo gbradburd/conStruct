@@ -1655,13 +1655,13 @@ the training/testing partitioning should be designed to accommodate linkage dise
 Loci in strong LD are not inherited independently,
 so if loci from a single linkage block are included in both training and testing partitions, 
 the independence of the test in the testing partition will be compromised,
-and so the parameters estimated from the training partition 
+because the parameters estimated from the training partition 
 might be describing process heterogeneity or noise 
 in a region of the genome that also has loci included in the testing partition.
 The best practice for cross-validation is to make sure that 
-no loci in the testing dataset are in strong LD with, 
+no loci in the testing dataset are in strong LD with 
 -- or near on the genome to -- 
-loci in the testing dataset.
+loci in the training dataset.
 
 
 \section*{Calculating layer contributions}\label{layer_contribution}
