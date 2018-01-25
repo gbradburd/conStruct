@@ -73,7 +73,13 @@ which is why we had also included analyses using fastSTRUCTURE.
 
 \ Your point here is well-taken though, because the fastSTRUCTURE analyses, 
 which included no model comparisons, did not provide a direct basis of comparison to \texttt{conStruct}.
-We have therefore analyzed all datasets included in the paper using ADMIXTURE, 
+There is a model comparison tool implemented in fastSTRUCTURE, 
+but we were unable to get it to run on our datasets.
+We have contacted the fastSTRUCTURE authors 
+and alerted them to this issue, 
+but have yet to hear back from them.
+
+\ We have therefore analyzed all datasets included in the paper using ADMIXTURE, 
 and used ADMIXTURE's cross-validation procedure to compare model performance across values of $K$.  
 These results are discussed extensively throughout the updated manuscript ``Results" section; 
 and the model that minimizes the cross-validation error in the ADMIXTURE analyses on simulated data 
@@ -189,7 +195,9 @@ in different scenarios are being planned now.}\\
 \gb{Fixed.}\\
 
 \item Last line in paragraph on p. 18: as the derivations are otherwise very detailed and easy to follow, it might be worth adding here that this follows from E[UV] = 4 Cov[A, B]\\\\
+\gb{
 We have substantially rewritten this section for greater clarity.\\
+}
 
 \item 634: Using ms,
 \\\\
@@ -207,7 +215,7 @@ We have substantially rewritten this section for greater clarity.\\
 	algorithm described in CLUMPP (Jakobsson and Rosenberg 2007) to match layers across runs.
 	We used that algorithm to keep plotting colors consistent in our figures, including in Fig. XXXX.
 	However, something funny happens in that sequence of analyses between $K=5$ and $K=6$, 
-	where the ranking of cluster matching algorithm gives funny results, 
+	where the ranking of cluster matching algorithm gives wonky results, 
 	leading to the non-intuitive layer color matching.
 	We've tweaked that one by hand to keep the plotting nice.
  }\\
