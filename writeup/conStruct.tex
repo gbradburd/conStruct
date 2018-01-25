@@ -278,7 +278,7 @@ sample from a set of two-dimensional population layers,
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation,
-and remedies the overfitting that nonspatial models are prone to.
+and remedies some of the overfitting that nonspatial models are prone to.
 The method produces useful descriptions of structure in genetic relatedness
 in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
@@ -375,7 +375,7 @@ These underlying frequencies are identical
 for all individuals assigned to a cluster, 
 \emph{regardless} of their spatial location. 
 Spatial information has been incorporated into some of these methods, 
-by, for example, placing spatial priors on ancestry proportions \cite{geneland,TESS}, 
+by, for example, placing spatial priors on cluster membership \cite{geneland,TESS}, 
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
@@ -446,7 +446,7 @@ between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
 as the expected covariance of distinct individual alleles 
 chosen from each of the two samples at a random locus.
 More precisely, suppose that we pick a random bi-allelic locus uniformly,
-pick a random ``reference'' allelic state from the two seen at that locus,
+pick a random ``reference'' allelic state from the two alleles seen at that locus,
 and, in each sample, draw one random allele,
 recording $X_i = 1$ if the allele drawn in sample $i$ matches the random reference,
 and $X_i = 0$ otherwise.
@@ -454,7 +454,8 @@ Then,
 \begin{equation} \label{eqn:first_allelic_cov}
     \widehat{\Omega}_{i,j} = \cov[X_i, X_j] .
 \end{equation}
-Each $X_i$ behaves marginally as a fair coin --
+Because we randomly choose the reference allele, 
+each $X_i$ behaves marginally as a fair coin --
 in particular, $\P\{X_i = 1\} = 1/2$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ --
 all information enters through \emph{correlations}.
 
@@ -1650,18 +1651,18 @@ Briefly, we follow the following procedure:
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
 \end{enumerate}
 
-If the genomic coordinates of the loci are known, 
+\gb{If the spatial coordinates of the loci in the genome are known, 
 the training/testing partitioning should be designed to accommodate linkage disequilibrium (LD).
-Loci in strong LD are not inherited independently,
-so if loci from a single linkage block are included in both training and testing partitions, 
-the independence of the test in the testing partition will be compromised,
-because the parameters estimated from the training partition 
+Loci in strong LD do not represent independent instantiations of the coalescent process, 
+so if loci from a single linkage block are randomly split into both training and testing partitions, 
+the independence of the test in the testing partition will be compromised 
+(e.g., the parameters estimated from the training partition 
 might be describing process heterogeneity or noise 
-in a region of the genome that also has loci included in the testing partition.
-The best practice for cross-validation is to make sure that 
-no loci in the testing dataset are in strong LD with 
--- or near on the genome to -- 
-loci in the training dataset.
+in a region of the genome that also has loci included in the testing partition).
+If genomic position or LD between SNPs is known, 
+the best practice for cross-validation is to make sure that 
+no loci in the testing dataset are in strong LD with, 
+or spatially proximate to, loci in the testing dataset.}
 
 
 \section*{Calculating layer contributions}\label{layer_contribution}
