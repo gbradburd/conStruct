@@ -422,7 +422,7 @@ CV.error3 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets
 pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=14,height=5,pointsize=20)
 #	quartz(width=14,height=5)
 #K1
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_1")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
@@ -435,11 +435,13 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	par(mfrow=c(1,3),mar=c(4.5,4.5,4,1))
 	plot.xval.CIs(xval.CIs,K,xlim=c(0.8,7.2),jitter=0.15)
 		mtext("Predictive accuracy",side=2,padj=-3)
-	legend(x="bottomright",pch=c(19,19,5),col=c("blue","green","orangered"),legend=c("spatial","nonspatial","ADMIXTURE\nmin CV error"),cex=1)
+	legend(x="bottomright",pch=c(19,19,5),
+		col=c("blue","green","orangered"),
+			legend=c("spatial","nonspatial",expression("ADMIXTURE best "*italic("K"))),cex=1)
 	mtext(bquote(paste("True ",italic("K")," = 1")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 		points(which.min(CV.error1)+0.15,xval.CIs$nsp.means[which.min(CV.error1)],pch=5,col="orangered",cex=1.5)
 #K2
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_2")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
@@ -466,7 +468,7 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	mtext(bquote(paste("True ",italic("K")," = 2")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 	mtext("number of layers",side=1,padj=3.4)
 #K3
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_3")
+setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
