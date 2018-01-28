@@ -278,7 +278,7 @@ sample from a set of two-dimensional population layers,
 and, within each layer, estimates a rate at which relatedness decays with distance.
 This thereby explicitly addresses the ``clines versus clusters" problem in 
 modeling population genetic variation,
-and remedies some of the overfitting that nonspatial models are prone to.
+and remedies some of the overfitting to which nonspatial are prone.
 The method produces useful descriptions of structure in genetic relatedness
 in situations where separated, geographically distributed populations interact,
 as after a range expansion or secondary contact.
@@ -805,7 +805,7 @@ and then plateaus or declines
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
 The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
-as shown in Fig \ref{sim_xvals} (vermilion points),
+as shown in Fig \ref{sim_xvals} (vermilion diamonds),
 and, in more detail, in Fig \ref{sim_admix_CVerrors}.
 % In contrast, the predictive accuracy of the spatial \texttt{conStruct} model
 % either plateaus at or declines from the true value of $K$ used to simulate the data 
@@ -843,8 +843,8 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 	(in blue and green, respectively) run with $K=1$ through 7.  
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
     The spatial model shows better model fit at every value of $K$.
-    The ADMIXTURE model with the lowest cross-validation error 
-    (i.e., the preferred model) is highlighted with an vermilion diamond.
+    The vermillion diamond indicates the value of $K$ selected 
+    on the basis of lowest cross-validation error among ADMIXTURE models. 
     In all simulations, the preferred ADMIXTURE model 
     was that with the largest number of clusters.
     }\label{sim_xvals}
@@ -1501,7 +1501,7 @@ Eq.\ \eqref{allelic_covariance} comes from the observation that
 \end{align}
 
 Thanks to averaging over choice of alleles,
-the within-population allelic variance in sample $i$, $\widehat{Omega_{i,i}}$,
+the within-population allelic variance in sample $i$, $\widehat{\Omega}_{i,i}$,
 is the variance of a series of Bernoulli($1/2$) draws across loci,
 and therefore $\widehat{\Omega}_{i,i} = 1/4$ for every sample $i$.
 Averaging over choice of reference allele therefore removes some information 
@@ -1651,7 +1651,7 @@ Briefly, we follow the following procedure:
         95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
 \end{enumerate}
 
-\gb{If the spatial coordinates of the loci in the genome are known, 
+If the spatial coordinates of the loci in the genome are known, 
 the training/testing partitioning should be designed to accommodate linkage disequilibrium (LD).
 Loci in strong LD do not represent independent instantiations of the coalescent process, 
 so if loci from a single linkage block are randomly split into both training and testing partitions, 
@@ -1662,7 +1662,7 @@ in a region of the genome that also has loci included in the testing partition).
 If genomic position or LD between SNPs is known, 
 the best practice for cross-validation is to make sure that 
 no loci in the testing dataset are in strong LD with, 
-or spatially proximate to, loci in the testing dataset.}
+or spatially proximate to, loci in the testing dataset.
 
 
 \section*{Calculating layer contributions}\label{layer_contribution}

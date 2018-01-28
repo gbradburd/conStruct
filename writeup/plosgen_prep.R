@@ -9,6 +9,11 @@
 
 setwd("~/Dropbox/conStruct/writeup")
 
+# first, run git-latexdiff to make a diff file 
+#	to the initial submission 55053bbd120f68ed66e199bb39ecd30d3686dc19
+call <- c("git-latexdiff --main conStruct.tex 55053bbd120f68ed66e199bb39ecd30d3686dc19 --bibtex --ignore-makefile -o sub1_vs_sub2_diff.pdf")
+system(call)
+
 # make sure flags are:
 #	submissionversiontrue
 #	includesupplementtrue
@@ -19,12 +24,12 @@ system(call)
 system(call)
 
 # split out suppmat figs
-call <- c("pdfseparate -f 31 -l 58 conStruct.pdf S%d.pdf")
+call <- c("pdfseparate -f 31 -l 62 conStruct.pdf S%d.pdf")
 system(call)
 
 # rename suppmat figs
 supp.files <- list.files(pattern="^S")
-for(i in 31:58){
+for(i in 31:62){
 	file.rename(paste0("S",i,".pdf"),paste0("S",i-30,"_fig.pdf"))
 }
 
