@@ -9,38 +9,60 @@
 
 setwd("~/Dropbox/conStruct/writeup")
 
-# first, run git-latexdiff to make a diff file 
-#	to the initial submission 55053bbd120f68ed66e199bb39ecd30d3686dc19
-call <- c("git-latexdiff --main conStruct.tex 55053bbd120f68ed66e199bb39ecd30d3686dc19 --bibtex --ignore-makefile -o sub1_vs_sub2_diff.pdf")
-system(call)
-
-# make sure flags are:
+# first, make sure flags are:
 #	submissionversiontrue
 #	includesupplementtrue
 #	floatsatendfalse
 #	includefigstrue
+text <- readLines("conStruct.tex") 
+text[which(text == "\\submissionversiontrue")] <- "\\submissionversiontrue"
+text[which(text == "%\\submissionversiontrue")] <- "\\submissionversiontrue"
+text[which(text == "\\submissionversionfalse")] <- "%\\submissionversionfalse"
+text[which(text == "%\\submissionversionfalse")] <- "%\\submissionversionfalse"
+
+text[which(text == "\\includesupplementtrue")] <- "\\includesupplementtrue"
+text[which(text == "%\\includesupplementtrue")] <- "\\includesupplementtrue"
+text[which(text == "\\includesupplementfalse")] <- "%\\includesupplementfalse"
+text[which(text == "%\\includesupplementfalse")] <- "%\\includesupplementfalse"
+
+text[which(text == "\\floatsatendtrue")] <- "%\\floatsatendtrue"
+text[which(text == "%\\floatsatendtrue")] <- "%\\floatsatendtrue"
+text[which(text == "\\floatsatendfalse")] <- "\\floatsatendfalse"
+text[which(text == "%\\floatsatendfalse")] <- "\\floatsatendfalse"
+
+text[which(text == "\\includefigstrue")] <- "\\includefigstrue"
+text[which(text == "%\\includefigstrue")] <- "\\includefigstrue"
+text[which(text == "\\includefigsfalse")] <- "%\\includefigsfalse"
+text[which(text == "%\\includefigsfalse")] <- "%\\includefigsfalse"
+writeLines(text,"conStruct.tex")
+
+# compile
 call <- c("pdflatex conStruct.tex")
 system(call)
 system(call)
 
+# run git-latexdiff to make a diff file 
+#	to the initial submission 55053bbd120f68ed66e199bb39ecd30d3686dc19
+call <- c("git-latexdiff --main conStruct.tex 55053bbd120f68ed66e199bb39ecd30d3686dc19 --bibtex --ignore-makefile -o sub1_vs_sub2_diff.pdf")
+system(call)
+
 # split out suppmat figs
-call <- c("pdfseparate -f 31 -l 62 conStruct.pdf S%d.pdf")
+call <- c("pdfseparate -f 32 -l 62 conStruct.pdf S%d.pdf")
 system(call)
 
 # rename suppmat figs
 supp.files <- list.files(pattern="^S")
-for(i in 31:62){
-	file.rename(paste0("S",i,".pdf"),paste0("S",i-30,"_fig.pdf"))
+for(i in 32:62){
+	file.rename(paste0("S",i,".pdf"),paste0("S",i-31,"_fig.pdf"))
 }
 
 # read in text, switch flags, and recompile
-text <- scan("conStruct.tex",what=character(),sep="\n")
-new.text <- text
-new.text[grepl("\\includesupplementtrue",text)] <- "%\\includesupplementtrue"
-new.text[grepl("\\includesupplementfalse",text)] <- "\\includesupplementfalse"
-new.text[grepl("\\\\floatsatendfalse",text)] <- "%\\floatsatendfalse"
-new.text[grepl("\\\\floatsatendtrue",text)] <- "\\floatsatendtrue"
-	cat(new.text,file="conStruct.tex",sep="\n")
+text <- readLines("conStruct.tex")
+text[which(text == "\\includesupplementtrue")] <- "%\\includesupplementtrue"
+text[which(text == "%\\includesupplementfalse")] <- "\\includesupplementfalse"
+text[which(text == "\\floatsatendfalse")] <- "%\\floatsatendfalse"
+text[which(text == "%\\floatsatendtrue")] <- "\\floatsatendtrue"
+writeLines(text,"conStruct.tex")
 
 call <- c("pdflatex conStruct.tex")
 system(call)
@@ -48,10 +70,10 @@ system(call)
 system(call)
 
 # split out main text figs and tables
-call <- c("pdfseparate -f 26 -l 35 conStruct.pdf Fig%d.pdf")
+call <- c("pdfseparate -f 28 -l 37 conStruct.pdf Fig%d.pdf")
 system(call)
 
-call <- c("pdfseparate -f 37 -l 37 conStruct.pdf Table%d.pdf")
+call <- c("pdfseparate -f 39 -l 39 conStruct.pdf Table%d.pdf")
 system(call)
 
 # rename main text figs and tables
@@ -68,25 +90,25 @@ for(i in 1:length(table.files)){
 # prepare file to make submission pdf
 #	no floats at end, no figs (but still captions),
 #	and suppmat, so the internal references don't break
-new.text <- text
-new.text[grepl("\\includesupplementtrue",text)] <- "\\includesupplementtrue"
-new.text[grepl("\\includesupplementfalse",text)] <- "%\\includesupplementfalse"
-new.text[grepl("\\\\floatsatendfalse",text)] <- "\\floatsatendfalse"
-new.text[grepl("\\\\floatsatendtrue",text)] <- "%\\floatsatendtrue"
-new.text[grepl("\\\\includefigsfalse",text)] <- "\\includefigsfalse"
-new.text[grepl("\\\\includefigstrue",text)] <- "%\\includefigstrue"
-	cat(new.text,file="conStruct.tex",sep="\n")
+text <- readLines("conStruct.tex")
+text[which(text == "%\\includesupplementtrue")] <- "\\includesupplementtrue"
+text[which(text == "\\includesupplementfalse")] <- "%\\includesupplementfalse"
+text[which(text == "%\\floatsatendfalse")] <- "\\floatsatendfalse"
+text[which(text == "\\floatsatendtrue")] <- "%\\floatsatendtrue"
+text[which(text == "%\\includefigsfalse")] <- "\\includefigsfalse"
+text[which(text == "\\includefigstrue")] <- "%\\includefigstrue"
+writeLines(text,"conStruct.tex")
 
 call <- c("pdflatex conStruct.tex")
 system(call)
 system(call)
 
 # split out the pre-suppmat pages
-call <- c("pdfseparate -f 1 -l 25 conStruct.pdf Page%d.pdf")
+call <- c("pdfseparate -f 1 -l 26 conStruct.pdf Page%d.pdf")
 system(call)
 
 # unite the main text into a single doc for submission
-call <- paste0("pdfunite ",c(paste0("Page",1:25,".pdf",collapse=" "))," conStruct.pdf")
+call <- paste0("pdfunite ",c(paste0("Page",1:26,".pdf",collapse=" "))," conStruct.pdf")
 system(call)
 
-file.remove(paste0("Page",1:25,".pdf"))
+file.remove(paste0("Page",1:26,".pdf"))

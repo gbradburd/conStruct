@@ -86,8 +86,8 @@
 \floatsatendfalse
 %\floatsatendtrue
 \newif\ifincludefigs
-\includefigstrue
-%\includefigsfalse
+%\includefigstrue
+\includefigsfalse
 \iffloatsatend
 \usepackage[nomarkers]{endfloat}
 \fi
@@ -750,11 +750,11 @@ We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simu
 and compared predictive performance of the models using cross-validation.
 For comparison,
 we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE} with $K$ between 1 and 7, 
-and compared models using ADMIXTURE's cross-validation procedure with 50 data ``fold" subsets.
+and compared models using ADMIXTURE's cross-validation procedure with 50 data fold subsets.
 
 With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
-Figures \ref{simK1_pies}, \ref{simK2_sp_pies}, and \ref{simK3_sp_pies} 
+Figures \ref{simK1_pies} and \ref{simK1_sp_pies}-\ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
 When data are simulated with $K=1$ but analyzed with $K>1$, 
 the layers are present, but contribute very little to any population.
@@ -762,12 +762,12 @@ Even when the spatial model is run with $K=7$,
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
 Moreover, the method infers the true admixture proportions with high accuracy, tight precision, and good coverage 
-(Figs \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit}).
+(Figs \ref{simK2_adprop_fit}-\ref{simK3_adprop_fit}).
 
 In contrast, the nonspatial model describes geographic variation
 using gradients of admixture between more and more discrete clusters
 to better approximate the continuous, spatial patterns of relatedness
-(depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}).
+(depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}-\ref{simK3_nsp_pies}).
 The ADMIXTURE results are qualitatively similar, as shown in Figs \ref{admix_simK1}-\ref{admix_simK3}.
 Each nonspatial cluster is genetically more similar within itself
 than it is to other clusters,
@@ -779,7 +779,7 @@ as shown in Fig \ref{sim_xvals},
 across all models and choices of $K$, the spatial model is correctly preferred over the nonspatial model.
 As desired, predictive accuracy of the spatial model increases until the true value of $K$,
 and then plateaus or declines
-(Figs \ref{sim_xvals}, \ref{simK1_xval}, \ref{simK2_xval}, and \ref{simK3_xval}),
+(Figs \ref{sim_xvals} and \ref{simK1_xval}-\ref{simK3_xval}),
 while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
 The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
@@ -787,7 +787,7 @@ as shown in Fig \ref{sim_xvals} (vermilion diamonds),
 and, in more detail, in Fig \ref{sim_admix_CVerrors}.
 
 The unimportance of spurious layers can be seen in plots of layer contributions
-(Figs \ref{simK1_laycon}, \ref{simK2_laycon}, and \ref{simK3_laycon}).
+(Figs \ref{simK1_laycon}, \ref{simK2_laycon}-\ref{simK3_laycon}).
 In the spatial analyses, once we pass the true $K$, 
 subsequent layers add little in terms of (co)variance explained; 
 in contrast, additional clusters in the nonspatial analyses continue to contribute substantially.
@@ -896,10 +896,10 @@ using both the spatial and nonspatial \texttt{conStruct} models with $K = 1$ thr
 and compared these models using cross-validation.
 The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
-as well as Figs \ref{populus_sp_pies} - \ref{populus_laycon} in the Supplementary Materials.
+as well as Figs \ref{populus_sp_pies}-\ref{populus_laycon} in the Supplementary Materials.
 For comparison, we also ran ADMIXTURE \cite{ADMIXTURE} 
 with $K = 1$ through 7, using 50-fold cross-validation to compare model performance
-(Figs \ref{populus_admixture} and \ref{poplar_admix_CVerrors}). 
+(Figs \ref{populus_admixture}-\ref{poplar_admix_CVerrors}). 
 
 \begin{figure}
 	\centering
@@ -1000,9 +1000,9 @@ using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of be
 and compared these models using cross-validation.
 We also ran ADMIXTURE \cite{ADMIXTURE} on the same dataset, 
 using $K = 1$ through 7, and comparing models using 
-ADMIXTURE's cross-validation procedure with 50 data ``fold" subsets.
-The results of these analyses are shown in Figs \ref{bear_K3} - \ref{bear_laycon}, 
-as well as in Figs \ref{bear_sp_pies} - \ref{bear_admix_CVerrors} in the Supplementary Materials.
+ADMIXTURE's cross-validation procedure with 50 data fold subsets.
+The results of these analyses are shown in Figs \ref{bear_K3}-\ref{bear_laycon}, 
+as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplementary Materials.
 
 \begin{figure}
 	\centering
@@ -1753,42 +1753,11 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
-	\caption{
-	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
-	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
-    }\label{simK1_nsp_pies}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_sp_pies}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
-		\caption{
-			Cross-validation results for data simulated under $K=1$,
-			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-			The right panel zooms in on just the spatial cross-validation results.
-		}\label{simK1_xval}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
-	\caption{
-	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
-	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
-    }\label{simK2_nsp_pies}
 \end{figure}
 \clearpage
 
@@ -1804,26 +1773,11 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
-		\caption{
-			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
-			for all layers estimated in runs using $K = 1$ through 7 
-			for the spatial model (left), 
-			and for all clusters using the nonspatial \texttt{conStruct} model (right).
-			Data were simulated using $K=2$.
-			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
-		}\label{simK2_laycon}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
-		\caption{
-			Cross-validation results for data simulated under $K=2$,
-			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-			The right panel zooms in on just the spatial cross-validation results.
-		}\label{simK2_xval}
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
+	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
+    }\label{simK3_sp_pies}
 \end{figure}
 \clearpage
 
@@ -1839,56 +1793,41 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
-	\caption{
-	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
-	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
-    }\label{simK3_nsp_pies}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
-	\caption{
-	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
-	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
-    }\label{simK3_sp_pies}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
-		\caption{
-			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
-			for all layers estimated in runs using $K = 1$ through 7 
-			for the spatial model (left), 
-			and for all clusters using the nonspatial \texttt{conStruct} model (right).
-			Data were simulated using $K=3$.
-			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
-		}\label{simK3_laycon}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
-		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
-		\caption{
-			Cross-validation results for data simulated under $K=3$,
-			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-			The right panel zooms in on just the spatial cross-validation results.
-		}\label{simK3_xval}
-\end{figure}
-\clearpage
-
-\begin{figure}
-	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
 		\caption{
 			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
 			Results are from an analysis with a spatial model using $K=3$.
 		}\label{simK3_adprop_fit}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
+	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
+    }\label{simK1_nsp_pies}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
+	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
+    }\label{simK2_nsp_pies}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
+	\caption{
+	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
+	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
+    }\label{simK3_nsp_pies}
 \end{figure}
 \clearpage
 
@@ -1927,13 +1866,74 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \begin{figure}
 	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
+		\caption{
+			Cross-validation results for data simulated under $K=1$,
+			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+			The right panel zooms in on just the spatial cross-validation results.
+		}\label{simK1_xval}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
+		\caption{
+			Cross-validation results for data simulated under $K=2$,
+			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+			The right panel zooms in on just the spatial cross-validation results.
+		}\label{simK2_xval}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
+		\caption{
+			Cross-validation results for data simulated under $K=3$,
+			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+			The right panel zooms in on just the spatial cross-validation results.
+		}\label{simK3_xval}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
 		{\includegraphics[width=\textwidth]{figs/admixture/sims_CVerror.pdf}}
 	\caption{
 	ADMIXTURE cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
-	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{sim_admix_CVerrors}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
+		\caption{
+			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
+			for all layers estimated in runs using $K = 1$ through 7 
+			for the spatial model (left), 
+			and for all clusters using the nonspatial \texttt{conStruct} model (right).
+			Data were simulated using $K=2$.
+			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
+		}\label{simK2_laycon}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
+		\caption{
+			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
+			for all layers estimated in runs using $K = 1$ through 7 
+			for the spatial model (left), 
+			and for all clusters using the nonspatial \texttt{conStruct} model (right).
+			Data were simulated using $K=3$.
+			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
+		}\label{simK3_laycon}
 \end{figure}
 \clearpage
 
@@ -2028,7 +2028,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		{\includegraphics[width=\textwidth]{figs/populus/poplars_admixture_CVerror.pdf}}
 	\caption{
 	ADMIXTURE cross-validation results for poplar data, 
-	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{poplar_admix_CVerrors}
 \end{figure}
@@ -2091,7 +2091,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_CVerror.pdf}}
 	\caption{
 	ADMIXTURE cross-validation results for bear data, 
-	run with $K=1$ through 7 using 50 data ``folds" (\texttt{--cv=50}).  
+	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{bear_admix_CVerrors}
 \end{figure}
