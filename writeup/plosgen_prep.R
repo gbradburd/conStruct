@@ -34,6 +34,12 @@ text[which(text == "\\includefigstrue")] <- "\\includefigstrue"
 text[which(text == "%\\includefigstrue")] <- "\\includefigstrue"
 text[which(text == "\\includefigsfalse")] <- "%\\includefigsfalse"
 text[which(text == "%\\includefigsfalse")] <- "%\\includefigsfalse"
+
+text[which(text == "\\suppmatfigstrue")] <- "\\suppmatfigstrue"
+text[which(text == "%\\suppmatfigstrue")] <- "\\suppmatfigstrue"
+text[which(text == "\\suppmatfigsfalse")] <- "%\\suppmatfigsfalse"
+text[which(text == "%\\suppmatfigsfalse")] <- "%\\suppmatfigsfalse"
+
 writeLines(text,"conStruct.tex")
 
 # compile
@@ -97,18 +103,22 @@ text[which(text == "%\\floatsatendfalse")] <- "\\floatsatendfalse"
 text[which(text == "\\floatsatendtrue")] <- "%\\floatsatendtrue"
 text[which(text == "%\\includefigsfalse")] <- "\\includefigsfalse"
 text[which(text == "\\includefigstrue")] <- "%\\includefigstrue"
+text[which(text == "%\\suppmatfigsfalse")] <- "\\suppmatfigsfalse"
+text[which(text == "\\suppmatfigstrue")] <- "%\\suppmatfigstrue"
 writeLines(text,"conStruct.tex")
 
 call <- c("pdflatex conStruct.tex")
 system(call)
 system(call)
 
-# split out the pre-suppmat pages
-call <- c("pdfseparate -f 1 -l 26 conStruct.pdf Page%d.pdf")
-system(call)
-
-# unite the main text into a single doc for submission
-call <- paste0("pdfunite ",c(paste0("Page",1:26,".pdf",collapse=" "))," conStruct.pdf")
-system(call)
-
-file.remove(paste0("Page",1:26,".pdf"))
+if(FALSE){
+	# split out the pre-suppmat pages
+	call <- c("pdfseparate -f 1 -l 29 conStruct.pdf Page%d.pdf")
+	system(call)
+	
+	# unite the main text into a single doc for submission
+	call <- paste0("pdfunite ",c(paste0("Page",1:29,".pdf",collapse=" "))," conStruct.pdf")
+	system(call)
+	
+	file.remove(paste0("Page",1:29,".pdf"))
+}
