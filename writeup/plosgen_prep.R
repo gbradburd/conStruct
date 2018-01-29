@@ -49,7 +49,7 @@ system(call)
 
 # run git-latexdiff to make a diff file 
 #	to the initial submission 55053bbd120f68ed66e199bb39ecd30d3686dc19
-call <- c("git-latexdiff --main conStruct.tex 55053bbd120f68ed66e199bb39ecd30d3686dc19 --bibtex --ignore-makefile -o sub1_vs_sub2_diff.pdf")
+call <- c("git-latexdiff --main conStruct.tex 55053bbd120f68ed66e199bb39ecd30d3686dc19 --bibtex --ignore-makefile --ignore-latex-errors -o sub1_vs_sub2_diff.pdf")
 system(call)
 
 # split out suppmat figs
