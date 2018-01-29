@@ -86,8 +86,11 @@
 \floatsatendfalse
 %\floatsatendtrue
 \newif\ifincludefigs
-%\includefigstrue
-\includefigsfalse
+\includefigstrue
+%\includefigsfalse
+\newif\ifsuppmatfigs
+\suppmatfigsfalse
+%\suppmatfigstrue
 \iffloatsatend
 \usepackage[nomarkers]{endfloat}
 \fi
@@ -142,7 +145,7 @@
 \hline
 \noalign{\global\arrayrulewidth\savedwidth}}
 
-
+\extrafloats{100}
 % Remove comment for double spacing
 %\usepackage{setspace} 
 %\doublespacing
@@ -1736,6 +1739,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 
 \clearpage
 \newpage
+
 \section*{Supplementary Information}
 \renewcommand{\theequation}{S\arabic{equation}}
 \setcounter{equation}{0}
@@ -1743,163 +1747,222 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \setcounter{table}{0}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \setcounter{figure}{0}
-
+%
 % \linespread{1}
 % \iffloatsatend
 % \processdelayedfloats
 % \fi
-
-\clearpage
-
-\begin{figure}
+%
+\ifsuppmatfigs
+	\clearpage
+\fi
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_sp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_sp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_sp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_sp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_sp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_adprop_fit.pdf}}
+	\fi
 		\caption{
 			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
 			Results are from an analysis with a spatial model using $K=2$.
 		}\label{simK2_adprop_fit}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
+	\fi
 		\caption{
 			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
 			Results are from an analysis with a spatial model using $K=3$.
 		}\label{simK3_adprop_fit}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_nsp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_nsp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_nsp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK1_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
 	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK1}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK2_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
 	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK2}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK3_pies.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
 	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK3}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
+	\fi
 		\caption{
 			Cross-validation results for data simulated under $K=1$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK1_xval}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
+	\fi
 		\caption{
 			Cross-validation results for data simulated under $K=2$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK2_xval}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
+	\fi
 		\caption{
 			Cross-validation results for data simulated under $K=3$,
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK3_xval}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/admixture/sims_CVerror.pdf}}
+	\fi
 	\caption{
 	ADMIXTURE cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
@@ -1907,11 +1970,15 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{sim_admix_CVerrors}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
+	\fi
 		\caption{
 			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
@@ -1921,11 +1988,15 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK2_laycon}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
+	\fi
 		\caption{
 			Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 			for all layers estimated in runs using $K = 1$ through 7 
@@ -1935,41 +2006,57 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK3_laycon}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sampling_map.pdf}}
+	\fi
 	\caption{
 	Map of the sampled \textit{Populus} populations included in the analysis.
 	The color of the sampling location denotes the putative species.
     }\label{populus_map}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_pies.pdf}}
+	\fi
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{populus_sp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_pies.pdf}}
+	\fi
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the nonspatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{populus_nsp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_layer_covs.pdf}}
+	\fi
 	\caption{
 	Plots showing the layer-specific parametric covariance curves
 	estimated for the \textit{Populus} data using 
@@ -1981,11 +2068,15 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_sp_layer_covs}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_layer_covs.pdf}}
+	\fi
 	\caption{
 	Plots showing the cluster-specific parametric covariances 
 	estimated for the \textit{Populus} data using 
@@ -1997,11 +2088,15 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_nsp_layer_covs}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/populus_laycon_barplots.pdf}}
+	\fi
 	\caption{
 	Layer/cluster contributions (i.e., how much total covariance is contributed by each layer/cluster), 
 	for all layers estimated in runs using $K = 1$ through 7 
@@ -2011,91 +2106,125 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_layer_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_layer_covs}.
     }\label{populus_laycon}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/poplar_admixture_results.pdf}}
+	\fi
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
     }\label{populus_admixture}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/populus/poplars_admixture_CVerror.pdf}}
+	\fi
 	\caption{
 	ADMIXTURE cross-validation results for poplar data, 
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{poplar_admix_CVerrors}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_results.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the spatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{bear_sp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_results.pdf}}
+	\fi
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the nonspatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{bear_nsp_pies}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_layer_covs.pdf}}
+	\fi
 	\caption{
 	Plots showing the layer-specific parametric covariance curves 
 	estimated for the black bear data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
 	 }\label{bear_sp_layer_covs}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_layer_covs.pdf}}
+	\fi
 	\caption{
 	Plots showing the cluster-specific parametric covariances 
 	estimated for the black bear data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
     }\label{bear_nsp_layer_covs}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_results.pdf}}
+	\fi
 	\caption{
 	Maps of admixture proportions estimated for the bear dataset 
 	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
     }\label{bear_admixture}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
-\begin{figure}
+\begin{figure}[!p]
 	\centering
+	\ifsuppmatfigs
 		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_CVerror.pdf}}
+	\fi
 	\caption{
 	ADMIXTURE cross-validation results for bear data, 
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{bear_admix_CVerrors}
 \end{figure}
-\clearpage
+\ifsuppmatfigs
+	\clearpage
+\fi
 
 %%% END IF INCLUDE SUPPLEMENT
 \fi
