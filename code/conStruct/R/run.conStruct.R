@@ -120,7 +120,7 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 							 chains = n.chains,
 							 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
 							 save_warmup = FALSE,
-							 save_dso = FALSE)
+							 save_dso = TRUE)
 	#save fit obj
 		if(save.files){
 			save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
