@@ -9,17 +9,28 @@ for(n in 1:n.reps){
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=10,height=5,pointsize=14)
-#	quartz(width=10,height=5)
-	par(mfrow=c(1,2),mar=c(4,5,4,2))
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=12,height=4.25,pointsize=14)
+#	quartz(width=12,height=5)
+	par(mfrow=c(1,3),mar=c(3.75,5,4,1))
 	plot.xval.CIs(xval.CIs,K,jitter=0.1,xlim=c(0.75,7.25))
 		legend(x="bottomright",pch=19,col=c("blue","green"),legend=c("spatial","nonspatial"))
-	mtext("Predictive accuracy",side=2,padj=-5,font=2)
+	mtext("Predictive accuracy",side=2,padj=-3,font=2)
+	mtext("conStruct",side=3,font=2)
 	plot.xval.CIs(xval.CIs,K,ylim=c(-200,0),jitter=0.1,xlim=c(3.75,7.25),xaxt='n')
 		axis(1,at=c(4:7))
 		legend(x="bottomright",pch=c(19,NA),lty=c(NA,1),lwd=c(NA,2),col=c(1,adjustcolor(1,0.8)),legend=c("mean","95% CI"))
-	mtext("number of layers",side=1,adj=-0.9,padj=4,font=2)
-	mtext("Cross-validation results (Bears)",side=3,adj=10.5,padj=-2.5,font=2,cex=1.2)
+	mtext("number of layers",side=1,font=2,padj=2.75)
+	mtext("Cross-validation results (Bears)",side=3,padj=-2.2,font=2,cex=1.2)
+	mtext("non-spatial conStruct",side=3,font=2)
+	mtext("Predictive accuracy",side=2,padj=-3,font=2)
+	CV.error <- get.CV.error("~/Dropbox/conStruct/data/bears/admixture/exe.admixture.Rout")
+	plot(CV.error,pch=19,col="orangered",
+			xlab="",ylab="",cex=2,ylim=rev(range(CV.error)))
+	best <- which.min(CV.error)
+	points(best,CV.error[best],pch=8,cex=2)
+	legend(x="bottomright",pch=8,legend="model with minimum CV error")
+	mtext("ADMIXTURE",side=3,font=2)
+	mtext("Cross-Validation Error",side=2,padj=-3,font=2)
 dev.off()
 
 library(maps)
@@ -58,23 +69,38 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=15,height=7.5,pointsize=14)
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=22.5,height=7.5,pointsize=14)
 	layout(cbind(matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
-				 matrix(2+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE)))
+				 matrix(2+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
+				 matrix(4+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE)))
 	par(mar=c(5,5,1,1))
 	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.sp[[3]][[1]]$MAP$admix.proportions,
 										coords = bear.dataset$sample.coords,
 										lump.dist = 200,
 										layer.colors = layer.colors[order(c(1,2,3))],
 										layer.order=c(1,2,3))
-		mtext(side=1,text=bquote(paste("(",.(letters[1]),") ",italic("K")," = ",.(3)," (spatial)")),padj=-1.5,adj=0.03,cex=1.3)
+		mtext(side=1,text=bquote(paste("(",.(letters[1]),") ",italic("K")," = ",.(3))),padj=-2.3,adj=0.03,cex=1.3)
+		mtext(side=1,text="conStruct (spatial)",padj=-1.6,adj=0.12,cex=1.3)
+#		mtext(side=1,text=bquote(paste("(",.(letters[1]),") ",italic("K")," = ",.(3),"  (spatial)")),padj=-1.5,adj=0.03,cex=1.3)
 	par(xpd=FALSE)
 	make.bear.redux.result.plot.multipanel1(admix.proportions = output.list.nsp[[3]][[1]]$MAP$admix.proportions[,c(3,1,2)],
 										coords = bear.dataset$sample.coords,
 										lump.dist = 200,
 										layer.colors = layer.colors[order(c(1,2,3))],
 										layer.order=c(1,2,3))
-		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3)," (nonspatial)")),padj=-1.5,adj=0.03,cex=1.3)
+		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3))),padj=-2.3,adj=0.03,cex=1.3)
+		mtext(side=1,text="conStruct (nonspatial)",padj=-1.6,adj=0.12,cex=1.3)
+#		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3)," (nonspatial)")),padj=-1.5,adj=0.03,cex=1.3)
+	par(xpd=FALSE)
+		w <- as.matrix(read.table("~/Dropbox/conStruct/data/bears/admixture/bears.3.Q",stringsAsFactors=FALSE))
+		make.bear.redux.result.plot.multipanel1(admix.proportions = w[,c(3,2,1)],
+												coords = bear.dataset$sample.coords,
+												lump.dist = 200,
+												layer.colors = layer.colors,
+												layer.order=NULL)
+		mtext(side=1,text=bquote(paste("(",.(letters[3]),") ",italic("K")," = ",.(3))),padj=-2.3,adj=0.03,cex=1.3)
+		mtext(side=1,text="ADMIXTURE",padj=-1.6,adj=0.1,cex=1.3)
+#		mtext(side=1,text=bquote(paste("(",.(letters[3]),") ",italic("K")," = ",.(3)," (ADMIXTURE)")),padj=-1.5,adj=0.03,cex=1.3)
 dev.off()
 
 pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,height=10)
