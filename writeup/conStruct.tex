@@ -845,7 +845,7 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
             layer/cluster contributions (i.e., how much each layer/cluster contributes to total covariance),
             from \texttt{conStruct} runs using $K = 1$ through 7 
 			for the spatial model (left), and the nonspatial model (right).
-			In each run of the nonspatial model, a single layer explained nearly all the covariance
+			In each run of the spatial model, a single layer explained nearly all the covariance
             (additional bars are present but not visible).
 		}\label{simK1_laycon}
 \end{figure}
@@ -969,14 +969,28 @@ begin to split out into their own layers,
 perhaps due to introgression from the southern neighbors
 \textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
 
-
+\paragraph{Comparison to ADMIXTURE}
 Both nonspatial \texttt{conStruct} and ADMIXTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
 The details of each were somewhat different 
 (Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_admixture}), 
-and also differed across the replicate analyses, 
-but each strongly favored the most cluster-rich model
+and also differed across the replicate analyses.
+These differences between runs and methods may be due to 
+noise in the different inference algorithms employed,
+multi-modality in the likelihood surfaces, or 
+to differences in the specifics of model 
+(e.g., the priors used in nonspatial \texttt{conStruct}, 
+or the fact that ADMIXTURE is modeling each allele's frequency in each cluster, 
+rather than the covariance across all alleles).
+However, overall, the behavior of both methods is quite similar: 
+each recovers the \tri{}/\bals{} split with the first two clusters modeled, 
+then, with higher values of $K$, 
+uses subsequent clusters to subdivide the \tri{} samples 
+into geographically restricted foci of cluster membership.
+And, both nonspatial \texttt{conStruct} and ADMIXTURE 
+strongly favored the most cluster-rich model
 (Figs \ref{populus_xvals} and \ref{poplar_admix_CVerrors}).
+
 
 \subsubsection*{Black bears}
 
@@ -1078,7 +1092,15 @@ meeting near the Northwest coast of North America and the Cascade Range.
 However, lack of any samples from Canada and Mexico, 
 and lack of denser sampling across northern North America, 
 make more detailed interpretations untrustworthy.
-
+The spatial covariance functions estimated in layers beyond the first two 
+take very large values over small spatial lags, 
+but decay sharply after that.
+This feature, combined with the overall amounts 
+and spatial patterns of ancestry in those layers, 
+suggests that these layers are describing processes 
+that shape genetic variation at local scales, such as inbreeding, 
+which affects covariance between individuals within demes, 
+but has limited impact on covariance between demes.
 
 Results from the nonspatial model and from the ADMIXTURE analyses 
 clearly exhibit the tendency of nonspatial clustering algorithms 
