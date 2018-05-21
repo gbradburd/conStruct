@@ -49,21 +49,31 @@ We received the previous reviews for your paper, and sent also sent it out to a 
 
 \textbf{Reviewer}\\
 \begin{itemize}
-\item This manuscript presents a valuable model that addresses an long standing chestnut in population genetic analysis, which is how to jointly analyze discrete and spatially continuous variation within a single dataset.  The method presented does seem to be something of a breakthrough in addressing this problem sensibly.  I found the authors response to previous reviewer comments to be generally reasonable. However, I do think that there is a strong case for putting some more ADMIXTURE model results into the text and possibly for some additional analyses.
+\item This manuscript presents a valuable model that addresses an long standing chestnut in population genetic analysis, which is how to jointly analyze discrete and spatially continuous variation within a single dataset.  The method presented does seem to be something of a breakthrough in addressing this problem sensibly.  I found the authors response to previous reviewer comments to be generally reasonable. However, I do think that there is a strong case for putting some more ADMIXTURE model results into the text and possibly for some additional analyses.\\\\
+\gb{We have now added some of the ADMIXTURE results to the main text, 
+including the admixture pie plot and the cross-validation results from the ADMIXTURE analyses 
+of the bear dataset in Figures 7 and 8, respectively. 
+We have also included more detailed comparisons between ADMIXTURE and \texttt{conStruct} (see more below).}
 
-\item I agree with the authors point in their letter that ADMIXTURE/STRUCTURE is important because it is what almost everyone would do otherwise.  The key goal for the manuscript is to show that the method that everyone uses gives results that can be misleading/unhelpful and that the layered model is a substantial improvement. This is very clear for the simulated data. The previous reviewers are right to ask for additional simulations in the sense that a more biological simulation would make a stronger case for practical utility and it need not lengthen the manuscript significantly, since the current simulations could be largely relegated to supplementary material as representing "simulation according to the model". But this is definitely an optional, since there are presentational arguments to be made either way.
+\item I agree with the authors point in their letter that ADMIXTURE/STRUCTURE is important because it is what almost everyone would do otherwise.  The key goal for the manuscript is to show that the method that everyone uses gives results that can be misleading/unhelpful and that the layered model is a substantial improvement. This is very clear for the simulated data. The previous reviewers are right to ask for additional simulations in the sense that a more biological simulation would make a stronger case for practical utility and it need not lengthen the manuscript significantly, since the current simulations could be largely relegated to supplementary material as representing "simulation according to the model". But this is definitely an optional, since there are presentational arguments to be made either way.\\\\
+\gb{WILL FILL IN AFTER WE FIND OUT WHAT NEWS WEDNESDAY BRINGS}
 
-\item A more biological simulation is not necessary as long as the real data examples are convincing. For the Poplar data, the key insight of the model is that there are three well-supported layers in addition to isolation by distance. This is not clear according to ADMIXTURE, which gives continuous improvement for K, although the clustering itself is reasonable. The differences in patterns of IBD between populations are also interesting.
+\item A more biological simulation is not necessary as long as the real data examples are convincing. For the Poplar data, the key insight of the model is that there are three well-supported layers in addition to isolation by distance. This is not clear according to ADMIXTURE, which gives continuous improvement for K, although the clustering itself is reasonable. The differences in patterns of IBD between populations are also interesting.  For the bear data, there is a stronger case to be made, namely that as well as estimating a biologically insightful number of layers, individual ADMIXTURE or non-spatial model components are positively misleading for K=3 or more. For the Poplar example, the results are not actively misleading , they just represent finer and finer geography. The misleadingness of the bear results can be shown by the fact that although the cross validation shows continuous improvement, the admixture components are highly inconsistent between runs. For example at K=3, a component is shown that is shared between East and West, which if interpreted literally would represent a biologically important result about connections between populations but the clustering of the yellow populations disappears entirely for K=4. Therefore, I think there is a good case to be made for showing the ADMIXTURE model results in the text and to discuss the misleading/ unstable nature of any particular result.\\\\
+\gb{We have added more extensive discussions of the 
+comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets.
+These subsections appear on lines XXX-XXX for the poplar dataset, 
+and lines XXX-XXX for the bear dataset.}
 
-\item For the bear data, there is a stronger case to be made, namely that as well as estimating a biologically insightful number of layers, individual ADMIXTURE or non-spatial model components are positively misleading for K=3 or more. For the Poplar example, the results are not actively misleading , they just represent finer and finer geography. The misleadingness of the bear results can be shown by the fact that although the cross validation shows continuous improvement, the admixture components are highly inconsistent between runs. For example at K=3, a component is shown that is shared between East and West, which if interpreted literally would represent a biologically important result about connections between populations but the clustering of the yellow populations disappears entirely for K=4. Therefore, I think there is a good case to be made for showing the ADMIXTURE model results in the text and to discuss the misleading/ unstable nature of any particular result.
-
-\item It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the "clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.
+\item It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the "clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.\\\\
+\gb{I didn't follow exactly what this figure might look like, 
+but hopefully this point comes across clearly in the contrast between 
+ADMIXTURE and spatial \texttt{conStruct} results.}
 
 \item The layer specific covariances show a very funny pattern, tending to infinity for low distances for components 3 and above for the bear data. I am not sure I understand this. Is this discussed anywhere?\\\\
 \gb{I think what's happening is that these layer-specific covariances for layers $>$2 
 are describing local departures from global patterns of IBD, 
 as might be expected due to, e.g., inbreeding.
-We have added some text to that effect in Lines XXX-XXX.}
+We have added some text to that effect in lines XXX-XXX.}
 
 \item Minor point, in figure 4, legend, should it read in each run of the spatial model, rather than nonspatial model?\\\\
 \gb{Good catch!  Caption has been fixed.}
@@ -71,6 +81,11 @@ We have added some text to that effect in Lines XXX-XXX.}
 
 \end{document}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{itemize}
 \item First, many results concern comparisons between clustering based on the spatial and non-spatial models of construct (Figs 2, 3, 4, 6, 7, 9). However the authors should rather compare their spatial approach to existing software for model-based clustering, which do not account for space (Structure, fastSTRUCTURE, ADMIXTURE,...). Results obtained with one of these software should not be available in supplementary material but should rather be visible in the main text.\\\\

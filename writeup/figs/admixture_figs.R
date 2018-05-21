@@ -90,7 +90,26 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK1_pies.pdf",w
 			mtext(side=1,font=2,text=bquote(paste("true ",italic("K")," = ",1)),cex=1.2,padj=2.7)
 		}
 	}
-dev.off()			
+dev.off()
+
+ad.Qs <- lapply(2:7,
+			function(k){
+				pop.vec <- unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)}))
+				Q.file <- sprintf("~/Dropbox/conStruct/sims/admixture/datasets/simK1/simK1.%s.Q",k)
+				Q <- read.table(Q.file,stringsAsFactors=FALSE)
+				admix.props <- collapse.ind.Q(Q,pop.vec)
+				return(admix.props)
+			})
+
+for(k in 1:6){
+	pdf(file=sprintf("~/Dropbox/conStruct/writeup/figs/admixture/simK1_%s_struct.pdf",k+1),width=10,height=4.5)
+		make.structure.plot(ad.Qs[[k]],layer.colors=laycols[[k]])
+	dev.off()
+	pdf(file=sprintf("~/Dropbox/conStruct/writeup/figs/admixture/simK1_%s_pies.pdf",k+1),width=6,height=6)
+		make.admix.pie.plot(ad.Qs[[k]],sim.dataset$coords,layer.colors=laycols[[k]],radii=6,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
+		mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",.(k+1))),cex=2)
+	dev.off()
+}
 
 load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")
 laycols <- get.laycols(K=7,q.file="~/Dropbox/conStruct/sims/admixture/datasets/simK2/simK2.%s.Q",N=sim.dataset$N)

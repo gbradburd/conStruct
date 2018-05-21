@@ -982,15 +982,18 @@ to differences in the specifics of model
 (e.g., the priors used in nonspatial \texttt{conStruct}, 
 or the fact that ADMIXTURE is modeling each allele's frequency in each cluster, 
 rather than the covariance across all alleles).
-However, overall, the behavior of both methods is quite similar: 
-each recovers the \tri{}/\bals{} split with the first two clusters modeled, 
+However, overall, the behavior of both methods was quite similar: 
+each recovered the \tri{}/\bals{} split with the first two clusters modeled, 
 then, with higher values of $K$, 
-uses subsequent clusters to subdivide the \tri{} samples 
+used subsequent clusters to subdivide the \tri{} samples 
 into geographically restricted foci of cluster membership.
 And, both nonspatial \texttt{conStruct} and ADMIXTURE 
 strongly favored the most cluster-rich model
 (Figs \ref{populus_xvals} and \ref{poplar_admix_CVerrors}).
-
+In contrast, the spatial \texttt{conStruct} model clearly did not favor 
+the model with the highest value of $K$, 
+and appears to describe patterns of isolation by distance between
+demes within \tri{} quite well.
 
 \subsubsection*{Black bears}
 
@@ -1036,8 +1039,9 @@ as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplemen
 	\fi
 	\caption{
 	Maps of admixture proportions estimated for the black bear dataset 
-	using the spatial \texttt{conStruct} model (left) 
-	and the nonspatial \texttt{conStruct} model (right) for $K=3$.
+	using the spatial \texttt{conStruct} model (left),
+	the nonspatial \texttt{conStruct} model (center), 
+	and ADMIXTURE (right) for $K=3$.
 	Pies show mean admixture results across individuals within their diameter, 
 	and the admixture results for all individuals included within each group are 
 	shown in the plot above.
@@ -1051,9 +1055,14 @@ as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplemen
 	\fi
 	\caption{
 	Cross-validation results for the black bear dataset,
-	comparing spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
-	The first panel in each row shows all results; 
-	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7.
+	comparing spatial and nonspatial \texttt{conStruct} models, 
+	as well as ADMIXTURE, all run with $K=1$ through 7.  
+	The first panel in each row shows results from spatial and nonspatial \texttt{conStruct} models; 
+	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7, 
+	and the third panel shows the results for ADMIXTURE.
+	Note that the admixture plot shows cross-validation error 
+	(rather than predictive accuracy), and that the y-axis has therefore been flipped 
+	for ease of comparison to the \texttt{conStruct} results.
     }\label{bear_xvals}
 \end{figure}
 
@@ -1102,6 +1111,7 @@ that shape genetic variation at local scales, such as inbreeding,
 which affects covariance between individuals within demes, 
 but has limited impact on covariance between demes.
 
+\paragraph{Comparison to ADMIXTURE}
 Results from the nonspatial model and from the ADMIXTURE analyses 
 clearly exhibit the tendency of nonspatial clustering algorithms 
 to describe continuous spatial patterns of divergence 
@@ -1122,13 +1132,17 @@ into two geographically partitioned groups (Fig \ref{bear_admixture}).
 Interestingly, for the nonspatial model implemented in ADMIXTURE, 
 the preferred model has a smaller $K$ ($K=3$) than that of the 
 spatial models with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6). 
-However, comparing results of the two methods, it is clear that even at $K=3$, 
+This discrepancy may be the result of differences in the cross-validation procedures 
+implemented in \texttt{conStruct} and ADMIXTURE, 
+or perhaps in the ways each accommodate missing data.
+
+Comparing results of the two methods, it is clear that even at $K=3$, 
 ADMIXTURE is invoking clusters to describe what seems to be, 
 and is well described by \texttt{conStruct} as, 
 a continuous spatial pattern of genetic variation. 
 The third cluster in the ADMIXTURE analysis at $K=3$ 
 (shown in gold in Fig \ref{bear_admixture}b), 
-shows  strong spatial autocorrelation in admixture proportions, 
+shows strong spatial autocorrelation in admixture proportions, 
 as would be expected if it is describing continuous spatial differentiation.
 
 Across all values of $K$ for which we ran \texttt{conStruct},
