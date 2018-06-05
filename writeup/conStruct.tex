@@ -119,6 +119,7 @@
 % Use nameref to cite supporting information files (see Supporting Information section for more info)
 \usepackage{nameref}
 \usepackage[hidelinks]{hyperref}
+\usepackage{breakurl}
 
 % line numbers
 \usepackage[right]{lineno}
@@ -301,9 +302,6 @@ and by applying it to empirical datasets of poplars and black bears in North Ame
 \fi
 
 
-% Please keep the Author Summary between 150 and 200 words
-% Use first person. PLOS ONE authors please skip this step. 
-% Author Summary not valid for PLOS ONE submissions.   
 \section*{Author summary}
 One of the first steps in the analysis of genetic data, 
 and a principal mission of biology, 
@@ -375,6 +373,11 @@ that show a continuous pattern of differentiation,
 as that produced by geographic isolation by distance 
 \cite{Wright1943, novembre_interpreting_2008, Frantz2009}.
 Here, we will focus on model-based clustering, the most widely used class of approaches for population delineation.
+(We note that the problem of identifying population clusters is distinct from, 
+though of course related to, 
+the problem of detecting barriers to gene flow between populations, 
+e.g.,  
+\cite{BEDASSLE,EEMS,barton2008,Ringbauer2018}.)
 Existing model-based clustering methods model each individual's genotypes 
 as random draws from a set of underlying, unobserved population clusters, 
 each with a characteristic set of allele frequencies, which are estimated. 
@@ -397,7 +400,9 @@ mostly derived from ``stepping-stone'' models
 \cite{kimura1964stepping,sawyer1976stepping,shiga1984stepping},
 gives us some analytical predictions for isolation by distance
 \cite{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
-but substantial work remains to be done \cite{barton2002neutral,barton2013modelling}.
+and some theory has been derived for continuous space 
+\cite{nagylaki1978diffusion,nagylaki1988,barton2002neutral},
+but substantial work remains to be done \cite{barton2013modelling}.
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
 it is unsurprising that isolation by distance is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
 
@@ -428,12 +433,11 @@ within each of which relatedness decays as a parametric function of the distance
 We also implement a cross-validation approach for comparing and selecting models across different numbers of layers,
 and we demonstrate the utility of our approach using both simulated and empirical data.
 The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
-is available as an R package at 
-\href{https://github.com/gbradburd/conStruct}{https://github.com/gbradburd/conStruct}.
+is documented and available for general use as an R package at 
+\burl{https://github.com/gbradburd/conStruct}.
 
 
-% \section*{Methods}
-\section*{Results}
+\section*{Methods}
 
 \paragraph{Data}
 The statistical framework of our approach is conceptually similar to that in \cite{Wasser2004}, \cite{BEDASSLE}, and \cite{spacemix},
@@ -637,7 +641,6 @@ functions as a wrapper around this inference machinery.
 
 
 \paragraph{Relationship of this model to nonspatial structure models}
-
 A nice feature of our approach is that the model described in Eq.\ \eqref{cross_layer_covariance} 
 contains a nonspatial assignment model as a special case 
 (see \secref{model_app} for a more in-depth discussion). 
@@ -737,8 +740,13 @@ This layer contribution is similar to the ``ancestry contribution'' proposed by 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
 
-
-% \section*{Results}
+\section*{Data availability}
+The method \texttt{conStruct} is implemented as an R package, 
+and is available for installation at \burl{https://github.com/gbradburd/conStruct}.
+Scripts for generating and analyzing all simulated and empirical datasets, 
+as well as the datasets themselves, 
+are also available at the same site.
+\section*{Results}
 
 \subsection*{Simulations}
 
@@ -758,7 +766,7 @@ We collapsed the layers together using random, spatially autocorrelated admixtur
 We simulated datasets using $K=1$, 2, and 3 layers;
 in each simulation we sampled 10,000 unlinked loci from each of 20 haploid individuals from every deme.
 We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simulated dataset with $K$ between 1 and 7,
-and compared predictive performance of the models using cross-validation.
+and compared predictive performance of the models using cross-validation with 10 replicates.
 For comparison,
 we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE} with $K$ between 1 and 7, 
 and compared models using ADMIXTURE's cross-validation procedure with 50 data fold subsets.
@@ -825,7 +833,8 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 	\caption{
 	Cross-validation results for data simulated under $K=1$, $K=2$, and $K=3$, 
 	comparing the spatial and nonspatial \texttt{conStruct} models 
-	(in blue and green, respectively) run with $K=1$ through 7.  
+	(in blue and green, respectively) run with $K=1$ through 7, 
+	with 10 cross-validation replicates.
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
     The spatial model shows better model fit at every value of $K$.
     The vermillion diamond indicates the value of $K$ selected 
@@ -860,6 +869,7 @@ and a large North American sample of black bears.
 
 \subsubsection*{Poplars}
 
+\paragraph{Study system and questions}
 Trees in the genus \textit{Populus} (poplars, aspens, and cottonwoods) 
 are distributed throughout the Northern Hemisphere;
 species in the genus regularly co-occur and, 
@@ -891,6 +901,7 @@ We organize the results of our analyses around the following questions:
 
 \end{enumerate}
 
+\paragraph{Data and analyses}
 We use data from \cite{geraldes_etal_2014}, 
 consisting of 434 individuals sampled from 35 drainages 
 genotyped at just over 33,000 loci (map of the sampling shown in Fig \ref{populus_map}).
@@ -904,7 +915,7 @@ we dropped loci for which any data were missing,
 resulting in just over 20,200 loci retained for analysis.  
 We then analyzed these data, grouped by drainage, 
 using both the spatial and nonspatial \texttt{conStruct} models with $K = 1$ through 7,
-and compared these models using cross-validation.
+and compared these models using cross-validation with 10 replicates.
 The results of all these analyses are shown in 
 Figs \ref{populus_pies} and \ref{populus_xvals}, 
 as well as Figs \ref{populus_sp_pies}-\ref{populus_laycon} in the Supplementary Materials.
@@ -931,12 +942,14 @@ with $K = 1$ through 7, using 50-fold cross-validation to compare model performa
 	\fi
 	\caption{
 	Cross-validation results for \textit{Populus} dataset 
-	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
+	comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7 
+	with 10 cross-validation replicates.
 	The first panel in each row shows all results; 
 	the second panel zooms in on the results from analyses run with $K = 2$ through 7.
     }\label{populus_xvals}
 \end{figure}
 
+\paragraph{Results from \texttt{conStruct}}
 All models with $K>1$ assigned the majority of each of the two species
 to distinct layers, with some populations drawing ancestry from multiple layers.
 Based on cross-validation results, we view the $K=3$ spatial model 
@@ -997,6 +1010,7 @@ demes within \tri{} quite well.
 
 \subsubsection*{Black bears}
 
+\paragraph{Study system and questions}
 The American black bear, \textit{Ursus americanus}, is endemic to North America
 and has a broad distribution across the continent.
 During the last glacial maximum, 
@@ -1016,6 +1030,7 @@ different levels of habitat connectivity,
 dispersal behavior,
 or different postglacial histories.
 
+\paragraph{Data and analyses}
 We use data from \cite{Puckett2015}, consisting of 95 individuals 
 sampled across the United States and on the West coast of Canada,
 genotyped at just under 22,000 bi-allelic loci.
@@ -1025,7 +1040,7 @@ so we removed individuals with greater than 4\% missing data,
 resulting in a final dataset of 78 individuals.
 We then analyzed these data, treating individuals as the unit of analysis, 
 using both the spatial and nonspatial \texttt{conStruct} models with a $K$ of between 1 and 7, 
-and compared these models using cross-validation.
+and compared these models using cross-validation with 10 replicates.
 We also ran ADMIXTURE \cite{ADMIXTURE} on the same dataset, 
 using $K = 1$ through 7, and comparing models using 
 ADMIXTURE's cross-validation procedure with 50 data fold subsets.
@@ -1056,7 +1071,9 @@ as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplemen
 	\caption{
 	Cross-validation results for the black bear dataset,
 	comparing spatial and nonspatial \texttt{conStruct} models, 
-	as well as ADMIXTURE, all run with $K=1$ through 7.  
+	as well as ADMIXTURE, all run with $K=1$ through 7, 
+	with 10 cross-validation replicates for the \texttt{conStruct} analyses 
+	and 50 data-fold subsets for the ADMIXTURE analyses. 
 	The first panel in each row shows results from spatial and nonspatial \texttt{conStruct} models; 
 	the second panel zooms in on the results from the spatial analyses run with $K = 4$ through 7, 
 	and the third panel shows the results for ADMIXTURE.
@@ -1081,6 +1098,7 @@ as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplemen
     }\label{bear_laycon}
 \end{figure}
 
+\paragraph{Results from \texttt{conStruct}}
 The results partition the sampled bears into two main groups:
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
@@ -1400,7 +1418,7 @@ If we have two samples $i$ and $j$ drawn from layer $k$,
 their covariance across loci will be 
 \begin{equation}
 \text{Var}(\epsilon) +  \text{Var}\left( \Delta^{(k)} \right) +
-\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right),
+\text{Cov}(\Delta^{(k,i)},\Delta^{(k,j)}) + \delta_{i=j} \text{Var}\left( \Delta^{(i)} \right),
 \end{equation}
 where the quantity $\delta_{i=j}$ is an indicator variable that equals 1 when $i$ is equal to $j$ and 0 otherwise, 
 as in Eq.\ \eqref{cross_layer_covariance}.
@@ -1429,7 +1447,7 @@ and so the covariance between $i$ and $j$ across loci is
 \Omega_{i,j} = \text{Var}(\epsilon) + \sum_{k=1}^K w^{(k)}_iw^{(k)}_j
 \left(
   \text{Var}\left( \Delta^{(k)} \right) +
-\text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) 	\right) +
+\text{Cov}(\Delta^{(k,i)},\Delta^{(k,j)}) 	\right) +
 \delta_{i=j} \text{Var}(\Delta_i) .
 \label{admixed_spatial_cov}
 \end{equation}
@@ -1754,6 +1772,22 @@ This creates a pattern in which the admixture proportions in a given layer decre
 with the distance from that layer's focus, 
 as might be expected if a spatial process were mediating admixture between diverged populations.
 
+The parameters used to simulate the data were as follows:
+a diploid population size of 1000,
+a migration rate between neighboring demes of $0.4$,
+a deep split time between layers of $500$ 
+(corresponding to $\tau_{\text{s}}$ in Fig \ref{sim_setup}),
+an expansion event across layers of $250$
+(corresponding to $\tau_{\text{e}}$ in Fig \ref{sim_setup}), 
+and an admixture event between layers in the immediate past ($1 \times 10^{-4}$).  
+The times and rates reported above have already been scaled by $4N$ 
+(as per \texttt{ms} syntax), 
+and therefore give the values fed directly to \texttt{ms}.
+We used the \texttt{-s} option to sample a single segregating site per coalescent history, 
+and simulated $1 \times 10^4$ independent histories
+- corresponding to the same number of independent loci - 
+in each dataset, 
+with 10 diploid genotypes generated per deme at each locus.
 \section*{Acknowledgements}
 
 We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
