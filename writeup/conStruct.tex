@@ -366,7 +366,7 @@ such as principal components analysis
 and model-based clustering approaches 
 (e.g., \cite{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, 
 FINESTRUCTURE, fastStructure, huelsenbeck2007inference, 
-Corander2003,TESS,geneland}), among others.
+Corander2003,TESS,geneland}).
 Each of these methods perform best in particular situations,
 but many can give misleading results when applied to data 
 that show a continuous pattern of differentiation,
@@ -450,7 +450,7 @@ From these we compute the \emph{allelic covariance}
 between samples $i$ and $j$, denoted $\widehat{\Omega}_{i,j}$,
 as the expected covariance of distinct individual alleles 
 chosen from each of the two samples at a random locus.
-More precisely, suppose that we pick a random bi-allelic locus uniformly,
+More precisely, suppose that we pick a random bi-allelic locus uniformly from the genome,
 pick a random ``reference'' allelic state from the two alleles seen at that locus,
 and, in each sample, draw one random allele,
 recording $X_i = 1$ if the allele drawn in sample $i$ matches the random reference,
@@ -509,9 +509,9 @@ across the entire geographic range.
 Within each of these layers,
 allele frequencies have positive covariance at geographically close locations,
 but this covariance is allowed to decay as geographic distance increases.
-This pattern of spatial decay reflects how migration between neighboring demes  
+This pattern of spatial decay reflects how migration between nearby spatial regions
 homogenizes allele frequency changes that arise locally due to drift, 
-but less effectively homogenizes geographic distant demes,
+but less effectively homogenizes geographically distant regions,
 resulting in a continuous pattern of isolation by distance within each layer.
 There is a fixed amount of covariance between layers, irrespective of spatial location.
 Within each layer, allele frequencies are expected to change gradually with distance,
@@ -713,9 +713,9 @@ means that isolation by distance is likely a feature of the data.
 
 Cross-validation provides a valuable summary of how much explanatory power
 is added by spatial structure within each layer, and each additional layer.
-However, we remind users that ``statistical significance does not imply real-world significance','
+However, we remind users that ``statistical significance does not imply real-world significance'',
 and so small but statistically significant differences between models
-should probably not be relied on too strongly.
+should not be relied on too strongly.
 
 Another way to describe the practical significance of additional layers
 is to calculate each layer's relative contribution to total covariance, 
@@ -735,7 +735,7 @@ that both have inherited from the same layer
 geographically and on the decay of isolation by distance).
 We use this characterization to quantify the relative contributions of each layer,
 by computing the average contribution to increased probability of agreement
-as described in \secref{layer_contribution}). 
+as described in \secref{layer_contribution}. 
 This layer contribution is similar to the ``ancestry contribution'' proposed by \cite{fastStructure}. 
 However, each of our layers can induce a different amount of covariance between samples embedded in them, 
 so we take that into account when calculating each layer's contribution to the whole.
@@ -769,7 +769,7 @@ We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simu
 and compared predictive performance of the models using cross-validation with 10 replicates.
 For comparison,
 we also analyzed each simulated dataset using ADMIXTURE \cite{ADMIXTURE} with $K$ between 1 and 7, 
-and compared models using ADMIXTURE's cross-validation procedure with 50 data fold subsets.
+and compared models using ADMIXTURE's cross-validation procedure with 50 folds.
 
 With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
@@ -798,8 +798,10 @@ as shown in Fig \ref{sim_xvals},
 across all models and choices of $K$, the spatial model is correctly preferred over the nonspatial model.
 As desired, predictive accuracy of the spatial model increases until the true value of $K$,
 and then plateaus or declines
-(Figs \ref{sim_xvals} and \ref{simK1_xval}-\ref{simK3_xval}),
-while predictive accuracy of the nonspatial model increases as subsequent clusters are added.
+(Figs \ref{sim_xvals} and \ref{simK1_xval}-\ref{simK3_xval}).
+Predictive accuracy of the nonspatial model increases as subsequent clusters are added
+up to $K=7$ (the largest number tested),
+although gains are greatest as layers below the true number are added.
 The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
 as shown in Fig \ref{sim_xvals} (vermilion diamonds),
@@ -990,8 +992,7 @@ The details of each were somewhat different
 and also differed across the replicate analyses.
 These differences between runs and methods may be due to 
 noise in the different inference algorithms employed,
-multi-modality in the likelihood surfaces, or 
-to differences in the specifics of model 
+multi-modality in the likelihood surfaces, or to model details
 (e.g., the priors used in nonspatial \texttt{conStruct}, 
 or the fact that ADMIXTURE is modeling each allele's frequency in each cluster, 
 rather than the covariance across all alleles).
@@ -1000,13 +1001,13 @@ each recovered the \tri{}/\bals{} split with the first two clusters modeled,
 then, with higher values of $K$, 
 used subsequent clusters to subdivide the \tri{} samples 
 into geographically restricted foci of cluster membership.
-And, both nonspatial \texttt{conStruct} and ADMIXTURE 
+Both nonspatial \texttt{conStruct} and ADMIXTURE 
 strongly favored the most cluster-rich model
 (Figs \ref{populus_xvals} and \ref{poplar_admix_CVerrors}).
 In contrast, the spatial \texttt{conStruct} model clearly did not favor 
 the model with the highest value of $K$, 
-and appears to describe patterns of isolation by distance between
-demes within \tri{} quite well.
+and appears to describe patterns of isolation by distance 
+across the \tri{} range quite well.
 
 \subsubsection*{Black bears}
 
@@ -1099,10 +1100,10 @@ as well as in Figs \ref{bear_sp_pies}-\ref{bear_admix_CVerrors} in the Supplemen
 \end{figure}
 
 \paragraph{Results from \texttt{conStruct}}
-The results partition the sampled bears into two main groups:
+The results partition the sampled bears into two main groups (shown in Fig \ref{bear_K3}a):
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
-the other primarily west of the Rockies (blue)  (Fig \ref{bear_K3}a).
+the other primarily west of the Rockies (blue).
 The disjointed range of the blue layer likely reflects the fact
 that Canada was not sampled, 
 and so the red layer may extend
@@ -1126,8 +1127,8 @@ This feature, combined with the overall amounts
 and spatial patterns of ancestry in those layers, 
 suggests that these layers are describing processes 
 that shape genetic variation at local scales, such as inbreeding, 
-which affects covariance between individuals within demes, 
-but has limited impact on covariance between demes.
+which affects covariance between individuals within each location, 
+but has limited impact on covariance between locations.
 
 \paragraph{Comparison to ADMIXTURE}
 Results from the nonspatial model and from the ADMIXTURE analyses 
@@ -1141,21 +1142,21 @@ The results from ADMIXTURE are are not identical to
 those obtained using the nonspatial \texttt{conStruct} model, 
 but they do show the same tendency: 
 e.g., at $K=3$ 
--- the preferred model from the cross-validation 
-analysis shown in Fig \ref{bear_admix_CVerrors} -- 
+--- the preferred model from the cross-validation 
+analysis shown in Fig \ref{bear_admix_CVerrors} --- 
 ADMIXTURE splits the westernmost Alaskan samples 
 out of the cluster with the eastern samples, 
 and at $K=4$, it subdivides the eastern cluster 
 into two geographically partitioned groups (Fig \ref{bear_admixture}).
 Interestingly, for the nonspatial model implemented in ADMIXTURE, 
 the preferred model has a smaller $K$ ($K=3$) than that of the 
-spatial models with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6). 
-This discrepancy may be the result of differences in the cross-validation procedures 
-implemented in \texttt{conStruct} and ADMIXTURE, 
-or perhaps in the ways each accommodate missing data.
+spatial models with best cross-validation performance in \texttt{conStruct} ($K=5$ or 6).
+This discrepancy likely stems from the different features introduced in layers beyond $K=2$ in the two models:
+conStruct uses small contributions of new layers to model very local drift,
+while ADMIXTURE moves to geographically finer subdivisions.
 
 Comparing results of the two methods, it is clear that even at $K=3$, 
-ADMIXTURE is invoking clusters to describe what seems to be, 
+ADMIXTURE invokes clusters to describe what seems to be, 
 and is well described by \texttt{conStruct} as, 
 a continuous spatial pattern of genetic variation. 
 The third cluster in the ADMIXTURE analysis at $K=3$ 
@@ -1200,8 +1201,8 @@ real datasets can be better described using fewer layers.
 The proposed method combines the utility of model-based clustering algorithms 
 with a biologically realistic model of isolation by distance.
 We anticipate that \texttt{conStruct} will be useful for identifying populations 
-and determining samples' ancestry in and across them, 
-especially when the populations exhibit spatial patterns of relatedness.
+and determining ancestral origins of sampled individuals,
+especially when the populations exhibit geographic patterns of relatedness.
 
 \paragraph{Comparison to nonspatial model-based clustering}
 Above, we showed that 
@@ -1209,14 +1210,14 @@ Above, we showed that
 other, commonly-used nonspatial clustering methods,
 and 
 (b) \texttt{conStruct} can concisely capture spatial structure, which
-will be common within populations.
+is common within populations.
 Given this, when should methods without spatial capability be used?
 One advantage these have over \texttt{conStruct} is speed when the number of samples is large.
 Although \texttt{conStruct}'s computation time is independent
 of the number of loci included in the dataset 
 (after the initial calculation of the allelic covariance), 
 it currently scales poorly with number of samples.
-The computationally limiting step is the inversion of the parametric covariance, 
+The computationally limiting step is the inversion of the covariance matrix, 
 which scales more than quadratically with the number of samples,
 whereas computation time for, e.g., STRUCTURE, 
 scales linearly with number of samples.
@@ -1241,9 +1242,9 @@ On the same machine and dataset,
 a fastSTRUCTURE \cite{fastStructure} run with $K=4$ took 90.2 hours.
 However, for a large number of samples, 
 fastSTRUCTURE might be faster.
-And, for almost any dataset of any size, 
+For almost any size dataset,
 the maximum likelihood algorithm implemented in ADMIXTURE 
-is also quite a bit faster than \texttt{conStruct}; 
+is quite a bit faster than \texttt{conStruct}:
 running ADMIXTURE on the bear dataset over all values of $K$ from 1 to 7, 
 including 50-fold cross-validation for each value of $K$, took only 6.6 minutes.
 
@@ -1262,9 +1263,8 @@ may be the number of samples included in the dataset \cite{Patterson2006}.
 From a biological perspective, 
 it is important to stress that patterns of relatedness between individuals and populations 
 are shaped by complex spatial and hierarchical processes.
-All individuals within a species (and indeed, all individuals across all species), 
-are related to one another in some way, 
-and summarizing that relatedness with a single value of $K$ may be reductive or misleading.
+All individuals within a species are related to one another in some way, 
+and summarizing those patterns of relatedness with a single value of $K$ may be reductive or misleading.
 We therefore encourage users to perform analyses across different values of $K$ and 
 observe which layers split out at what levels 
 (this is conceptually similar to taking successively shallower
@@ -1277,39 +1277,44 @@ Although we believe our model adds spatial realism to the groups used by cluster
 it is important to note that the layers detected by our method 
 do not necessarily correspond  to distinct, ancestral populations; 
 nor does a non-zero admixture proportion indicate that admixture 
-(i.e. gene flow) must have occurred. 
+(i.e., gene flow) must have occurred. 
 Both groupings and admixture proportions
 should be viewed as hypotheses that should be subject to further testing
 (see \cite{Falush:16} for an in-depth discussion of these points).
 
 \paragraph{Implications for management and conservation}
 Because isolation by distance is common, 
-a likely result of applying \texttt{conStruct} to existing data is that some
-populations previously identified using nonspatial clustering methods 
-may be collapsed into each other.  
-This ``lumping'' might better reflect biological reality, 
-but may also have implications for management decisions and conservation policy, 
-both of which are often predicated on the identification of discrete ``management units'' (MUs) 
+a likely result of applying \texttt{conStruct} to existing data is that
+populations previously identified as distinct using nonspatial clustering methods 
+may be grouped into the same layer.
+This ``lumping'' might better reflect the demographic history of these populations,
+but may not contradict the genetic distinctness implied by the nonspatial clustering.
+This genetic distinctness rather than shared history may be more relevant for
+management decisions and conservation policy,
+which are often predicated on the identification of discrete ``management units'' (MUs) 
 identified using genetic data \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
 
 It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
 may be quite genetically diverged from one another, 
 perhaps especially at loci underlying adaptive traits, 
 and that a \texttt{conStruct} layer may still contain multiple distinct MUs worthy of independent protections.  
+For instance, although both the Alaskan and Eastern Black Bears draw most of their ancestry 
+from the same conStruct layer, they are separated by a great distance, 
+and may therefore differ substantially from each other
+(although less than from the Western bears, as measured by average covariance).
 Alternatively, the inclusion of multiple MUs into a single \texttt{conStruct} layer 
 may occur if these populations are currently 
 (or were recently) exchanging migrants, 
-and thus might emphasize the importance of maintaining habitat corridors between demes, 
-or of implementing an integrated conservation plan across multiple demes within a layer.
+and thus might emphasize the importance of maintaining habitat corridors,
+or of implementing an integrated conservation plan across a geographic region.
 
 \paragraph{Allelic or genetic covariance?}
 The choice of allelic covariance, rather than genetic covariance,
-was motivated by two considerations.
-First, it captures within-population variance in a manner more suited to the modeling approach here,
-which led to better performance on test data.
-Second, it is less affected by sample configuration --
+was motivated by the fact that
+it is less affected by sample configuration --
 the genetic covariance is calculated after subtracting the mean from the entire sample,
 which is more strongly affected by densely sampled locations.
+This led to better performance on test data.
 However, note that allelic covariance is more affected by singleton sites
 than the standard genetic covariance,
 so it may be advisable to filter these prior to analysis
@@ -1323,7 +1328,7 @@ inference may be misleading if the sampling geography departs radically from the
 the sampled organisms disperse (or have dispersed) on their landscape.
 For example, if we were to run a \texttt{conStruct} analysis using geographic distances between 
 sampled individuals of greenish warblers \cite{Irwin2001} or \textit{Ensatina} salamanders \cite{wake_schneider1998} 
---- two canonical examples of rings species --- 
+--- two canonical examples of ring species --- 
 we might get misleading results.
 This is because distance between locations on either side of the species' distributions
 (across the Tibetan plateau and the Central Valley, respectively) 
@@ -1334,7 +1339,7 @@ membership in the same layer may not mean that samples are particularly related.
 If covariance within a layer decays sharply with distance, 
 and the layer-specific relatedness parameter $\phi^{(k)}$ is low, 
 individuals separated by a large spatial distance may be in the same layer but have very low pairwise relatedness.
-It is possible that this is happening in Fig \ref{populus_sp_pies}. 
+It is possible that this is happening in Fig \ref{populus_sp_pies}.
 At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold layer, 
 whose other neighbors are to the north, with an intervening group of populations in the red layer, 
 and at $K=5$, those southernmost samples split out and become their own layer.
@@ -1432,10 +1437,10 @@ allele frequencies that are weighted averages of the local frequencies in each l
 from which they draw ancestry.
 The weights, $w^{(k)}_{i}$, describe the
 ``admixture proportion'' of sample $i$ in layer $k$.
-(Note that $\sum_{k=1}^K w^{(k)}_{i} = 1$ for each $i$.)
 These can be interpreted as the proportion of the genome in the $i$th
 sample that came from the $k$th layer 
-(or the probability that an allele at a locus is drawn from layer $k$).
+(or the probability that an allele at a locus is drawn from layer $k$),
+so that $\sum_{k=1}^K w^{(k)}_{i} = 1$ for each $i$.
 The allele frequency in the $i$th sample at the $\ell$th locus can therefore be written as:
 \begin{equation}
 F_{i,\ell} = \epsilon_{\ell} + \sum\limits_{K} w^{(k)}_{i}\left( 
@@ -1466,7 +1471,7 @@ so that
 \begin{equation}
 \text{Cov}(\Delta^{(k,i)}_{\ell},\Delta^{(k,j)}_{\ell}) = \alpha^{(k)}_0 \times \left(\text{exp} \left(  -(\alpha^{(k)}_D D_{i,j})^{\alpha^{(k)}_2}\right) \right) .
 \end{equation}
-We note that this form is chosen for its flexibility, 
+We note that this form is chosen for flexibility and convenience,
 and not because it matches any explicit population genetic model of isolation by distance. 
 
 
@@ -1496,8 +1501,8 @@ the within-population allelic variance in sample $i$, $\widehat{\Omega}_{i,i}$,
 is the variance of a series of Bernoulli($1/2$) draws across loci,
 and therefore $\widehat{\Omega}_{i,i} = 1/4$ for every sample $i$.
 Averaging over choice of reference allele therefore removes some information 
-about factors acting within populations that might otherwise leave signatures in, 
-e.g., the genetic covariance, 
+about factors acting within populations that might otherwise leave signatures in
+the genetic covariance, 
 such as population size, extent of inbreeding, and history of bottlenecks.  
 However, as our model is focused on modeling 
 \emph{co}variances between samples as the outcome of some spatial process, 
@@ -1520,7 +1525,7 @@ where $\mathcal{W}$ is the Wishart likelihood function.
 A benefit of directly modeling the sample allelic covariance is that, 
 after the initial calculation of the sample covariance matrix,
 the computation time of the likelihood is not a function of the number of loci,
-so inference can theoretically be done using whole genome data.
+so inference can be done using whole genome data.
 
 
 \section*{Models, parameters, and priors}\label{model_app}
@@ -1604,28 +1609,41 @@ Briefly, we follow the following procedure:
 \begin{enumerate}
 \item For each of $X$ replicates:
 	\begin{enumerate}
-		\item partition the allele frequency data into a 90\% ``training'' partition ($F^x_1$) and a 10 \%``testing" partition ($F^x_2$) \label{partition}
-		\item run our inference procedure on the training partition to estimate model parameters $\theta_{mk}$ for: \label{inference}
+		\item partition the allele frequency data into a 90\% ``training'' partition ($F^x_1$) and a 10\%``testing" partition ($F^x_2$) \label{partition}
+
+		\item run our inference procedure using the training partition to estimate model parameters $\theta_{mk}$ for $2K$ models: \label{inference}
 			\begin{enumerate}
 				\item $m$: the spatial and the nonspatial model
 				\item $k$: the number of layers/clusters 1 through $K$
 			\end{enumerate}	
-	\item calculate the mean log likelihood of the testing data partition  
-	over the posterior distribution of training-estimated parameters for each model 
-	($\bar{\mathcal{L}}(F^x_2 \mid \theta_{mk})$, henceforth $\bar{\mathcal{L}}_{xmk}$) \label{lnL}
-	\item generate standardized mean log likelihoods, $\mathcal{Z}_{xmk}$, across models: \label{standardize}
-		\begin{enumerate}
-			\item identify the highest mean log likelihood, $\bar{\mathcal{L}}^\text{max}_{xmk}$
-			\item subtract $\bar{\mathcal{L}}^\text{max}_{xmk}$ from $\bar{\mathcal{L}}_{xmk}$ across all models,
-				such that the standardized log likelihood, $\mathcal{Z}_{xmk}$, of the best model is 0,
-				and less than 0 for all inferior models. 
-		\end{enumerate}
+
+        \item calculate the mean log likelihood of the testing data partition  
+            over the posterior distribution of training-estimated parameters for each model 
+            ($\bar{\mathcal{L}}(F^x_2 \mid \theta_{mk})$, henceforth $\bar{\mathcal{L}}_{xmk}$) \label{lnL}
+
+        \item generate standardized mean log likelihoods, $\mathcal{Z}_{xmk}$, across all models run on this data partition: \label{standardize}
+            \begin{enumerate}
+                \item identify the highest mean log likelihood, $\bar{\mathcal{L}}^\text{max}_{x}$ across \emph{all} $2K$ models
+                \item subtract $\bar{\mathcal{L}}^\text{max}_{x}$ from $\bar{\mathcal{L}}_{xmk}$ for each model,
+                    such that the standardized log likelihood, $\mathcal{Z}_{xmk}$, of the best model is 0,
+                    and less than 0 for all inferior models. 
+            \end{enumerate}
 	\end{enumerate}
-\item For each model (i.e., each combination of $m$ and $k$) calculate 
-	the mean ($	\bar{\mathcal{Z}}_{mk} $) standardized log likelihood of the testing data partition across $X$ replicates, 
-	as well its standard error ($SE_{\bar{\mathcal{Z}}_{mk}}$) and
-        95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
+
+\item For each \emph{model} (i.e., each combination of $m$ and $k$) calculate 
+	the mean ($\bar{\mathcal{Z}}_{mk}$) standardized log likelihood of the testing data partition across $X$ replicates, 
+	as well as its standard error ($SE_{\bar{\mathcal{Z}}_{mk}}$) and
+    95\% confidence interval ($\bar{\mathcal{Z}}_{mk} \pm 1.96 \times SE_{\bar{\mathcal{Z}}_{mk}}$).
+
 \end{enumerate}
+
+In other words, the ``predictive accuracy'' shown as conStruct crossvalidation results
+are in units of improvement in log-likelihood of that model relative to the best model for that partitioning of the data,
+averaged over data partitions.
+The standardization is necessary because different data partitions can be systematically 
+more or less difficult to fit, resulting in greater differences in mean training data log likelihood 
+between data partitions
+than between models fit to the same partition.
 
 If the genomic coordinates of the loci are known, 
 the training/testing partitioning should be designed to accommodate linkage disequilibrium (LD).
@@ -1668,25 +1686,33 @@ the $i$th sample's admixture proportion in the $k$th layer.
 The same holds true for $B$.
 If they do not choose the same layer, the probability that they agree is $p_\gamma$.
 If they do choose the same layer, 
-then they agree with a probability $p_\gamma + q^{(k)}_{ij}$ that depends on their distance apart.
+then they agree with a probability $1/2 + p_\gamma + q^{(k)}_{ij}$ that depends on their distance apart.
 By the above,
 the probability of agreement is $\P\{A=B\} = 2 \cov[A,B] + 1/2$,
-and so
+and so we can define
 $$\begin{aligned}
-    p_\gamma &= (2 (\gamma + \delta_{ij} \eta_i) + 1/2) \\
-    q^{(k)}_{ij} &= \left(2 \alpha_0^{(k)} \exp\left( - \left(\alpha_D^{(k)} D_{ij}\right)^{\alpha_2^{(k)}} \right) + 2 \phi^{(k)}  + 1/2 \right) .
+    p_\gamma &= 2 (\gamma + \delta_{ij} \eta_i) \\
+    q^{(k)}_{ij} &= 2 \alpha_0^{(k)} \exp\left( - \left(\alpha_D^{(k)} D_{ij}\right)^{\alpha_2^{(k)}} \right) + 2 \phi^{(k)} .
 \end{aligned}$$
 
 One way to summarize the contribution of each layer is to partition the probability of agreement
 into contributions due to agreement ``in" each layer.
 So, the contribution from layer $k$ to agreement between $i$ and $j$ is 
-$w_i^{(k)} w_j^{(k)} q^{(k)}_{ij} / (p_\gamma + \sum_{k=1}^K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$,
+$$\begin{aligned}
+    \frac{
+        w_i^{(k)} w_j^{(k)} \left( 1/2 + q^{(k)}_{ij} \right) 
+    }{
+        \left(1 - \sum_{k=1}^K w_i^{(k)} w_j^{(k)}\right) \left( 1/2 + p_\gamma \right) 
+        + \sum_{k=1}^K w_i^{(k)} w_j^{(k)} \left( 1/2 + q^{(k)}_{ij} \right) ,
+    }
+\end{aligned}$$
 which is the probability, given that they agree, that they agree thanks to layer $k$.
-Similarly, the ``background" contribution is $p_\gamma / (p_\gamma + \sum_{k=1}^K w_i^{(k)} w_j^{(k)} q^{(k)}_{ij})$.
 Because our signal comes from \emph{variation} in covariance, we omit
-the $p_\gamma$ terms. 
+the $p_\gamma$ terms 
+(i.e., we condition on agreement not due to ``background'' levels of agreement
+in the interpretations above).
 Stated in this way, this quantity is the
-relative contribution of the $k$th layer to the (model-based) kinship
+relative contribution of the $k^\text{th}$ layer to the (model-based) kinship
 coefficient between $i$ and $j$.
 
 This suggests defining the overall contribution of layer $k$ to agreement, $\xi^{(k)}$, 
@@ -1715,7 +1741,7 @@ as the relative contribution of the $k$th layer to total agreement:
 	    	\xi^{(k)}} .
 \label{rel_layer_contribution}
 \end{equation}
-This is the quantity that is plotted in, e.g., Figures \ref{simK1_laycon} and \ref{bear_laycon}.
+This is the quantity that is plotted in Figures \ref{simK1_laycon} and \ref{bear_laycon}.
 
 
 \section*{Simulation details}\label{sim_details}
