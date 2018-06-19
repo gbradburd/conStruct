@@ -278,6 +278,14 @@ calc.covariance <- function(freqs){
 	return(allelic.covariance)
 }
 
+pos.def.check <- function(obsCov){
+	eigenvalues <- eigen(obsCov)$values
+	if(any(eigenvalues <= 0)){
+		stop("\n\nThe sample covariance is not positive definite. Check to make sure that none of your samples are identical (after dropping missing data). If that does not fix the problem, try dropping the loci or samples with the most missing data.\n\n")
+	}
+	return("pos.def.check")
+}
+
 process.freq.data <- function(freqs){
 	freqs <- drop.invars(freqs)
 	freqs <- drop.missing(freqs)
@@ -286,6 +294,7 @@ process.freq.data <- function(freqs){
 	if(any(is.na(obsCov))){
 		stop("\n\nAfter dropping invariant loci, one or more pairs of samples have no genotyped loci in common, so relatedness between them cannot be assessed.\n\n")
 	}
+	pos.def <- pos.def.check(obsCov)
 	freq.data <- list("freqs" = freqs,
 					  "obsCov" = obsCov,
 					  "n.loci" = n.loci)
