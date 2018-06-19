@@ -19,13 +19,15 @@ convert.str.to.ped <- function(str.file){
 
 make.map.file <- function(ped){
 	n.snps <- (ncol(ped)-6)/2
-	map <- matrix(NA,nrow=n.snps,ncol=3)
+	map <- matrix(NA,nrow=n.snps,ncol=4)
 	#CHR
 	map[,1] <- rep(1,n.snps)
 	#RS
 	map[,2] <- paste0("rs",1:n.snps)
+	#morgans
+	map[,3] <- rep(0,n.snps)
 	#BP
-	map[,3] <- seq(1,n.snps*1e3,length.out=1000)
+	map[,4] <- seq(1,n.snps*1e3,length.out=n.snps)
 	return(map)
 }
 
