@@ -107,7 +107,9 @@ In case it does not (due to model degeneracies or similar issues , see below),
 it is not big deal as long as the ``important" admixture parameters are unaffected, 
 but then point these out.
 If there are space issues, you can put these plots in a short supplement.\\\\
-\gb{RESPONSE.}
+\gb{First, we want to thank Reviewer 2 for their very thorough  review
+(even taking the time to check out the R package!).  
+We really appreciate the time and thought the reviewer invested here.}
 
 
 \item Also, I agree with Reviewer 1 that it would be interesting to see how your method behaves on a biologically plausible, 
@@ -232,7 +234,8 @@ For instance you start with Results and then lay out the model?
 Orient yourself on the excellent structure of the BEDASSLE paper.
  You cite often quite a few works at once (for instance ten in line 60), 
  check if this goes well with the citation style of Genetics).\\\\
-\gb{RESPONSE.}
+\gb{These were holdovers from a previous submission format.  
+We have edited them for a more logical flow and greater clarity.}
 
 \item III) Suggestions (for future)
  When I run the inference scheme myself, 
@@ -241,7 +244,11 @@ Orient yourself on the excellent structure of the BEDASSLE paper.
  In particular, if run on a cluster, this could yield huge speed-ups. 
  There seems to be some literature out there in how to do so for the inversion of huge covariance matrices, 
  which seems to be the main bottleneck.\\\\
-\gb{RESPONSE.}
+\gb{Parallelization would definitely be helpful.  
+Right now, the inference algorithm is implemented in STAN, 
+which doesn't have a mechanism for parallelizing a single MCMC chain.
+But, as you say, there are algorithms for parallelizing matrix inversions calculations, 
+so we might look to porting the inference out of STAN to get greater speedups for future releases.}
  
  \item You assume a multivariate normal distribution. 
  This implicitly assumes that all higher moments are 0, 
@@ -257,25 +264,40 @@ is not necessarily inferior, but could give you significant speed updates
 Ringbauer2018 tried such approaches and found 
 that simpler fitting methods often have similar power than more complex ones 
 (whose assumptions are violated anyways), but are much faster.\\\\
-\gb{RESPONSE.}
+\gb{This is a nice idea, and one that we will definitely look into.
+We've talked about including a ``fast" conStruct option  
+that uses a maximum-likelihood algorithm in a future release, 
+and possibly one that uses the TreeMix trick of modeling each cell in the 
+sample covariance matrix as a draw from a Normal with a mean given by the 
+corresponding cell in the parametric covariance matrix, 
+and a standard deviation calculated from by block-boostrapping the genome.
+Your suggestion to use least squares would probably be even faster.}
  
  \item Right now you have to give the pairwise distance Matrix as parameter to your method, 
  and also the sample positions. 
  You could easily calculate the former from the latter, 
  and would save users some quick but unnecessary preprocessing step. 
  I guess in the future you might want to use other distance matrices though.\\\\
-\gb{RESPONSE.}
+\gb{Right, it would save users some time for us to calculate pairwise distances for them,
+but at the expense of flexibility.
+Some users may want to use other distance matrices 
+(e.g., distance within a river system, or along a coastline, or around the Tibetan plateau, etc.), 
+so we leave it up to them to specify one.}
  
  \item In line 569 to line 575: When you describe how to deal with linked markers. 
  You don't mention it very explicitly, 
  but I think you hint that one can simply do ``block-bootstrap" of whole blocks of genome 
  as typically done nowadays for many applications, 
  if at least linkage groups are known.\\\\
-\gb{RESPONSE.}
+\gb{Yes, we think that's likely the best way to do it when linkage is known.
+We've added some text about that in the ``Cross-validation" section of the Appendix 
+(Lines XXX-XXX).}
  
  \item The Gamma-Exponential Kernels used here are often considered inferior to Matern-Kernels. 
  In practice it likely wont matter much though.\\\\
-\gb{RESPONSE.}
+\gb{Yes, one of the next updates we plan is to replace the flexible but 
+poorly motivated powered exponential with the form worked out for 
+probability of identity by state in continuous space from Barton, Depaulis, and Etheridge (2000).}
 
 \item I personally really fancy your writing style, 
 and it is a golden thread throughout your work.  
@@ -286,26 +308,33 @@ And sometimes it simply feels like you are under contract of an English dictiona
 Additionally, a more concise and straightforward formulation 
 would significantly reduce the length of the manuscript and improve its readability 
 - while keeping the information content unchanged. 
-
+\\\\
 One example of many, to give you an idea:
 ``Existing model-based clustering approaches can only describe 
 continuous patterns of variation using discrete clusters,
  and tend to erroneously describe continuously distributed variation 
  with multiple clusters that show spatially autocorrelated cluster membership" (l.82-84)
-
-to
-
+to 
 ``Most existing model-based clustering methods only use discrete units. 
 Therefore, they often partition continuous variation into spurious clusters. 
 (with spatially autocorrelated membership.)"
 
 This is merely a suggestion, choice of style is obviously the author's and there is
 no ground truth best way.\\\\
-\gb{RESPONSE.}
+\gb{First, thank you for the compliment (seriously - ``a golden thread"!).
+We appreciate that not all scientists are native English speakers, 
+and have tried to be as clear and specific in our writing as possible, 
+both in the manuscript, and even more in the R package vignettes. 
+And, while some of the words we choose are perhaps rare in scientific writing, 
+we put great care into our choice of syntax, 
+and we think that the nuances of meaning these odd word-birds lend us merit their inclusion.
+As Mark Twain wrote, ``The difference between the \emph{almost} right word and the right word 
+is really a large matter -- 
+'tis the difference between the lightning bug and the lightning."}
 
 \item Stress more that an easy-to-use implementation inclusive a manual exists, that is
 certainly a strong point! I was impressed by the ease of installation and use, and quality of the manual.\\\\
-\gb{RESPONSE.}
+\gb{Good suggestion - we have now indicated that the method is available as a documented R package.}
 
 \end{itemize}
 \end{document}
