@@ -2,7 +2,7 @@
 
 all: conStruct.pdf
 
-conStruct.pdf : reference.library.tex.bib
+conStruct.pdf : reference.library.tex.bib response2reviews.tex review-response-commands.tex
 
 clean: 
 	-rm *.aux *.log *.lof *.lot *.fff *.ttt *.out *.bbl *.blg

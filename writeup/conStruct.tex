@@ -113,6 +113,9 @@
 % textcomp package and marvosym package for additional characters
 \usepackage{textcomp,marvosym}
 
+% 
+\bibliographystyle{latex/plos2015}
+
 % cite package, to clean up citations in the main text. Do not remove.
 \usepackage{cite}
 
@@ -174,9 +177,6 @@
 \usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
 \renewcommand{\figurename}{Fig}
 
-% Use the PLoS provided BiBTeX style
-\bibliographystyle{latex/plos2015}
-
 % Remove brackets from numbering in List of References
 \makeatletter
 \renewcommand{\@biblabel}[1]{\quad#1.}
@@ -224,6 +224,39 @@
 \newcommand{\supp}{\mathop{\mbox{supp}}}
 \newcommand{\sgn}{\mathop{\mbox{sgn}}}
 \newcommand{\bone}{\mathbf{1}}
+
+
+%% for submitting with responses to reviews
+\newif\ifsubmission
+% \submissiontrue
+\submissionfalse
+\ifsubmission
+    % % stuff for submission
+    \usepackage[nofiglist,nomarkers,figuresonly]{endfloat}
+    \usepackage{setspace}
+    % \doublespacing
+    % \renewcommand\includegraphics{\relax}
+    % \renewcommand{\includegraphics}[2][]{\relax}
+    \renewcommand{\figurename}{Fig.}
+    \newcommand{\Figure}{Fig }
+    \newcommand{\Figures}{Fig }
+\else
+    % for the nice version
+    % \usepackage[square,sort,comma,numbers]{natbib} \bibpunct{(}{)}{;}{author-year}{}{,} 
+    % \bibliographystyle{plainnat}
+    \newcommand{\Figure}{{Figure }}
+    \newcommand{\Figures}{{Figures }}
+\fi
+
+% Responses to reviews
+\input{review-response-commands}
+% set this to show line numbers and include responses to reviews or not
+\newif\ifreviewresponses
+\reviewresponsestrue  % include them
+% \reviewresponsesfalse  % don't include them
+\newcommand{\responsefile}{response2reviews}  % name of the review responses file
+
+
 
 %% END MACROS SECTION
 
@@ -760,9 +793,9 @@ Migration on each lattice was to nearest neighbors (eight neighbors, including d
 Finally, at time $\tau_{\text{a}}$ in the past, 
 we collapsed those $K$ discrete layers into a single grid of demes,
 choosing various amounts of admixture from these different layers
-(see Fig \ref{sim_setup}). 
-We collapsed the layers together using random, spatially autocorrelated admixture proportions 
-(see \secref{sim_details}).
+(see Fig \ref{sim_setup}),
+and collapsed the layers together using random, spatially autocorrelated admixture proportions.
+See \secref{sim_details} for more details, including parameter values used. \llname{ll:sim_params_ref}
 We simulated datasets using $K=1$, 2, and 3 layers;
 in each simulation we sampled 10,000 unlinked loci from each of 20 haploid individuals from every deme.
 We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simulated dataset with $K$ between 1 and 7,
@@ -788,6 +821,7 @@ using gradients of admixture between more and more discrete clusters
 to better approximate the continuous, spatial patterns of relatedness
 (depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}-\ref{simK3_nsp_pies}).
 The ADMIXTURE results are qualitatively similar, as shown in Figs \ref{admix_simK1}-\ref{admix_simK3}.
+\linelabel{ll:admixture_sim_results}
 Each nonspatial cluster is genetically more similar within itself
 than it is to other clusters,
 but we know that these boundaries are arbitrary,
@@ -806,6 +840,7 @@ The same holds true for the ADMIXTURE cross-validation results,
 in which models that have the largest number of clusters are preferred over all other models,
 as shown in Fig \ref{sim_xvals} (vermilion diamonds),
 and, in more detail, in Fig \ref{sim_admix_CVerrors}.
+\linelabel{ll:admixture_sim_xval}
 
 The unimportance of spurious layers can be seen in plots of layer contributions
 (Figs \ref{simK1_laycon}, \ref{simK2_laycon}-\ref{simK3_laycon}).
@@ -984,7 +1019,7 @@ begin to split out into their own layers,
 perhaps due to introgression from the southern neighbors
 \textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
 
-\paragraph{Comparison to ADMIXTURE}
+\paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_populus}
 Both nonspatial \texttt{conStruct} and ADMIXTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
 The details of each were somewhat different 
@@ -1130,7 +1165,7 @@ that shape genetic variation at local scales, such as inbreeding,
 which affects covariance between individuals within each location, 
 but has limited impact on covariance between locations.
 
-\paragraph{Comparison to ADMIXTURE}
+\paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_bears}.
 Results from the nonspatial model and from the ADMIXTURE analyses 
 clearly exhibit the tendency of nonspatial clustering algorithms 
 to describe continuous spatial patterns of divergence 
@@ -1798,7 +1833,7 @@ This creates a pattern in which the admixture proportions in a given layer decre
 with the distance from that layer's focus, 
 as might be expected if a spatial process were mediating admixture between diverged populations.
 
-The parameters used to simulate the data were as follows:
+The parameters used to simulate the data were as follows: \linelabel{ll:sim_params}
 a diploid population size of 1000,
 a migration rate between neighboring demes of $0.4$,
 a deep split time between layers of $500$ 
@@ -2339,5 +2374,9 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \setcounter{figure}{0}
 \processdelayedfloats
 \fi
+
+% reviews here if toggled above
+\includereviews
+
 
 \end{document}

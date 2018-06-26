@@ -1,18 +1,26 @@
-\documentclass[11pt]{letter}
-\usepackage[hidelinks]{hyperref}
-\usepackage[green]{msuletterhead}
-\usepackage[usenames,dvipsnames]{xcolor}
-\pagenumbering{gobble}
+%%%%%%
+%%
+%%  Don't reorder the reviewer points; that'll mess up the automatic referencing!
+%%
+%%%%%
 
-\newcommand{\gb}[1]{{\bf\color{black}{#1}}}
-\newcommand{\plr}[1]{{\it\color{purple}{(#1)}}}
-\newcommand{\gc}[1]{{\it\color{blue}{(#1)}}}
+% to-do: get letterhead back in somehow? or not.
+% \usepackage[green]{msuletterhead}
 
-\begin{document}
+\begin{minipage}[b]{2.5in}
+  Resubmission Cover Letter \\
+    {\it Genetics} 
+\end{minipage}
+\hfill
+\begin{minipage}[b]{2.5in}
+  \today
+\end{minipage}
+ 
+\vskip 2em
+ 
+\noindent
 
-Re-Submission Cover Letter \hfill	\today\\
-\emph{Genetics}
-\\\\\\
+
 To the Editor,
 
 Please find enclosed the re-submission of our manuscript, 
@@ -35,53 +43,121 @@ We have also added text throughout the results to increase the depth of
 our comparison of \texttt{conStruct} and ADMIXTURE, 
 and generally edited the manuscript for greater clarity.
 
-We hope that the paper is now acceptable for publication.\\\\
-%
+We hope that the paper is now acceptable for publication.
 
 
-Thank you for your consideration,\\
-Gideon Bradburd (for all of the authors).
+\noindent \hspace{4em}
+\begin{minipage}{3in}
+\noindent
+    {\bf Thank you for your consideration,}
+
+\vskip 2em
+
+{\bf 
+    Gideon Bradburd (for all of the authors)
+}\\
+\end{minipage}
+
+\vskip 4em
+
+\pagebreak
+
+
 
 \newpage
 
-\textbf{Editor}\\
-We received the previous reviews for your paper, and sent also sent it out to a new reviewer, along with your response to the earlier reviews. Both the new reviewer and I believe that you have answered the previous criticisms in a reasonable way, and I am pleased to tell you that your paper is potentially suitable for publication in GENETICS. However, the new reviewer did have several comments which you should consider in preparing the final version (see the end of this email). In particular, they suggest including more of the ADMIXTURE models in the main text. I think that this could be helpful, but would not insist on it.  A second review came in late (attached).  I am sending it on in case you would like to take account of any of the suggestions in your revision. The reviewer has quite a few technical suggestions that may be helpful.  However, even if it had come in before the decision, I would not have required a wider range of simulations.
+%%%%%%%%%%%%%%
+\reviewersection{Editor}
 
-\textbf{Reviewer 1}\\
-\begin{itemize}
-\item This manuscript presents a valuable model that addresses an long standing chestnut in population genetic analysis, which is how to jointly analyze discrete and spatially continuous variation within a single dataset.  The method presented does seem to be something of a breakthrough in addressing this problem sensibly.  I found the authors response to previous reviewer comments to be generally reasonable. However, I do think that there is a strong case for putting some more ADMIXTURE model results into the text and possibly for some additional analyses.\\\\
-\gb{We have now added some of the ADMIXTURE results to the main text, 
+\begin{quote}
+    We received the previous reviews for your paper, and sent also sent it out
+    to a new reviewer, along with your response to the earlier reviews. Both the
+    new reviewer and I believe that you have answered the previous criticisms in a
+    reasonable way, and I am pleased to tell you that your paper is potentially
+    suitable for publication in GENETICS. However, the new reviewer did have
+    several comments which you should consider in preparing the final version (see
+    the end of this email). In particular, they suggest including more of the
+    ADMIXTURE models in the main text. I think that this could be helpful, but
+    would not insist on it.  A second review came in late (attached).  I am sending
+    it on in case you would like to take account of any of the suggestions in your
+    revision. The reviewer has quite a few technical suggestions that may be
+    helpful.  However, even if it had come in before the decision, I would not have
+    required a wider range of simulations.  
+\end{quote}
+
+%%%%%%%%%%%%%%
+\reviewersection{1}
+
+\begin{point}{}
+    This manuscript presents a valuable model that addresses an long standing chestnut in population genetic analysis, which is how to jointly analyze discrete and spatially continuous variation within a single dataset.  The method presented does seem to be something of a breakthrough in addressing this problem sensibly.  I found the authors response to previous reviewer comments to be generally reasonable. However, I do think that there is a strong case for putting some more ADMIXTURE model results into the text and possibly for some additional analyses.
+\end{point}
+
+\reply{We have now added some of the ADMIXTURE results to the main text, 
 including the admixture pie plot and the cross-validation results from the ADMIXTURE analyses 
 of the bear dataset in Figures 7 and 8, respectively. 
-We have also included more detailed comparisons between ADMIXTURE and \texttt{conStruct} (see more below).}
+We have also included more detailed comparisons between ADMIXTURE and \texttt{conStruct},
+for instance at \llname{ll:admixture_sim_results} and \llname{ll:admixture_sim_xval};
+see below for more.}
 
-\item I agree with the authors point in their letter that ADMIXTURE/STRUCTURE is important because it is what almost everyone would do otherwise.  The key goal for the manuscript is to show that the method that everyone uses gives results that can be misleading/unhelpful and that the layered model is a substantial improvement. This is very clear for the simulated data. The previous reviewers are right to ask for additional simulations in the sense that a more biological simulation would make a stronger case for practical utility and it need not lengthen the manuscript significantly, since the current simulations could be largely relegated to supplementary material as representing ``simulation according to the model". But this is definitely an optional, since there are presentational arguments to be made either way.\\\\
-\gb{WILL FILL IN AFTER WE FIND OUT WHAT NEWS WEDNESDAY BRINGS}
+\begin{point}{}
+    I agree with the authors point in their letter that ADMIXTURE/STRUCTURE is important because it is what almost everyone would do otherwise.  The key goal for the manuscript is to show that the method that everyone uses gives results that can be misleading/unhelpful and that the layered model is a substantial improvement. This is very clear for the simulated data. The previous reviewers are right to ask for additional simulations in the sense that a more biological simulation would make a stronger case for practical utility and it need not lengthen the manuscript significantly, since the current simulations could be largely relegated to supplementary material as representing ``simulation according to the model". But this is definitely an optional, since there are presentational arguments to be made either way.
+\end{point}
 
-\item A more biological simulation is not necessary as long as the real data examples are convincing. For the Poplar data, the key insight of the model is that there are three well-supported layers in addition to isolation by distance. This is not clear according to ADMIXTURE, which gives continuous improvement for K, although the clustering itself is reasonable. The differences in patterns of IBD between populations are also interesting.  For the bear data, there is a stronger case to be made, namely that as well as estimating a biologically insightful number of layers, individual ADMIXTURE or non-spatial model components are positively misleading for K=3 or more. For the Poplar example, the results are not actively misleading , they just represent finer and finer geography. The misleadingness of the bear results can be shown by the fact that although the cross validation shows continuous improvement, the admixture components are highly inconsistent between runs. For example at K=3, a component is shown that is shared between East and West, which if interpreted literally would represent a biologically important result about connections between populations but the clustering of the yellow populations disappears entirely for K=4. Therefore, I think there is a good case to be made for showing the ADMIXTURE model results in the text and to discuss the misleading/ unstable nature of any particular result.\\\\
-\gb{We have added more extensive discussions of the 
-comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets.
-These subsections appear on lines XXX-XXX for the poplar dataset, 
-and lines XXX-XXX for the bear dataset.}
+\reply{
+    We agree that more simulations would be nice,
+    but after serious consideration, have decided it would be too far outside the scope
+    of the already lengthy manuscript.
+    The existing simulations are not quite ``according to the model'' --
+    that would be simulations where we draw sample frequencies directly from a multivariate Gaussian
+    (which is something we have done as a sanity check, but have not included).
+    We feel that the existing simulations draw a nice compromise between realism
+    and being close enough to the model that we still have a good idea of what the correct answer is.
+    We do have plans to follow up with a more detailed simulation study.
+}
 
-\item It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the ``clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.\\\\
-\gb{We didn't follow exactly what this figure might look like, 
+\begin{point}{}
+    A more biological simulation is not necessary as long as the real data examples are convincing. For the Poplar data, the key insight of the model is that there are three well-supported layers in addition to isolation by distance. This is not clear according to ADMIXTURE, which gives continuous improvement for K, although the clustering itself is reasonable. The differences in patterns of IBD between populations are also interesting.  For the bear data, there is a stronger case to be made, namely that as well as estimating a biologically insightful number of layers, individual ADMIXTURE or non-spatial model components are positively misleading for K=3 or more. For the Poplar example, the results are not actively misleading , they just represent finer and finer geography. The misleadingness of the bear results can be shown by the fact that although the cross validation shows continuous improvement, the admixture components are highly inconsistent between runs. For example at K=3, a component is shown that is shared between East and West, which if interpreted literally would represent a biologically important result about connections between populations but the clustering of the yellow populations disappears entirely for K=4. Therefore, I think there is a good case to be made for showing the ADMIXTURE model results in the text and to discuss the misleading/ unstable nature of any particular result.
+\end{point}
+
+\reply{We have added more extensive discussions of the 
+comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets,
+following \llname{ll:admixture_populus} and \llname{ll:admixture_bears}.
+\plr{We could do this by talking about or including figure S28?}
+}
+
+\begin{point}{}
+    It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the ``clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.
+\end{point}
+
+\reply{We didn't follow exactly what this figure might look like, 
 but hopefully this point comes across clearly in the contrast between 
 ADMIXTURE and spatial \texttt{conStruct} results.}
 
-\item The layer specific covariances show a very funny pattern, tending to infinity for low distances for components 3 and above for the bear data. I am not sure I understand this. Is this discussed anywhere?\\\\
-\gb{We think what's happening is that these layer-specific covariances for layers $>$2 
+\begin{point}{}
+    The layer specific covariances show a very funny pattern, tending to infinity for low distances for components 3 and above for the bear data. I am not sure I understand this. Is this discussed anywhere?
+\end{point}
+
+\reply{We think what's happening is that these layer-specific covariances for layers $>$2 
 are describing local departures from global patterns of IBD, 
 as might be expected due to, e.g., inbreeding.
 We have added some text to that effect in lines XXX-XXX.}
 
-\item Minor point, in figure 4, legend, should it read in each run of the spatial model, rather than nonspatial model?\\\\
-\gb{Good catch!  Caption has been fixed.}
-\end{itemize}
+\begin{point}{}
+    Minor point, in figure 4, legend, should it read in each run of the spatial model, rather than nonspatial model?
+\end{point}
 
-\textbf{Reviewer 2}\\
-\begin{itemize}
-\item Make-or-Break:
+\reply{Good catch!  Caption has been fixed.}
+
+
+%%%%%%%%%%%%%%
+\reviewersection{2}
+
+First, we want to thank Reviewer 2 for their very thorough  review
+(even taking the time to check out the R package!).  
+We really appreciate the time and thought the reviewer invested here.
+
+\begin{point}{}
+    Make-or-Break:
 Ideally one tests a new method on simulated data, to assess its power -
 and importantly whether everything was implemented correctly.
 Here, there are simulations of one scenario, but it is neither strictly under-the-model 
@@ -107,24 +183,45 @@ and that the posteriors make sense.
 In case it does not (due to model degeneracies or similar issues , see below), 
 it is not big deal as long as the ``important" admixture parameters are unaffected, 
 but then point these out.
-If there are space issues, you can put these plots in a short supplement.\\\\
-\gb{First, we want to thank Reviewer 2 for their very thorough  review
-(even taking the time to check out the R package!).  
-We really appreciate the time and thought the reviewer invested here.
-RESPONSE.}
+If there are space issues, you can put these plots in a short supplement.
+\end{point}
+
+\reply{
+As we discussed in reponse to the other reviewer,
+we intentionally chose simulations in this in-between spot,
+that are somewhat biologically realistic 
+while still retaining a clear way of obtaining the ``right'' answer.
+Additional sets of simulations will, in our opinion, make the paper too lengthy and complex;
+the applications to real data we hope demonstrate the real-world utility of the method.
+We have done ``sanity check'' simulations under the model itself,
+but as these are far enough from biological reality (e.g., the ``frequencies'' are not between 0 and 1),
+we think they'd only make the paper more confusing.
+As for the migration rates -- these are given in the text already \llname{ll:sim_params},
+and we have added an explicit reference to this \llname{ll:sim_params_ref}.
+}
 
 
-\item Also, I agree with Reviewer 1 that it would be interesting to see how your method behaves on a biologically plausible, 
+\begin{point}{}
+    Also, I agree with Reviewer 1 that it would be interesting to see how your method behaves on a biologically plausible, 
 idealized, scenario, such as secondary contact with isolation by distance. 
 While the ground truth will be blurry for your model, 
 if the method infers the ``right clusters" and plausible admixture coefficients 
 this would give much credibility to your method - 
 showing that it also works when the model does not strictly hold, 
 as will always be the case in practice. 
-I don't consider this as an essential make-or-break though as the simulation-under-the-model.\\\\
-\gb{RESPONSE.}
+I don't consider this as an essential make-or-break though as the simulation-under-the-model.
+\end{point}
 
-\item Issues that should be addressed:
+\reply{
+We realize the coalescent simulations we provide may not satisfy the reviewer's curiosity
+regarding isolation by distance,
+but note that the tools required to do genome-scale continuous-space simulations 
+have only recently become available (in SLiM), long after submission of this paper;
+and have not been officially released yet.
+}
+
+\begin{point}{}
+    Issues that should be addressed:
  There is a typo or something missing in Eq. 8 and Eq. 10., 
  there appears an l whereas the covariance is already averaged over markers. 
  Do you miss a sum sign here? 
@@ -140,8 +237,10 @@ violates the multivariate normal Wishard approximation with
 degrees of freedom equal to L. 
 Please elaborate on that issue in the ``technical supplement".
 Ringbauer2018 explored a way around this caveat via Fishers-Transform of allele
-frequencies or directly modeling F-matrices. (This sentence falls into III).\\\\
-\gb{Good catch!  Yes, there was a typo (that $\ell$ subscript didn't belong), 
+frequencies or directly modeling F-matrices. (This sentence falls into III).
+\end{point}
+
+\reply{Good catch!  Yes, there was a typo (that $\ell$ subscript didn't belong), 
 and we have fixed the error. 
 Your larger point is correct that the amount of detectable drift is a function of the initial allele frequency,
 so some transformation or normalization of allele frequencies might be useful.
@@ -150,7 +249,8 @@ sensitive to which samples are included in the dataset,
 rather than a quantity that is invariant across choice of samples.
 }
 
-\item Throughout the manuscript it is implied that Structure-like methods constitutes a subset of yours, 
+\begin{point}{}
+    Throughout the manuscript it is implied that Structure-like methods constitutes a subset of yours, 
  corresponding to turning off the spatial covariance component. 
  I have to disagree and think this is misleading: 
  Importantly, Structures also fits allele frequencies for each loci. 
@@ -158,10 +258,13 @@ rather than a quantity that is invariant across choice of samples.
  In stark contrast, ConStruct only uses a single covariance matrix averaged across markers, 
  so will be relatively blind to this behavior of a few markers! 
  It seems important to mention that. 
- In some observed biological scenarios only few markers cause a hybrid zone.\\\\
-\gb{RESPONSE.}
+ In some observed biological scenarios only few markers cause a hybrid zone.
+\end{point}
 
-\item Put your work in context. 
+\reply{RESPONSE.}
+
+\begin{point}{}
+    Put your work in context. 
  While I agree with your assessment that detailed comparisons on simulations is more than enough work for a own paper, 
  it would be nice to put your work into context of methods. 
  In particular discuss methods that can be applied on datasets that are interesting for your method. 
@@ -170,111 +273,147 @@ rather than a quantity that is invariant across choice of samples.
 Interestingly, you also compete with Bedassle. 
 Since it fits allele frequencies, it likely has higher power to confirm 
 hypothesized barriers that aren't detected by this method. 
-You could mention something along these lines.\\\\
-\gb{We have added more text comparing conStruct with Geneland and EEMS and BEDASSLE.}
+You could mention something along these lines.
+\end{point}
 
-\item In line 97 to 111: The analogy to ``random flipping of allele state" is mildly interesting, 
+\reply{We have added more text comparing conStruct with Geneland and EEMS and BEDASSLE.}
+
+\begin{point}{}
+    In line 97 to 111: The analogy to ``random flipping of allele state" is mildly interesting, 
 but does not add much insight. 
-You can cut it and start directly with your summary statistic (2) and only mention this analogy in the Supplement/Appendix.\\\\
-\gb{We have edited that section for clarity and brevity.}
+You can cut it and start directly with your summary statistic (2) and only mention this analogy in the Supplement/Appendix.
+\end{point}
 
-\item On multiple occasions you argue that the ``allelic covariance" matrix is insensitive to the choice of reference allele. 
+\reply{We have edited that section for clarity and brevity.}
+
+\begin{point}{}
+    On multiple occasions you argue that the ``allelic covariance" matrix is insensitive to the choice of reference allele. 
 This is also true for most covariance matrices of the style (p1-p, p2-p), or do I miss something??
 The main advantage seems to be that you buy is that you don't have to estimate mean allele frequencies, which is MANY parameters. 
-You probably have taught quite a bit about this step ``down" from Bedasssle, so perhaps share some of your views and initial experiments.\\\\
-\gb{RESPONSE.}
+You probably have taught quite a bit about this step ``down" from Bedasssle, so perhaps share some of your views and initial experiments.
+\end{point}
 
-\item In line 72-73, you cite that mainly stepping-stone models gives us some analytical predictions. 
+\reply{RESPONSE.}
+
+\begin{point}{}
+    In line 72-73, you cite that mainly stepping-stone models gives us some analytical predictions. 
 In fact, good analytic approximations are often derived for continuous limits, such as a diffusion model.
 You could add some reference for continuous models that incorporate discrete discontinuities and try to merge these two. 
 Sometimes, there are analytic approximations, which is obviously relevant: 
 Importantly, the landmark work of Nayglaki1988 is missing. 
 Morerecently Barton2008 and Ringbauer2018 made some contributions 
 for the effects of barriers to gene flow on genetic covariance in a continuous setting. 
-They are not directly relevant for this work, but hey could provide useful context.\\\\
-\gb{Thanks for pointing out these missing and important references.  
+They are not directly relevant for this work, but hey could provide useful context.
+\end{point}
+
+\reply{Thanks for pointing out these missing and important references.  
 We have added them to the manuscript.}
 
-\item Your covariance matrix has to be a valid covariance matrix, i.e. positive semidefinite. 
+\begin{point}{}
+    Your covariance matrix has to be a valid covariance matrix, i.e. positive semidefinite. 
 I guess this is why you choose the power of the exponential to be between 0 and 2 
 (for other values it isn't), but you never mention that. 
 In table 1, some draws from the priors would not produce valid covariance matrices, 
 how do you proceed in these cases? 
 Do you have implementations that enforce this or are these areas never sampled in practice? 
-This issue could mess with the Wishart distribution and matrix inversion if the determinant crosses to negative values.\\\\
-\gb{Yes, as you say the covariance must be positive semi-definite for us to invert it and calculate the likelihood.
+This issue could mess with the Wishart distribution and matrix inversion if the determinant crosses to negative values.
+\end{point}
+
+\reply{Yes, as you say the covariance must be positive semi-definite for us to invert it and calculate the likelihood.
 The inference algorithm implemented by STAN automatically rejects proposed matrices that aren't invertible.
 While it is possible that this could introduce issues into the mixing of the MCMC, 
 in practice we haven't found that concern to be borne out.}
 
-\item There seem to be some possible degeneracy issues, 
+\begin{point}{}
+    There seem to be some possible degeneracy issues, 
 for instance when $\alpha_d$ goes to 0 (which seems to be the case for some of the inferred layers), 
 $\alpha_0$ and $\phi_k$ will becomes indistinguishable.
  You should mention these issues, and if you have dealt with them 
- (or think they are not important, as you are not really interested in estimating these parameters).\\\\
-\gb{In practice, because those parameters can't be easily interpreted in a biological context, 
+ (or think they are not important, as you are not really interested in estimating these parameters).
+\end{point}
+
+\reply{In practice, because those parameters can't be easily interpreted in a biological context, 
 we treat them more as nuisance parameters and focus on inference of the admixture proportions.
 We have plans for a future release that has a more biologically motivated model of IBD (see more below).}
  
-\item Genetics states ``All articles published by GENETICS must include a 
+\begin{point}{}
+    Genetics states ``All articles published by GENETICS must include a 
 Data Availability Statement at the end of the Materials and Methods section." 
 You don't have such a section at the moment.
 For reproducibility of your results, 
 you should make at least the covariance matrix and the positions of each deme you used in your analysis available. 
 Ideally share all of the genetic data and the scripts used to filter it, including the settings (this is often quite important). 
-But if someone is protective of this data, I personally would be fine with omitting it. But this is the editors call to make.\\\\
-\gb{Thanks for pointing this out.  
+But if someone is protective of this data, I personally would be fine with omitting it. But this is the editors call to make.
+\end{point}
+
+\reply{Thanks for pointing this out.  
 We have added a Data Availability Statement, 
 and all data analyzed and scripts used to perform the analyses have been archived in data dryad.}
 
-\item Fig. 4 could be relegated to the supplement, it does not show much more really important information as Fig. 2. 
- In particular if you need space.\\\\
-\gb{We like Fig. 4 as a demonstration of the utility of calculating layer 
+\begin{point}{}
+    Fig. 4 could be relegated to the supplement, it does not show much more really important information as Fig. 2. 
+ In particular if you need space.
+\end{point}
+
+\reply{We like Fig. 4 as a demonstration of the utility of calculating layer 
 contributions as a heuristic of model comparison. 
 And, although the information Fig. 4 contains is a little redundant with that of Fig. 2, 
 that wouldn't have to be the case, because the $phi$ parameters for the extra layers 
 in the spatial model could be so large that even though ancestry in them was negligible, 
 their contributions could still be significant.}
 
-\item It would be really helpful if you plot the ground truth admixture coefficients in your K plots (Fig. 2) for $K>2$. 
+\begin{point}{}
+    It would be really helpful if you plot the ground truth admixture coefficients in your K plots (Fig. 2) for $K>2$. 
  It seems you sometimes estimate admixture for populations which have none (also observed in my applications), 
  but not knowing the ground truth this is hard to gauge. 
  You randomly simulated them, so please add this ``ground truth" as an additional plot. 
  I am slightly skeptical about Plot S5 (the admixture coefficients) ? did you do averaging? 
- Having ground truth plots would help to remove my doubts!\\\\
-\gb{RESPONSE.}
+ Having ground truth plots would help to remove my doubts!
+\end{point}
 
-\item  Line 386: I think the claim that your model includes a biologically realistic model for isolation by distance is a bit overzealous. 
+\reply{RESPONSE.}
+
+\begin{point}{}
+    Line 386: I think the claim that your model includes a biologically realistic model for isolation by distance is a bit overzealous. 
  Several non-interacting layers of IBD are a bit hard to imagine, 
  or do you have a good example?
  Importantly, your method will infer different clusters when isolation by distance patterns change. 
  So again you run into a problem of inferring a discrete break where there is none. 
  In fact, for most realistic populations one would expect different isolation by distance patterns.
-  Could be worth mentioning that caveat, and that in that case EEMS style methods.\\\\
-\gb{RESPONSE.}
+  Could be worth mentioning that caveat, and that in that case EEMS style methods.
+\end{point}
 
-\item The headings are a bit off. 
+\reply{RESPONSE.}
+
+\begin{point}{}
+    The headings are a bit off. 
 For instance you start with Results and then lay out the model? 
 Orient yourself on the excellent structure of the BEDASSLE paper.
  You cite often quite a few works at once (for instance ten in line 60), 
- check if this goes well with the citation style of Genetics).\\\\
-\gb{These were holdovers from a previous submission format.  
+ check if this goes well with the citation style of Genetics).
+\end{point}
+
+\reply{These were holdovers from a previous submission format.  
 We have edited them for a more logical flow and greater clarity.}
 
-\item III) Suggestions (for future)
+\begin{point}{}
+    III) Suggestions (for future)
  When I run the inference scheme myself, 
  I noticed that mostly only one core on my machine is under full load, while the other remain idle. 
  You could conceive ways to incorporate multi-processing. 
  In particular, if run on a cluster, this could yield huge speed-ups. 
  There seems to be some literature out there in how to do so for the inversion of huge covariance matrices, 
- which seems to be the main bottleneck.\\\\
-\gb{Parallelization would definitely be helpful.  
+ which seems to be the main bottleneck.
+\end{point}
+
+\reply{Parallelization would definitely be helpful.  
 Right now, the inference algorithm is implemented in STAN, 
 which doesn't have a mechanism for parallelizing a single MCMC chain.
 But, as you say, there are algorithms for parallelizing matrix inversions calculations, 
 so we might look to porting the inference out of STAN to get greater speedups for future releases.}
  
- \item You assume a multivariate normal distribution. 
+\begin{point}{}
+     You assume a multivariate normal distribution. 
  This implicitly assumes that all higher moments are 0, 
  which is quite the assumption for real data and almost certainly violated. 
  But In some sense, your method fits the covariances matrix - the pattern that it produces it does not matter. 
@@ -287,8 +426,10 @@ is not necessarily inferior, but could give you significant speed updates
 (quadratic, and no cumbersome inversion of the covariance matrix).
 Ringbauer2018 tried such approaches and found 
 that simpler fitting methods often have similar power than more complex ones 
-(whose assumptions are violated anyways), but are much faster.\\\\
-\gb{This is a nice idea, and one that we will definitely look into.
+(whose assumptions are violated anyways), but are much faster.
+\end{point}
+
+\reply{This is a nice idea, and one that we will definitely look into.
 We've talked about including a ``fast" conStruct option  
 that uses a maximum-likelihood algorithm in a future release, 
 and possibly one that uses the TreeMix trick of modeling each cell in the 
@@ -296,34 +437,44 @@ sample covariance matrix as a draw from a Normal with a mean given by the
 corresponding cell in the parametric covariance matrix, 
 and a standard deviation calculated from by block-boostrapping the genome.
 Your suggestion to use least squares would probably be even faster.}
- 
- \item Right now you have to give the pairwise distance Matrix as parameter to your method, 
- and also the sample positions. 
- You could easily calculate the former from the latter, 
- and would save users some quick but unnecessary preprocessing step. 
- I guess in the future you might want to use other distance matrices though.\\\\
-\gb{Right, it would save users some time for us to calculate pairwise distances for them,
+
+\begin{point}{}
+    Right now you have to give the pairwise distance Matrix as parameter to your method, 
+and also the sample positions. 
+You could easily calculate the former from the latter, 
+and would save users some quick but unnecessary preprocessing step. 
+I guess in the future you might want to use other distance matrices though.
+\end{point}
+
+\reply{Right, it would save users some time for us to calculate pairwise distances for them,
 but at the expense of flexibility.
 Some users may want to use other distance matrices 
 (e.g., distance within a river system, or along a coastline, or around the Tibetan plateau, etc.), 
 so we leave it up to them to specify one.}
- 
- \item In line 569 to line 575: When you describe how to deal with linked markers. 
- You don't mention it very explicitly, 
- but I think you hint that one can simply do ``block-bootstrap" of whole blocks of genome 
- as typically done nowadays for many applications, 
- if at least linkage groups are known.\\\\
-\gb{Yes, we think that's likely the best way to do it when linkage is known.
+
+\begin{point}{}
+    In line 569 to line 575: When you describe how to deal with linked markers. 
+You don't mention it very explicitly, 
+but I think you hint that one can simply do ``block-bootstrap" of whole blocks of genome 
+as typically done nowadays for many applications, 
+if at least linkage groups are known.
+\end{point}
+
+\reply{Yes, we think that's likely the best way to do it when linkage is known.
 We've added some text about that in the ``Cross-validation" section of the Appendix 
 (Lines XXX-XXX).}
- 
- \item The Gamma-Exponential Kernels used here are often considered inferior to Matern-Kernels. 
- In practice it likely wont matter much though.\\\\
+
+\begin{point}{}
+    The Gamma-Exponential Kernels used here are often considered inferior to Matern-Kernels. 
+In practice it likely wont matter much though.
+\end{point}
+
 \gb{Yes, one of the next updates we plan is to replace the flexible but 
 poorly motivated powered exponential with the form worked out for 
 probability of identity by state in continuous space from Barton, Depaulis, and Etheridge (2000).}
 
-\item I personally really fancy your writing style, 
+\begin{point}{}
+    I personally really fancy your writing style, 
 and it is a golden thread throughout your work.  
 But as much as I enjoy learning new words, 
 keep in mind many others in Science are non-mother tongue speakers 
@@ -336,16 +487,18 @@ would significantly reduce the length of the manuscript and improve its readabil
 One example of many, to give you an idea:
 ``Existing model-based clustering approaches can only describe 
 continuous patterns of variation using discrete clusters,
- and tend to erroneously describe continuously distributed variation 
- with multiple clusters that show spatially autocorrelated cluster membership" (l.82-84)
+and tend to erroneously describe continuously distributed variation 
+with multiple clusters that show spatially autocorrelated cluster membership" (l.82-84)
 to 
 ``Most existing model-based clustering methods only use discrete units. 
 Therefore, they often partition continuous variation into spurious clusters. 
 (with spatially autocorrelated membership.)"
-
+\\\\
 This is merely a suggestion, choice of style is obviously the author's and there is
-no ground truth best way.\\\\
-\gb{First, thank you for the compliment (seriously - ``a golden thread"!).
+no ground truth best way.
+\end{point}
+
+\reply{First, thank you for the compliment (seriously - ``a golden thread"!).
 We appreciate that not all scientists are native English speakers, 
 and have tried to be as clear and specific in our writing as possible, 
 both in the manuscript, and even more in the R package vignettes. 
@@ -356,197 +509,9 @@ As Mark Twain wrote, ``The difference between the \emph{almost} right word and t
 is really a large matter -- 
 'tis the difference between the lightning bug and the lightning."}
 
-\item Stress more that an easy-to-use implementation inclusive a manual exists, that is
-certainly a strong point! I was impressed by the ease of installation and use, and quality of the manual.\\\\
-\gb{Good suggestion - we have now indicated that the method is available as a documented R package.}
+\begin{point}{}
+    Stress more that an easy-to-use implementation inclusive a manual exists, that is
+certainly a strong point! I was impressed by the ease of installation and use, and quality of the manual.
+\end{point}
 
-\end{itemize}
-\end{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{itemize}
-\item First, many results concern comparisons between clustering based on the spatial and non-spatial models of construct (Figs 2, 3, 4, 6, 7, 9). However the authors should rather compare their spatial approach to existing software for model-based clustering, which do not account for space (Structure, fastSTRUCTURE, ADMIXTURE,...). Results obtained with one of these software should not be available in supplementary material but should rather be visible in the main text.\\\\
-\gb{The utility of the nonspatial model implemented in \texttt{conStruct} 
-is that its performance can be directly compared to that of the spatial model; 
-their cross-validation predictive accuracy values are in the same currency 
-because they use the same Wishart likelihood model.
-So, using it we can say not just that that the nonspatial model prefers 
-$K=X$ while the spatial model prefers $K=Y$, 
-but also, e.g., that the spatial model is preferred over the nonspatial model.
-However, as you note, it's important to compare \texttt{conStruct}'s performance to 
-that of existing nonspatial model-based clustering methods as well, 
-which is why we had also included analyses using fastSTRUCTURE.
-
-\ Your point here is well-taken though, because the fastSTRUCTURE analyses, 
-which included no model comparisons, did not provide a direct basis of comparison to \texttt{conStruct}.
-There is a model comparison tool implemented in fastSTRUCTURE, 
-but we were unable to get it to run on our datasets.
-We have contacted the fastSTRUCTURE authors 
-and alerted them to this issue, 
-but have yet to hear back from them.
-
-\ We have therefore analyzed all datasets included in the paper using ADMIXTURE, 
-and used ADMIXTURE's cross-validation procedure to compare model performance across values of $K$.  
-These results are discussed extensively throughout the updated manuscript ``Results" section; 
-and the model that minimizes the cross-validation error in the ADMIXTURE analyses on simulated data 
-is highlighted in the the simulation cross-validation results figure.
-However, due to the already extensive length of the manuscript (which Reviewer 2 points out), 
-the results of the ADMIXTURE analyses are given in the Supplementary Materials.
-}\\
-
-\item Second, the simulation scenario should correspond to a real biological scenario. Here this layer-based simulation scenario is very difficult to understand. I would be more interesting to stick to more classic spatially explicit simulations such as range expansion, or secondary contact scenarios.\\\\
-\gb{We appreciate that the simulation scenario we ran is somewhat artificial, 
-and that it would be good to test the behavior of the method 
-under a classic ``isolation followed by expansion into a zone of secondary contact" model.
-However, as we discuss in the manuscript in the section ``Simulation details",
-we wanted to simulate datasets that had unambiguous true admixture proportions, 
-so that we could test \texttt{conStruct}'s ability to estimate admixture accurately 
-(shown in SuppMat figures 8 and 13).
-A more organic simulation, with isolation followed by expansion, 
-secondary contact, and subsequent admixture, 
-would not facilitate that test in a straightforward way. 
-As mentioned by Reviewer 2, there are an enormous number 
-of possible simulations we could run to test \texttt{conStruct}'s performance, 
-but fully exploring them is beyond of the scope of this manuscript, 
-so we intend to pursue those in future work.}\\
-
-\item Third, I think that the main point of the paper should be more explicit. Non-spatial model based approaches are prone to overfitting when K is too large and this can be avoided when using spatial-based approaches. \\\\
-\gb{
-Good suggestion; we've added a line to the Abstract to this effect.
-}\\
-
-\item Last, there are other software that account for space when performing model-based clustering and they should be included in the comparisons (BAPS, Geneland, TESS,...). Right now, they are only mentioned in the introduction and we would like to see results comparing these different model-based approaches.\\\\
-\gb{
-The methods mentioned here --- BAPS, Geneland, and TESS --- 
-place spatial priors on admixture proportions
-and/or cluster membership, 
-but like STRUCTURE, they assume that allele frequencies 
-within a cluster are constant across space.
-Therefore, although spatially explicit, this parameterization does not 
-account for space in a way that avoids the problem we describe in our manuscript: 
-the characterization of spatially continuous differentiation 
-as clines of admixture across spurious clusters.
-
-\ A comprehensive comparison between \texttt{conStruct} 
-and all other model-based clustering methods is beyond the scope of this paper. 
-As STRUCTURE is the canonical model-based clustering algorithm
-(having been cited $>$ 20,000 times), but is too slow to be run 
-on the modern-scale SNP datasets we simulate, 
-we feel that ADMIXTURE, which implements an extremely similar model 
-within a faster inference framework, 
-provides the best comparison to our method.}\\
-
-\item In the introduction, the authors write ``placing spatial priors on cluster memberships'' when referring to other methods that deal with ancestry proportions instead of cluster memberships.\\\\
-\gb{
-Guillot \emph{et al.}, in the 2005 paper that introduced the method Geneland, 
-refer to this quantity as ``population membership."
-We kept the wording consistent for clarity, but changed ``population" 
-to ``cluster" to keep a distinction between biological and statistical groupings.}\\
-
-\item Formula (1) about the covariance is difficult to understand. It does not correspond to a classic definition of a covariance. Does this correspond to the covariance of some random variables? The discussion following the definition of the covariance looks like a discussion and should be moved to the discussion.\\\\
-
-\gb{The definition given is a covariance of some random variables; we have made this fact more clear, 
-and we have substantially rewritten the section on the allelic covariance
-and have moved some of the intuition-building discussion to the Materials and Methods.
-We have also moved some of this discussion to the Discussion (heading ``Allelic or genetic covariance?'').
-}\\
-
-\end{itemize}
-
-\textbf{Reviewer 2}\\
-In this paper, Bradburd et al. present a novel analysis method for the joint characterization of discrete and continuous structure. Their model uses a mixed membership Gaussian process, adding a within layer (cluster) Isolation-by-distance-process. I do think that this paper is very clearly written, and presents the model and method in great detail. Besides the presentation of the method, a simulation and two application studies are performed, that lead to a comprehensive overview of the method. I would consider this model to be very valuable for a large audience in ecology and evolution, including biogeographers and conservation biologists, with the only drawback being the very high computational requirements. Overall, however I recommend the paper for acceptance with only very minor changes.
-
-\begin{itemize}
-\item One issue I am wondering about is whether there are some issues with ``outlier individuals'', that e.g. represent poorly sampled clusters, which might be an issue with the Alaskan/NW-Canadian bears. In particular, consider the case where the two layers were only fitted from the samples from the 48-states. Presumably, the resulting covariance curve would be similar to Fig S26b (assuming the two layer case). If we then added those NW-pacific samples, we might expect them to be most likely added to the cluster with the flatter right tail, even if they were essentially unrelated. This issue can also arise in kriging (Figure 6 in the first version of the preprint of Caye et al (on bioRxiv). Could this interpretation be excluded somehow?
-\\\\
-\gb{This is a great point, and highlights a subtle problem.
-Although we feel that isolation-by-distance is a reasonable model for population differentiation, 
-it is possible that, by implementing a spatial model, 
-we can facilitate ``spurious" layer membership in far-flung samples, 
-who are sampled far enough away from all other samples 
-that their spatial covariance is negligible.  
-This situation is made less likely by the $\phi$ parameter in each layer, 
-which induces some amount of covariance between samples in a layer 
-regardless of their geographic separation.
-However, it is possible that $\phi$ in a layer might be estimated to be $\approx 0$. 
-We've discussed heuristics for highlighting such samples 
-(e.g., highlighting pairs of samples with $>$50\% membership in a given layer,
- that, given their geographic separation, 
- the parametric covariance curve in that layer, 
- and the $\phi$ parameter in that layer, have effectively zero covariance), 
- but we have not yet implemented or tested these checks.
-We are also currently developing a set of spatial \textit{f}-statistics, 
-analogous to those presented in Reich \emph{et al.} (2009) and discussed further in Peter (2016), 
-which could be useful in highlighting such ``outlier" samples.
-But, as you note, this manuscript is already quite long, 
-so this work will be a part of future projects.
-}\\
-
-\item Another thing that could be added are some additional simulations in more complex demographic models, such as expansions, temporally/spatially heterogeneous migration, or sparser sampling schemes. However, as the paper is already rather long (at almost 20 single-spaced pages), and the space of scenarios for which the model is relevant is enormous, I hope the authors consider further exploring their model in a follow-up study.\\\\
-\gb{We completely agree, and further explorations of the behavior of the method 
-in different scenarios are being planned now.}\\
-
-\item 100: Is there a reason that allelic covariance is used instead of genetic covariance?\\\\
-\gb{
-    Good question; we've added some more text for this, 
-    both explaining what the allelic covariance is and why we use it in lieu of the genetic covariance,
-    (in the ``Data" subsection of the ``Results" 
-    and the ``Allelic covariance" subsection of ``Materials and Methods").
-    The short answer is that the allelic covariance is insensitive to the choice of reference allele, 
-    and, because it doesn't subtract off means like the genetic covariance, 
-    has a constant value between a pair of samples in the dataset, 
-    regardless of which other samples are included.
-}\\
-
-\item Could supp. figures be sorted according to first mentioning in ms?\\\\
-\gb{Fixed.}\\
-
-\item Fig3: increase label size\\\\
-\gb{Fixed.}\\
-
-\item Last line in paragraph on p. 18: as the derivations are otherwise very detailed and easy to follow, it might be worth adding here that this follows from E[UV] = 4 Cov[A, B]\\\\
-\gb{
-We have substantially rewritten this section for greater clarity.\\
-}
-
-\item 634: Using ms,
-\\\\
-\gb{Fixed.}\\
-
-\item Fig S4: Could the colors be made to correspond each other (e.g. panel e vs 3). In general, is the exchangeability of layers a practical concern, or similar to the original structure, does the MCMC never ``switch'' two layer labels?\\\\
-\gb{In STAN, we declare the vector of $\phi$ parameters to be an object of class ``positive ordered",
-	meaning that values of phi must all have values greater than zero, 
-	and must be in strictly increasing order.
-	In practice, I don't think that much label-switching would occur within the course of a single MCMC run 
-	(like in STRUCTURE), but inducing a specific order to the $\phi$ parameter makes that less likely still.
-	There can be label switching across independent runs for the same value of $K$, 
-	and of course there's label switching across runs with different numbers of $K$.
-	In the \texttt{conStruct} R package, we've included a function that uses the cluster matching 
-	algorithm described in CLUMPP (Jakobsson and Rosenberg 2007) to match layers across runs.
-	We used that algorithm to keep plotting colors consistent in our figures, including in Fig. S4.
-	However, something funny happens in that sequence of analyses between $K=5$ and $K=6$, 
-	where the ranking of cluster matching algorithm gives wonky results, 
-	leading to the non-intuitive layer color matching.
-	We've tweaked that one by hand to keep the plotting nice.
- }\\
-
-\item Fig S26: maybe keep Y-axis scale consistent between panels?\\\\
-\gb{Fixed.}\\
-
-\item Cross-Validation: As we all know SNP are not uncorrelated. I am wondering if that could influence the CV, as spurious patterns in the testing data might be partially explained by nearby SNP in the training data. Is that a concern?\\\\
-\gb{
-	This is a good point and it definitely could be a concern.
-	We've included a discussion of this in the cross-validation procedure description, 
-	as well as a description of the CV procedure that should be used if you know LD between loci.
-	But, we also imagine that, for a while at least, the vast majority of \texttt{conStruct} users 
-	won't have genomic position information for their SNP data.
-}\\
-
-\end{itemize}
-
-\end{document}
+\reply{Good suggestion - we have now indicated that the method is available as a documented R package.}
