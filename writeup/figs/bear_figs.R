@@ -155,7 +155,32 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf",width=
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-
+pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_colorized_cov.pdf",width=8,height=8,pointsize=14)
+	sd.D <- sd(fields::rdist.earth(data.block$coords))
+	lon.cols <- terrain.colors(data.block$N)[as.numeric(cut(data.block$coords[,1],data.block$N))]
+	col.mats <- make.col.mats(lon.cols)
+	data.block$K <- 2
+	plot(data.block$geoDist,data.block$obsCov,xlab="",ylab="",xaxt='n',
+			pch=21,col=col.mats[[2]],bg=col.mats[[1]])
+		axis(side=1,at=c(seq(min(data.block$geoDist),max(data.block$geoDist),length.out=5)),
+				round(seq(min(data.block$geoDist),
+							max(data.block$geoDist),length.out=5) * sd.D,0))
+		mtext(text="geographic distance (mi)",side=1,font=2,cex.axis=2,padj=3.7,adj=0.5)
+		mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-3.7,adj=0.5)
+	plot.layer.curves(data.block=data.block,conStruct.results=output.list.sp[[2]][[1]],
+						layer.cols=NULL,add=TRUE,col.mat1=NULL,col.mat2=NULL)
+	TeachingDemos::subplot(fun = {
+						plot(0,xlim=range(data.block$coords[,1]) + c(-5,5),
+							  ylim = range(data.block$coords[,2])+c(-2,2), 
+							  type='n',yaxt='n',xaxt='n',xlab="",ylab="")
+							map(xlim = range(data.block$coords[,1]) + c(-5,5), 
+								ylim = range(data.block$coords[,2])+c(-2,2), 
+								col="gray",mar=c(1,1,1,1),add=TRUE)
+							points(data.block$coords,bg=lon.cols,pch=21,col=1,cex=2)
+							box(lwd=1.1)
+						},
+					x=c(1.3e3/sd.D,3.8e3/sd.D),y=c(0.205,0.245))
+dev.off()
 
 
 K <- 7

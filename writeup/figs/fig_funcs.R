@@ -157,6 +157,19 @@ if(is.null(col.mat2)){
 		mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 }
 
+make.col.mats <- function(cols){
+	N <- length(cols)
+	col.mat1 <- matrix(NA,N,N)
+	col.mat2 <- matrix(NA,N,N)
+	for(i in 1:N){
+		for(j in 1:N){
+			col.mat1[i,j] <- cols[i]
+			col.mat2[i,j] <- cols[j]
+		}
+	}
+	return(list(col.mat1,col.mat2))
+}
+
 plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 	#recover()
 	for(n in 1:n.reps){
