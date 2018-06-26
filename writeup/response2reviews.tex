@@ -32,7 +32,8 @@ Specifically, we have added figure panels to Figures 7 and 8
 that explicitly compare \texttt{conStruct}'s results with those of ADMIXTURE 
 on the black bear dataset.
 We have also added text throughout the results to increase the depth of 
-our comparison of \texttt{conStruct} and ADMIXTURE.
+our comparison of \texttt{conStruct} and ADMIXTURE, 
+and generally edited the manuscript for greater clarity.
 
 We hope that the paper is now acceptable for publication.\\\\
 %
@@ -64,12 +65,12 @@ These subsections appear on lines XXX-XXX for the poplar dataset,
 and lines XXX-XXX for the bear dataset.}
 
 \item It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the ``clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.\\\\
-\gb{I didn't follow exactly what this figure might look like, 
+\gb{We didn't follow exactly what this figure might look like, 
 but hopefully this point comes across clearly in the contrast between 
 ADMIXTURE and spatial \texttt{conStruct} results.}
 
 \item The layer specific covariances show a very funny pattern, tending to infinity for low distances for components 3 and above for the bear data. I am not sure I understand this. Is this discussed anywhere?\\\\
-\gb{I think what's happening is that these layer-specific covariances for layers $>$2 
+\gb{We think what's happening is that these layer-specific covariances for layers $>$2 
 are describing local departures from global patterns of IBD, 
 as might be expected due to, e.g., inbreeding.
 We have added some text to that effect in lines XXX-XXX.}
@@ -109,7 +110,8 @@ but then point these out.
 If there are space issues, you can put these plots in a short supplement.\\\\
 \gb{First, we want to thank Reviewer 2 for their very thorough  review
 (even taking the time to check out the R package!).  
-We really appreciate the time and thought the reviewer invested here.}
+We really appreciate the time and thought the reviewer invested here.
+RESPONSE.}
 
 
 \item Also, I agree with Reviewer 1 that it would be interesting to see how your method behaves on a biologically plausible, 
@@ -138,8 +140,17 @@ violates the multivariate normal Wishard approximation with
 degrees of freedom equal to L. 
 Please elaborate on that issue in the ``technical supplement".
 Ringbauer2018 explored a way around this caveat via Fishers-Transform of allele
-frequencies or directly modeling F-matrices. (This sentence falls into III).
- Throughout the manuscript it is implied that Structure-like methods constitutes a subset of yours, 
+frequencies or directly modeling F-matrices. (This sentence falls into III).\\\\
+\gb{Good catch!  Yes, there was a typo (that $\ell$ subscript didn't belong), 
+and we have fixed the error. 
+Your larger point is correct that the amount of detectable drift is a function of the initial allele frequency,
+so some transformation or normalization of allele frequencies might be useful.
+But, we have avoided this because they make the sample allelic covariance that we model 
+sensitive to which samples are included in the dataset, 
+rather than a quantity that is invariant across choice of samples.
+}
+
+\item Throughout the manuscript it is implied that Structure-like methods constitutes a subset of yours, 
  corresponding to turning off the spatial covariance component. 
  I have to disagree and think this is misleading: 
  Importantly, Structures also fits allele frequencies for each loci. 
@@ -160,12 +171,12 @@ Interestingly, you also compete with Bedassle.
 Since it fits allele frequencies, it likely has higher power to confirm 
 hypothesized barriers that aren't detected by this method. 
 You could mention something along these lines.\\\\
-\gb{RESPONSE.}
+\gb{We have added more text comparing conStruct with Geneland and EEMS and BEDASSLE.}
 
 \item In line 97 to 111: The analogy to ``random flipping of allele state" is mildly interesting, 
 but does not add much insight. 
 You can cut it and start directly with your summary statistic (2) and only mention this analogy in the Supplement/Appendix.\\\\
-\gb{RESPONSE.}
+\gb{We have edited that section for clarity and brevity.}
 
 \item On multiple occasions you argue that the ``allelic covariance" matrix is insensitive to the choice of reference allele. 
 This is also true for most covariance matrices of the style (p1-p, p2-p), or do I miss something??
@@ -181,7 +192,8 @@ Importantly, the landmark work of Nayglaki1988 is missing.
 Morerecently Barton2008 and Ringbauer2018 made some contributions 
 for the effects of barriers to gene flow on genetic covariance in a continuous setting. 
 They are not directly relevant for this work, but hey could provide useful context.\\\\
-\gb{RESPONSE.}
+\gb{Thanks for pointing out these missing and important references.  
+We have added them to the manuscript.}
 
 \item Your covariance matrix has to be a valid covariance matrix, i.e. positive semidefinite. 
 I guess this is why you choose the power of the exponential to be between 0 and 2 
@@ -190,14 +202,19 @@ In table 1, some draws from the priors would not produce valid covariance matric
 how do you proceed in these cases? 
 Do you have implementations that enforce this or are these areas never sampled in practice? 
 This issue could mess with the Wishart distribution and matrix inversion if the determinant crosses to negative values.\\\\
-\gb{RESPONSE.}
+\gb{Yes, as you say the covariance must be positive semi-definite for us to invert it and calculate the likelihood.
+The inference algorithm implemented by STAN automatically rejects proposed matrices that aren't invertible.
+While it is possible that this could introduce issues into the mixing of the MCMC, 
+in practice we haven't found that concern to be borne out.}
 
 \item There seem to be some possible degeneracy issues, 
 for instance when $\alpha_d$ goes to 0 (which seems to be the case for some of the inferred layers), 
 $\alpha_0$ and $\phi_k$ will becomes indistinguishable.
  You should mention these issues, and if you have dealt with them 
  (or think they are not important, as you are not really interested in estimating these parameters).\\\\
-\gb{RESPONSE.}
+\gb{In practice, because those parameters can't be easily interpreted in a biological context, 
+we treat them more as nuisance parameters and focus on inference of the admixture proportions.
+We have plans for a future release that has a more biologically motivated model of IBD (see more below).}
  
 \item Genetics states ``All articles published by GENETICS must include a 
 Data Availability Statement at the end of the Materials and Methods section." 
@@ -206,13 +223,20 @@ For reproducibility of your results,
 you should make at least the covariance matrix and the positions of each deme you used in your analysis available. 
 Ideally share all of the genetic data and the scripts used to filter it, including the settings (this is often quite important). 
 But if someone is protective of this data, I personally would be fine with omitting it. But this is the editors call to make.\\\\
-\gb{RESPONSE.}
+\gb{Thanks for pointing this out.  
+We have added a Data Availability Statement, 
+and all data analyzed and scripts used to perform the analyses have been archived in data dryad.}
 
 \item Fig. 4 could be relegated to the supplement, it does not show much more really important information as Fig. 2. 
  In particular if you need space.\\\\
-\gb{RESPONSE.}
+\gb{We like Fig. 4 as a demonstration of the utility of calculating layer 
+contributions as a heuristic of model comparison. 
+And, although the information Fig. 4 contains is a little redundant with that of Fig. 2, 
+that wouldn't have to be the case, because the $phi$ parameters for the extra layers 
+in the spatial model could be so large that even though ancestry in them was negligible, 
+their contributions could still be significant.}
 
-\item It would be really helpful if you plot the ground truth admixture coefficients in your K plots (Fig. 2) for K>2. 
+\item It would be really helpful if you plot the ground truth admixture coefficients in your K plots (Fig. 2) for $K>2$. 
  It seems you sometimes estimate admixture for populations which have none (also observed in my applications), 
  but not knowing the ground truth this is hard to gauge. 
  You randomly simulated them, so please add this ``ground truth" as an additional plot. 
