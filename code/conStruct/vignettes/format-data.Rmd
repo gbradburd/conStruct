@@ -1,7 +1,7 @@
 ---
 title: "How to format data for a conStruct analysis"
 author: "Gideon Bradburd"
-date: "14 December 2017"
+date: "21 June 2018"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -208,7 +208,7 @@ for(i in 1:nrow(pop.data.matrix)){
 								conStruct.data[
 									which(pop.index==i),,
 									drop=FALSE
-								]
+								],na.rm=TRUE
 							)
 }
 ```
