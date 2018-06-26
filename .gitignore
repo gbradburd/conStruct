@@ -19,7 +19,8 @@ writeup/*.mp
 writeup/*.top
 writeup/*.tui
 writeup/*.tmp
-code/conStruct/*.gz
+code/*tar.gz
+code/conStruct/*.tar.gz
 sims/cross_validation/K_1/x_validation/*.Robj
 sims/cross_validation/K_1/x_validation/*.R
 writeup/figs/schematic/*.ai
