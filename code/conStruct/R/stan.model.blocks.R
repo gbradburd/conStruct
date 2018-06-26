@@ -8,18 +8,13 @@ functions {
 		parCov = parCov + Nug_mat;
 		return parCov;	
 	}
-	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
-		real lnL;
-		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
-		return lnL;
-	}
 }
 data {
 	int<lower=1> K;		  				// number of layers
 	int<lower=2> N; 	  				// number of samples
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
-	real varMeanFreqs;
+	real varMeanFreqs;					// variance in mean frequencies
 	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 transformed data {
@@ -28,16 +23,16 @@ transformed data {
 }
 parameters {
 	real<lower=0> gamma;				// covariance between all layers
-  	vector<lower=0>[N] nugget; 								// sample-specific variance (allele sampling error + sample-specific drift)
+  	vector<lower=0>[N] nugget; 			// sample-specific variance (allele sampling error + sample-specific drift)
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
 	parCov = Cov(N, nugget, gamma);
 }
 model {
-	nugget ~ normal(0,1);										// prior on nugget
-	gamma ~ normal(varMeanFreqs,0.5);
-	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
+	nugget ~ normal(0,1);				// prior on nugget
+	gamma ~ normal(varMeanFreqs,0.5);	// prior on gamma
+	LobsCov ~ wishart(L,parCov);		// likelihood function
 }
 "
 
@@ -57,11 +52,6 @@ functions {
 		parCov = gamma + parCov + Nug_mat;
 		return parCov;	
 	}
-	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
-		real lnL;
-		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
-		return lnL;
-	}	
 }
 data {
 	int<lower=1> K;		  				// number of layers
@@ -93,7 +83,7 @@ model {
 	alpha2 ~ uniform(0,2);										// prior on alpha2
 	nugget ~ normal(0,1);										// prior on nugget
 	gamma ~ normal(varMeanFreqs,0.5);							// prior on global covariance
-	target += dWish(temp, L, LobsCov, parCov);						// likelihood function
+	LobsCov ~ wishart(L,parCov);								// likelihood function
 }
 "
 
@@ -116,11 +106,6 @@ functions {
 			w_mat[i] = to_row_vector(w[i]);
 		}
 		return w_mat;
-	}
-	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
-		real lnL;
-		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
-		return lnL;
 	}
 }
 data {
@@ -154,7 +139,7 @@ model {
 	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
 	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
-	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
+	LobsCov ~ wishart(L,parCov);						// likelihood function
 }
 "
 
@@ -188,11 +173,6 @@ functions {
 		}
 		return w_mat;
 	}
-	real dWish(real temp, int L, matrix LobsCov, matrix parCov){
-		real lnL;
-		lnL = wishart_lpdf(LobsCov | L,parCov) * temp;
-		return lnL;
-	}	
 }
 data {
 	int<lower=1> K;		  				// number of layers
@@ -231,7 +211,7 @@ model {
 	nugget ~ normal(0,1);										// prior on nugget
 	phi ~ normal(0,1);
 	gamma ~ normal(varMeanFreqs,0.5);
-	for(i in 1:N) w[i] ~ dirichlet(dirConPar);				    // prior on admixture proportions
-	target += dWish(temp, L, LobsCov, parCov);					// likelihood function
+	for(i in 1:N) w[i] ~ dirichlet(dirConPar);		// prior on admixture proportions
+	LobsCov ~ wishart(L,parCov);					// likelihood function
 }
 "
