@@ -43,3 +43,97 @@ bear.dataset <- list("sample.freqs" = bear.dataset$sample.freqs[-too.much.missin
 					 "sample.coords" = bear.dataset$sample.coords[-too.much.missing.data,])
 
 save(bear.dataset,file="bear.dataset.Robj")
+
+################################
+# make STRUCTURE and ADMIXTURE input data files
+################################
+
+################################
+#	structure
+################################
+make.ind.genos <- function(x,N){
+		geno <- numeric(N)
+	if(is.na(x)){
+		geno <- rep(-9,N)
+	} else {
+		geno[sample(1:N,x)] <- 1	
+	}
+	return(geno)
+}
+
+split.pop.into.inds <- function(pop.counts,pop.nChromo){
+	ind.geno <- apply(pop.counts,2,function(x){make.ind.genos(x,pop.nChromo)})
+	return(ind.geno)
+}
+
+make.structure.data.file <- function(counts,sample.sizes){
+	geno.matrix <- matrix(NA,sum(sample.sizes),ncol(freqs))
+	index <- 0
+	for(n in 1:nrow(freqs)){
+		geno.matrix[index+c(1:sample.sizes[n]),] <- split.pop.into.inds(counts[n,,drop=FALSE],sample.sizes[n])
+		index <- index + sample.sizes[n]
+	}
+	PopData <- unlist(lapply(1:length(sample.sizes),
+					function(n){
+						lapply(1:sample.sizes[n],
+							function(i){
+								sprintf("ind_%s.%s",n,i)
+							})
+					}))
+	LocData <- unlist(lapply(1:length(sample.sizes),function(n){rep(n,sample.sizes[n])}))
+	return(cbind(PopData,LocData,geno.matrix))
+}
+
+freqs <- bear.dataset$sample.freqs
+sample.sizes <- matrix(2,nrow(freqs),ncol(freqs))
+sample.sizes[which(is.na(freqs),arr.ind=TRUE)] <- 0
+counts <- freqs*sample.sizes
+str.data <- make.structure.data.file(counts,rep(2,nrow(freqs)))
+write.table(str.data,file="bears.str",quote=FALSE,row.names=FALSE,col.names=FALSE)
+
+################################
+#	admixture
+################################
+convert.str.to.ped <- function(str.file){
+	str <- read.table(str.file,header=FALSE,stringsAsFactors=FALSE,row.names=1)
+	n.loci <- ncol(str)-1
+	n.haps <- nrow(str)
+	hap.IDs <- row.names(str)
+	pop.IDs <- as.numeric(unlist(lapply(lapply(strsplit(hap.IDs,"_"),"[[",2),function(x){strsplit(x,"\\.")[[1]][[1]]}))[seq(1,n.haps,by=2)])
+	mand.cols <- matrix(0,nrow=n.haps/2,ncol=6)
+	#family
+	mand.cols[,1] <- pop.IDs
+	#ind ID
+	mand.cols[,2] <- unlist(lapply(unique(pop.IDs),function(x){1:length(which(pop.IDs==x))}))
+	genos <- matrix(NA,nrow=n.haps/2,ncol=n.loci*2)
+	genos[,seq(1,n.loci*2,by=2)] <- as.matrix(str[seq(1,n.haps,by=2),2:ncol(str)])
+	genos[,seq(2,n.loci*2,by=2)] <- as.matrix(str[seq(2,n.haps,by=2),2:ncol(str)])
+	genos <- genos + 1
+	genos[which(genos < 0)] <- 0
+	ped <- cbind(mand.cols, genos)
+	return(ped)
+}
+
+make.map.file <- function(ped){
+	#recover()
+	n.snps <- (ncol(ped)-6)/2
+	map <- matrix(NA,nrow=n.snps,ncol=3)
+	#CHR
+	map[,1] <- rep(1,n.snps)
+	#RS
+	map[,2] <- paste0("rs",1:n.snps)
+	#BP
+	map[,3] <- seq(1,n.snps*1e3,length.out=n.snps)
+	return(map)
+}
+
+ped_bears <- convert.str.to.ped(str.file="bears.str")
+map_bears <- make.map.file(ped_bears)
+	write.table(ped_bears,file="../admixture/bears.ped",sep="\t",quote=FALSE,row.names=FALSE,col.names=FALSE)
+	write.table(map_bears,file="../admixture/bears.map",sep="\t",quote=FALSE,row.names=FALSE,col.names=FALSE)
+call <- "plink --noweb --file ../admixture/bears --make-bed --out ../admixture/bears --map3 --allow-no-sex"
+system(call)
+file.remove("../admixture/bears.ped")
+file.remove("../admixture/bears.map")
+file.remove("../admixture/bears.log")
+file.remove("../admixture/bears.nosex")
