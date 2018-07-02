@@ -122,16 +122,21 @@ see below for more.}
 \reply{We have added more extensive discussions of the 
 comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets,
 following \llname{ll:admixture_populus} and \llname{ll:admixture_bears}.
-\plr{We could do this by talking about or including figure S28?}
 }
 
 \begin{point}{}
     It would be interesting to do some kind of plot for ADMIXTURE results, to demonstrate that populations that share affinity according higher components are not particularly similar when allowing for geographical distance. This would be a rather direct way of showing that the ADMIXTURE model is not producing insightful results, despite the continuous improvement in model probability for higher K. In this context, I always think of the ``clines vs clusters" paper by Rosenberg. It would be great to have some kind of figure to show that for K=2, it looks like clusters but for K=3, the clusters add much less.
 \end{point}
 
-\reply{We didn't follow exactly what this figure might look like, 
-but hopefully this point comes across clearly in the contrast between 
-ADMIXTURE and spatial \texttt{conStruct} results.}
+\reply{
+    This is a good suggestion;
+    we think we can make this point (and a related one) by looking at the covariance-versus distance
+    plots for the bear data.
+    The additional discussion of this point is at \revref,
+    and a new figure showing covariances colored by population is at \ref{bear_cov_colorized};
+    we decided not to insert yet another figure in the main text, however,
+    and tried to describe the pattern verbally.
+}
 
 \begin{point}{}
     The layer specific covariances show a very funny pattern, tending to infinity for low distances for components 3 and above for the bear data. I am not sure I understand this. Is this discussed anywhere?
@@ -223,17 +228,17 @@ and have not been officially released yet.
 \begin{point}{}
     Issues that should be addressed:
  There is a typo or something missing in Eq. 8 and Eq. 10., 
- there appears an l whereas the covariance is already averaged over markers. 
+ there appears an $\ell$ whereas the covariance is already averaged over markers. 
  Do you miss a sum sign here? 
  Please clarify that as this masks an important assumption 
  that is almost certainly violated in most biological realistic scenarios:
 The covariance matrices are not the same across markers, 
 as drift depends on allele frequency. 
 In the extreme case of fixed markers the covariance is always 0! 
-In Population Genetics one often models this with a p(1-p) 
-pref-actor of the covariance matrix OR $F_{ST}$ summary statistics. 
+In Population Genetics one often models this with a $p(1-p)$ 
+prefactor of the covariance matrix or $F_{ST}$ summary statistics. 
 Obviously averaging over quite different covariance matrices 
-violates the multivariate normal Wishard approximation with 
+violates the multivariate normal Wishart approximation with 
 degrees of freedom equal to L. 
 Please elaborate on that issue in the ``technical supplement".
 Ringbauer2018 explored a way around this caveat via Fishers-Transform of allele
@@ -242,11 +247,18 @@ frequencies or directly modeling F-matrices. (This sentence falls into III).
 
 \reply{Good catch!  Yes, there was a typo (that $\ell$ subscript didn't belong), 
 and we have fixed the error. 
-Your larger point is correct that the amount of detectable drift is a function of the initial allele frequency,
-so some transformation or normalization of allele frequencies might be useful.
-But, we have avoided this because they make the sample allelic covariance that we model 
-sensitive to which samples are included in the dataset, 
-rather than a quantity that is invariant across choice of samples.
+Your larger point is correct that the variance of allele frequency differences
+is a function of the allele frequency,
+so some transformation or normalization of allele frequencies
+can help to standardize variances across loci.
+We've chosen not to do this for a few reasons:
+(a) normalizing by $p(1-p)$ dramatically upweights low-frequency alleles, which can be problematic
+(amplifying the \emph{noise} coming from these loci as well as the signal);
+(b) the Wishart does not hold anyhow, since loci are not independent (due to linkage)
+and have different distributions (depending on frequency and sample size);
+and so (c) we are fitting a phenomenological model rather than a mechanistic one
+(despite our hopefully compelling justifications).
+We have added discussion of this point. \revref
 }
 
 \begin{point}{}
@@ -261,7 +273,23 @@ rather than a quantity that is invariant across choice of samples.
  In some observed biological scenarios only few markers cause a hybrid zone.
 \end{point}
 
-\reply{RESPONSE.}
+\reply{
+    This is a great point.
+    However, we're not sure this is how it would work in practice:
+    the conStruct model does follow from a model with separate ancestral allele frequencies
+    at each locus, in each layer.
+    Our model differs in that it combines information across loci into the covariance matrix
+    before taking likelihoods,
+    while STRUCTURE takes likelihoods first;
+    however, it's not obvious how these differ:
+    as we note at \llname{ll:wishart},
+    if the data were homoskedastic Gaussian, these would be equivalent.
+    We're also not sure how well STRUCTURE could identify the effects of a few loci
+    above the background of a large number of non-differentiated loci.
+    We've reworded the comparison at \revref, and added a caveat to the discussion
+    at \llname{ll:admixture_few_loci}.
+    \plr{perhaps that last caveat is too speculative?}
+}
 
 \begin{point}{}
     Put your work in context. 
@@ -276,7 +304,7 @@ hypothesized barriers that aren't detected by this method.
 You could mention something along these lines.
 \end{point}
 
-\reply{We have added more text comparing conStruct with Geneland and EEMS and BEDASSLE.}
+\reply{We have added more text comparing conStruct with Geneland and EEMS and BEDASSLE. \revref}
 
 \begin{point}{}
     In line 97 to 111: The analogy to ``random flipping of allele state" is mildly interesting, 
@@ -284,16 +312,23 @@ but does not add much insight.
 You can cut it and start directly with your summary statistic (2) and only mention this analogy in the Supplement/Appendix.
 \end{point}
 
-\reply{We have edited that section for clarity and brevity.}
+\reply{We have edited that section for clarity and brevity. \revref}
 
 \begin{point}{}
-    On multiple occasions you argue that the ``allelic covariance" matrix is insensitive to the choice of reference allele. 
-This is also true for most covariance matrices of the style (p1-p, p2-p), or do I miss something??
-The main advantage seems to be that you buy is that you don't have to estimate mean allele frequencies, which is MANY parameters. 
-You probably have taught quite a bit about this step ``down" from Bedasssle, so perhaps share some of your views and initial experiments.
+    On multiple occasions you argue that the ``allelic covariance" matrix is
+    insensitive to the choice of reference allele.  This is also true for most
+    covariance matrices of the style (p1-p, p2-p), or do I miss something?
+    The main advantage seems to be that you don't have to estimate mean allele
+    frequencies, which is MANY parameters.  You probably have thought quite a
+    bit about this step ``down" from Bedasssle, so perhaps share some of your
+    views and initial experiments.
 \end{point}
 
-\reply{RESPONSE.}
+\reply{
+    True, insensitivity to reference allele is not the motivation for using allelic covariance;
+    rather, the motivation comes from insensitivity to the distribution of samples.
+    We've tried to make this more clear at \revref{} and at \llname{ll:cov_config}.
+}
 
 \begin{point}{}
     In line 72-73, you cite that mainly stepping-stone models gives us some analytical predictions. 
@@ -307,7 +342,7 @@ They are not directly relevant for this work, but hey could provide useful conte
 \end{point}
 
 \reply{Thanks for pointing out these missing and important references.  
-We have added them to the manuscript.}
+We have added them to the manuscript. \revref}
 
 \begin{point}{}
     Your covariance matrix has to be a valid covariance matrix, i.e. positive semidefinite. 
@@ -322,7 +357,13 @@ This issue could mess with the Wishart distribution and matrix inversion if the 
 \reply{Yes, as you say the covariance must be positive semi-definite for us to invert it and calculate the likelihood.
 The inference algorithm implemented by STAN automatically rejects proposed matrices that aren't invertible.
 While it is possible that this could introduce issues into the mixing of the MCMC, 
-in practice we haven't found that concern to be borne out.}
+in practice we haven't found that concern to be borne out.
+We chose not to discuss the bounds on the exponent because the situation is not quite so clear:
+although only those exponents will give consistent covariance functions
+in continuous, flat, Euclidean space,
+the data come from a set of discrete points in a situation where the best notion of distance
+may differ substantially from Euclidean.
+}
 
 \begin{point}{}
     There seem to be some possible degeneracy issues, 
@@ -332,9 +373,11 @@ $\alpha_0$ and $\phi_k$ will becomes indistinguishable.
  (or think they are not important, as you are not really interested in estimating these parameters).
 \end{point}
 
-\reply{In practice, because those parameters can't be easily interpreted in a biological context, 
+\reply{We agree: in practice,
+because those parameters can't be easily interpreted in a biological context, 
 we treat them more as nuisance parameters and focus on inference of the admixture proportions.
-We have plans for a future release that has a more biologically motivated model of IBD (see more below).}
+We have plans for a future release that has a more biologically motivated model of IBD (see more below).
+We've made a note about this. \revref}
  
 \begin{point}{}
     Genetics states ``All articles published by GENETICS must include a 
@@ -348,7 +391,9 @@ But if someone is protective of this data, I personally would be fine with omitt
 
 \reply{Thanks for pointing this out.  
 We have added a Data Availability Statement, 
-and all data analyzed and scripts used to perform the analyses have been archived in data dryad.}
+and all data analyzed and scripts used to perform the analyses have been archived in data dryad.
+\revref
+}
 
 \begin{point}{}
     Fig. 4 could be relegated to the supplement, it does not show much more really important information as Fig. 2. 
@@ -358,7 +403,7 @@ and all data analyzed and scripts used to perform the analyses have been archive
 \reply{We like Fig. 4 as a demonstration of the utility of calculating layer 
 contributions as a heuristic of model comparison. 
 And, although the information Fig. 4 contains is a little redundant with that of Fig. 2, 
-that wouldn't have to be the case, because the $phi$ parameters for the extra layers 
+that wouldn't have to be the case, because the $\phi$ parameters for the extra layers 
 in the spatial model could be so large that even though ancestry in them was negligible, 
 their contributions could still be significant.}
 
@@ -371,7 +416,20 @@ their contributions could still be significant.}
  Having ground truth plots would help to remove my doubts!
 \end{point}
 
-\reply{RESPONSE.}
+\reply{
+    We agree, it would be nice to have the plot that is analogous 
+    to Figures \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit} in the main text, 
+    but we decided that would be too much.
+    We don't think we need a ``ground truth'' plot for figure \ref{simK1pies}, however --
+    since the true $K=1$, all true admxiture coefficients are equal to 1.
+    We've updated the caption of this figure to better point this out.
+    As for Figures \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit},
+    we reassure you that there's no funny business:
+    those figures show the 99\% credible interval for each population's admixture proportions
+    from the spatial conStruct analysis with the appropriate $K$,
+    and plotted them against the values used to simulate the data.
+    We've added more detail to those captions as well.
+}
 
 \begin{point}{}
     Line 386: I think the claim that your model includes a biologically realistic model for isolation by distance is a bit overzealous. 
@@ -383,7 +441,11 @@ their contributions could still be significant.}
   Could be worth mentioning that caveat, and that in that case EEMS style methods.
 \end{point}
 
-\reply{RESPONSE.}
+\reply{
+    Fair enough! We've removed the phrase ``biologically realistic''. \revref{}
+    We think these caveats are discussed sufficiently later on,
+    at \llname{ll:caveats}.
+}
 
 \begin{point}{}
     The headings are a bit off. 
@@ -397,7 +459,7 @@ Orient yourself on the excellent structure of the BEDASSLE paper.
 We have edited them for a more logical flow and greater clarity.}
 
 \begin{point}{}
-    III) Suggestions (for future)
+    Suggestions (for future)
  When I run the inference scheme myself, 
  I noticed that mostly only one core on my machine is under full load, while the other remain idle. 
  You could conceive ways to incorporate multi-processing. 
@@ -413,23 +475,24 @@ But, as you say, there are algorithms for parallelizing matrix inversions calcul
 so we might look to porting the inference out of STAN to get greater speedups for future releases.}
  
 \begin{point}{}
-     You assume a multivariate normal distribution. 
- This implicitly assumes that all higher moments are 0, 
- which is quite the assumption for real data and almost certainly violated. 
- But In some sense, your method fits the covariances matrix - the pattern that it produces it does not matter. 
- This brings me directly to the next point:
- You could explore other ways to fit the covariance matrix. 
- Since typically the model is violated anyways, 
- you won't lose too much (the posterior is no ``real" posterior)
-For instance, fitting all pairwise covariance by for instance least square 
-is not necessarily inferior, but could give you significant speed updates 
-(quadratic, and no cumbersome inversion of the covariance matrix).
-Ringbauer2018 tried such approaches and found 
-that simpler fitting methods often have similar power than more complex ones 
-(whose assumptions are violated anyways), but are much faster.
+    You assume a multivariate normal distribution. 
+    This implicitly assumes that all higher moments are 0, 
+    which is quite the assumption for real data and almost certainly violated. 
+    But in some sense, your method fits the covariance matrix 
+    - the pattern that it produces it does not matter. 
+    This brings me directly to the next point:
+    You could explore other ways to fit the covariance matrix. 
+    Since typically the model is violated anyways, 
+    you won't lose too much (the posterior is no ``real" posterior)
+    For instance, fitting all pairwise covariance by for instance least square 
+    is not necessarily inferior, but could give you significant speed updates 
+    (quadratic, and no cumbersome inversion of the covariance matrix).
+    Ringbauer2018 tried such approaches and found 
+    that simpler fitting methods often have similar power than more complex ones 
+    (whose assumptions are violated anyways), but are much faster.
 \end{point}
 
-\reply{This is a nice idea, and one that we will definitely look into.
+\reply{This is a nice idea, and one that we have also considered.
 We've talked about including a ``fast" conStruct option  
 that uses a maximum-likelihood algorithm in a future release, 
 and possibly one that uses the TreeMix trick of modeling each cell in the 
@@ -460,18 +523,22 @@ as typically done nowadays for many applications,
 if at least linkage groups are known.
 \end{point}
 
-\reply{Yes, we think that's likely the best way to do it when linkage is known.
-We've added some text about that in the ``Cross-validation" section of the Appendix 
-(Lines XXX-XXX).}
+\reply{
+    We agree -- that's likely the best way to do it when linkage is known.
+    We've added some text about that in the ``Cross-validation" section of the Appendix.
+    \revref
+}
 
 \begin{point}{}
     The Gamma-Exponential Kernels used here are often considered inferior to Matern-Kernels. 
 In practice it likely wont matter much though.
 \end{point}
 
-\gb{Yes, one of the next updates we plan is to replace the flexible but 
-poorly motivated powered exponential with the form worked out for 
-probability of identity by state in continuous space from Barton, Depaulis, and Etheridge (2000).}
+\reply{
+    Again, agreed! One of the next updates we plan is to replace the flexible but 
+    poorly motivated powered exponential with the form worked out for 
+    probability of identity by state in continuous space from Barton, Depaulis, and Etheridge (2000).
+}
 
 \begin{point}{}
     I personally really fancy your writing style, 
@@ -499,19 +566,23 @@ no ground truth best way.
 \end{point}
 
 \reply{First, thank you for the compliment (seriously - ``a golden thread"!).
-We appreciate that not all scientists are native English speakers, 
-and have tried to be as clear and specific in our writing as possible, 
+And, you've pulled out a good example of an overly convoluted sentence;
+we have edited it following your excellent suggestion \revref{}.
+In this revision, we've tried to be as clear and specific in our writing as possible, 
 both in the manuscript, and even more in the R package vignettes. 
-And, while some of the words we choose are perhaps rare in scientific writing, 
-we put great care into our choice of syntax, 
-and we think that the nuances of meaning these odd word-birds lend us merit their inclusion.
-As Mark Twain wrote, ``The difference between the \emph{almost} right word and the right word 
-is really a large matter -- 
-'tis the difference between the lightning bug and the lightning."}
+We're sure it could still be much better,
+but hope it is improved.
+% And, while some of the words we choose are perhaps rare in scientific writing, 
+% we put great care into our choice of syntax, 
+% and we think that the nuances of meaning these odd word-birds lend us merit their inclusion.
+% As Mark Twain wrote, ``The difference between the \emph{almost} right word and the right word 
+% is really a large matter -- 
+% 'tis the difference between the lightning bug and the lightning."
+}
 
 \begin{point}{}
     Stress more that an easy-to-use implementation inclusive a manual exists, that is
 certainly a strong point! I was impressed by the ease of installation and use, and quality of the manual.
 \end{point}
 
-\reply{Good suggestion - we have now indicated that the method is available as a documented R package.}
+\reply{Good suggestion - we have now indicated that the method is available as a documented R package. \revref}

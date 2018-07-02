@@ -417,7 +417,7 @@ each with a characteristic set of allele frequencies, which are estimated.
 These underlying frequencies are identical 
 for all individuals assigned to a cluster, 
 \emph{regardless} of their spatial location. 
-Spatial information has been incorporated into some of these methods, 
+Spatial information has been incorporated into some of these methods, \revpoint{2}{5}
 by, for example, placing spatial priors on cluster membership \cite{geneland,TESS}, 
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
@@ -435,7 +435,7 @@ gives us some analytical predictions for isolation by distance
 \cite{malecot1969mathematics,Slatkin1985,epperson2003geographical}, 
 and some theory has been derived for continuous space 
 \cite{nagylaki1978diffusion,nagylaki1988,barton2002neutral},
-but substantial work remains to be done \cite{barton2013modelling}.
+but substantial work remains to be done \cite{barton2013modelling}. \revpoint{2}{8}
 Given the generality of the circumstances that generate a pattern of isolation by distance, 
 it is unsurprising that isolation by distance is very widespread in nature \cite{meirmans2012,Sexton_etal_2014}.
 
@@ -447,9 +447,9 @@ and has given rise to a debate in the population genetic literature
 about how best to describe sets of individuals using continuous clines and discrete clusters 
 (e.g., \cite{SerrePaabo2004,rosenberg2005clines}).
 
-Existing model-based clustering approaches can only describe continuous patterns of variation using
-discrete clusters, and so tend to erroneously describe continuously distributed variation with multiple clusters that 
-show spatially autocorrelated cluster membership \cite{Frantz2009,meirmans2012}.
+Most existing model-based clustering methods are based on a discrete set of clusters,
+and so tend to partition continuous variation into spurious clusters
+with spatially autocorrelated cluster membership \cite{Frantz2009,meirmans2012}. \revpoint{2}{21}
 In analyses of empirical datasets, which often show strong isolation by distance,
 model-based clustering approaches will therefore tend to overestimate
 the number of discrete clusters present. 
@@ -467,7 +467,7 @@ We also implement a cross-validation approach for comparing and selecting models
 and we demonstrate the utility of our approach using both simulated and empirical data.
 The implementation of this method, \texttt{conStruct} (for ``\emph{con}tinuous \emph{struct}ure"), 
 is documented and available for general use as an R package at 
-\burl{https://github.com/gbradburd/conStruct}.
+\burl{https://github.com/gbradburd/conStruct}. \revpoint{2}{22}
 
 
 \section*{Methods}
@@ -487,7 +487,7 @@ More precisely, suppose that we pick a random bi-allelic locus uniformly from th
 pick a random ``reference'' allelic state from the two alleles seen at that locus,
 and, in each sample, draw one random allele,
 recording $X_i = 1$ if the allele drawn in sample $i$ matches the random reference,
-and $X_i = 0$ otherwise.
+and $X_i = 0$ otherwise. \revpoint{2}{6}
 Then, 
 \begin{equation} \label{eqn:first_allelic_cov}
     \widehat{\Omega}_{i,j} = \cov[X_i, X_j] .
@@ -509,10 +509,11 @@ and $\widehat \Omega$ can be calculated as
     \frac{1}{L} \sum_{\ell=1}^L (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) \qquad \text{for } i \neq j.
 \label{allelic_covariance}
 \end{equation}
-This definition of covariance differs from the usual ``genetic covariance'' \cite{mcvean_genealogical_2009}
-in that (a) we do not subtract locus means,
-and so to make the statistic insensitive to choice of reference allele, 
-(b) we randomly choose a reference allele at each locus.
+This definition of covariance differs from the usual ``genetic covariance'' 
+\cite{mcvean_genealogical_2009}
+in that (a) we do not subtract locus means (to make the statistic insensitive to sample configuration),
+and (b) we randomly choose a reference allele at each locus.
+(to retain insensitivity to choice of reference allele). \revpoint{2}{7}
 As noted in \cite{EEMS}, for $i \neq j$,
 this can also be calculated as $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$,
 where $\pi_{i,j}$ is the genetic distance,
@@ -632,7 +633,7 @@ such as inbreeding and the sampling process.
 If the allele frequency deviations at each locus
 were independent between loci and multivariate normally distributed across populations, 
 their allelic covariance $\widehat{\Omega}$ 
-would be Wishart distributed with degrees of freedom equal to $L$, 
+would be Wishart distributed with degrees of freedom equal to $L$, \linelabel{ll:wishart}
 the number of loci genotyped.
 We use this as a convenient approximation to the true distribution described above,
 and so define the likelihood of the allelic covariance to be
@@ -685,20 +686,20 @@ and related models (e.g., \cite{ADMIXTURE});
 the main difference is that our likelihood assumes that allele frequencies are normally distributed 
 around their expectations, 
 while the standard assignment methods assume that the error is binomially distributed \cite{Engelhardt2012}.  
-(We make this approximation for the substantial advantages in
-computational speed.)
-The second small difference is that, in the original STRUCTURE model, 
+(We make this approximation for the substantial advantages in computational speed.)
+The second difference is that, in the original STRUCTURE model, 
 allele frequencies at each locus are independently drawn for each 
 cluster \cite{STRUCTURE}, while in conStruct's nonspatial model, 
 it is more natural to envision each cluster's allele frequency 
 as being drifted away from a single, global allele frequency. 
 This makes our model more
 closely related to the ``$F$-model'' prior for allele frequencies of \cite{falush2003}.
-As these differences are relatively small, we can compare the fit of the different models 
+These differences in the underlying model could in principle result in different behavior,
+\revpoint{2}{4}
+but below we show that the nonspatial model indeed produces similar results to ADMIXTURE,
+and use this fact to compare the fit of the different models
 --- spatial vs. nonspatial, across different values of $K$ --- 
 by comparing their performance in a common framework. 
-We also validate our claim that the results of our nonspatial method 
-are a close match to those of STRUCTURE-based approaches.
 
 \paragraph{Choice of layer number and cross-validation}
 There are a number of reasons 
@@ -778,7 +779,9 @@ The method \texttt{conStruct} is implemented as an R package,
 and is available for installation at \burl{https://github.com/gbradburd/conStruct}.
 Scripts for generating and analyzing all simulated and empirical datasets, 
 as well as the datasets themselves, 
-are also available at the same site.
+are also available at the same site. \revpoint{2}{11}
+
+
 \section*{Results}
 
 \subsection*{Simulations}
@@ -795,7 +798,7 @@ we collapsed those $K$ discrete layers into a single grid of demes,
 choosing various amounts of admixture from these different layers
 (see Fig \ref{sim_setup}),
 and collapsed the layers together using random, spatially autocorrelated admixture proportions.
-See \secref{sim_details} for more details, including parameter values used. \llname{ll:sim_params_ref}
+See \secref{sim_details} for more details, including parameter values used. \linelabel{ll:sim_params_ref}
 We simulated datasets using $K=1$, 2, and 3 layers;
 in each simulation we sampled 10,000 unlinked loci from each of 20 haploid individuals from every deme.
 We then ran both spatial and nonspatial \texttt{conStruct} analyses on each simulated dataset with $K$ between 1 and 7,
@@ -855,10 +858,12 @@ in contrast, additional clusters in the nonspatial analyses continue to contribu
 	\fi
 	\caption{
         Results for data simulated using $K=1$,
-	showing maps of admixture proportions estimated using the nonspatial \texttt{conStruct} model for $K=2$ through 4 (top row)
+	showing maps of admixture proportions estimated using the nonspatial \texttt{conStruct} model 
+    for $K=2$ through 4 (top row)
 	and the spatial \texttt{conStruct} model for $K=2$ through 4 (bottom row).
-    As there is only a single layer in the simulation, the spatial model accurately depicts the data
-    in all cases, while the nonspatial model creates spurious clusters.
+    As there is only a single layer in the simulation, no populations should be admixed,
+    which is accurately depicted by the spatial model (second row),
+    while the nonspatial model creates spurious clusters (first row).
     }\label{simK1_pies}
 \end{figure}
 
@@ -1017,11 +1022,12 @@ were experimentally shown to display differences in ecologically relevant phenot
 At higher values of $K$, drainages at the southern tip of \tri{} sampling 
 begin to split out into their own layers,
 perhaps due to introgression from the southern neighbors
-\textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}
+\textit{P. angustifolia} or \textit{fremontii} \cite{Zhou2012,geraldes_etal_2014}.
 
-\paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_populus}
+\paragraph{Comparison to ADMIXTURE}
 Both nonspatial \texttt{conStruct} and ADMIXTURE displayed 
 the successive partitioning of space and the clines of admixture seen in the simulation results.
+\linelabel{ll:admixture_populus}
 The details of each were somewhat different 
 (Fig \ref{populus_nsp_pies} vs. Fig \ref{populus_admixture}), 
 and also differed across the replicate analyses.
@@ -1165,7 +1171,7 @@ that shape genetic variation at local scales, such as inbreeding,
 which affects covariance between individuals within each location, 
 but has limited impact on covariance between locations.
 
-\paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_bears}.
+\paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_bears}
 Results from the nonspatial model and from the ADMIXTURE analyses 
 clearly exhibit the tendency of nonspatial clustering algorithms 
 to describe continuous spatial patterns of divergence 
@@ -1198,6 +1204,17 @@ The third cluster in the ADMIXTURE analysis at $K=3$
 (shown in gold in Fig \ref{bear_admixture}b), 
 shows strong spatial autocorrelation in admixture proportions, 
 as would be expected if it is describing continuous spatial differentiation.
+The allelic covariances plotted against distance (see Fig \ref{bear_cov_colorized})
+provide more information on ADMIXTURE's lack of fit. \revpoint{1}{4}
+First, covariance between different sampling locations of Eastern bears
+falls off with distance,
+indicating a residual pattern best explained by isolation by distance within laters.
+Second, the covariance between bears assigned to ADMIXTURE's gold and red layers
+(the furthest Northwestern (Alaskan) bears and the Eastern bears, respectively)
+appears to be a natural extension of the decay of covariance with distance,
+falling only slightly lower values than covariances 
+between other widely separated pairs of Eastern sampling locations.
+
 
 Across all values of $K$ for which we ran \texttt{conStruct},
 we see strong support for the spatial model over the nonspatial model (Fig \ref{bear_xvals}).
@@ -1234,7 +1251,7 @@ by acknowledging isolation by distance,
 real datasets can be better described using fewer layers.
 
 The proposed method combines the utility of model-based clustering algorithms 
-with a biologically realistic model of isolation by distance.
+with a model of isolation by distance. \revpoint{2}{14}
 We anticipate that \texttt{conStruct} will be useful for identifying populations 
 and determining ancestral origins of sampled individuals,
 especially when the populations exhibit geographic patterns of relatedness.
@@ -1282,6 +1299,11 @@ the maximum likelihood algorithm implemented in ADMIXTURE
 is quite a bit faster than \texttt{conStruct}:
 running ADMIXTURE on the bear dataset over all values of $K$ from 1 to 7, 
 including 50-fold cross-validation for each value of $K$, took only 6.6 minutes.
+It should also be noted that there may be situations when the
+binomial-based model underlying ADMXITURE performs better than
+our Gaussian-based model,
+e.g., when clusters differ at only a few, strongly differentiated loci
+\linelabel{ll:admixture_few_loci}.
 
 
 \paragraph{Choosing the ``best" number of layers}
@@ -1348,14 +1370,18 @@ The choice of allelic covariance, rather than genetic covariance,
 was motivated by the fact that
 it is less affected by sample configuration --
 the genetic covariance is calculated after subtracting the mean from the entire sample,
-which is more strongly affected by densely sampled locations.
-This led to better performance on test data.
+which is more strongly affected by densely sampled locations. \linelabel{ll:cov_config}
+Genetic covariance is also often computed after first dividing each frequency by $\sqrt{p (1-p)}$,
+where $p$ is the global allele frequency,
+with the aim of equalizing variances across loci. \revpoint{2}{3}
+Our definition does not do this, and so is less affected by low-frequency alleles.
+Both of these changes led to better performance on test data.
 However, note that allelic covariance is more affected by singleton sites
 than the standard genetic covariance,
 so it may be advisable to filter these prior to analysis
 if they are likely to contain a large percentage of errors \cite{linck_battey2017}.
 
-\paragraph{Caveats and considerations}
+\paragraph{Caveats and considerations} \linelabel{ll:caveats}
 There are a few important caveats to consider in the interpretation of \texttt{conStruct} results. 
 First, we have modeled allelic covariance within a layer as a spatial process.
 Although there is flexibility built into the model about the shape of that covariance, 
@@ -1378,8 +1404,11 @@ It is possible that this is happening in Fig \ref{populus_sp_pies}.
 At $K=3$, the southernmost populations of \textit{P. trichocarpa} are in the gold layer, 
 whose other neighbors are to the north, with an intervening group of populations in the red layer, 
 and at $K=5$, those southernmost samples split out and become their own layer.
+Furthermore, note that in this case $\alpha_0^{(k)}$ and $\phi^{(k)}$ are confounded,
+so differences in $\phi$ between layers should not be overinterpreted. \revpoint{2}{10}
 Again, we encourage users to run analyses across multiple values of $K$, 
-and to examine the spatial covariance functions within layers when interpreting results.
+to examine the spatial covariance functions within layers when interpreting results.
+
 
 \paragraph{Extensions and future directions}
 There are several ways in which the model described in this paper might be extended or improved.  
@@ -1687,7 +1716,7 @@ so if loci from a single linkage block are included in both training and testing
 the independence of the test in the testing partition will be compromised 
 because the parameters estimated from the training partition 
 might be describing process heterogeneity or noise 
-in a region of the genome that also has loci included in the testing partition.
+in a region of the genome that also has loci included in the testing partition. \revpoint{2}{19}
 The best practice for cross-validation is to make sure that 
 no loci in the testing dataset are in strong LD with, 
 or near on the genome to, loci in the training dataset.
@@ -1943,8 +1972,11 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_adprop_fit.pdf}}
 	\fi
 		\caption{
-			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
-			Results are from an analysis with a spatial model using $K=2$.
+			Plot of \texttt{conStruct}'s ability to correctly estimate admixture proportions 
+            on simulated data, from an analysis with a spatial model using $K=2$.
+            The horizontal axis shows the admixture proportions used to simulate the data,
+            and the vertical axis shows the 99\% credible intervals for those proportions
+            as reported by conStruct.
 		}\label{simK2_adprop_fit}
 \end{figure}
 \ifsuppmatfigs
@@ -1957,8 +1989,11 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
 	\fi
 		\caption{
-			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions on simulated data.
-			Results are from an analysis with a spatial model using $K=3$.
+			Plot of \texttt{conStruct} ability to correctly estimate admixture proportions 
+            on simulated data, from an analysis with a spatial model using $K=3$.
+            The horizontal axis shows the admixture proportions used to simulate the data,
+            and the vertical axis shows the 99\% credible intervals for those proportions
+            as reported by conStruct.
 		}\label{simK3_adprop_fit}
 \end{figure}
 \ifsuppmatfigs
@@ -2015,7 +2050,8 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
-	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
+    The true value was $K=1$, but
+	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK1}
 \end{figure}
 \ifsuppmatfigs
@@ -2030,7 +2066,8 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
-	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
+    The true value was $K=2$, but
+	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK2}
 \end{figure}
 \ifsuppmatfigs
@@ -2045,7 +2082,8 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	\caption{
 	Map of admixture proportions estimated using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
-	The model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
+    The true value was $K=3$, but
+	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK3}
 \end{figure}
 \ifsuppmatfigs
@@ -2360,6 +2398,29 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{bear_admix_CVerrors}
+\end{figure}
+\ifsuppmatfigs
+	\clearpage
+\fi
+
+\begin{figure}[!ht]
+	\centering
+	\ifsuppmatfigs
+        {\includegraphics[width=\textwidth]{figs/bears/bear_sp_colorized_cov.pdf}}
+	\fi
+	\caption{
+        Allele frequency covariance between each pair of sampling locations for bear data,
+        with each point colored to show which two locations it correponds to
+        (see inset for colors).
+        For instance, set of points showing covariance around 0.18
+        and above 2000 miles distant
+        have dark green centers with white-to-orange borders,
+        indicating they are comparisons between the Northwest-most (Alaskan) bears
+        and the bears on the Eastern half of the map.
+        The two curves show the decay of covariance within each layer
+        for the spatial \texttt{conStruct} model with $K=2$,
+        as in figure \ref{bear_sp_layer_covs}.
+    }\label{bear_cov_colorized}
 \end{figure}
 \ifsuppmatfigs
 	\clearpage
