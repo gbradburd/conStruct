@@ -73,15 +73,14 @@ get.laycols <- function(K,q.file,N){
 	return(laycols)
 }
 
+load("../../sims/sim_data/K_1/sim.dataset.Robj")
+laycols <- get.laycols(K=7,q.file="../../sims/analyses/admixture/datasets/simK1/simK1.%s.Q",N=sim.dataset$N)
 
-load("~/Dropbox/conStruct/sims/cross_validation/K_1/sim.dataset.Robj")
-laycols <- get.laycols(K=7,q.file="~/Dropbox/conStruct/sims/admixture/datasets/simK1/simK1.%s.Q",N=sim.dataset$N)
 
-
-pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK1_pies.pdf",width=12,height=7.75,pointsize=13)
+pdf(file="admixture/admixture_simK1_pies.pdf",width=12,height=7.75,pointsize=13)
 	par(mfrow=c(2,3),mar=c(4.5,4,2.5,4))
 	for(k in 2:7){
-		pie.plot(Q.file = sprintf("~/Dropbox/conStruct/sims/admixture/datasets/simK1/simK1.%s.Q",k),
+		pie.plot(Q.file = sprintf("../../sims/analyses/admixture/datasets/simK1/simK1.%s.Q",k),
 			 coords = sim.dataset$coords,
 			 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 			 layer.colors = laycols[[k-1]])
@@ -95,29 +94,29 @@ dev.off()
 ad.Qs <- lapply(2:7,
 			function(k){
 				pop.vec <- unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)}))
-				Q.file <- sprintf("~/Dropbox/conStruct/sims/admixture/datasets/simK1/simK1.%s.Q",k)
+				Q.file <- sprintf("../../sims/analyses/admixture/datasets/simK1/simK1.%s.Q",k)
 				Q <- read.table(Q.file,stringsAsFactors=FALSE)
 				admix.props <- collapse.ind.Q(Q,pop.vec)
 				return(admix.props)
 			})
 
 for(k in 1:6){
-	pdf(file=sprintf("~/Dropbox/conStruct/writeup/figs/admixture/simK1_%s_struct.pdf",k+1),width=10,height=4.5)
+	pdf(file=sprintf("admixture/simK1_%s_struct.pdf",k+1),width=10,height=4.5)
 		make.structure.plot(ad.Qs[[k]],layer.colors=laycols[[k]])
 	dev.off()
-	pdf(file=sprintf("~/Dropbox/conStruct/writeup/figs/admixture/simK1_%s_pies.pdf",k+1),width=6,height=6)
+	pdf(file=sprintf("admixture/simK1_%s_pies.pdf",k+1),width=6,height=6)
 		make.admix.pie.plot(ad.Qs[[k]],sim.dataset$coords,layer.colors=laycols[[k]],radii=6,x.lim=c(2.5,8.5),y.lim=c(2.5,8.5))
 		mtext(side=3,font=2,text=bquote(paste(italic("K"),"=",.(k+1))),cex=2)
 	dev.off()
 }
 
-load("~/Dropbox/conStruct/sims/cross_validation/K_2/sim.dataset.Robj")
-laycols <- get.laycols(K=7,q.file="~/Dropbox/conStruct/sims/admixture/datasets/simK2/simK2.%s.Q",N=sim.dataset$N)
+load("../../sims/sim_data/K_2/sim.dataset.Robj")
+laycols <- get.laycols(K=7,q.file="../../sims/analyses/admixture/datasets/simK2/simK2.%s.Q",N=sim.dataset$N)
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK2_pies.pdf",width=12,height=7.75,pointsize=13)
+pdf(file="admixture/admixture_simK2_pies.pdf",width=12,height=7.75,pointsize=13)
 	par(mfrow=c(2,3),mar=c(4.5,4,2.5,4))
 	for(k in 2:7){
-		pie.plot(Q.file = sprintf("~/Dropbox/conStruct/sims/admixture/datasets/simK2/simK2.%s.Q",k),
+		pie.plot(Q.file = sprintf("../../sims/analyses/admixture/datasets/simK2/simK2.%s.Q",k),
 			 coords = sim.dataset$coords,
 			 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 			 layer.colors = laycols[[k-1]])
@@ -128,13 +127,13 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK2_pies.pdf",w
 	}
 dev.off()
 			
-load("~/Dropbox/conStruct/sims/cross_validation/K_3/sim.dataset.Robj")
-laycols <- get.laycols(K=7,q.file="~/Dropbox/conStruct/sims/admixture/datasets/simK3/simK3.%s.Q",N=sim.dataset$N)
+load("../../sims/sim_data/K_3/sim.dataset.Robj")
+laycols <- get.laycols(K=7,q.file="../../sims/analyses/admixture/datasets/simK3/simK3.%s.Q",N=sim.dataset$N)
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK3_pies.pdf",width=12,height=7.75,pointsize=13)
+pdf(file="admixture/admixture_simK3_pies.pdf",width=12,height=7.75,pointsize=13)
 	par(mfrow=c(2,3),mar=c(4.5,4,2.5,4))
 	for(k in 2:7){
-		pie.plot(Q.file = sprintf("~/Dropbox/conStruct/sims/admixture/datasets/simK3/simK3.%s.Q",k),
+		pie.plot(Q.file = sprintf("../../sims/analyses/admixture/datasets/simK3/simK3.%s.Q",k),
 			 coords = sim.dataset$coords,
 			 pop.vec = unlist(lapply(1:sim.dataset$N,function(n){rep(n,10)})),
 			 layer.colors = laycols[[k-1]])
@@ -145,11 +144,11 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/admixture_simK3_pies.pdf",w
 	}
 dev.off()
 
-CV.error1 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK1/exe.admixture.Rout")
-CV.error2 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK2/exe.admixture.Rout")
-CV.error3 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK3/exe.admixture.Rout")
+CV.error1 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK1/exe.admixture.Rout")
+CV.error2 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK2/exe.admixture.Rout")
+CV.error3 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK3/exe.admixture.Rout")
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/admixture/sims_CVerror.pdf",width=15,height=5.5,pointsize=14)
+pdf(file="admixture/sims_CVerror.pdf",width=15,height=5.5,pointsize=14)
 	#quartz(width=15,height=5)
 	par(mfrow=c(1,3),mar=c(4.5,4.5,4.9,2))
 	plot(CV.error1,pch=19,col="orangered",

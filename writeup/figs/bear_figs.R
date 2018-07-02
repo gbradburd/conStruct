@@ -1,15 +1,15 @@
-source("~/Dropbox/conStruct/writeup/figs/fig_funcs.R")
+source("fig_funcs.R")
 
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
-	load(sprintf("~/Dropbox/conStruct/data/bears/bear_rep%s_test.lnl.Robj",n,n))
+	load(sprintf("../../data/bears/conStruct/xvalidation/bear_rep%s_test.lnl.Robj",n,n))
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=12,height=4.25,pointsize=14)
+pdf(file="bears/bear_std_xval.pdf",width=12,height=4.25,pointsize=14)
 #	quartz(width=12,height=5)
 	par(mfrow=c(1,3),mar=c(3.75,5,4,1))
 	plot.xval.CIs(xval.CIs,K,jitter=0.1,xlim=c(0.75,7.25))
@@ -23,7 +23,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=12,hei
 	mtext("Cross-validation results (Bears)",side=3,padj=-2.2,font=2,cex=1.2)
 	mtext("non-spatial conStruct",side=3,font=2)
 	mtext("Predictive accuracy",side=2,padj=-3,font=2)
-	CV.error <- get.CV.error("~/Dropbox/conStruct/data/bears/admixture/exe.admixture.Rout")
+	CV.error <- get.CV.error("../../data/bears/admixture/exe.admixture.Rout")
 	plot(CV.error,pch=19,col="orangered",
 			xlab="",ylab="",cex=2,ylim=rev(range(CV.error)))
 	best <- which.min(CV.error)
@@ -34,8 +34,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_std_xval.pdf",width=12,hei
 dev.off()
 
 library(maps)
-load("~/Dropbox/conStruct/data/bears/bear.dataset.Robj")
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sampling_map.pdf",width=6,height=4,pointsize=13)
+load("../../data/bears/data/bear.dataset.Robj")
+pdf(file="bears/bear_sampling_map.pdf",width=6,height=4,pointsize=13)
 	#quartz(width=6,height=4,pointsize=13)
 	par(mar=c(1,1.5,0,0),oma=c(0,0,0,0))
 	map(xlim = range(bear.dataset$sample.coords[,1]) + c(-5,5), ylim = range(bear.dataset$sample.coords[,2])+c(-2,2), col="gray",lforce="e")
@@ -51,7 +51,7 @@ data.block <- conStruct:::make.data.block(K = 1,
 										  geoDist = fields::rdist.earth(bear.dataset$sample.coords))
 output.list.sp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_sp_conStruct.results.Robj",k))
+	load(sprintf("../../data/bears/conStruct/runs/bearsK%s_sp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -61,7 +61,7 @@ for(k in 1:7){
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/data/bears/runs/bearsK%s_nsp_conStruct.results.Robj",k))
+	load(sprintf("../../data/bears/conStruct/runs/bearsK%s_nsp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -69,7 +69,7 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=22.5,height=7.5,pointsize=14)
+pdf(file="bears/bears_sp_vs_nsp.pdf",width=22.5,height=7.5,pointsize=14)
 	layout(cbind(matrix(c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
 				 matrix(2+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE),
 				 matrix(4+c(rep(1,10),rep(2,15)),nrow=5,ncol=5,byrow=TRUE)))
@@ -92,7 +92,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=22.5
 		mtext(side=1,text="conStruct (nonspatial)",padj=-1.6,adj=0.12,cex=1.3)
 #		mtext(side=1,text=bquote(paste("(",.(letters[2]),") ",italic("K")," = ",.(3)," (nonspatial)")),padj=-1.5,adj=0.03,cex=1.3)
 	par(xpd=FALSE)
-		w <- as.matrix(read.table("~/Dropbox/conStruct/data/bears/admixture/bears.3.Q",stringsAsFactors=FALSE))
+		w <- as.matrix(read.table("../../data/bears/admixture/bears.3.Q",stringsAsFactors=FALSE))
 		make.bear.redux.result.plot.multipanel1(admix.proportions = w[,c(3,2,1)],
 												coords = bear.dataset$sample.coords,
 												lump.dist = 200,
@@ -103,7 +103,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_sp_vs_nsp.pdf",width=22.5
 #		mtext(side=1,text=bquote(paste("(",.(letters[3]),") ",italic("K")," = ",.(3)," (ADMIXTURE)")),padj=-1.5,adj=0.03,cex=1.3)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,height=10)
+pdf(file="bears/bear_sp_results.pdf",width=15,height=10)
 	layout(
 		rbind(
 			Reduce("cbind",lapply(1:3,function(x){
@@ -119,7 +119,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_results.pdf",width=15,h
 											layer.colors,csr1.order=c(2,1))
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,height=10)
+pdf(file="bears/bear_nsp_results.pdf",width=15,height=10)
 	layout(
 		rbind(
 			Reduce("cbind",lapply(1:3,function(x){
@@ -136,7 +136,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_results.pdf",width=15,
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf",width=12,height=8,pointsize=14)
+pdf(file="bears/bear_sp_layer_covs.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
@@ -146,7 +146,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_layer_covs.pdf",width=1
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf",width=12,height=8,pointsize=14)
+pdf(file="bears/bear_nsp_layer_covs.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
@@ -155,7 +155,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_nsp_layer_covs.pdf",width=
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_sp_colorized_cov.pdf",width=8,height=8,pointsize=14)
+pdf(file="bears/bear_sp_colorized_cov.pdf",width=8,height=8,pointsize=14)
 	sd.D <- sd(fields::rdist.earth(data.block$coords))
 	lon.cols <- terrain.colors(data.block$N)[as.numeric(cut(data.block$coords[,1],data.block$N))]
 	col.mats <- make.col.mats(lon.cols)
@@ -222,7 +222,7 @@ for(k in 1:K){
 	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+pdf(file="bears/bears_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=layer.colors,
@@ -235,7 +235,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bears_laycon_barplots.pdf",widt
 dev.off()
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_results.pdf",width=15,height=10,pointsize=14)
+pdf(file="bears/bear_admixture_results.pdf",width=15,height=10,pointsize=14)
 	# layout(Reduce("cbind",lapply(1:3,function(x){
 			# matrix(((x-1)*2)+c(rep(1,10),rep(2,15)),
 					# nrow=5,ncol=5,byrow=TRUE)})))
@@ -249,12 +249,12 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_results.pdf",wid
 					nrow=5,ncol=5,byrow=TRUE)}))
 			))
 	for(k in 2:7){
-		w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/admixture/bears.%s.Q",k),stringsAsFactors=FALSE))
+		w <- as.matrix(read.table(sprintf("../../data/bears/admixture/bears.%s.Q",k),stringsAsFactors=FALSE))
 		if(k <= 2){
 			csr1.order <- c(2,1)
 		}
 		if(k > 2){
-			tmp.w <- as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/bears/admixture/bears.%s.Q",k-1),stringsAsFactors=FALSE))
+			tmp.w <- as.matrix(read.table(sprintf("../../data/bears/admixture/bears.%s.Q",k-1),stringsAsFactors=FALSE))
 			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
 		}
 		if(is.null(csr1.order)){
@@ -269,8 +269,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_results.pdf",wid
 	}
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/bears/bear_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
-	CV.error <- get.CV.error("~/Dropbox/conStruct/data/bears/admixture/exe.admixture.Rout")
+pdf(file="bears/bear_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
+	CV.error <- get.CV.error("../../data/bears/admixture/exe.admixture.Rout")
 	plot(CV.error,pch=19,col="orangered",
 			xlab="number of clusters",ylab="Cross-Validation Error",cex=2,
 			main="Bear ADMIXTURE cross-validation results")

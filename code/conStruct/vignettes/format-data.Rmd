@@ -14,7 +14,7 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-<!-- library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/format-data.Rmd",html_vignette(toc=TRUE))	-->
+<!-- library(rmarkdown) ; render("format-data.Rmd",html_vignette(toc=TRUE))	-->
 
 ## Introduction
 This document describes the format of the data used in 

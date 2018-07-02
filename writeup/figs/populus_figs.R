@@ -1,16 +1,16 @@
-source("~/Dropbox/conStruct/writeup/figs/fig_funcs.R")
+source("fig_funcs.R")
 
-setwd("~/Dropbox/conStruct/data/poplars")
+
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
-	load(sprintf("poplar_rep%s_test.lnl.Robj",n,n))
+	load(sprintf("../../data/poplars/conStruct/xvalidation/poplar_rep%s_test.lnl.Robj",n,n))
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
 x.vals.std <- lapply(x.vals,conStruct:::standardize.xvals)
 xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_std_xval.pdf",width=10,height=5,pointsize=14)
+pdf(file="populus/populus_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
 	plot.xval.CIs(xval.CIs,K,jitter=0.1,xlim=c(0.75,7.25))
@@ -24,10 +24,10 @@ dev.off()
 
 
 library(maps)
-load("~/Dropbox/conStruct/data/poplars/poplar.data.Robj")
+load("../../data/poplars/data/poplar.data.Robj")
 col.mat1 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=TRUE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
 col.mat2 <- matrix(ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"),byrow=FALSE,length(poplar.data$sp.ID),length(poplar.data$sp.ID))
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sampling_map.pdf",width=6,height=5,pointsize=13)
+pdf(file="populus/populus_sampling_map.pdf",width=6,height=5,pointsize=13)
 	par(mar=c(4,4,1,1))
 	map(xlim = range(poplar.data$coords[,1]) + c(-5,5), ylim = range(poplar.data$coords[,2])+c(-2,2), col="gray",lforce="e")
 	points(poplar.data$coords,pch=19,cex=1.2,col=ifelse(poplar.data$sp.ID=="Populus trichocarpa","forestgreen","black"))
@@ -45,7 +45,7 @@ data.block <- conStruct:::make.data.block(K = 1,
 
 output.list.sp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_sp_conStruct.results.Robj",k))
+	load(sprintf("../../data/poplars/conStruct/runs/poplarsK%s_sp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -55,7 +55,7 @@ for(k in 1:7){
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/data/poplars/runs/poplarsK%s_nsp_conStruct.results.Robj",k))
+	load(sprintf("../../data/poplars/conStruct/runs/poplarsK%s_nsp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -63,7 +63,7 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
@@ -80,7 +80,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
+pdf(file=paste0("populus/populus_sp_layer_covs.pdf"),width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	par(mar=c(4,5,3,2),oma=c(3,3,3,1))	
@@ -97,7 +97,7 @@ pdf(file=paste0("~/Dropbox/conStruct/writeup/figs/populus/populus_sp_layer_covs.
 	mtext(text="allele frequency covariance",side=2,font=2,cex.axis=2,padj=-59.5,adj=20)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/pop_sp_results.pdf",width=12,height=8,pointsize=14)
+pdf(file="populus/pop_sp_results.pdf",width=12,height=8,pointsize=14)
 	#quartz(width=12,height=8,pointsize=14)
 	layout(matrix(c(1:6),nrow=2,ncol=3,byrow=TRUE))
 	csr1.order <- NULL
@@ -151,7 +151,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/pop_sp_results.pdf",width=12,
 	}
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_pies.pdf",width=12,height=8,pointsize=14)
+pdf(file="populus/populus_nsp_pies.pdf",width=12,height=8,pointsize=14)
 	par(mfrow=c(2,3))
 	plot.poplar.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -161,7 +161,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_nsp_pies.pdf",width=1
 							 K2.order=c(2,1))
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sp_pies.pdf",width=12,height=8,pointsize=14)
+pdf(file="populus/populus_sp_pies.pdf",width=12,height=8,pointsize=14)
 	par(mfrow=c(2,3))
 	plot.poplar.pies.multipanel(data.block = data.block,
 								 K = 7,
@@ -170,7 +170,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/populus_sp_pies.pdf",width=12
 								 mar = c(5,3,0,1.5))
 dev.off()
 
-load("~/Dropbox/conStruct/data/poplars/fastStructure/poplar.sample.sizes.Robj")
+load("../../data/poplars/data/poplar.sample.sizes.Robj")
 poplar.pop.vec <- unlist(lapply(1:length(poplar.sample.sizes),function(n){rep(n,poplar.sample.sizes[n])}))
 
 collapse.ind.Q <- function(Q,pop.vec){
@@ -182,16 +182,16 @@ collapse.ind.Q <- function(Q,pop.vec){
 	return(admix.props)
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_admixture_results.pdf",width=12,height=8,pointsize=14)
+pdf(file="populus/poplar_admixture_results.pdf",width=12,height=8,pointsize=14)
 	par(mfrow=c(2,3),mar=c(5,3,0,1.5))
 	for(k in 2:7){
-		w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/admixture/poplar.%s.Q",k),stringsAsFactors=FALSE)),
+		w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("../../data/poplars/admixture/poplar.%s.Q",k),stringsAsFactors=FALSE)),
 							pop.vec = poplar.pop.vec)
 		if(k == 2){
 			csr1.order <- c(1,2)
 		}
 		if(k > 2){
-		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("~/Dropbox/conStruct/data/poplars/admixture/poplar.%s.Q",k-1),stringsAsFactors=FALSE)),
+		tmp.w <- collapse.ind.Q(Q = as.matrix(read.table(sprintf("../../data/poplars/admixture/poplar.%s.Q",k-1),stringsAsFactors=FALSE)),
 								pop.vec = poplar.pop.vec)
 			csr1.order <- match.layers.x.runs(tmp.w,w,csr1.order)
 		}
@@ -206,8 +206,8 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplar_admixture_results.pdf"
 	}
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/populus/poplars_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
-	CV.error <- get.CV.error("~/Dropbox/conStruct/data/poplars/admixture/exe.admixture.Rout")
+pdf(file="populus/poplars_admixture_CVerror.pdf",width=7,height=7,pointsize=14)
+	CV.error <- get.CV.error("../../data/poplars/admixture/exe.admixture.Rout")
 	plot(CV.error,pch=19,col="orangered",
 			xlab="number of clusters",ylab="Cross-Validation Error",cex=2,
 			main="Poplar ADMIXTURE cross-validation results")

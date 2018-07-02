@@ -3,18 +3,20 @@
 #	Sim Figures for conStruct paper
 ################################################################
 ################################################################
-source("~/Dropbox/conStruct/writeup/figs/fig_funcs.R")
 
+source("fig_funcs.R")
+
+################################
 #K1
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation")
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_std_xval.pdf",width=10,height=5,pointsize=14)
+################################
+pdf(file="sims/simK1_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
-	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation",n.reps=10,K=7,simK=1,y.lim=c(-10,0))
+	plot.sim.xvals(dir="../../sims/analyses/conStruct/cross_validation/K_1",n.reps=10,K=7,simK=1,y.lim=c(-10,0))
 dev.off()
 
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_1")
-load("sim.dataset.Robj")
+
+load("../../sims/sim_data/K_1/sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
 data.block <- conStruct:::make.data.block(K = 1,
 										  freq.data = freq.data,
@@ -24,7 +26,7 @@ data.block <- conStruct:::make.data.block(K = 1,
 
 output.list.sp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_sp_conStruct.results.Robj",k))
+	load(sprintf("../../sims/analyses/conStruct/runs/K_1/simK1_K%s_sp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -32,17 +34,17 @@ for(k in 1:7){
 	output.list.sp[[k]] <- conStruct.results
 }
 
-output.list.nsp <- vector("list",7)
-for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_1/runs/simK1_K%s_nsp_conStruct.results.Robj",k))
-	conStruct.results <- cluster.2.layer(conStruct.results)
-	for(j in 1:k){
-		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
+	output.list.nsp <- vector("list",7)
+	for(k in 1:7){
+		load(sprintf("../../sims/analyses/conStruct/runs/K_1/simK1_K%s_nsp_conStruct.results.Robj",k))
+		conStruct.results <- cluster.2.layer(conStruct.results)
+		for(j in 1:k){
+			names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
+		}
+		output.list.nsp[[k]] <- conStruct.results
 	}
-	output.list.nsp[[k]] <- conStruct.results
-}
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK1_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -51,7 +53,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_nsp_pies.pdf",width=8,heig
 							 mar = c(4,2,1,2),trueK=1)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK1_sp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -60,7 +62,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_sp_pies.pdf",width=8,heigh
 							 mar = c(4,2,1,2),trueK=1)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/Fig2_simK1_sp_vs_nsp.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/Fig2_simK1_sp_vs_nsp.pdf",width=8,height=6.3,pointsize=14)
 	#quartz(width=6,height=4,pointsize=14)
 	radii <- 1.7
 	mar <- c(4,2,1,2)
@@ -125,7 +127,7 @@ for(k in 1:K){
 	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+pdf(file="sims/simK1_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	#quartz(width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
@@ -139,18 +141,19 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK1_laycon_barplots.pdf",width
 dev.off()
 
 
+################################
 #K2
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation")
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_std_xval.pdf",width=10,height=5,pointsize=14)
+################################
+pdf(file="sims/simK2_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
-	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation",n.reps=10,K=7,simK=2,y.lim=c(-10,0))
+	plot.sim.xvals(dir="../../sims/analyses/conStruct/cross_validation/K_2",n.reps=10,K=7,simK=2,y.lim=c(-10,0))
 dev.off()
 
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_2")
-load("sim.dataset.Robj")
+
+load("../../sims/sim_data/K_2/sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
-data.block <- conStruct:::make.data.block(K = 1,
+data.block <- conStruct:::make.data.block(K = 2,
 										  freq.data = freq.data,
 										  coords = sim.dataset$coords,
 										  spatial = TRUE,
@@ -158,7 +161,7 @@ data.block <- conStruct:::make.data.block(K = 1,
 
 output.list.sp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_sp_conStruct.results.Robj",k))
+	load(sprintf("../../sims/analyses/conStruct/runs/K_2/simK2_K%s_sp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -168,7 +171,7 @@ for(k in 1:7){
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_2/runs/simK2_K%s_nsp_conStruct.results.Robj",k))
+	load(sprintf("../../sims/analyses/conStruct/runs/K_2/simK2_K%s_nsp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -176,7 +179,7 @@ for(k in 1:7){
 	output.list.nsp[[k]] <- conStruct.results
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK2_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
 	K <- 7
 	output.list <- output.list.nsp
 	radii <- 1.7
@@ -219,7 +222,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_nsp_pies.pdf",width=8,heig
 		mtext(side=1,text=bquote(paste("(",.(letters[k-1]),") ",italic("K")," = ",.(k))),padj=2.7,adj=0.4)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK2_sp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -267,7 +270,7 @@ for(k in 1:K){
 	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+pdf(file="sims/simK2_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=layer.colors,
@@ -279,22 +282,23 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_laycon_barplots.pdf",width
 			mtext(side=3,text=bquote(paste("Layer contributions (true ",italic("K"),"=2)")),padj=-1.3,adj=12,font=2,cex=1.2)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK2_adprop_fit.pdf",width=6,height=6,pointsize=14)
+pdf(file="sims/simK2_adprop_fit.pdf",width=6,height=6,pointsize=14)
 	viz.admix.results(sim.admix.props = sim.dataset$admix.list$w,
 				 	 conStruct.results = output.list.sp[[2]][[1]],
 				 	 layer.order=c(2,1))
 dev.off()
 
+################################
 #K3
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation")
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_std_xval.pdf",width=10,height=5,pointsize=14)
+################################
+pdf(file="sims/simK3_std_xval.pdf",width=10,height=5,pointsize=14)
 #	quartz(width=10,height=5)
 	par(mfrow=c(1,2),mar=c(4,5,4,2))
-	plot.sim.xvals(dir="~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation",n.reps=10,K=7,simK=3,y.lim=c(-10,0))
+	plot.sim.xvals(dir="../../sims/analyses/conStruct/cross_validation/K_3",n.reps=10,K=7,simK=3,y.lim=c(-10,0))
 dev.off()
 
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_3")
-load("sim.dataset.Robj")
+
+load("../../sims/sim_data/K_3/sim.dataset.Robj")
 freq.data <- conStruct:::process.freq.data(sim.dataset$freq.data$freqs)
 data.block <- conStruct:::make.data.block(K = 1,
 										  freq.data = freq.data,
@@ -304,7 +308,7 @@ data.block <- conStruct:::make.data.block(K = 1,
 
 output.list.sp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_sp_conStruct.results.Robj",k))
+	load(sprintf("../../sims/analyses/conStruct/runs/K_3/simK3_K%s_sp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -314,7 +318,7 @@ for(k in 1:7){
 
 output.list.nsp <- vector("list",7)
 for(k in 1:7){
-	load(sprintf("~/Dropbox/conStruct/sims/cross_validation/K_3/runs/simK3_K%s_nsp_conStruct.results.Robj",k))
+	load(sprintf("../../sims/analyses/conStruct/runs/K_3/simK3_K%s_nsp_conStruct.results.Robj",k))
 	conStruct.results <- cluster.2.layer(conStruct.results)
 	for(j in 1:k){
 		names(conStruct.results[[1]]$MAP$layer.params[[j]])[4] <- "phi"
@@ -323,7 +327,7 @@ for(k in 1:7){
 }
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK3_nsp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -332,7 +336,7 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_nsp_pies.pdf",width=8,heig
 							 mar = c(4,2,1,2),trueK=3)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_sp_pies.pdf",width=8,height=6.3,pointsize=14)
+pdf(file="sims/simK3_sp_pies.pdf",width=8,height=6.3,pointsize=14)
 	par(mfrow=c(2,3),oma=c(1,0,3.5,0))
 	plot.sim.pies.multipanel(data.block = data.block,
 							 K = 7,
@@ -380,7 +384,7 @@ for(k in 1:K){
 	laycon.nsp[1:k,k] <- calculate.layer.contribution(csr,data.block,csr1.order)
 }
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width=8,height=4,pointsize=14)
+pdf(file="sims/simK3_laycon_barplots.pdf",width=8,height=4,pointsize=14)
 	par(mfrow=c(1,2),mar=c(4,4,3,0.5))
 	barplot(laycon.sp,	
 			col=layer.colors,
@@ -392,41 +396,29 @@ pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_laycon_barplots.pdf",width
 			mtext(side=3,text=bquote(paste("Layer contributions (true ",italic("K"),"=3)")),padj=-1.3,adj=12,font=2,cex=1.2)
 dev.off()
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/simK3_adprop_fit.pdf",width=6,height=6,pointsize=14)
+pdf(file="sims/simK3_adprop_fit.pdf",width=6,height=6,pointsize=14)
 viz.admix.results(sim.admix.props = sim.dataset$admix.list$w,
 				  conStruct.results = output.list.sp[[3]][[1]],
 				  layer.order=c(3,2,1))
 dev.off()
 
 
+################################
+# K1 vs. K2 vs. K3
+################################
 
-get.CV.error <- function(Rout.file){
-	log <- scan(Rout.file,what="character",sep="\n")
-	CV.error <- as.numeric(
-					unlist(
-						lapply(
-							strsplit(
-								log[grepl("CV error",log)],
-								": "),
-						"[[",2)
-					)
-				)
-	return(CV.error)
-}
-
-CV.error1 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK1/exe.admixture.Rout")
-CV.error2 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK2/exe.admixture.Rout")
-CV.error3 <- get.CV.error(Rout.file="~/Dropbox/conStruct/sims/admixture/datasets/simK3/exe.admixture.Rout")
+CV.error1 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK1/exe.admixture.Rout")
+CV.error2 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK2/exe.admixture.Rout")
+CV.error3 <- get.CV.error(Rout.file="../../sims/analyses/admixture/datasets/simK3/exe.admixture.Rout")
 
 
-pdf(file="~/Dropbox/conStruct/writeup/figs/sims/sim_xvals.pdf",width=14,height=5,pointsize=20)
+pdf(file="sims/sim_xvals.pdf",width=14,height=5,pointsize=20)
 #	quartz(width=14,height=5)
 #K1
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_1/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
-	load(sprintf("simK1_rep%s_test.lnl.Robj",n))
+	load(sprintf("../../sims/analyses/conStruct/cross_validation/K_1/simK1_rep%s_test.lnl.Robj",n))
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
@@ -441,11 +433,10 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	mtext(bquote(paste("True ",italic("K")," = 1")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 		points(which.min(CV.error1)+0.15,xval.CIs$nsp.means[which.min(CV.error1)],pch=5,col="orangered",cex=1.5)
 #K2
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_2/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
-	load(sprintf("simK2_rep%s_test.lnl.Robj",n))
+	load(sprintf("../../sims/analyses/conStruct/cross_validation/K_2/simK2_rep%s_test.lnl.Robj",n))
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})
@@ -468,11 +459,10 @@ xval.CIs <- conStruct:::get.xval.CIs(x.vals.std,K)
 	mtext(bquote(paste("True ",italic("K")," = 2")),side=3,adj=0.5,padj=-1.5,font=2,cex=1.2)
 	mtext("number of layers",side=1,padj=3.4)
 #K3
-setwd("~/Dropbox/conStruct/sims/cross_validation/K_3/x_validation")
 n.reps <- 10
 K <- 7
 for(n in 1:n.reps){
-	load(sprintf("simK3_rep%s_test.lnl.Robj",n))
+	load(sprintf("../../sims/analyses/conStruct/cross_validation/K_3/simK3_rep%s_test.lnl.Robj",n))
 	assign(paste0("tl",n),test.lnl)
 }
 x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})

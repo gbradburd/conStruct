@@ -173,7 +173,7 @@ make.col.mats <- function(cols){
 plot.sim.xvals <- function(dir,n.reps,K,simK,y.lim){
 	#recover()
 	for(n in 1:n.reps){
-		load(sprintf("simK%s_rep%s_test.lnl.Robj",simK,n))
+		load(paste0(dir,sprintf("/simK%s_rep%s_test.lnl.Robj",simK,n)))
 		assign(paste0("tl",n),test.lnl)
 	}
 	x.vals <- lapply(1:n.reps,function(n){get(sprintf("tl%s",n))})

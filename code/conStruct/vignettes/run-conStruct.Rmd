@@ -14,7 +14,7 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-<!-- library(rmarkdown) ; render("~/Dropbox/conStruct/code/conStruct/vignettes/run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
+<!-- library(rmarkdown) ; render("run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
 
 ## Introduction
 This document describes how to run a `conStruct` analysis.
