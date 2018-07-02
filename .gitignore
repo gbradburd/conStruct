@@ -59,3 +59,8 @@ code/sandbox/
 writeup/appeal.pdf
 writeup/latex/PLOS-submission-eps-converted-to.pdf
 writeup/figs/admixture/simK*
+sims/analyses/faststructure/*
+data_dryad
+sims/analyses/conStruct/runs/K_*/*.Rout
+data/bears/conStruct/runs/*.Rout
+data/poplars/conStruct/runs/*.Rout
