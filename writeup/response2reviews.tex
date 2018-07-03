@@ -33,7 +33,7 @@ and the anonymous reviewers are very helpful,
 and we believe the manuscript is improved as a result 
 of their critiques.
 
-Our detailed responses to those comments are inset below (in bold), 
+Our detailed responses to those comments are inset below,
 but, in brief, we have included more of the results of the ADMIXTURE analyses 
 in the main body of the text.
 Specifically, we have added figure panels to Figures 7 and 8 
@@ -85,6 +85,11 @@ We hope that the paper is now acceptable for publication.
     required a wider range of simulations.  
 \end{quote}
 
+Thanks for the thoughtful consideration.
+We agree in principle with the reviewer that more detailed tests of a method are always useful,
+but, as discussed below, decided that the paper would be better served without additional simulations.
+We hope that you agree.
+
 %%%%%%%%%%%%%%
 \reviewersection{1}
 
@@ -120,7 +125,7 @@ see below for more.}
 \end{point}
 
 \reply{We have added more extensive discussions of the 
-comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets,
+comparison between \texttt{conStruct} and ADMIXTURE for both empirical datasets along these lines,
 following \llname{ll:admixture_populus} and \llname{ll:admixture_bears}.
 }
 
@@ -145,7 +150,7 @@ following \llname{ll:admixture_populus} and \llname{ll:admixture_bears}.
 \reply{We think what's happening is that these layer-specific covariances for layers $>$2 
 are describing local departures from global patterns of IBD, 
 as might be expected due to, e.g., inbreeding.
-We have added some text to that effect in lines XXX-XXX.}
+We have added some text to that effect. \revref}
 
 \begin{point}{}
     Minor point, in figure 4, legend, should it read in each run of the spatial model, rather than nonspatial model?
@@ -202,7 +207,7 @@ the applications to real data we hope demonstrate the real-world utility of the 
 We have done ``sanity check'' simulations under the model itself,
 but as these are far enough from biological reality (e.g., the ``frequencies'' are not between 0 and 1),
 we think they'd only make the paper more confusing.
-As for the migration rates -- these are given in the text already \llname{ll:sim_params},
+As for the migration rates -- these are given in the text \llname{ll:sim_params},
 and we have added an explicit reference to this \llname{ll:sim_params_ref}.
 }
 
@@ -224,6 +229,7 @@ regarding isolation by distance,
 but note that the tools required to do genome-scale continuous-space simulations 
 have only recently become available (in SLiM), long after submission of this paper;
 and have not been officially released yet.
+We look forward to investigating this in the future.
 }
 
 \begin{point}{}
@@ -289,7 +295,6 @@ We have added discussion of this point. \revref
     above the background of a large number of non-differentiated loci.
     We've reworded the comparison at \revref, and added a caveat to the discussion
     at \llname{ll:admixture_few_loci}.
-    \plr{perhaps that last caveat is too speculative?}
 }
 
 \begin{point}{}
@@ -421,7 +426,7 @@ their contributions could still be significant.}
     We agree, it would be nice to have the plot that is analogous 
     to Figures \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit} in the main text, 
     but we decided that would be too much.
-    We don't think we need a ``ground truth'' plot for figure \ref{simK1pies}, however --
+    We don't think we need a ``ground truth'' plot for figure \ref{simK1_pies}, however --
     since the true $K=1$, all true admxiture coefficients are equal to 1.
     We've updated the caption of this figure to better point this out.
     As for Figures \ref{simK2_adprop_fit} and \ref{simK3_adprop_fit},

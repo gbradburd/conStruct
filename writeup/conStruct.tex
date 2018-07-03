@@ -367,7 +367,7 @@ the fact that diversity shows both discrete and continuous patterns.
 For example, reasonable people can disagree about whether two 
 populations are separate species because the 
 process of speciation is usually gradual, and so there is no set point
-in the continuous divergence of populations when they unambiguously become discrete species.
+in the continuous divergence of populations when they unambiguously become distinct species.
 The issue of identifying meaningful biological subunits 
 extends below the species level, as patterns of phenotypic
 and genetic diversity within and among populations are shaped
@@ -377,9 +377,10 @@ and separation by geographic barriers.
 Both discrete and continuous components
 are required to accurately describe most species' patterns of genetic relatedness.
 
-From a practical standpoint, even while acknowledging continuous
-processes, we often need to identify somewhat separable populations 
-from which individuals are sampled \cite{wright1949genetical}.
+From a practical standpoint, 
+we often need to identify somewhat separable populations 
+from which individuals are sampled \cite{wright1949genetical},
+even while acknowledging continuous processes.
 Delineating populations is useful for systematics and for
 informing conservation priorities \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
 Furthermore, we often need to identify subsets of individuals resulting from reasonably coherent
@@ -393,8 +394,7 @@ requiring methods that can disentangle the two.
 There have been many methods proposed to characterize population
 genetic structure,
 including generating population phylogenies \cite{CavalliSforza1975, treemix},
-dimensionality-reduction approaches, 
-such as principal components analysis 
+dimensionality-reduction approaches such as principal components analysis 
 \cite{meirmans2009genodive,menozzi1978synthetic,novembre_interpreting_2008, price2006eigenstrat},
 and model-based clustering approaches 
 (e.g., \cite{STRUCTURE, falush2003, hubisz2009,ADMIXTURE, 
@@ -416,14 +416,14 @@ as random draws from a set of underlying, unobserved population clusters,
 each with a characteristic set of allele frequencies, which are estimated. 
 These underlying frequencies are identical 
 for all individuals assigned to a cluster, 
-\emph{regardless} of their spatial location. 
+regardless of their spatial location. 
 Spatial information has been incorporated into some of these methods, \revpoint{2}{5}
 by, for example, placing spatial priors on cluster membership \cite{geneland,TESS}, 
 but this does not address the underlying issue that 
 these methods assume that allele frequencies 
 are constant in a cluster across the species' range.  
 
-\emph{Isolation by distance} (IBD) refers to a pattern of increasing genetic differentiation
+\emph{Isolation by distance} refers to a pattern of increasing genetic differentiation
 with geographic separation,
 which occurs when geographically restricted dispersal allows
 genetic drift to build up differentiation between distant locations
@@ -493,8 +493,8 @@ Then,
     \widehat{\Omega}_{i,j} = \cov[X_i, X_j] .
 \end{equation}
 Because we randomly choose the reference allele, 
-each $X_i$ behaves marginally as a fair coin --
-in particular, $\P\{X_i = 1\} = 1/2$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ --
+each $X_i$ behaves marginally as a fair coin ---
+in particular, $\P\{X_i = 1\} = 1/2$, so $\widehat{\Omega}_{i,i} = 1/4$ for every $i$ ---
 all information enters through \emph{correlations}.
 
 
@@ -509,15 +509,16 @@ and $\widehat \Omega$ can be calculated as
     \frac{1}{L} \sum_{\ell=1}^L (f_{i,\ell}-1/2) (f_{j,\ell}-1/2) \qquad \text{for } i \neq j.
 \label{allelic_covariance}
 \end{equation}
+Here $f_{i,\ell}$ is the allele frequency in the $i^\text{th}$ sample at locus $\ell$.
 This definition of covariance differs from the usual ``genetic covariance'' 
 \cite{mcvean_genealogical_2009}
 in that (a) we do not subtract locus means (to make the statistic insensitive to sample configuration),
-and (b) we randomly choose a reference allele at each locus.
+and (b) we randomly choose a reference allele at each locus
 (to retain insensitivity to choice of reference allele). \revpoint{2}{7}
 As noted in \cite{EEMS}, for $i \neq j$,
 this can also be calculated as $\Omega_{i,j} = (1 - 2 \pi_{i,j})/4$,
 where $\pi_{i,j}$ is the genetic distance,
-i.e., mean density of sites at which random samples from $i$ and $j$ differ.
+i.e., the mean density of sites at which random samples from $i$ and $j$ differ.
 
 \paragraph{Continuous and discrete differentiation}
 Clustering approaches to describing genetic variation
@@ -708,7 +709,7 @@ discussed further in the Discussion.
 However, it is still important to assess whether additional layers (larger $K$)
 meaningfully model patterns in the data
 or merely explain spurious variation introduced by noise
--- in other words, whether additional model complexity
+--- in other words, whether additional model complexity
 provides significant explanatory power.
 Toward that end, we have implemented a method for 
 statistically comparing \texttt{conStruct} results across different values of $K$ 
@@ -719,9 +720,9 @@ for the number of discrete clusters in population genetic data, including:
 comparisons of the likelihood of the data across different values of $K$,
 with various criteria on how to choose a single value (e.g., \cite{Evanno2005}),
 or with information theoretic penalizations such as AIC or BIC (e.g., \cite{ADMIXTURE});
-or comparisons of the marginal likelihood, 
+comparisons of the marginal likelihood, 
 generated either via various approximations (e.g., \cite{STRUCTURE})
-or via a more rigorous and computationally intensive approach such as thermodynamic integration \cite{verity_nichols2016}
+or via thermodynamic integration \cite{verity_nichols2016};
 or inference using a Dirichlet process prior \cite{huelsenbeck2007inference}.
 See \cite{verity_nichols2016} for a discussion of these approaches and comparison
 between several methods.
@@ -732,7 +733,7 @@ we use a ``training" partition of the data (in practice, a random 90\% subset of
 to estimate the posterior distribution of the parameters,
 and then calculate the log-likelihood of the remaining ``testing'' loci,
 averaged over the posterior.
-Prediction accuracy of a particular model (e.g., value of $K$)
+Prediction accuracy of a particular value of $K$
 is then measured using this log-likelihood,
 averaged over a number of independent data partitions.
 The best model is judged to be the simplest one with significantly better predictive accuracy
@@ -813,7 +814,7 @@ spatial \texttt{conStruct} does not create spurious discrete groupings when ther
 Figures \ref{simK1_pies} and \ref{simK1_sp_pies}-\ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
 When data are simulated with $K=1$ but analyzed with $K>1$, 
-the layers are present, but contribute very little to any population.
+the additional layers contribute very little to any population.
 Even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
 those estimated under the true value of $K$ for each simulation.
@@ -821,7 +822,7 @@ Moreover, the method infers the true admixture proportions with high accuracy, t
 (Figs \ref{simK2_adprop_fit}-\ref{simK3_adprop_fit}).
 
 In contrast, the nonspatial model describes geographic variation
-using gradients of admixture between more and more discrete clusters
+using gradients of admixture between increasingly many discrete clusters
 to better approximate the continuous, spatial patterns of relatedness
 (depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}-\ref{simK3_nsp_pies}).
 The ADMIXTURE results are qualitatively similar, as shown in Figs \ref{admix_simK1}-\ref{admix_simK3}.
@@ -1146,7 +1147,7 @@ The results partition the sampled bears into two main groups (shown in Fig \ref{
 one (red) to the east of the Rocky Mountains, 
 which also occurs in Alaska,
 the other primarily west of the Rockies (blue).
-The disjointed range of the blue layer likely reflects the fact
+The disjointed range of the red layer likely reflects the fact
 that Canada was not sampled, 
 and so the red layer may extend
 through the intervening (unsampled) northern Great Plains and Canadian Shield, 
@@ -1170,7 +1171,7 @@ and spatial patterns of ancestry in those layers,
 suggests that these layers are describing processes 
 that shape genetic variation at local scales, such as inbreeding, 
 which affects covariance between individuals within each location, 
-but has limited impact on covariance between locations.
+but has limited impact on covariance between locations. \revpoint{1}{5}
 
 \paragraph{Comparison to ADMIXTURE} \linelabel{ll:admixture_bears}
 Results from the nonspatial model and from the ADMIXTURE analyses 
@@ -1197,21 +1198,19 @@ This discrepancy likely stems from the different features introduced in layers b
 conStruct uses small contributions of new layers to model very local drift,
 while ADMIXTURE moves to geographically finer subdivisions.
 
-Comparing results of the two methods, it is clear that even at $K=3$, 
-ADMIXTURE invokes clusters to describe what seems to be, 
-and is well described by \texttt{conStruct} as, 
-a continuous spatial pattern of genetic variation. 
+Even at $K=3$, ADMIXTURE invokes clusters to describe what seems to be
+a continuous spatial pattern of genetic variation,
+which \texttt{conStruct} describes using only two spatial layers.
 The third cluster in the ADMIXTURE analysis at $K=3$ 
 (shown in gold in Fig \ref{bear_admixture}b), 
 shows strong spatial autocorrelation in admixture proportions, 
 as would be expected if it is describing continuous spatial differentiation.
 The allelic covariances plotted against distance (see Fig \ref{bear_cov_colorized})
-provide more information on ADMIXTURE's lack of fit. \revpoint{1}{4}
-First, covariance between different sampling locations of Eastern bears
-falls off with distance,
-indicating a residual pattern best explained by isolation by distance within laters.
+provide more information on ADMIXTURE's lack of fit: \revpoint{1}{4}
+First, covariance between Eastern bears falls off gradually rather than abruptly with distance,
+indicating a residual pattern best explained by isolation by distance within layers.
 Second, the covariance between bears assigned to ADMIXTURE's gold and red layers
-(the furthest Northwestern (Alaskan) bears and the Eastern bears, respectively)
+(the furthest Northwestern and Eastern bears, respectively)
 appears to be a natural extension of the decay of covariance with distance,
 falling only slightly lower values than covariances 
 between other widely separated pairs of Eastern sampling locations.
@@ -1274,15 +1273,15 @@ The computationally limiting step is the inversion of the covariance matrix,
 which scales more than quadratically with the number of samples,
 whereas computation time for, e.g., STRUCTURE, 
 scales linearly with number of samples.
-Our speed, on datasets with large sample sizes, 
-could be improved by adopting rank-one updates 
-to the inverse of the covariance matrix 
-(e.g., \cite{woodbury1950,sherman_morrison1950})
-when updating a sample's admixture proportions, 
-which alters only a single row/column of the covariance matrix. 
-We have not implemented this yet, 
-as it would likely mean losing the ability to do efficient,  
-Hamiltonian Monte Carlo sampling of our parameters.
+% Our speed, on datasets with large sample sizes, 
+% could be improved by adopting rank-one updates 
+% to the inverse of the covariance matrix 
+% (e.g., \cite{woodbury1950,sherman_morrison1950})
+% when updating a sample's admixture proportions, 
+% which alters only a single row/column of the covariance matrix. 
+% We have not implemented this yet, 
+% as it would likely mean losing the ability to do efficient,  
+% Hamiltonian Monte Carlo sampling of our parameters.
 
 For a relatively small number of samples, 
 \texttt{conStruct} can be much faster than existing nonspatial Bayesian clustering methods.
@@ -1303,8 +1302,9 @@ including 50-fold cross-validation for each value of $K$, took only 6.6 minutes.
 It should also be noted that there may be situations when the
 binomial-based model underlying ADMXITURE performs better than
 our Gaussian-based model,
-e.g., when clusters differ at only a few strongly differentiated loci
-\linelabel{ll:admixture_few_loci}.
+e.g., when clusters differ at only a few strongly differentiated loci,
+although we have not investigated this possibility.
+\linelabel{ll:admixture_few_loci}
 
 
 \paragraph{Choosing the ``best" number of layers}
@@ -1349,18 +1349,18 @@ This ``lumping'' might better reflect the demographic history of these populatio
 but may not contradict the genetic distinctness implied by the nonspatial clustering.
 This genetic distinctness -- rather than shared history -- may be more relevant for
 management decisions and conservation policy,
-which are often predicated on the identification of discrete ``management units'' (MUs) 
+which are often predicated on the identification of discrete ``management units''
 identified using genetic data \cite{Moritz1994,Waples_1998,Moritz_etal_2002}.
 
 It is therefore important to stress that individuals sampled from the same \texttt{conStruct} layer 
 may be quite genetically diverged from one another, 
 perhaps especially at loci underlying adaptive traits, 
-and that a \texttt{conStruct} layer may still contain multiple distinct MUs worthy of independent protections.  
+and that a \texttt{conStruct} layer may still contain multiple distinct management units worthy of independent protections.  
 For instance, although both the Alaskan and Eastern Black Bears draw most of their ancestry 
 from the same conStruct layer, they are separated by a great distance, 
 and may therefore differ substantially from each other
 (although less than from the Western bears, as measured by average covariance).
-Alternatively, the inclusion of multiple MUs into a single \texttt{conStruct} layer 
+Alternatively, the inclusion of multiple management units into a single \texttt{conStruct} layer 
 may occur if these populations are currently 
 (or were recently) exchanging migrants, 
 and thus might emphasize the importance of maintaining habitat corridors,
@@ -1726,8 +1726,7 @@ or near on the genome to, loci in the training dataset.
 \section*{Calculating layer contributions}\label{layer_contribution}
 
 Let $A$ and $B$ be randomly chosen alleles from samples $i$ and $j$ respectively,
-at a randomly chosen locus 
-(if the two populations are the same, then choose without replacement).
+at a randomly chosen locus.
 Then, if we let $U=2(A-1/2)$ and $V=2(B-1/2)$,
 since $U$ and $V$ take the values $\pm 1$,
 so as in Eq.\ \eqref{eqn:cov_xy},
@@ -1876,9 +1875,11 @@ The times and rates reported above have already been scaled by $4N$
 and therefore give the values fed directly to \texttt{ms}.
 We used the \texttt{-s} option to sample a single segregating site per coalescent history, 
 and simulated $1 \times 10^4$ independent histories
-- corresponding to the same number of independent loci - 
+--- corresponding to the same number of independent loci ---
 in each dataset, 
 with 10 diploid genotypes generated per deme at each locus.
+
+
 \section*{Acknowledgements}
 
 We thank Marjorie Weber, Yaniv Brandvain, William Wetzel, 
