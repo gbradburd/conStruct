@@ -1,7 +1,7 @@
 %TO DO
 %	dryad
-%		split out suppmat, upload as single file?
-%		figshare
+%	split out suppmat, upload as single file?
+%	figshare?
 
 \documentclass[9pt,twocolumn,twoside]{gsajnl}
 % Use the documentclass option 'lineno' to view line numbers
@@ -10,21 +10,14 @@
 \usepackage{hyperref}
 \usepackage{breakurl}
 \usepackage{marvosym}
-\usepackage{marvosym}
 
-\newcommand{\e}[1]{{\mathbb E}\left[ #1 \right]}
-\newcommand{\given}{\mid}
 \newcommand{\secref}[1]{``\nameref{#1}''}
 \newcommand{\tri}{\textit{trichocarpa}} 
 \newcommand{\bals}{\textit{balsamifera}}
-\newcommand{\R}{\mathbb{R}}
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
-\newcommand{\var}{\mathop{\mbox{Var}}}
 \newcommand{\cov}{\mathop{\mbox{cov}}}
-\newcommand{\supp}{\mathop{\mbox{supp}}}
-\newcommand{\sgn}{\mathop{\mbox{sgn}}}
-\newcommand{\bone}{\mathbf{1}}
+
 
 \articletype{inv} % article type
 % {inv} Investigation 
@@ -38,8 +31,8 @@
 \title{Inferring continuous and discrete population genetic structure across space}
 
 \author[$\ast$,1]{Gideon S.\  Bradburd}
-\author[$\dagger$]{Graham M.\  Coop}
-\author[$\ddagger$]{Peter L.\  Ralph}
+\author[$\dagger,2$]{Graham M.\  Coop}
+\author[$\ddagger,2$]{Peter L.\  Ralph}
 
 \affil[$\ast$]{Ecology, Evolutionary Biology, and Behavior Graduate Group, Department of Integrative Biology, Michigan State University, MI 48824}
 \affil[$\dagger$]{Center for Population Biology, Department of Evolution and Ecology, University of California, Davis, CA 95616}
@@ -91,6 +84,7 @@ and by applying it to empirical datasets of poplars and black bears in North Ame
 \marginmark
 \firstpagefootnote
 \correspondingauthoraffiliation{Department of Integrative Biology, Michigan State University, 288 Farm Lane, East Lansing, MI 48824.  E-mail: bradburd@msu.edu}
+\footnotetext[2]{These authors contributed equally to this work.}
 \vspace{-11pt}%
 
 \section{Introduction}
@@ -122,7 +116,7 @@ the substantial information available from continuous, geographic differentiatio
 (e.g., adaptation along a climatic gradient)
 can be confounded by discrete historical processes (e.g., admixture),
 requiring methods that can disentangle the two.
-%
+
 There have been many methods proposed to characterize population
 genetic structure,
 including generating population phylogenies \citep{CavalliSforza1975, treemix},
@@ -510,7 +504,7 @@ and is available for installation at \burl{https://github.com/gbradburd/conStruc
 Scripts for generating and analyzing all simulated and empirical datasets, 
 as well as the datasets themselves, 
 are also available at the same site, 
-and additionally have been archived at Data Dryad (doi:XXXXX).
+and additionally have been archived at Data Dryad (doi:10.5061/dryad.5qj7h09).
 
 \section{Results and Discussion}
 
@@ -541,7 +535,7 @@ With these simulations,
 spatial \texttt{conStruct} does not create spurious discrete groupings when there are none:
 Figures \ref{simK1_pies} and \ref{simK1_sp_pies}-\ref{simK3_sp_pies} 
 show that subsequent layers beyond the number used for simulation are unused.
-When data are simulated with $K=1$ but analyzed with $K>1$, 
+When data simulated with $K=1$ are analyzed with $K>1$, 
 the additional layers contribute very little to any population.
 Even when the spatial model is run with $K=7$, 
 the inferred admixture proportions are nearly identical to 
@@ -566,7 +560,7 @@ Moreover, the method infers the true admixture proportions with high accuracy, t
 In contrast, the nonspatial model describes geographic variation
 using gradients of admixture between increasingly many discrete clusters
 to better approximate the continuous, spatial patterns of relatedness
-(depicted in Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}-\ref{simK3_nsp_pies}).
+(Figs \ref{simK1_pies} and \ref{simK1_nsp_pies}-\ref{simK3_nsp_pies}).
 The ADMIXTURE results are qualitatively similar, as shown in Figs \ref{admix_simK1}-\ref{admix_simK3}.
 Each nonspatial cluster is genetically more similar within itself
 than it is to other clusters,
@@ -1130,7 +1124,7 @@ A final direction would be to model relatedness within a layer as a spatiotempor
 in which covariance decays both with distance in space and in time.  
 As the number of genotyped historical or ancient samples increases, 
 it is becoming possible to ask whether there is genetic continuity at a point in space across time, 
-or whether populations are being replaced \citep{lazaridis_ancient_2014, Haak2015, slatkin_racimo2016, Nielsen2017, Schraiber2017}.
+or whether populations are being replaced \citep{lazaridis_ancient_2014, Haak2015, slatkin_racimo2016, Nielsen2017, Schraiber2017,dystruct}.
 However, we expect allele frequencies to change through time in a population, 
 even without replacement, simply due to drift.
 Therefore, a natural way to test for population replacement is to estimate the rates 
@@ -1587,7 +1581,7 @@ and the National Science Foundation under award numbers NSF \#1148897 and \#1402
 \bibliography{reference.library.tex}
 \onecolumn
 \clearpage
-\section{Supplementary Information} \label{SuppMat}
+\section{Supplementary Materials} \label{SuppMat}
 \renewcommand{\theequation}{S\arabic{equation}}
 \setcounter{equation}{0}
 \renewcommand{\thetable}{S\arabic{table}}
@@ -1630,41 +1624,42 @@ University of Oregon, Eugene, OR 97403
 %
 % Primary Equal Contribution Note
 \Yinyang These authors contributed equally to this work.
+\end{center}
 
 \clearpage
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_sp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_sp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_sp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a spatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_sp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_adprop_fit.pdf}}
 		\caption{
@@ -1674,10 +1669,10 @@ University of Oregon, Eugene, OR 97403
             and the vertical axis shows the 99\% credible intervals for those proportions
             as reported by conStruct.
 		}\label{simK2_adprop_fit}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_adprop_fit.pdf}}
 		\caption{
@@ -1687,40 +1682,40 @@ University of Oregon, Eugene, OR 97403
             and the vertical axis shows the 99\% credible intervals for those proportions
             as reported by conStruct.
 		}\label{simK3_adprop_fit}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using one layer with nearest-neighbor symmetric migration between demes.
     }\label{simK1_nsp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using two layers with nearest-neighbor symmetric migration between demes.
     }\label{simK2_nsp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_nsp_pies.pdf}}
 	\caption{
 	Map of admixture proportions estimated using a nonspatial \texttt{conStruct} model for $K=2$ through 7.
 	The data were simulated using three layers with nearest-neighbor symmetric migration between demes.
     }\label{simK3_nsp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK1_pies.pdf}}
 	\caption{
@@ -1729,10 +1724,10 @@ University of Oregon, Eugene, OR 97403
     The true value was $K=1$, but
 	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK1}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK2_pies.pdf}}
 	\caption{
@@ -1741,10 +1736,10 @@ University of Oregon, Eugene, OR 97403
     The true value was $K=2$, but
 	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK2}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/admixture/admixture_simK3_pies.pdf}}
 	\caption{
@@ -1753,10 +1748,10 @@ University of Oregon, Eugene, OR 97403
     The true value was $K=3$, but
 	the model with the lowest cross-validation error (i.e., the preferred model) was $K=7$.
     }\label{admix_simK3}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK1_std_xval.pdf}}
 		\caption{
@@ -1764,10 +1759,10 @@ University of Oregon, Eugene, OR 97403
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK1_xval}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_std_xval.pdf}}
 		\caption{
@@ -1775,10 +1770,10 @@ University of Oregon, Eugene, OR 97403
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK2_xval}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_std_xval.pdf}}
 		\caption{
@@ -1786,10 +1781,10 @@ University of Oregon, Eugene, OR 97403
 			comparing the spatial and nonspatial \texttt{conStruct} models run with $K=1$ through 7.  
 			The right panel zooms in on just the spatial cross-validation results.
 		}\label{simK3_xval}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/admixture/sims_CVerror.pdf}}
 	\caption{
@@ -1798,10 +1793,10 @@ University of Oregon, Eugene, OR 97403
 	The inset plots zoom in on cross-validation results outlined in the dotted boxes.
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{sim_admix_CVerrors}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK2_laycon_barplots.pdf}}
 		\caption{
@@ -1812,10 +1807,10 @@ University of Oregon, Eugene, OR 97403
 			Data were simulated using $K=2$.
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK2_laycon}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/sims/simK3_laycon_barplots.pdf}}
 		\caption{
@@ -1826,40 +1821,40 @@ University of Oregon, Eugene, OR 97403
 			Data were simulated using $K=3$.
 			For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 		}\label{simK3_laycon}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sampling_map.pdf}}
 	\caption{
 	Map of the sampled \textit{Populus} populations included in the analysis.
 	The color of the sampling location denotes the putative species.
     }\label{populus_map}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_pies.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the spatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{populus_sp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_pies.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using the nonspatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{populus_nsp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_sp_layer_covs.pdf}}
 	\caption{
@@ -1872,10 +1867,10 @@ University of Oregon, Eugene, OR 97403
 	green on black points are sample covariances between \bals{} and \tri{};
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_sp_layer_covs}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_nsp_layer_covs.pdf}}
 	\caption{
@@ -1888,10 +1883,10 @@ University of Oregon, Eugene, OR 97403
 	green on black points are sample covariances between \bals{} and \tri{};
 	green on green points are sample covariances between \tri{} and \tri{}.
     }\label{populus_nsp_layer_covs}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/populus_laycon_barplots.pdf}}
 	\caption{
@@ -1902,20 +1897,20 @@ University of Oregon, Eugene, OR 97403
 	For each value of $K$ along the x-axis, there are an equal number of contributions plotted.
 	Colors are consistent with Figs \ref{populus_sp_pies}, \ref{populus_sp_layer_covs}, \ref{populus_nsp_pies}, and \ref{populus_nsp_layer_covs}.
     }\label{populus_laycon}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/poplar_admixture_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the \textit{Populus} dataset 
 	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
     }\label{populus_admixture}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/populus/poplars_admixture_CVerror.pdf}}
 	\caption{
@@ -1923,30 +1918,30 @@ University of Oregon, Eugene, OR 97403
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{poplar_admix_CVerrors}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the spatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{bear_sp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_results.pdf}}
 	\caption{
 	Map of admixture proportions estimated for the bear dataset 
 	using the nonspatial \texttt{conStruct} model for $K=2$ through 7.
     }\label{bear_nsp_pies}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_sp_layer_covs.pdf}}
 	\caption{
@@ -1954,10 +1949,10 @@ University of Oregon, Eugene, OR 97403
 	estimated for the black bear data using 
 	the spatial \texttt{conStruct} model run with $K=1$ through 6.
 	 }\label{bear_sp_layer_covs}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_nsp_layer_covs.pdf}}
 	\caption{
@@ -1965,20 +1960,20 @@ University of Oregon, Eugene, OR 97403
 	estimated for the black bear data using 
 	the nonspatial \texttt{conStruct} model run with $K=1$ through 6.
     }\label{bear_nsp_layer_covs}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_results.pdf}}
 	\caption{
 	Maps of admixture proportions estimated for the bear dataset 
 	using ADMIXTURE \cite{ADMIXTURE} for $K=2$ through 7.
     }\label{bear_admixture}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
 		{\includegraphics[width=\textwidth]{figs/bears/bear_admixture_CVerror.pdf}}
 	\caption{
@@ -1986,10 +1981,10 @@ University of Oregon, Eugene, OR 97403
 	run with $K=1$ through 7 using 50 data folds (\texttt{--cv=50}).  
 	The preferred model (with the lowest cross-validation error) is highlighted with an asterisk.
     }\label{bear_admix_CVerrors}
-\end{figure*}
+\end{figure}
 	\clearpage
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 	\centering
         {\includegraphics[width=\textwidth]{figs/bears/bear_sp_colorized_cov.pdf}}
 	\caption{
@@ -2005,7 +2000,7 @@ University of Oregon, Eugene, OR 97403
         for the spatial \texttt{conStruct} model with $K=2$,
         as in figure \ref{bear_sp_layer_covs}.
     }\label{bear_cov_colorized}
-\end{figure*}
+\end{figure}
 	\clearpage
 
 \end{document}
