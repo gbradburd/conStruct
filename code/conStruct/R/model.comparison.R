@@ -49,11 +49,9 @@
 #' }
 #'@export
 x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE){
-	models <- compile.models()
     x.val <- lapply(1:n.reps, 
     				function(i) {
-        				x.validation.rep(models, 
-        								 rep.no = i, 
+        				x.validation.rep(rep.no = i, 
         								 train.prop, 
         								 K, 
         								 freqs, 
@@ -212,7 +210,7 @@ xval.process.data <- function(freqs,train.prop,rep.no,prefix){
     return(xval.freq.data)
 }
 
-xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+xval.conStruct <- function (spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
     call.check <- check.call(args <- as.list(environment()))
     freq.data <- process.freq.data(freqs)
     data.block <- make.data.block(K, freq.data, coords, spatial, geoDist, temp = NULL)
@@ -242,10 +240,10 @@ xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, co
 }
 
 
-x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
+x.validation.rep <- function(rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
 	xval.freq.data <- xval.process.data(freqs,train.prop,rep.no,prefix)
     training.runs.sp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = TRUE, K = k, 
+        xval.conStruct(spatial = TRUE, K = k, 
 					   freqs = xval.freq.data$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
@@ -257,7 +255,7 @@ x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coor
             rep.no, "_", "training.runs.sp.Robj"))
     }
     training.runs.nsp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = FALSE, K = k, 
+        xval.conStruct(spatial = FALSE, K = k, 
 					   freqs = xval.freq.data$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 
