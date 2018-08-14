@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 inst/doc
+src/*.o
+src/stan_files/*.o
+src/stan_files/*.hpp
