@@ -199,17 +199,6 @@ calculate.layer.contribution <- function(conStruct.results,data.block,layer.orde
 	return(layer.contributions)
 }
 
-compile.models <- function(){
-	basic <- rstan::stan_model(model_code = oneK.stan.block,verbose=FALSE)
-	multiK <- rstan::stan_model(model_code = multiK.stan.block,verbose=FALSE)
-	space <- rstan::stan_model(model_code = space.oneK.stan.block,verbose=FALSE)
-	space_multiK <- rstan::stan_model(model_code = space.multiK.stan.block,verbose=FALSE)
-	conStr.models <- list("basic" = basic,
-						  "multiK" = multiK,
-						  "space" = space,
-						  "space_multiK" = space_multiK)
-	return(conStr.models)
-}
 
 xval.process.data <- function(freqs,train.prop,rep.no,prefix){
     freqs <- drop.invars(freqs)
@@ -230,8 +219,7 @@ xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, co
     if (save.files) {
         save(data.block, file = paste0(prefix, "_data.block.Robj"))
     }
-    stan.block <- pick.stan.model(spatial=spatial,k=K,models=models)
-    model.fit <- rstan::sampling(object = stan.block, 
+    model.fit <- rstan::sampling(object = pick.stan.model(spatial, K),
     							 refresh = min(n.iter/10,500), 
     							 data = data.block, 
     							 iter = n.iter, 
@@ -253,18 +241,6 @@ xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, co
     return(conStruct.results)
 }
 
-pick.stan.model <- function(spatial,k,models){
-	if(k == 1 & !spatial){
-		stan.model <- models$basic
-	} else if(k == 1 & spatial){
-		stan.model <- models$space
-	} else if(k > 1 & !spatial){
-		stan.model <- models$multiK
-	} else if(k > 1 & spatial){
-		stan.model <- models$space_multiK
-	}
-	return(stan.model)
-}
 
 x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
 	xval.freq.data <- xval.process.data(freqs,train.prop,rep.no,prefix)
