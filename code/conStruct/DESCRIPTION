@@ -12,12 +12,14 @@ Depends:
     rstan (>= 2.15.1)
 Imports:
     caroline,
-    gtools
+    gtools,
+    foreach
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    doParallel
 VignetteBuilder: knitr

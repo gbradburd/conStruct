@@ -47,13 +47,13 @@
 #'		"testing" data partitions of that replicate for the nonspatial model for
 #' 		each value of K specified in \code{K}.
 #' }
+#' @imports foreach
 #'@export
 x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE){
-	models <- compile.models()
-    x.val <- lapply(1:n.reps, 
-    				function(i) {
-        				x.validation.rep(models, 
-        								 rep.no = i, 
+    require(foreach)
+    x.val <- foreach(i=1:n.reps, .export=ls()) %dopar {
+        	conStruct:::x.validation.rep(conStruct:::compile.models(),
+                                         rep.no = i, 
         								 train.prop, 
         								 K, 
         								 freqs, 
@@ -62,8 +62,8 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, pr
         								 prefix, 
         								 n.iter, 
         								 make.figs, 
-        								 save.files)        				
-    		 })
+        								 save.files)
+    }
     names(x.val) <- paste0("rep_", 1:n.reps)
     x.val <- lapply(x.val, standardize.xvals)
     return(x.val)
