@@ -49,11 +49,9 @@
 #' }
 #'@export
 x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE){
-	models <- compile.models()
     x.val <- lapply(1:n.reps, 
     				function(i) {
-        				x.validation.rep(models, 
-        								 rep.no = i, 
+        				x.validation.rep(rep.no = i, 
         								 train.prop, 
         								 K, 
         								 freqs, 
@@ -199,17 +197,6 @@ calculate.layer.contribution <- function(conStruct.results,data.block,layer.orde
 	return(layer.contributions)
 }
 
-compile.models <- function(){
-	basic <- rstan::stan_model(model_code = oneK.stan.block,verbose=FALSE)
-	multiK <- rstan::stan_model(model_code = multiK.stan.block,verbose=FALSE)
-	space <- rstan::stan_model(model_code = space.oneK.stan.block,verbose=FALSE)
-	space_multiK <- rstan::stan_model(model_code = space.multiK.stan.block,verbose=FALSE)
-	conStr.models <- list("basic" = basic,
-						  "multiK" = multiK,
-						  "space" = space,
-						  "space_multiK" = space_multiK)
-	return(conStr.models)
-}
 
 xval.process.data <- function(freqs,train.prop,rep.no,prefix){
     freqs <- drop.invars(freqs)
@@ -223,15 +210,14 @@ xval.process.data <- function(freqs,train.prop,rep.no,prefix){
     return(xval.freq.data)
 }
 
-xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+xval.conStruct <- function (spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
     call.check <- check.call(args <- as.list(environment()))
     freq.data <- process.freq.data(freqs)
     data.block <- make.data.block(K, freq.data, coords, spatial, geoDist, temp = NULL)
     if (save.files) {
         save(data.block, file = paste0(prefix, "_data.block.Robj"))
     }
-    stan.block <- pick.stan.model(spatial=spatial,k=K,models=models)
-    model.fit <- rstan::sampling(object = stan.block, 
+    model.fit <- rstan::sampling(object = pick.stan.model(spatial, K),
     							 refresh = min(n.iter/10,500), 
     							 data = data.block, 
     							 iter = n.iter, 
@@ -253,23 +239,11 @@ xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, co
     return(conStruct.results)
 }
 
-pick.stan.model <- function(spatial,k,models){
-	if(k == 1 & !spatial){
-		stan.model <- models$basic
-	} else if(k == 1 & spatial){
-		stan.model <- models$space
-	} else if(k > 1 & !spatial){
-		stan.model <- models$multiK
-	} else if(k > 1 & spatial){
-		stan.model <- models$space_multiK
-	}
-	return(stan.model)
-}
 
-x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
+x.validation.rep <- function(rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
 	xval.freq.data <- xval.process.data(freqs,train.prop,rep.no,prefix)
     training.runs.sp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = TRUE, K = k, 
+        xval.conStruct(spatial = TRUE, K = k, 
 					   freqs = xval.freq.data$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
@@ -281,7 +255,7 @@ x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coor
             rep.no, "_", "training.runs.sp.Robj"))
     }
     training.runs.nsp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = FALSE, K = k, 
+        xval.conStruct(spatial = FALSE, K = k, 
 					   freqs = xval.freq.data$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 

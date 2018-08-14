@@ -5,8 +5,8 @@
 \title{Make admixture pie plot}
 \usage{
 make.admix.pie.plot(admix.proportions, coords, layer.colors = NULL,
-  radii = 2.7, add = FALSE, x.lim = NULL, y.lim = NULL, mar = c(2, 2,
-  2, 2))
+  radii = 2.7, add = FALSE, x.lim = NULL, y.lim = NULL,
+  mar = c(2, 2, 2, 2))
 }
 \arguments{
 \item{admix.proportions}{A \code{matrix} of admixture proportions, 

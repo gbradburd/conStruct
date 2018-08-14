@@ -112,8 +112,7 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
 		}
-	stan.block <- make.stan.code.block(spatial,K)
-	model.fit <- rstan::stan(model_code = stan.block,
+	model.fit <- rstan::stan(object=pick.stan.model(spatial, K),
 							 refresh = min(n.iter/10,500),
 							 data = data.block,
 							 iter = n.iter,
@@ -219,19 +218,6 @@ validate.data.block <- function(data.block){
 	return(data.block)
 }
 
-make.stan.code.block <- function(spatial,n.layers){
-	stan.code.block.name <- "stan.block"
-	if(n.layers == 1){
-		stan.code.block.name <- paste0("oneK.",stan.code.block.name)
-	}
-	if(n.layers > 1){
-		stan.code.block.name <- paste0("multiK.",stan.code.block.name)
-	}
-	if(spatial){
-		stan.code.block.name <- paste0("space.",stan.code.block.name)
-	}
-	return(get(stan.code.block.name))
-}
 
 make.freq.data.list.S3 <- function(freq.data){
 	freq.data <- freq.data
