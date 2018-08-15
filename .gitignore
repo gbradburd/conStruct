@@ -1,0 +1,7 @@
+.DS_Store
+*/.DS_Store
+*tar.gz
+sandbox/
+build.conStruct.pkg.R
+*/.Rapp.history
+.Rapp.history
