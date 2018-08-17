@@ -18,6 +18,12 @@
 #' @param freqs A \code{matrix} of allele frequencies with one column per 
 #'		locus and one row per sample.
 #' 		Missing data should be indicated with \code{NA}.
+#' @param data.partitions A list with one element for each desired 
+#'		cross-vlaidation replicate. This argument can be specified 
+#'		instead of the \code{freqs} argument if the user wants to 
+#'		provide their own data partitions for model training and testing.
+#'		See the model comparison vignette for details on what this 
+#'		should look like.
 #' @param geoDist A \code{matrix} of geographic distance between samples. 
 #'		If \code{NULL}, user can only run the nonspatial model.
 #' @param coords A \code{matrix} giving the longitude and latitude 
@@ -34,9 +40,16 @@
 #' @param save.files A \code{logical} value indicating whether to automatically 
 #'		save output and intermediate files once the analysis is
 #'		complete. Default is \code{FALSE}.
-#'
-#' @return This function returns a \code{list} containing the 
-#'		standardized results of the cross-validation analysis
+#' @param parallel A \code{logical} value indicating whether or not to run the 
+#'		different cross-validation replicates in parallel. Default is \code{FALSE}.
+#'		For more details on how to set up runs in parallel, see the model 
+#'		comparison vignette.
+#' @param n.nodes Number of nodes to run parallel analyses on. Default is 
+#'		\code{NULL}. Ignored if \code{parallel} is \code{FALSE}. For more details 
+#'		in how to set up runs in parallel, see the model comparison vignette. 
+#'	
+#' @return This function returns (and also saves as a .Robj) a \code{list} 
+#'		containing the standardized results of the cross-validation analysis
 #'		across replicates.  For each replicate, the function returns 
 #' 		a list with the following elements:
 #' 	\itemize{
@@ -47,25 +60,40 @@
 #'		"testing" data partitions of that replicate for the nonspatial model for
 #' 		each value of K specified in \code{K}.
 #' }
+#' In addition, this function saves two text files containing the standardized 
+#'	cross-validation results for the spatial and nonspatial results 
+#'	(prefix_sp_xval_results.txt and prefix_nsp_xval_results.txt, respectively).
+#'	These values are written as matrices for user convenience; each column is 
+#'	a cross-validation replicate, and each row gives the result for a value of 
+#'	\code{K}.
+#'
 #'@export
-x.validation <- function(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE){
+x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partitions = NULL, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE,parallel=FALSE,n.nodes=NULL){
+	call.check <- check.xval.call(args <- as.list(environment()))
+	if(is.null(data.partitions)){
+		data.partitions <- make.data.partitions(n.reps,freqs,train.prop)
+	}
+	check.data.partitions.arg(args <- as.list(environment()))
+	save(data.partitions,file=paste0(prefix, ".xval.data.partitions.Robj"))
 	models <- compile.models()
-    x.val <- lapply(1:n.reps, 
-    				function(i) {
+	`%d%` <- parallelizing(args <- as.list(environment()))
+	i <- 1
+    x.val <- foreach::foreach(i=1:n.reps) %d% {
         				x.validation.rep(models, 
         								 rep.no = i, 
-        								 train.prop, 
         								 K, 
-        								 freqs, 
+        								 data.partition = data.partitions[[i]], 
         								 geoDist, 
         								 coords, 
         								 prefix, 
         								 n.iter, 
         								 make.figs, 
-        								 save.files)        				
-    		 })
+        								 save.files)
+    			 }
     names(x.val) <- paste0("rep_", 1:n.reps)
     x.val <- lapply(x.val, standardize.xvals)
+    save(x.val,file=paste0(prefix,".xval.results.Robj"))
+	write.xvals(x.val,prefix)
     return(x.val)
 }
 
@@ -211,22 +239,122 @@ compile.models <- function(){
 	return(conStr.models)
 }
 
-xval.process.data <- function(freqs,train.prop,rep.no,prefix){
+make.data.partitions <- function(n.reps,freqs,train.prop){
+	data.partitions <- lapply(1:n.reps,
+							function(i){
+								xval.process.data(freqs,train.prop)								
+							})
+	return(data.partitions)
+}
+
+get.var.mean.freqs <- function(freqs){
+	varMeanFreqs <- mean(0.5 * colMeans(freqs - 0.5, na.rm = TRUE)^2 + 
+	            		 0.5 * colMeans(0.5 - freqs, na.rm = TRUE)^2)
+	return(varMeanFreqs)
+}
+
+xval.process.data <- function(freqs,train.prop){
     freqs <- drop.invars(freqs)
     train.loci <- sample(1:ncol(freqs), ncol(freqs) * (train.prop))
     test.loci <- c(1:ncol(freqs))[!(1:ncol(freqs)) %in% train.loci]
-    train.data <- freqs[, train.loci]
-    test.data <- freqs[, test.loci]
-    xval.freq.data <- list("training" = train.data,
-    					   "testing" = test.data)
-    save(xval.freq.data, file = paste0(prefix, "_rep", rep.no, "_xval.dataset.Robj"))
-    return(xval.freq.data)
+    train.data <- calc.covariance(freqs[, train.loci])
+    test.data <- calc.covariance(freqs[, test.loci])
+    data.partition <- list("training" = list("data" = train.data,
+    										 "n.loci" = length(train.loci),
+    										 "varMeanFreqs" = get.var.mean.freqs(freqs[,train.loci])),
+						   "testing" = list("data" = test.data,
+    										 "n.loci" = length(test.loci),
+    										 "varMeanFreqs" = get.var.mean.freqs(freqs[,test.loci])))
+    return(data.partition)
 }
 
-xval.conStruct <- function (models, spatial = TRUE, K, freqs, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
-    call.check <- check.call(args <- as.list(environment()))
-    freq.data <- process.freq.data(freqs)
-    data.block <- make.data.block(K, freq.data, coords, spatial, geoDist, temp = NULL)
+xval.make.data.block <- function(K, data.partition, coords, spatial, geoDist = NULL){
+	data.block <- list(N = nrow(coords),
+					   K = K,
+					   spatial = spatial,
+					   L = data.partition$n.loci,
+					   coords = coords,
+					   obsCov = data.partition$data,
+					   geoDist = standardize.distances(geoDist),
+					   varMeanFreqs = data.partition$varMeanFreqs)
+    data.block <- validate.data.block(data.block)
+    return(data.block)
+}
+
+check.data.partitions.covmats <- function(args){
+	data.list1 <- lapply(args[["data.partitions"]],function(x){x[[1]]$data})
+	data.list2 <- lapply(args[["data.partitions"]],function(x){x[[2]]$data})
+	if(!all(unlist(lapply(data.list1,function(x){isSymmetric(x)}))) |
+	   !all(unlist(lapply(data.list2,function(x){isSymmetric(x)})))){
+		stop("\nyou must specify symmetric matrices for the \"data\" elemtns of the data partitions list\n\n")
+	}	
+	if(any(unlist(lapply(data.list1,function(x){any(is.na(x))}))) |
+	   any(unlist(lapply(data.list2,function(x){any(is.na(x))})))){
+		stop("\nyou have specified an invalid data partition \"data\" element that contains non-numeric elements\n\n")
+	}
+	if(any(unlist(lapply(data.list1,function(x){any(eigen(x)$values <= 0)}))) |
+	   any(unlist(lapply(data.list2,function(x){any(eigen(x)$values <= 0)})))){
+		stop("\nyou have specified an invalid data partition \"data\" element is not positive definite\n\n")
+	}
+	return(invisible("data partitions cov matrices checked"))
+}
+
+check.data.partitions.arg <- function(args){
+	if(length(args[["data.partitions"]]) != args[["n.reps"]]){
+		stop("\nyou must specify one data partition for each cross-validation rep\n\n")
+	}
+	if(!all(unlist(lapply(args[["data.partitions"]],function(x){names(x)==c("training","testing")})))){
+		stop("\neach element of the data partition list must contain an element named \"training\" and an element named \"testing\"\n\n")
+	}
+	if(!all(unlist(lapply(args[["data.partitions"]],function(x){names(x[[1]])==c("data","n.loci","varMeanFreqs")}))) | 
+	   !all(unlist(lapply(args[["data.partitions"]],function(x){names(x[[1]])==c("data","n.loci","varMeanFreqs")})))){
+		stop("\nwithin each element of the data partition named \"training\" or \"testing\", there must be three elements named \"data\",\"n.loci\", and \"varMeanFreqs\"\n\n")
+	}
+	L.list <- unlist(lapply(args[["data.partitions"]],function(x){c(x[[1]]$n.loci,x[[2]]$n.loci)}))
+	vmf.list <- unlist(lapply(args[["data.partitions"]],function(x){c(x[[1]]$varMeanFreqs,x[[2]]$varMeanFreqs)}))
+	if(any(is.na(L.list)) | any(L.list < 0) | any(!is.numeric(L.list))){
+		stop("\nall values of \"n.loci\" must contain a numeric value greater than zero\n\n")			
+	}
+	if(any(is.na(vmf.list)) | any(vmf.list < 0) | any(!is.numeric(vmf.list))){
+		stop("\nall values of \"varMeanFreqs\" must contain a numeric value greater than zero\n\n")			
+	}
+	check.data.partitions.covmats(args)
+	return(invisible("data partitions arg checked"))
+}
+
+check.genetic.data.arg <- function(args){
+	if(is.null(args[["data.partitions"]]) & is.null(args[["freqs"]])){
+		stop("\nyou must specify a value for either the \"freqs\" argument or the \"data.partitions\" argument\n\n")
+	}
+	if(is.null(args[["data.partitions"]])){
+		check.freqs.arg(args)
+	}
+	if(is.null(args[["freqs"]])){
+		check.data.partitions.arg(args)
+	}
+	return(invisible("genetic data args checked"))
+}
+
+check.for.files <- function(args){
+	if(file.exists(paste0(args[["prefix"]],"_sp_xval_results.txt")) |
+	   file.exists(paste0(args[["prefix"]],"_nsp_xval_results.txt")) |
+	   file.exists(paste0(args[["prefix"]],".xval.results.Robj"))){
+		stop("\noutput files will be overwritten if you proceed with this analysis\n\n")
+	}
+	return(invisible("files checked for"))
+}
+
+check.xval.call <- function(args){
+	check.for.files(args)
+	check.genetic.data.arg(args)
+	args$spatial <- TRUE
+	check.geoDist.arg(args)
+	check.coords.arg(args)
+	return(invisible("args checked"))
+}
+
+xval.conStruct <- function (models, spatial = TRUE, K, data, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+    data.block <- xval.make.data.block(K, data, coords, spatial, geoDist)
     if (save.files) {
         save(data.block, file = paste0(prefix, "_data.block.Robj"))
     }
@@ -266,11 +394,10 @@ pick.stan.model <- function(spatial,k,models){
 	return(stan.model)
 }
 
-x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
-	xval.freq.data <- xval.process.data(freqs,train.prop,rep.no,prefix)
+x.validation.rep <- function(models, rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
     training.runs.sp <- lapply(K, function(k) {
         xval.conStruct(models = models, spatial = TRUE, K = k, 
-					   freqs = xval.freq.data$training, 
+					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
 					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
@@ -282,7 +409,7 @@ x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coor
     }
     training.runs.nsp <- lapply(K, function(k) {
         xval.conStruct(models = models, spatial = FALSE, K = k, 
-					   freqs = xval.freq.data$training, 
+					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 
 					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
@@ -293,11 +420,11 @@ x.validation.rep <- function(models, rep.no, train.prop, K, freqs, geoDist, coor
             rep.no, "_", "training.runs.nsp.Robj"))
     }
     test.lnl.sp <- lapply(training.runs.sp, function(x) {
-        fit.to.test(xval.freq.data$testing, x[[1]])
+        fit.to.test(data.partition$testing, x[[1]])
     })
     	names(test.lnl.sp) <- K
     test.lnl.nsp <- lapply(training.runs.nsp, function(x) {
-        fit.to.test(xval.freq.data$testing, x[[1]])
+        fit.to.test(data.partition$testing, x[[1]])
     })
     	names(test.lnl.nsp) <- K
     test.lnl <- list(sp = test.lnl.sp, nsp = test.lnl.nsp)
@@ -367,6 +494,39 @@ get.xval.CIs <- function(x.vals.std,K){
 				"nsp.CIs" = nsp.CIs))
 }
 
+write.xvals <- function(xvals,prefix){
+	sp <- data.frame(lapply(lapply(xvals,"[[","sp"),unlist))
+		names(sp) <- paste0("sp_",names(sp))
+		sp <- round(sp,digits=4)
+	nsp <- data.frame(lapply(lapply(xvals,"[[","nsp"),unlist))
+		names(nsp) <- paste0("nsp_",names(nsp))
+		nsp <- round(nsp,digits=4)
+	utils::write.table(sp,file=paste0(prefix,"_sp_xval_results.txt"),row.names=FALSE,quote=FALSE)
+	utils::write.table(nsp,file=paste0(prefix,"_nsp_xval_results.txt"),row.names=FALSE,quote=FALSE)
+}
+
+parallelizing <- function(args){
+	if(args[["parallel"]]){
+		if(!foreach::getDoParRegistered()){
+			if(is.null(args[["n.nodes"]])){
+				n.nodes <- parallel::detectCores()-1
+			} else {
+				n.nodes <- args[["n.nodes"]]
+			}
+			cl <- parallel::makeCluster(n.nodes)
+			doParallel::registerDoParallel(cl)
+			message("\nRegistered doParallel with ",n.nodes," workers\n")
+		} else {
+			message("\nUsing ",foreach::getDoParName()," with ", foreach::getDoParWorkers(), " workers")
+		}
+		d <- foreach::`%dopar%`
+	} else {
+		message("\nRunning sequentially with a single worker\n")
+		d <- foreach::`%do%`
+	}
+	return(d)
+}
+
 calculate.qij <- function(layer.params,data.block,i,j){
 	q_ij <- 2 * layer.params$alpha0 * 
 				exp(-(layer.params$alphaD * 
@@ -414,12 +574,11 @@ calc.lnl.x.MCMC <- function(cov.chunk,pp.par.cov,chunk.size){
 }
 
 fit.to.test <- function(test.data,conStruct.results){
-	freq.data <- process.freq.data(test.data)
 	pp.par.cov <- post.process.par.cov(conStruct.results,
 										samples = 1:conStruct.results$posterior$n.iter)
 	test.lnl <- lapply(pp.par.cov,
 						function(x){
-							log.likelihood(freq.data$obsCov,x$inv,x$log.det,freq.data$n.loci)
+							log.likelihood(test.data$data,x$inv,x$log.det,test.data$n.loci)
 				})
 	return(test.lnl)
 }

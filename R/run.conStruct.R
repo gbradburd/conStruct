@@ -108,7 +108,7 @@
 conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){
 	call.check <- check.call(args <- as.list(environment()))
 	freq.data <- process.freq.data(freqs)
-	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist,temp=NULL)
+	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist)
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
 		}
@@ -312,16 +312,7 @@ standardize.distances <- function(D){
 	return(std.D)
 }
 
-set.temp <- function(temp=NULL){
-	if(is.null(temp)){
-		temp <- 1
-	} else {
-		temp <- temp
-	}
-	return(temp)
-}
-
-make.data.block <- function(K,freq.data,coords,spatial,geoDist=NULL,temp=NULL){
+make.data.block <- function(K,freq.data,coords,spatial,geoDist=NULL){
 	data.block <- list("N" = nrow(coords),
 					   "K" = K,
 					   "spatial" = spatial,
@@ -329,8 +320,7 @@ make.data.block <- function(K,freq.data,coords,spatial,geoDist=NULL,temp=NULL){
 					   "coords" = coords,
 					   "obsCov" = freq.data$obsCov,
 					   "geoDist" = standardize.distances(geoDist),
-					   "varMeanFreqs" = mean(0.5*colMeans(freq.data$freqs-0.5,na.rm=TRUE)^2 + 0.5*colMeans(1-freq.data$freqs-0.5,na.rm=TRUE)^2),
-					   "temp" = set.temp(temp))
+					   "varMeanFreqs" = mean(0.5*colMeans(freq.data$freqs-0.5,na.rm=TRUE)^2 + 0.5*colMeans(1-freq.data$freqs-0.5,na.rm=TRUE)^2))
 	data.block <- validate.data.block(data.block)
 	return(data.block)
 }
@@ -341,7 +331,7 @@ check.call <- function(args){
 	check.freqs.arg(args)
 	check.geoDist.arg(args)
 	check.coords.arg(args)
-	return(invisible("args checked"))		
+	return(invisible("args checked"))
 }
 
 check.spatial.arg <- function(args){

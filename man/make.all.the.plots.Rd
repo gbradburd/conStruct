@@ -4,7 +4,8 @@
 \alias{make.all.the.plots}
 \title{Make output plots}
 \usage{
-make.all.the.plots(conStruct.results, data.block, prefix, layer.colors = NULL)
+make.all.the.plots(conStruct.results, data.block, prefix,
+  layer.colors = NULL)
 }
 \arguments{
 \item{conStruct.results}{The list output by a 

@@ -5,3 +5,5 @@ sandbox/
 build.conStruct.pkg.R
 */.Rapp.history
 .Rapp.history
+unit_tests
+vignettes/model-comparison.Rmd

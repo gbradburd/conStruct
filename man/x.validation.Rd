@@ -4,8 +4,10 @@
 \alias{x.validation}
 \title{Run a conStruct cross-validation analysis}
 \usage{
-x.validation(train.prop = 0.9, n.reps, K, freqs, geoDist, coords, prefix,
-  n.iter, make.figs = FALSE, save.files = FALSE)
+x.validation(train.prop = 0.9, n.reps, K, freqs = NULL,
+  data.partitions = NULL, geoDist, coords, prefix, n.iter,
+  make.figs = FALSE, save.files = FALSE, parallel = FALSE,
+  n.nodes = NULL)
 }
 \arguments{
 \item{train.prop}{A numeric value between 0 and 1 that gives 
@@ -22,6 +24,13 @@ E.g., \code{K=1:7}.}
 \item{freqs}{A \code{matrix} of allele frequencies with one column per 
 locus and one row per sample.
     Missing data should be indicated with \code{NA}.}
+
+\item{data.partitions}{A list with one element for each desired 
+cross-vlaidation replicate. This argument can be specified 
+instead of the \code{freqs} argument if the user wants to 
+provide their own data partitions for model training and testing.
+See the model comparison vignette for details on what this 
+should look like.}
 
 \item{geoDist}{A \code{matrix} of geographic distance between samples. 
 If \code{NULL}, user can only run the nonspatial model.}
@@ -44,10 +53,19 @@ Default is \code{FALSE}.}
 \item{save.files}{A \code{logical} value indicating whether to automatically 
 save output and intermediate files once the analysis is
 complete. Default is \code{FALSE}.}
+
+\item{parallel}{A \code{logical} value indicating whether or not to run the 
+different cross-validation replicates in parallel. Default is \code{FALSE}.
+For more details on how to set up runs in parallel, see the model 
+comparison vignette.}
+
+\item{n.nodes}{Number of nodes to run parallel analyses on. Default is 
+\code{NULL}. Ignored if \code{parallel} is \code{FALSE}. For more details 
+in how to set up runs in parallel, see the model comparison vignette.}
 }
 \value{
-This function returns a \code{list} containing the 
-	standardized results of the cross-validation analysis
+This function returns (and also saves as a .Robj) a \code{list} 
+	containing the standardized results of the cross-validation analysis
 	across replicates.  For each replicate, the function returns 
 		a list with the following elements:
 	\itemize{
@@ -58,6 +76,12 @@ This function returns a \code{list} containing the
 	"testing" data partitions of that replicate for the nonspatial model for
 		each value of K specified in \code{K}.
 }
+In addition, this function saves two text files containing the standardized 
+cross-validation results for the spatial and nonspatial results 
+(prefix_sp_xval_results.txt and prefix_nsp_xval_results.txt, respectively).
+These values are written as matrices for user convenience; each column is 
+a cross-validation replicate, and each row gives the result for a value of 
+\code{K}.
 }
 \description{
 \code{x.validation} runs a conStruct cross-validation analysis

@@ -15,7 +15,6 @@ data {
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
 	real varMeanFreqs;					// variance in mean frequencies
-	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
@@ -60,7 +59,6 @@ data {
 	matrix[N,N] obsCov; 				// observed projected covariance
 	matrix[N, N] geoDist; 				// matrix of pairwise geographic distance 
 	real varMeanFreqs;
-	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
@@ -114,7 +112,6 @@ data {
 	int<lower=N+1> L;	    			// number of loci
 	matrix[N,N] obsCov; 				// observed projected covariance
 	real varMeanFreqs;
-	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
@@ -181,7 +178,6 @@ data {
 	matrix[N,N] obsCov; 				// observed projected covariance
 	matrix[N, N] geoDist; 				// matrix of pairwise geographic distance
 	real varMeanFreqs;
-	real<lower=0,upper=1> temp;			// temperature parameter for estimating marginal likelihood	
 }
 transformed data {
 	matrix[N,N] LobsCov;				// n.loci multiplied by the sample covariance
