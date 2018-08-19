@@ -75,12 +75,10 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
 	}
 	check.data.partitions.arg(args <- as.list(environment()))
 	save(data.partitions,file=paste0(prefix, ".xval.data.partitions.Robj"))
-	models <- compile.models()
 	`%d%` <- parallelizing(args <- as.list(environment()))
 	i <- 1
     x.val <- foreach::foreach(i=1:n.reps) %d% {
-        				x.validation.rep(models, 
-        								 rep.no = i, 
+        				x.validation.rep(rep.no = i, 
         								 K, 
         								 data.partition = data.partitions[[i]], 
         								 geoDist, 
@@ -227,18 +225,6 @@ calculate.layer.contribution <- function(conStruct.results,data.block,layer.orde
 	return(layer.contributions)
 }
 
-compile.models <- function(){
-	basic <- rstan::stan_model(model_code = oneK.stan.block,verbose=FALSE)
-	multiK <- rstan::stan_model(model_code = multiK.stan.block,verbose=FALSE)
-	space <- rstan::stan_model(model_code = space.oneK.stan.block,verbose=FALSE)
-	space_multiK <- rstan::stan_model(model_code = space.multiK.stan.block,verbose=FALSE)
-	conStr.models <- list("basic" = basic,
-						  "multiK" = multiK,
-						  "space" = space,
-						  "space_multiK" = space_multiK)
-	return(conStr.models)
-}
-
 make.data.partitions <- function(n.reps,freqs,train.prop){
 	data.partitions <- lapply(1:n.reps,
 							function(i){
@@ -353,13 +339,13 @@ check.xval.call <- function(args){
 	return(invisible("args checked"))
 }
 
-xval.conStruct <- function (models, spatial = TRUE, K, data, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
     data.block <- xval.make.data.block(K, data, coords, spatial, geoDist)
     if (save.files) {
         save(data.block, file = paste0(prefix, "_data.block.Robj"))
     }
-    stan.block <- pick.stan.model(spatial=spatial,k=K,models=models)
-    model.fit <- rstan::sampling(object = stan.block, 
+	stan.model <- pick.stan.model(spatial,K)
+    model.fit <- rstan::sampling(object = stanmodels[[stan.model]], 
     							 refresh = min(n.iter/10,500), 
     							 data = data.block, 
     							 iter = n.iter, 
@@ -381,22 +367,9 @@ xval.conStruct <- function (models, spatial = TRUE, K, data, geoDist = NULL, coo
     return(conStruct.results)
 }
 
-pick.stan.model <- function(spatial,k,models){
-	if(k == 1 & !spatial){
-		stan.model <- models$basic
-	} else if(k == 1 & spatial){
-		stan.model <- models$space
-	} else if(k > 1 & !spatial){
-		stan.model <- models$multiK
-	} else if(k > 1 & spatial){
-		stan.model <- models$space_multiK
-	}
-	return(stan.model)
-}
-
-x.validation.rep <- function(models, rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
+x.validation.rep <- function(rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
     training.runs.sp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = TRUE, K = k, 
+        xval.conStruct(spatial = TRUE, K = k, 
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
@@ -408,7 +381,7 @@ x.validation.rep <- function(models, rep.no, K, data.partition, geoDist, coords,
             rep.no, "_", "training.runs.sp.Robj"))
     }
     training.runs.nsp <- lapply(K, function(k) {
-        xval.conStruct(models = models, spatial = FALSE, K = k, 
+        xval.conStruct(spatial = FALSE, K = k, 
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 

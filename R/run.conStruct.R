@@ -112,15 +112,14 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 		if(save.files){
 			save(data.block,file=paste0(prefix,"_data.block.Robj"))
 		}
-	stan.block <- make.stan.code.block(spatial,K)
-	model.fit <- rstan::stan(model_code = stan.block,
-							 refresh = min(n.iter/10,500),
-							 data = data.block,
-							 iter = n.iter,
-							 chains = n.chains,
-							 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
-							 save_warmup = FALSE,
-							 save_dso = TRUE)
+	stan.model <- pick.stan.model(spatial,K)
+	model.fit <- rstan::sampling(object = stanmodels[[stan.model]],
+							 	 refresh = min(n.iter/10,500),
+							 	 data = data.block,
+							 	 iter = n.iter,
+							 	 chains = n.chains,
+							 	 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
+							 	 save_warmup = FALSE)
 	#save fit obj
 		if(save.files){
 			save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
@@ -219,18 +218,18 @@ validate.data.block <- function(data.block){
 	return(data.block)
 }
 
-make.stan.code.block <- function(spatial,n.layers){
+pick.stan.model <- function(spatial,n.layers){
 	stan.code.block.name <- "stan.block"
 	if(n.layers == 1){
-		stan.code.block.name <- paste0("oneK.",stan.code.block.name)
+		name <- "oneK"
 	}
 	if(n.layers > 1){
-		stan.code.block.name <- paste0("multiK.",stan.code.block.name)
+		name <- "multiK"
 	}
 	if(spatial){
-		stan.code.block.name <- paste0("space.",stan.code.block.name)
+		name <- paste0("space_",name)
 	}
-	return(get(stan.code.block.name))
+	return(name)
 }
 
 make.freq.data.list.S3 <- function(freq.data){
