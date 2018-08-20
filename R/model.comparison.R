@@ -287,7 +287,7 @@ check.data.partitions.covmats <- function(args){
 
 check.data.partitions.arg <- function(args){
 	if(length(args[["data.partitions"]]) != args[["n.reps"]]){
-		stop("\nyou must specify one data partition for each cross-validation rep\n\n")
+		stop("\nyou must specify 1 data partition for each cross-validation rep\n\n")
 	}
 	if(!all(unlist(lapply(args[["data.partitions"]],function(x){names(x)==c("training","testing")})))){
 		stop("\neach element of the data partition list must contain an element named \"training\" and an element named \"testing\"\n\n")
@@ -332,13 +332,13 @@ check.for.files <- function(args){
 
 check.parallel.args <- function(args){
 	if(args[["parallel"]] & args[["n.nodes"]]==1){
-		stop("\nyou have specified the \"parallel\" option with \"n.nodes\" set to one.\n\n")
+		stop("\nyou have specified the \"parallel\" option with \"n.nodes\" set to 1.\n\n")
 	}
 	if(!args[["parallel"]] & args[["n.nodes"]] > 1){
-		stop("\nyou have are running with \"parallel\" set to FALSE but with \"n.nodes\" greater than one.\n\n")
+		stop("\nyou have are running with \"parallel\" set to FALSE but with \"n.nodes\" greater than 1.\n\n")
 	}
 	if(!args[["parallel"]] & foreach::getDoParWorkers() > 1){
-		stop("\nyou are running with more than one worker but you have set the \"parallel\" option to FALSE\n\n")
+		stop("\nyou are running with more than 1 worker but you have set the \"parallel\" option to FALSE\n\n")
 	}
 	return(invisible("parallel args checked"))
 }
