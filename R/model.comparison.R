@@ -330,12 +330,26 @@ check.for.files <- function(args){
 	return(invisible("files checked for"))
 }
 
+check.parallel.args <- function(args){
+	if(args[["parallel"]] & args[["n.nodes"]]==1){
+		stop("\nyou have specified the \"parallel\" option with \"n.nodes\" set to one.\n\n")
+	}
+	if(!args[["parallel"]] & args[["n.nodes"]] > 1){
+		stop("\nyou have are running with \"parallel\" set to FALSE but with \"n.nodes\" greater than one.\n\n")
+	}
+	if(!args[["parallel"]] & foreach::getDoParWorkers() > 1){
+		stop("\nyou are running with more than one worker but you have set the \"parallel\" option to FALSE\n\n")
+	}
+	return(invisible("parallel args checked"))
+}
+
 check.xval.call <- function(args){
 	check.for.files(args)
 	check.genetic.data.arg(args)
 	args$spatial <- TRUE
 	check.geoDist.arg(args)
 	check.coords.arg(args)
+	check.parallel.args(args)
 	return(invisible("args checked"))
 }
 
