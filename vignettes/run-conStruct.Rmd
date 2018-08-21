@@ -75,6 +75,10 @@ The function call above runs `conStruct`'s spatial model
 using 3 discrete layers. All output files will be have "spK3" 
 prepended to their names. To vary the number of layers 
 in the spatial model, you need only change the value of `K`.
+The example dataset `conStruct.data` is organized into an R list 
+for convenience, but users can provide their data to the function 
+any way they see fit, so long as each argument is properly formatted 
+(e.g., `freqs` is a matrix, `prefix` is a character vector, etc.).
 
 ### Nonspatial Model
 
