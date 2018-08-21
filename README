@@ -34,6 +34,12 @@ be viewed using the command:
 
 	> vignette(topic="run-conStruct",package="conStruct")
 
+A third vignette, which walks through how to compare and select between 
+different conStruct models, can be viewed using the command:
+
+	> vignette(topic="model-comparison",package="conStruct")
+
+
 There is also an example data file included in the package, which you can 
 load using the command:
 

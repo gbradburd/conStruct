@@ -1,0 +1,514 @@
+---
+title: "How to compare conStruct model runs"
+author: "Gideon Bradburd"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{model-comparison}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+<!-- library(rmarkdown) ; render("model-comparison.Rmd",html_vignette(toc=TRUE))	 -->
+
+## Introduction
+
+This document describes how to do model comparison 
+for conStruct analyses. It assumes that you are already 
+familiar with the [companion vignette for running conStruct](run-conStruct.html).
+
+--------------------------------------------------------------------------
+
+**Caveat user!**
+Although it may sometimes be necessary to 
+simplify the presentation of the results of several analyses by 
+only showing the output from a single "best" run, it is important 
+to remember several things:
+
+1. First, choice of best _K_ is always relative to the data at hand, 
+and, as the amount of data increases, statistical support for larger 
+_K_ will likely increase. With infinite data, the "best" value of _K_ 
+would probably be the number of samples in the dataset.
+
+2. Although we think that conStruct is less likely to falsely ascribe 
+continuous patterns of genetic variation to discrete population clusters 
+than other existing methods, that does not mean that the discrete groups 
+identified by conStruct are biologically real. See "A tutorial on how not 
+to over-interpret STRUCTURE and ADMIXTURE bar plots" (Lawson, van Dorp, 
+and Falush 2018) for a more in-depth discussion of these issues.
+
+3. Finally, as with all other statistical inference, output should be 
+interpreted with care and a large grain of salt. We strongly recommend 
+that users check whether individual runs seem to have performed well 
+and whether results are consistent across independent runs. We also 
+recommend that users compare output across runs with different values 
+of _K_ to see which samples split out into their own layers in the 
+different analyses.
+
+--------------------------------------------------------------------------
+
+So, you've run two or more conStruct analyses and you want 
+to compare them to see which might be the best model to 
+describe the variation in your data. There are two methods in 
+the conStruct package for doing model comparison: 
+
+1. Cross-validation
+
+2. Calculating layer contributions
+
+Below, I describe both options and give examples for how to 
+use their associated functions in the `conStruct` package 
+and visualize the output they generate.
+
+## Cross-validation
+
+Cross-validation is a tool for testing how the results of an analysis 
+will generalize to an independent dataset.
+
+### How it works
+
+In general, the more parameters included in the model, the better the 
+fit to the data. To determine an appropriate level of parameterization 
+for a given dataset, we can use cross-validation.  In `conStruct`, 
+this works by fitting a model to a "training" subset of the data, then 
+testing the fit to the remaining "testing" subset. If the parameter 
+values estimated from the training data parameterize a model that 
+describes the testing data well, the predictive accuracy of the model 
+is good. If the model is overparameterized, it will fit the training data 
+very well, but may not fit the testing better any better than (or even as 
+well as) a less parameter-rich model. By fitting a given model to many 
+training partitions and testing its fit to the accompanying testing 
+partitions, we can get a mean predictive accuracy for each model. We can 
+then compare predictive accuracies across models to determine which model 
+strikes has the best goodness-of-fit without overfitting.
+
+### How to run a cross-validation analysis
+
+To run a cross-validation analysis in `conStruct`, you can use the 
+`x.validation` function.
+
+```{r,eval=FALSE}
+# load the example dataset
+data(conStruct.data)
+
+# to run a cross-validation analysis
+# you have to specify:
+#		the numbers of layers you want to compare (K)
+#		the allele frequency data (freqs)
+#		the geographic distance matrix (geoDist)
+#		the sampling coordinates (coords)
+
+my.xvals <- x.validation(train.prop = 0.9,
+				  		 n.reps = 8,
+				  		 K = 1:3,
+				  		 freqs = conStruct.data$allele.frequencies,
+				  		 data.partitions = NULL,
+				  		 geoDist = conStruct.data$geoDist,
+				  		 coords = conStruct.data$coords,
+				  		 prefix = "example",
+				  		 n.iter = 1e3,
+				  		 make.figs = TRUE,
+				  		 save.files = FALSE,
+				  		 parallel = FALSE,
+				  		 n.nodes = NULL)
+```
+
+In the example above, we ran a cross-validation analysis with 8 
+cross-validation replicates, comparing the spatial and nonspatial 
+models with _K_ = 1 through 3 for each replicate. Each training 
+partition (one per replicate) was created by randomly subsampling 
+90% of the total number of loci. This function call will run a total 
+of 24 `conStruct` analyses (_K_ = 1:3 for each of 8 replicates), 
+each for 1,000 MCMC iterations (`n.iter` = 1000), which will 
+generate a lot of output figures and files. To avoid these piling up, 
+we can set the `make.figs` and `save.files` options to `FALSE`. 
+However, as with all analyses, it's important to make 
+sure these runs are mixing well, so we suggest checking the output 
+figures to make sure they look good.
+
+The `x.validation` function returns a list containing the results of 
+the cross-validation analysis, standardized within each replicate. 
+The model with the best predictive accuracy within each replicate has 
+a standardized score of 0. Smaller (i.e., more negative) values 
+indicate worse model fit to the testing data in that replicate.
+
+For convenience, the function also writes a table of results to a 
+text file for both the spatial model (`prefix_sp_xval_results.txt`) 
+and the nonspatial model (`prefix_nsp_xval_results.txt`). Each 
+column in the table gives the results for a single cross-validation 
+replicate over evaluated values of _K_, and each row gives the 
+results of a given value of _K_ across replicates.
+
+The arguments `parallel` and `n.nodes` can be used to 
+parallelize the cross-validation analysis. These are described 
+in further detail below in [Parallelization](#parallelization). 
+The argument `data.partitions` allows the user to specify their 
+own training/testing data partitions to be used across replicates. 
+This option is described further below in 
+[Specifying data partitions](#specifying-data-partitions).
+
+### Visualizing results
+
+To visualize the output of a cross-validation analysis, you can 
+use either the output list or the text files. Examples of both 
+are given below.
+
+```{r, eval=FALSE}
+# read in results from text files
+
+sp.results <- as.matrix(
+				read.table("example_sp_xval_results.txt",
+						   header = TRUE,
+						   stringsAsFactors = FALSE)
+			   )
+nsp.results <- as.matrix(
+				read.table("example_nsp_xval_results.txt",
+						   header = TRUE,
+						   stringsAsFactors = FALSE)
+			   )
+
+# or, format results from the output list
+sp.results <- Reduce("cbind",lapply(my.xvals,function(x){unlist(x$sp)}),init=NULL)
+nsp.results <- Reduce("cbind",lapply(my.xvals,function(x){unlist(x$nsp)}),init=NULL)
+```
+
+A quick and dirty plot of the output is given below:
+
+```{r,echo=FALSE}
+	sp.results <- matrix(c(-1.201, 0.000, -1.819, -4.579, -5.730, 0.000, 0.000, -5.346, -1.114, -7.315, -8.853, 0.000, 0.000, -6.125, -3.602, 0.000, -11.155, -5.506, -3.650, 0.000, -2.909, 0.000, -4.799, -9.890),nrow=3,ncol=8)
+	nsp.results <- matrix(c(-685.108, -416.726, -141.223, -684.230, -418.651, -148.589, -679.392, -404.326, -147.367, -682.996, -415.190, -147.767, -680.044, -411.200, -147.288, -677.238, -410.037, -149.066, -679.914, -404.820, -145.464, -672.501, -414.927, -145.073),nrow=3,ncol=8)
+```
+
+```{r, eval=TRUE, fig.width=8,fig.height=5}
+
+# first, get the 95% confidence intervals for the spatial and nonspatial
+#	models over values of K (mean +/- 1.96 the standard error)
+
+sp.CIs <- apply(sp.results,1,function(x){mean(x) + c(-1.96,1.96) * sd(x)/length(x)})
+nsp.CIs <- apply(nsp.results,1,function(x){mean(x) + c(-1.96,1.96) * sd(x)/length(x)})
+
+# then, plot cross-validation results for K=1:3 with 8 replicates
+
+par(mfrow=c(1,2))
+plot(rowMeans(sp.results),
+	 pch=19,col="blue",
+	 ylab="predictive accuracy",xlab="values of K",
+	 ylim=range(sp.results,nsp.results),
+	 main="cross-validation results")
+	points(rowMeans(nsp.results),col="green",pch=19)
+
+# finally, visualize results for the spatial model
+#	separately with its confidence interval bars
+#
+# note that you could do the same with the spatial model, 
+#	but the confidence intervals don't really show up 
+#	because the differences between predictive accuracies
+#	across values of K are so large.
+
+plot(rowMeans(sp.results),
+	 pch=19,col="blue",
+	 ylab="predictive accuracy",xlab="values of K",
+	 ylim=range(sp.CIs),
+	 main="spatial cross-validation results")
+segments(x0 = 1:nrow(sp.results),
+		 y0 = sp.CIs[1,],
+		 x1 = 1:nrow(sp.results),
+		 y1 = sp.CIs[2,],
+		 col = "blue",lwd=2)
+```
+
+
+### Interpreting results
+
+The model with the highest mean predictive accuracy is the "best" model, 
+but, as noted above, we caution against overinterpretation of these 
+cross-validation results. If a significance test for the "best" number 
+of layers is required, you can use a t-test comparing cross-validation 
+scores across values of K, paired by replicate. E.g., 
+`t.test(sp.results[2,],sp.results[1,],paired=TRUE,alternative="greater")`.
+
+I would interpret the results above as strong evidence that the spatial 
+model is preferred over the nonspatial model over all tested values of _K_ 
+(indicating that isolation by distance is probably a feature of the data).
+The cross-validation analyses also strongly support the conclusion that a 
+single spatial layer (_K_ = 1) is sufficient to describe the variation in 
+the data.
+
+A final caveat of this section is that, with sufficient data, it is possible 
+to get strong statistical support for layers that contribute little to overall 
+patterns of covariance. Therefore, it's good to interpret cross-validation 
+results alongside calculated layer contributions (discussed further in 
+[Layer Contributions](#layer-contributions).
+
+### Parallelization
+
+Because each cross-validation replicate consists of several analyses (one for 
+each specified value of _K_), and because several cross-validation replicates 
+are required for model comparison, a single call to `x.validation` can take a 
+long time. To reduce computational burden, we have introduced an option for 
+users to parallelize their analyses across replicates. The simplest way to 
+parallelize is to use the `parallel` and `n.nodes` arguments of in the 
+`x.validation` function, which we illustrate using the same `x.validation` 
+given above in [How it works](#how-it-works):
+
+```{r,eval=FALSE}
+
+# load the example dataset
+data(conStruct.data)
+
+# to run a cross-validation analysis
+# you have to specify:
+#		the numbers of layers you want to compare (K)
+#		the allele frequency data (freqs)
+#		the geographic distance matrix (geoDist)
+#		the sampling coordinates (coords)
+
+# in addition, here we run our analysis parallelized 
+#	across all replicates using 4 nodes
+
+my.xvals <- x.validation(train.prop = 0.9,
+				  		 n.reps = 8,
+				  		 K = 1:3,
+				  		 freqs = conStruct.data$allele.frequencies,
+				  		 data.partitions = NULL,
+				  		 geoDist = conStruct.data$geoDist,
+				  		 coords = conStruct.data$coords,
+				  		 prefix = "example",
+				  		 n.iter = 1e3,
+				  		 make.figs = TRUE,
+				  		 save.files = FALSE,
+				  		 parallel = TRUE,
+				  		 n.nodes = 4)
+
+```
+
+The example above should run ~4 times as fast as cross-validation with the 
+same number of replicates not run in parallel.
+
+To facilitate greater flexibility in parallelization, users can also specify 
+their own parallelization scheme before running a cross-validation analysis, 
+in which case they should simply set `parallel=TRUE` and make sure that `n.nodes` 
+is equal to the number of nodes they've set up.  E.g.,
+
+```{r,eval=FALSE}
+
+library(parallel)
+library(foreach)
+library(doParallel)
+
+cl <- makeCluster(4)
+registerDoParallel(cl)
+
+my.xvals <- x.validation(train.prop = 0.9,
+				  		 n.reps = 8,
+				  		 K = 1:3,
+				  		 freqs = conStruct.data$allele.frequencies,
+				  		 data.partitions = NULL,
+				  		 geoDist = conStruct.data$geoDist,
+				  		 coords = conStruct.data$coords,
+				  		 prefix = "example",
+				  		 n.iter = 1e3,
+				  		 make.figs = TRUE,
+				  		 save.files = FALSE,
+				  		 parallel = TRUE,
+				  		 n.nodes = 4)
+
+stopCluster(cl)
+
+```
+
+## Layer contributions
+
+Layer contributions offer a second metric users can employ to compare models 
+with different numbers of layers.
+
+### How it works
+
+In a `conStruct` run, users are estimating a parametric covariance matrix to 
+fit their sample allelic covariance. Each layer in the model contributes to 
+that parametric covariance, and those contributions can be calculated and 
+compared. If there is a layer that no samples draw appreciable admixture from, 
+it will contribute almost nothing to overall covariance, and is therefore of 
+little biological importance in the model.
+
+By comparing layer contributions across different `conStruct` analyses run 
+with different values of _K_, users can identify the point at which layers 
+included in the analysis contribute little to overall covariance, and pick 
+a "best" value of _K_ below that point.
+
+### How to calculate layer contributions
+
+Layer contributions are calculated from the output of a standard
+`conStruct` analysis using the function `calculate.layer.contribution`.
+
+```{r,eval=FALSE}
+
+# Loop through output files generated by conStruct 
+#	runs with K=1 through 5 and calculate the 
+#	layer contributions for each layer in each run	
+
+layer.contributions <- matrix(NA,nrow=5,ncol=5)
+
+# load the conStruct.results.Robj and data.block.Robj
+#	files saved at the end of a conStruct run
+load("K1_sp_conStruct.results.Robj")
+load("K1_sp_data.block.Robj")
+
+# calculate layer contributions
+layer.contributions[,1] <- c(calculate.layer.contribution(conStruct.results[[1]],data.block),rep(0,4))
+tmp <- conStruct.results[[1]]$MAP$admix.proportions
+
+for(i in 2:5){
+	# load the conStruct.results.Robj and data.block.Robj
+	#	files saved at the end of a conStruct run
+	load(sprintf("K%s_sp_conStruct.results.Robj",i))
+	load(sprintf("K%s_sp_data.block.Robj",i))
+	
+	# match layers up across runs to keep plotting colors consistent
+	#	for the same layers in different runs
+	tmp.order <- match.layers.x.runs(tmp,conStruct.results[[1]]$MAP$admix.proportions)	
+
+	# calculate layer contributions
+	layer.contributions[,i] <- c(calculate.layer.contribution(conStruct.results=conStruct.results[[1]],
+															 data.block=data.block,
+															 layer.order=tmp.order),
+									rep(0,5-i))
+	tmp <- conStruct.results[[1]]$MAP$admix.proportions[,tmp.order]
+}
+```
+
+Note that, because layers can label switch across runs, the example 
+above uses the `match.layers.x.runs` function to determine which 
+layers correspond to each other across analyses run with different 
+values of _K_.
+
+### Visualizing results
+
+```{r, echo=FALSE}
+	layer.contributions <- matrix(c(1.000, 0.000, 0.000, 0.000, 0.000, 0.680, 0.320, 0.000, 0.000, 0.000, 0.682, 0.318, 0.000, 0.000, 0.000, 0.678, 0.322, 0.000, 0.000, 0.000, 0.684, 0.315, 0.000, 0.000, 0.000),nrow=5,ncol=5)
+```
+
+Layer contributions can be easily plotted across values of _K_ using
+a stacked barplot:
+
+```{r, eval=TRUE,fig.width=5,fig.height=5}
+barplot(layer.contributions,
+		col=c("blue", "red", "goldenrod1", "forestgreen", "darkorchid1"),
+		xlab="",
+		ylab="layer contributions",
+		names.arg=paste0("K=",1:5))
+```
+
+In this case, the contributions of layers beyond _K_ = 2 is so small 
+that they don't even show up on the barplot.
+
+### Interpreting results
+
+If a layer in a given model contributes very little to overall covariance, 
+it is unlikely to have much biological significance. If you run `conStruct` 
+analyses across values of _K_, and see that, after a certain value of _K_,
+no additional clusters contribute much to overall covariance, that may be 
+a good indication that that value of _K_ (or at least, no larger value of 
+_K_) is best for describing the variation in your data. For example, in 
+the layer contributions plotted above in [Visualizing results](# visualizing-results-1),
+additional layers after _K_ = 2 have negligible layer contributions, so 
+we might reasonably conclude that the best value of _K_ for describing our 
+data is no greater than 2.
+
+Users can also set some threshold (e.g., 0.01) below which they count a layer's 
+contribution as negligble, and, by setting this threshold _a priori_, can 
+use layer contributions as a metric for model selection.
+
+## Cross-validation vs. Layer contribution
+
+With sufficient data, a cross-validation analysis may indicate 
+strong support for layers that each contribute very little to overall 
+covariance. In such a case, the input from cross-validation and 
+layer contributions are at odds, with the former arguing for the inclusion 
+of more layers, and the latter arguing against. What to do with that situation?
+
+Well, the specifics will vary from dataset to dataset, but we encourage users 
+to distinguish between statistical and biological significance, and not get too 
+caught up in the first at the expense of the second.
+
+## Advanced options
+
+Below, we include information on advanced topics that will not be of use 
+for the average user.
+
+### Specifying data partitions
+
+In many cases, there will be no genome available for the focal species in a 
+`conStruct` analysis, and the genotyped loci will have no known genomic location. 
+When genomic positions are known, advanced users may wish to specify their own data 
+partitions to maximize the efficacy of the cross-validation procedure. This is 
+because the cross-validation results are most trustworthy when the testing data 
+partition is independent from but still representative of the training data. 
+Because coalescent histories tend to be shared by adjacent loci on the genome, 
+if neighboring loci are split (one in the training dataset, the other in the 
+testing dataset), the training/testing partitions might not be truly independent. 
+In this case, the model parameterized by the training dataset will be fitting 
+coalescent "noise" that's also present in the testing dataset, the most likely 
+result of which is overfitting. Another concern is that different regions of the 
+genome have different properties (e.g., centromeres vs. non-centromeric DNA), so 
+to keep the training and testing partitions representative of each other, it's 
+best to try to match by genomic properties.
+
+**Our recommendation**: If genomic position and LD information is available, we 
+recommend divvying the genome up into blocks of length equal to twice the scale 
+of LD, then randomly assigning 90% of those blocks to a training partition, and 
+the remaining 10% to the testing partition for each replicate.
+
+To facilitate this type of custom data partitioning, users can specify their own 
+data partitions for a `x.validation` analysis using the `data.partitions` argument. 
+There is no function in the package for generating custom a custom data partitions 
+object, as the details of the data format and specifics of the desired partitioning 
+scheme will vary from user to user and genome to genome. Instead, we describe the 
+structure of the `data.partitions` object in detail below so that users can create 
+it for themselves.
+
+The `data.partitions` object must be a `list` of length `n.reps` as specified in 
+the `x.validation` function (one partitioning scheme per cross-validation replicate). 
+Each of the `n.reps` elements of the list must contain two elements, one named 
+`training` and one named `testing`, which contain the training and testing data 
+partitions, respectively. Each training and testing element of the list must contain 
+three named elements: `data`, `n.loci`, and `varMeanFreqs`.
+
+The `data` element contains the allelic covariance matrix for that partition of the 
+data; `n.loci` gives the number of loci in that partition; and `varMeanFreqs` gives 
+the variance in mean allele frequencies across loci (averaged over choice of counted 
+allele).
+
+Peeking under the hood of how conStruct creates this `data.partitions` object when none 
+is specified, the relevant functions are:
+
+* conStruct:::make.data.partitions
+
+    * conStruct:::xval.process.data
+
+        + conStruct:::calc.covariance
+
+        + conStruct:::get.var.mean.freqs
+
+Users attempting to specify their own `data.partitions` object are encouraged to use 
+these functions as guides for what operations are being carried out to generate the 
+data partitions list for a cross-validation analysis. The structure of an example 
+`data.partitions` object with 3 partitioning schemes (for 3 cross-validation replicates) 
+is shown below:
+
+```{r,echo=FALSE}
+data.partitions <- conStruct:::make.data.partitions(3,conStruct.data$allele.frequencies,0.9)
+```
+
+```{r,eval=TRUE}
+# In this dataset, there are 36 samples and 1e4 loci total, 
+#	and the data partitions are generated 
+#		with a 90% training 10% testing split
+
+str(data.partitions,max.level=3,give.attr=FALSE,vec.len=3)
+```

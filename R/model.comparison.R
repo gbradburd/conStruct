@@ -204,7 +204,7 @@ match.layers.x.runs <- function(admix.mat1,admix.mat2,admix.mat1.order=NULL){
 #' 			A layer can have a large contribution if many samples draw 
 #'			large amounts of admixture from it, or if it has a very large 
 #'			within-layer covariance parameter (phi), or some combination 
-#'			of the two. layer contribution can be useful for evaluating 
+#'			of the two. Layer contribution can be useful for evaluating 
 #'			an appropriate level of model complexity for the data (e.g., 
 #'			choosing a value of \code{K} or comparing the spatial and 
 #'			nonspatial models).
@@ -230,6 +230,7 @@ make.data.partitions <- function(n.reps,freqs,train.prop){
 							function(i){
 								xval.process.data(freqs,train.prop)								
 							})
+	names(data.partitions) <- paste0("rep",1:n.reps)
 	return(data.partitions)
 }
 
