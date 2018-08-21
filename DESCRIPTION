@@ -1,7 +1,7 @@
 Package: conStruct
 Version: 1.0.0
 Title: Models Spatially Continuous and Discrete Population Genetic Structure
-Description: Description: A method for modeling genetic data as a combination of discrete
+Description: A method for modeling genetic data as a combination of discrete
     layers, within each of which relatedness may decay continuously with geographic
     distance. This package contains code for running analyses (which are implemented
     in the modeling language rstan) and visualizing and interpreting output. See the

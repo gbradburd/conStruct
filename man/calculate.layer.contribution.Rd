@@ -40,7 +40,7 @@ This function calculates the contribution of each layer to
 			A layer can have a large contribution if many samples draw 
 		large amounts of admixture from it, or if it has a very large 
 		within-layer covariance parameter (phi), or some combination 
-		of the two. layer contribution can be useful for evaluating 
+		of the two. Layer contribution can be useful for evaluating 
 		an appropriate level of model complexity for the data (e.g., 
 		choosing a value of \code{K} or comparing the spatial and 
 		nonspatial models).
