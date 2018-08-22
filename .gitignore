@@ -18,3 +18,6 @@ testing/xval/xvals*.Robj
 testing/xval/*.xvals.Robj
 testing/xval/*data.partitions.Robj
 testing/xval/*.xval.results.Robj
+src/*.so
+src/*.o
+src/stan_files/*.o
