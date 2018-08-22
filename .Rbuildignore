@@ -1,9 +1,9 @@
-sandbox
+^sandbox$
 build.conStruct.pkg.R
-testing
-cran-comments.md
-man/*.pdf
-*.tar.gz
-src/*.so
-src/*.o
-src/stan_files/*.o
+^testing$
+^cran-comments.md
+^man/*.pdf
+^gz
+^src/*.so
+^src/*.o
+^src/stan_files/*.o
