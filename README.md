@@ -51,4 +51,4 @@ load using the command:
 
 After referring to the manual and vignettes, 
 please direct all queries to bradburd (at) msu.edu, 
-or post ass issues on the git repo.
+or post as issues on the git repo.
