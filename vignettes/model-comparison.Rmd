@@ -177,12 +177,19 @@ sp.results <- Reduce("cbind",lapply(my.xvals,function(x){unlist(x$sp)}),init=NUL
 nsp.results <- Reduce("cbind",lapply(my.xvals,function(x){unlist(x$nsp)}),init=NULL)
 ```
 
-A quick and dirty plot of the output is given below:
-
 ```{r,echo=FALSE}
 	sp.results <- matrix(c(-1.201, 0.000, -1.819, -4.579, -5.730, 0.000, 0.000, -5.346, -1.114, -7.315, -8.853, 0.000, 0.000, -6.125, -3.602, 0.000, -11.155, -5.506, -3.650, 0.000, -2.909, 0.000, -4.799, -9.890),nrow=3,ncol=8)
+	row.names(sp.results) <- paste0("K=",1:3)
 	nsp.results <- matrix(c(-685.108, -416.726, -141.223, -684.230, -418.651, -148.589, -679.392, -404.326, -147.367, -682.996, -415.190, -147.767, -680.044, -411.200, -147.288, -677.238, -410.037, -149.066, -679.914, -404.820, -145.464, -672.501, -414.927, -145.073),nrow=3,ncol=8)
+	row.names(nsp.results) <- paste0("K=",1:3)
 ```
+
+The results look like this:
+```{r,eval=TRUE,echo=FALSE}
+knitr::kable(sp.results,row.names=TRUE,col.names=paste0("rep",1:8),caption="Spatial cross-validation results")
+```
+
+A quick and dirty plot of the output is given below:
 
 ```{r, eval=TRUE, fig.width=8,fig.height=5}
 
@@ -290,10 +297,13 @@ my.xvals <- x.validation(train.prop = 0.9,
 The example above should run ~4 times as fast as cross-validation with the 
 same number of replicates not run in parallel.
 
+
 To facilitate greater flexibility in parallelization, users can also specify 
 their own parallelization scheme before running a cross-validation analysis, 
 in which case they should simply set `parallel=TRUE` and make sure that `n.nodes` 
-is equal to the number of nodes they've set up.  E.g.,
+is equal to the number of nodes they've set up.  If you've set up your own 
+parallelization beforehand (as in the example that follows), `x.validation` will use 
+that set-up rather than initializing one itself. E.g., 
 
 ```{r,eval=FALSE}
 
@@ -391,6 +401,12 @@ values of _K_.
 
 ```{r, echo=FALSE}
 	layer.contributions <- matrix(c(1.000, 0.000, 0.000, 0.000, 0.000, 0.680, 0.320, 0.000, 0.000, 0.000, 0.682, 0.318, 0.000, 0.000, 0.000, 0.678, 0.322, 0.000, 0.000, 0.000, 0.684, 0.315, 0.000, 0.000, 0.000),nrow=5,ncol=5)
+	row.names(layer.contributions) <- paste0("Layer_",1:5)
+```
+
+The table of layer contributions looks like this:
+```{r, eval=TRUE,echo=FALSE}
+knitr::kable(layer.contributions,row.names=TRUE,col.names=paste0("K=",1:5),caption="Contributions for each layer for runs done with K=1 through 5")
 ```
 
 Layer contributions can be easily plotted across values of _K_ using
@@ -443,7 +459,7 @@ for the average user.
 
 ### Specifying data partitions
 
-In many cases, there will be no genome available for the focal species in a 
+In many cases, there will be no genome assembly available for the focal species in a 
 `conStruct` analysis, and the genotyped loci will have no known genomic location. 
 When genomic positions are known, advanced users may wish to specify their own data 
 partitions to maximize the efficacy of the cross-validation procedure. This is 
