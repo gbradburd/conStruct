@@ -75,6 +75,7 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
 	}
 	check.data.partitions.arg(args <- as.list(environment()))
 	save(data.partitions,file=paste0(prefix, ".xval.data.partitions.Robj"))
+	prespecified <- parallel.prespecify.check(args <- as.list(environment()))
 	`%d%` <- parallelizing(args <- as.list(environment()))
 	i <- 1
     x.val <- foreach::foreach(i=1:n.reps) %d% {
@@ -92,6 +93,7 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
     x.val <- lapply(x.val, standardize.xvals)
     save(x.val,file=paste0(prefix,".xval.results.Robj"))
 	write.xvals(x.val,prefix)
+	tmp <- end.parallelization(prespecified)
     return(x.val)
 }
 
@@ -491,6 +493,22 @@ write.xvals <- function(xvals,prefix){
 		nsp <- round(nsp,digits=4)
 	utils::write.table(sp,file=paste0(prefix,"_sp_xval_results.txt"),row.names=FALSE,quote=FALSE)
 	utils::write.table(nsp,file=paste0(prefix,"_nsp_xval_results.txt"),row.names=FALSE,quote=FALSE)
+}
+
+parallel.prespecify.check <- function(args){
+	prespecified <- FALSE
+	if(args[["parallel"]] & foreach::getDoParRegistered()){
+		prespecified <- TRUE
+	}
+	return(prespecified)
+}
+
+end.parallelization <- function(prespecified){
+	if(!prespecified){
+		doParallel::stopImplicitCluster()
+		message("\nParallel workers terminated\n\n")
+	}
+	return(invisible("if not prespecified, parallelization ended"))
 }
 
 parallelizing <- function(args){

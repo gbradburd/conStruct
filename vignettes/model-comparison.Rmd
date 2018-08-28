@@ -93,6 +93,9 @@ To run a cross-validation analysis in `conStruct`, you can use the
 `x.validation` function.
 
 ```{r,eval=FALSE}
+# load the library
+library(conStruct)
+
 # load the example dataset
 data(conStruct.data)
 
@@ -295,7 +298,9 @@ my.xvals <- x.validation(train.prop = 0.9,
 ```
 
 The example above should run ~4 times as fast as cross-validation with the 
-same number of replicates not run in parallel.
+same number of replicates not run in parallel. At the end of the cross-validation 
+analysis, the parallel workers generated at the beginning of the run will be 
+terminated.
 
 
 To facilitate greater flexibility in parallelization, users can also specify 
@@ -331,6 +336,9 @@ my.xvals <- x.validation(train.prop = 0.9,
 stopCluster(cl)
 
 ```
+
+Note that if you have prespecified a parallelization scheme, you 
+are responsible for ending the parallelization yourself.
 
 ## Layer contributions
 
@@ -518,6 +526,8 @@ data partitions list for a cross-validation analysis. The structure of an exampl
 is shown below:
 
 ```{r,echo=FALSE}
+library(conStruct)
+data(conStruct.data)
 data.partitions <- conStruct:::make.data.partitions(3,conStruct.data$allele.frequencies,0.9)
 ```
 
