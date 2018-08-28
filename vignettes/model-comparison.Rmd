@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 <!-- library(rmarkdown) ; render("model-comparison.Rmd",html_vignette(toc=TRUE))	 -->
 
-## Introduction
+## Model comparison
 
 This document describes how to do model comparison 
 for conStruct analyses. It assumes that you are already 

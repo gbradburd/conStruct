@@ -1,7 +1,7 @@
 ---
 title: "How to run a conStruct analysis"
 author: "Gideon Bradburd"
-date: "21 June 2018"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 <!-- library(rmarkdown) ; render("run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
 
-## Introduction
+## Run conStruct 
 This document describes how to run a `conStruct` analysis.
 
 Throughout the document, I'll be referring to the 
