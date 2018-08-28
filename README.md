@@ -22,6 +22,12 @@ To install the R package:
 	install_github("gbradburd/conStruct",build_vignettes=TRUE)
 ```
 
+Upon installation, the conStruct models will be compiled, which may 
+spit lots of text, and possibly some warnings, to your screen. This is 
+totally normal, and you should only be concerned if you get errors 
+and the installation fails.
+
+
 ## Getting Started
 
 A complete manual for all documented functions is available [here](https://github.com/gbradburd/conStruct/blob/master/man/conStruct-manual.pdf).
