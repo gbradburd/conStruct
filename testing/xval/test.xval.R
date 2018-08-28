@@ -1,6 +1,8 @@
 library(conStruct)
 load("sim.dataset.Robj")
 
+options(error=recover)
+
 xvals <- x.validation(train.prop = 0.9,
 					  n.reps = 4,
 					  K = 1:3,

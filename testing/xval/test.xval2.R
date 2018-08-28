@@ -8,7 +8,7 @@ registerDoParallel(cl)
 
 xvals <- x.validation(train.prop = 0.9,
 					  n.reps = 4,
-					  K = 1:3,
+					  K = 1:4,
 					  freqs = sim.dataset$freq.data$freqs,
 					  data.partitions = NULL,
 					  geoDist = fields::rdist(sim.dataset$coords),
