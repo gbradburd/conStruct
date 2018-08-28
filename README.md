@@ -32,7 +32,7 @@ and the installation fails.
 
 A complete manual for all documented functions is available [here](https://github.com/gbradburd/conStruct/blob/master/man/conStruct-manual.pdf).
 
-In addition, there are three vignettes included in the package that walk through 
+In addition, there are four vignettes included in the package that walk through 
 various steps in the analysis pipeline in detail. You can find them using: 
 
 ```r
@@ -41,6 +41,9 @@ various steps in the analysis pipeline in detail. You can find them using:
 
 # how to run a conStruct analysis
 	vignette(topic="run-conStruct",package="conStruct")
+
+# how to visualize the output of a conStruct model
+	vignette(topic="visualize-results",package="conStruct")
 
 # how to compare and select between different conStruct models
 	vignette(topic="model-comparison",package="conStruct")
