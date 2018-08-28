@@ -5,6 +5,9 @@ sandbox/
 build.conStruct.pkg.R
 */.Rapp.history
 .Rapp.history
+.RData
+*.Rout
+nohup.out
 testing/*/.Rapp.history
 testing/*/.RData
 testing/*/*.pdf
