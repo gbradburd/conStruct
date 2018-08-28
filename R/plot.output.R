@@ -225,10 +225,12 @@ make.admix.pie.plot <- function(admix.proportions,coords,layer.colors=NULL,radii
 	if(is.null(y.lim)){
 		y.lim <- c(min(coords[,2]) - 1, max(coords[,2]) + 1)
 	}
-	caroline::pies(pie.list,x0=coords[,1],y0=coords[,2],
-				color.table=color.tab,border="black",radii=radii,
-				xlab="",ylab="",main="",lty=1,density=NULL,
-				xlim = x.lim, ylim = y.lim)
+	suppressWarnings(
+		caroline::pies(pie.list,x0=coords[,1],y0=coords[,2],
+					   color.table=color.tab,border="black",radii=radii,
+					   xlab="",ylab="",main="",lty=1,density=NULL,
+					   xlim = x.lim, ylim = y.lim)
+	)
 	return(invisible(0))
 }
 
