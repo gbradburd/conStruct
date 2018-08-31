@@ -20,12 +20,13 @@
 		with \code{N} rows and columns}
 	\item{\code{geoDist}}{a matrix of pairwise geographic distance between , 
 		samples in the same order as that of the \code{obsCov}, 
-		with \code{N} rows and columns, normalized by the standard 
-		deviation of the raw geographic distance matrix specified 
-		by the user}
+		with \code{N} rows and columns}
+	\item{\code{sd.geoDist}}{the standard deviation of the raw geographic 
+		distance matrix, used for normalizing \code{geoDist} within the 
+		stan model}
 	\item{\code{varMeanFreqs}}{the variance of the mean allele frequencies, 
 		averaged over choice of counted allele (passed to the model 
-		as a prior on the global covaraince parameter)}
+		as a prior on the global covariance parameter)}
 }}
 \usage{
 data.block

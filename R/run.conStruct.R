@@ -109,9 +109,9 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 	call.check <- check.call(args <- as.list(environment()))
 	freq.data <- process.freq.data(freqs)
 	data.block <- make.data.block(K,freq.data,coords,spatial,geoDist)
-		if(save.files){
-			save(data.block,file=paste0(prefix,"_data.block.Robj"))
-		}
+	if(save.files){
+		save(data.block,file=paste0(prefix,"_data.block.Robj"))
+	}
 	stan.model <- pick.stan.model(spatial,K)
 	model.fit <- rstan::sampling(object = stanmodels[[stan.model]],
 							 	 refresh = min(n.iter/10,500),
@@ -120,14 +120,13 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 							 	 chains = n.chains,
 							 	 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
 							 	 save_warmup = FALSE)
-	#save fit obj
-		if(save.files){
-			save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
-		}
 	conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
-		if(save.files){
-			save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
-		}
+	data.block <- unstandardize.distances(data.block)
+	if(save.files){
+		save(data.block,file=paste0(prefix,"_data.block.Robj"))
+		save(model.fit,file=paste(prefix,"model.fit.Robj",sep="_"))
+		save(conStruct.results,file=paste(prefix,"conStruct.results.Robj",sep="_"))
+	}
 	if(make.figs){
 		make.all.the.plots(conStruct.results,data.block,prefix,layer.colors=NULL)
 	}
@@ -307,18 +306,23 @@ standardize.distances <- function(D){
 		std.D <- D/stdev.D
 	} else {
 		std.D <- NULL
+		stdev.D <- NULL
 	}
-	return(std.D)
+	sd.dist.lit <- list("std.D" = std.D,
+						"stdev.D" = stdev.D)
+	return(sd.dist.lit)
 }
 
 make.data.block <- function(K,freq.data,coords,spatial,geoDist=NULL){
+	sd.dist.list <- standardize.distances(geoDist)
 	data.block <- list("N" = nrow(coords),
 					   "K" = K,
 					   "spatial" = spatial,
 					   "L" = freq.data$n.loci,
 					   "coords" = coords,
 					   "obsCov" = freq.data$obsCov,
-					   "geoDist" = standardize.distances(geoDist),
+					   "geoDist" = sd.dist.list$std.D,
+					   "sd.geoDist" = sd.dist.list$stdev.D,
 					   "varMeanFreqs" = mean(0.5*colMeans(freq.data$freqs-0.5,na.rm=TRUE)^2 + 0.5*colMeans(1-freq.data$freqs-0.5,na.rm=TRUE)^2))
 	data.block <- validate.data.block(data.block)
 	return(data.block)
