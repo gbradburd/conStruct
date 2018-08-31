@@ -20,6 +20,10 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 This document describes the format of the data used in 
 a `conStruct` analysis.
 
+For information on how to run a `conStruct` analysis 
+after you've formatted your data, see the companion 
+vignette on [how to run conStruct](run-conStruct.html)
+
 Throughout the document, I'll be referring to the 
 example dataset included with the package:
 

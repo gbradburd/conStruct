@@ -65,6 +65,13 @@ Below, I describe both options and give examples for how to
 use their associated functions in the `conStruct` package 
 and visualize the output they generate.
 
+Note that if you are interested in visually comparing two 
+independent `conStruct` runs, you can use the function 
+`compare.two.runs`, the documentation for which can be found with the  
+command `help(compare.two.runs)`. This function is further described 
+in the [companion vignette for visualizing results](visualize-results.html).
+
+
 ## Cross-validation
 
 Cross-validation is a tool for testing how the results of an analysis 
@@ -316,7 +323,7 @@ library(parallel)
 library(foreach)
 library(doParallel)
 
-cl <- makeCluster(4)
+cl <- makeCluster(4,type="FORK")
 registerDoParallel(cl)
 
 my.xvals <- x.validation(train.prop = 0.9,
@@ -338,7 +345,11 @@ stopCluster(cl)
 ```
 
 Note that if you have prespecified a parallelization scheme, you 
-are responsible for ending the parallelization yourself.
+are responsible for ending the parallelization yourself, as shown 
+above with the `stopCluster()` call. Linux and Mac users may wish 
+use `makeCluster(N,type="FORK")`, as it does better with memory 
+usage. Windows users should user the default PSOCK cluster 
+(e.g., `makeCluster(N,type="PSOCK")`).
 
 ## Layer contributions
 
