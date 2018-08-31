@@ -19,7 +19,7 @@
 #'		locus and one row per sample.
 #' 		Missing data should be indicated with \code{NA}.
 #' @param data.partitions A list with one element for each desired 
-#'		cross-vlaidation replicate. This argument can be specified 
+#'		cross-validation replicate. This argument can be specified 
 #'		instead of the \code{freqs} argument if the user wants to 
 #'		provide their own data partitions for model training and testing.
 #'		See the model comparison vignette for details on what this 
