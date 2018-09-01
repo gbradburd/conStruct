@@ -103,6 +103,7 @@
 #'			If \code{make.figs=TRUE}, running \code{conStruct} will also generate many output figures, 
 #'			which are detailed in the function \code{make.all.the.plots} in this package.
 #'
+#'
 #' @import rstan
 #' @export
 conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chains=1,n.iter=1e3,make.figs=TRUE,save.files=TRUE){

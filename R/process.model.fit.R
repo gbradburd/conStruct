@@ -1,6 +1,6 @@
 unstandardize.distances <- function(data.block){
-	if(!is.null(data.block$std.geoDist)){
-		data.block$geoDist <- data.block$geoDist*data.block$std.geoDist
+	if(!is.null(data.block$sd.geoDist)){
+		data.block$geoDist <- data.block$geoDist*data.block$sd.geoDist
 	}
 	return(data.block)
 }
