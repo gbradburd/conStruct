@@ -23,7 +23,7 @@
 #'  The plots made are by no means an exhaustive, and users are 
 #' 	encouraged to make further plots, or customize these plots as they 
 #'	see fit.  For each plot, one file is generated for each MCMC chain 
-#'	(specified withe the \code{n.chains} argument in the function 
+#'	(specified with the \code{n.chains} argument in the function 
 #'	\code{conStruct}. The plots generated (as .pdf files) are:
 #'	\itemize{
 #'		\item Structure plot - STRUCTURE-style plot, where each sample 
@@ -225,11 +225,108 @@ make.admix.pie.plot <- function(admix.proportions,coords,layer.colors=NULL,radii
 	if(is.null(y.lim)){
 		y.lim <- c(min(coords[,2]) - 1, max(coords[,2]) + 1)
 	}
-	caroline::pies(pie.list,x0=coords[,1],y0=coords[,2],
-				color.table=color.tab,border="black",radii=radii,
-				xlab="",ylab="",main="",lty=1,density=NULL,
-				xlim = x.lim, ylim = y.lim)
+	suppressWarnings(
+		caroline::pies(pie.list,x0=coords[,1],y0=coords[,2],
+					   color.table=color.tab,border="black",radii=radii,
+					   xlab="",ylab="",main="",lty=1,density=NULL,
+					   xlim = x.lim, ylim = y.lim)
+	)
 	return(invisible(0))
+}
+
+#' Compare two conStruct runs
+#'
+#' \code{compare.two.runs} makes figures comparing the output 
+#' 	from two conStruct analyses.
+#'
+#' This function takes the outputs from two conStruct analyses and 
+#' generates a number of plots for comparing results and 
+#' diagnosing MCMC performance.
+#'
+#' @param conStruct.results1 The list output by a 
+#'			\code{conStruct} run.
+#' @param data.block1 A \code{data.block} list saved during a 
+#'			\code{conStruct} run.
+#' @param conStruct.results2 The list output by a second
+#'			\code{conStruct} run.
+#' @param data.block2 A \code{data.block} list saved during a 
+#'			second \code{conStruct} run.
+#' @param prefix A character vector to be prepended to all figures.
+#' @param layer.colors A \code{vector} of colors to be used in 
+#'			plotting results for different layers. Users must 
+#'			specify one color per layer.  If \code{NULL}, plots 
+#'			will use a pre-specified vector of colors.
+#' @return This function has only invisible return values.
+#'
+#'	@details This function produces a variety of plots that can be 
+#'	useful for comparing results from two \code{conStruct} analyses.
+#'  The runs must have the same number of independent MCMC chains, 
+#' 	but may have different values of \code{K}. The spatial and 
+#'	nonspatial models can be compared. If the runs were executed 
+#'	with different values of \code{K}, the run with the smaller 
+#'	value of \code{K} should be specified in the first set of 
+#'	arguments (\code{conStruct.results1} and \code{data.block1}).
+#'
+#'  The plots made are by no means an exhaustive, and users are 
+#' 	encouraged to make further plots, or customize these plots as they 
+#'	see fit.  For each plot, one file is generated for each MCMC chain 
+#'	in each analysis (specified with the \code{n.chains} argument in 
+#'	the function \code{conStruct}. For clarity, the layers in the second 
+#' 	are matched to those in the first using the function 
+#'	\code{match.clusters.x.runs} The plots generated (as .pdf files) are:
+#'	\itemize{
+#'		\item Structure plot - STRUCTURE-style plot, where each sample 
+#'			is represented as a stacked bar plot, and the length of the 
+#'			bar plot segments of each color represent that sample's 
+#'			admixture proportion in that layer. Described further 
+#'			in the help page for \code{make.structure.plot}.
+#'		\item Admixture pie plot - A map of samples in which each sample's 
+#'				location is denoted with a pie chart, and the proportion 
+#'				of a pie chart of each color represents that sample's 
+#'				admixture in each layer. Described further in the help 
+#'				page for \code{make.admix.pie.plot}
+#'		\item model.fit.CIs - A plot of the sample allelic covariance 
+#'			shown with the 95\% credible interval of the parametric 
+#'			covariance for each entry in the matrix.
+#'		\item layer.covariances - A plot of the layer-specific 
+#'				covariances overlain unto the sample allelic covariance.
+#'		\item Trace plots - Plots of parameter values over the MCMC.
+#'		\itemize{
+#'			\item lpd - A plot of the log posterior probability over the MCMC.
+#'			\item nuggets - A plot of estimates of the nugget parameters 
+#'				over the MCMC.
+#'			\item gamma - A plot of estimates of the gamma parameter 
+#'				over the MCMC.
+#'			\item layer.cov.params - Plots of estimates of the 
+#'				layer-specific parameters over the MCMC.
+#'			\item admix.props - A plot of estimates of the admixture proportions 
+#'				over the MCMC.
+#'		}
+#'	}
+#'@export
+compare.two.runs <- function(conStruct.results1,data.block1,conStruct.results2,data.block2,prefix,layer.colors=NULL){
+	if(length(conStruct.results1) != length(conStruct.results1)){
+		stop("\nthe two \"conStruct.results\" objects must be from analyses with the same number of chains\n\n")
+	}
+	if(data.block1$K > data.block2$K){
+		stop("\nyou must specify the run with the smaller value of K in the first set of arguments (\"conStruct.results1\" and \"data.block1\")\n\n")
+	}
+	if(!any(grepl("chain",names(conStruct.results1)))){
+		stop("\nyou must specify conStruct results across all chains\ni.e. from \"conStruct.results\" rather than \"conStruct.results[[1]]\"\n\n")
+	}
+	if(!is.null(layer.colors)){
+		if(length(layer.colors!=data.block1$K)){
+			stop("\nyou must specify one color per layer\n\n")
+		}
+	} else {
+		layer.colors <- c("blue","red","goldenrod1","forestgreen","darkorchid1","deepskyblue","darkorange1","seagreen2","yellow1","black")
+		if(data.block1$K > 10){
+			stop("\nyou has specified more layers than there are default colors.\n you must specify your own \"layer.colors\"\n\n")
+		}
+	}
+	lapply(1:length(conStruct.results1),function(i){
+		make.all.chain.coplots(conStruct.results1[[i]],conStruct.results2[[i]],chain.no=i,data.block1,data.block2,prefix,layer.colors)
+	})
 }
 
 plot.lpd <- function(conStruct.results){
@@ -296,11 +393,14 @@ plot.layer.cov.params <- function(data.block,conStruct.results,layer.colors){
 }
 
 
-plot.admix.props <- function(data.block,conStruct.results,layer.colors){
+plot.admix.props <- function(data.block,conStruct.results,layer.colors,layer.order=NULL){
 	n.layers <- data.block$K
+	if(is.null(layer.order)){
+		layer.order <- 1:n.layers
+	}
 	graphics::par(mfrow=c(n.layers,1),mar=c(3,3,2,2))
 		for(i in 1:n.layers){
-			graphics::matplot(conStruct.results$posterior$admix.proportions[,,i],type='l',ylim=c(0,1),
+			graphics::matplot(conStruct.results$posterior$admix.proportions[,,layer.order[i]],type='l',ylim=c(0,1),
 					main=paste0("layer ",i),ylab="admixture proportion",col=layer.colors[i])
 		}
 	return(invisible(0))
@@ -340,7 +440,11 @@ plot.model.fit.CIs <- function(data.block,conStruct.results){
 	return(invisible("plotted"))
 }
 
-plot.layer.covariances <- function(data.block,conStruct.results,layer.colors){
+plot.layer.covariances <- function(data.block,conStruct.results,layer.colors,layer.order=NULL){
+	n.layers <- data.block$K
+	if(is.null(layer.order)){
+		layer.order <- 1:n.layers
+	}
 	ind.mat <- upper.tri(data.block$geoDist,diag=TRUE)
 	order.mat <- order(data.block$geoDist)
 	    y.range <- range(c(
@@ -358,11 +462,11 @@ plot.layer.covariances <- function(data.block,conStruct.results,layer.colors){
 		lapply(1:data.block$K, function(k) {
              graphics::lines(data.block$geoDist[order.mat][ind.mat],
              		conStruct.results$MAP$gamma + 
-             		conStruct.results$MAP$layer.params[[k]]$layer.cov[order.mat][ind.mat],
+             		conStruct.results$MAP$layer.params[[layer.order[k]]]$layer.cov[order.mat][ind.mat],
                   col = 1,lwd=4.5,lty=1) ; 
              graphics::lines(data.block$geoDist[order.mat][ind.mat],
              		conStruct.results$MAP$gamma + 
-             		conStruct.results$MAP$layer.params[[k]]$layer.cov[order.mat][ind.mat],
+             		conStruct.results$MAP$layer.params[[layer.order[k]]]$layer.cov[order.mat][ind.mat],
                   col = layer.colors[k],lwd=4,lty=1)
         })
 		graphics::legend(x="topright",col= layer.colors[1:data.block$K],lty=1,
@@ -415,6 +519,58 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,la
 		grDevices::dev.off()
 		grDevices::pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=10,height=5)
 			make.structure.plot(conStruct.results$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=NULL,sample.names=NULL,sort.by=NULL,layer.colors)
+		grDevices::dev.off()
+	}
+	return(invisible("made chain plots!"))
+}
+
+make.all.chain.coplots <- function(conStruct.results1,conStruct.results2,chain.no,data.block1,data.block2,prefix,layer.colors){
+	match.order <- match.layers.x.runs(conStruct.results1$MAP$admix.proportions,conStruct.results2$MAP$admix.proportions)
+	layer.colors1 <- layer.colors
+	layer.colors2 <- layer.colors1[match.order]
+	grDevices::pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"),width=12,height=6)
+		graphics::par(mfrow=c(1,2))
+			plot.lpd(conStruct.results1)
+			plot.lpd(conStruct.results2)
+		graphics::par(mfrow=c(1,2))
+			plot.nuggets(conStruct.results1)
+			plot.nuggets(conStruct.results2)
+		graphics::par(mfrow=c(1,2))
+			plot.gamma(conStruct.results1)
+			plot.gamma(conStruct.results2)
+		graphics::par(mfrow=c(1,2))
+			plot.layer.cov.params(data.block1,conStruct.results1,layer.colors1)
+			plot.layer.cov.params(data.block2,conStruct.results2,layer.colors2)
+		if(data.block1$K > 1 & data.block2$K > 1){
+			graphics::par(mfrow=c(1,2))
+				plot.admix.props(data.block1,conStruct.results1,layer.colors1)
+				plot.admix.props(data.block2,conStruct.results2,layer.colors1,layer.order=match.order)
+		}
+	grDevices::dev.off()
+	if(!is.null(data.block1$geoDist) & !is.null(data.block2$geoDist)){
+		grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),width=12,height=6)
+			graphics::par(mfrow=c(1,2))
+				plot.model.fit.CIs(data.block1,conStruct.results1)
+				plot.model.fit.CIs(data.block2,conStruct.results2)
+		grDevices::dev.off()
+	}
+	if(data.block1$spatial & data.block2$spatial | (data.block1$K > 1 & !is.null(data.block1$geoDist) & data.block2$K > 1 & !is.null(data.block2$geoDist))){
+		grDevices::pdf(file=paste0(prefix,"_layer.cov.curves.chain_",chain.no,".pdf"),width=10,height=5)
+			graphics::par(mfrow=c(1,2))
+				plot.layer.covariances(data.block1,conStruct.results1,layer.colors1)
+				plot.layer.covariances(data.block2,conStruct.results2,layer.colors1,layer.order=match.order)
+		grDevices::dev.off()
+	}
+	if(data.block1$K > 1 & data.block2$K > 1){
+		grDevices::pdf(file=paste0(prefix,"_pie.map.chain_",chain.no,".pdf"),width=12,height=6)	
+		graphics::par(mfrow=c(1,2))
+			make.admix.pie.plot(conStruct.results1$MAP$admix.proportions,data.block1$coords,layer.colors1,radii =2.7,add=FALSE,x.lim=NULL,y.lim=NULL)
+			make.admix.pie.plot(conStruct.results2$MAP$admix.proportions,data.block2$coords,layer.colors1[order(match.order)],radii =2.7,add=FALSE,x.lim=NULL,y.lim=NULL)
+		grDevices::dev.off()
+		grDevices::pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=10,height=10)
+			graphics::par(mfrow=c(2,1))
+				make.structure.plot(conStruct.results1$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=NULL,sample.names=NULL,sort.by=NULL,layer.colors1)
+				make.structure.plot(conStruct.results2$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=match.order,sample.names=NULL,sort.by=NULL,layer.colors1[order(match.order)])
 		grDevices::dev.off()
 	}
 	return(invisible("made chain plots!"))

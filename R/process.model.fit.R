@@ -1,3 +1,10 @@
+unstandardize.distances <- function(data.block){
+	if(!is.null(data.block$sd.geoDist)){
+		data.block$geoDist <- data.block$geoDist*data.block$sd.geoDist
+	}
+	return(data.block)
+}
+
 get.conStruct.results <- function(data.block,model.fit,n.chains){
 	conStruct.results <- stats::setNames(
 							lapply(1:n.chains,
@@ -55,7 +62,7 @@ get.null.alpha.params <- function(n.iter){
 	return(alpha.params)	
 }
 
-get.alpha.params <- function(model.fit,chain.no,layer,n.layers){
+get.alpha.params <- function(model.fit,data.block,chain.no,layer,n.layers){
 	alpha.pars <- model.fit@model_pars[grepl("alpha",model.fit@model_pars)]
 	if(length(alpha.pars) !=0 ){
 		if(n.layers > 1){
@@ -77,6 +84,9 @@ get.alpha.params <- function(model.fit,chain.no,layer,n.layers){
 		}
 	} else {
 		alpha.params <- get.null.alpha.params(model.fit@sim$n_save[chain.no])
+	}
+	if(!is.null(data.block$sd.geoDist)){
+		alpha.params$alphaD <- alpha.params$alphaD/data.block$sd.geoDist
 	}
 	return(alpha.params)
 }
@@ -141,7 +151,7 @@ get.layer.cov <- function(layer.params,data.block,n.iter){
 
 get.layer.params <- function(model.fit,data.block,chain.no,layer,n.layers,n.iter){
 	layer.params <- list()
-	layer.params <- get.alpha.params(model.fit,chain.no,layer,n.layers)
+	layer.params <- get.alpha.params(model.fit,data.block,chain.no,layer,n.layers)
 	layer.params[["phi"]] <- get.layer.phi(model.fit,chain.no,layer)
 	layer.cov <- get.layer.cov(layer.params,data.block,n.iter)
 	layer.params <- c(layer.params,list("layer.cov"=layer.cov))

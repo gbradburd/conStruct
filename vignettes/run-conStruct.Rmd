@@ -1,7 +1,7 @@
 ---
 title: "How to run a conStruct analysis"
 author: "Gideon Bradburd"
-date: "21 June 2018"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 <!-- library(rmarkdown) ; render("run-conStruct.Rmd",html_vignette(toc=TRUE))	-->
 
-## Introduction
+## Run conStruct 
 This document describes how to run a `conStruct` analysis.
 
 Throughout the document, I'll be referring to the 
@@ -30,7 +30,13 @@ data(conStruct.data)
 The format for the data you need to run a `conStruct` 
 analysis is covered in a separate vignette in this 
 package. You can view that vignette using the command: 
-`vignette(package="conStruct",topic="format-data")`
+`vignette(package="conStruct",topic="format-data")`.
+If you've already run `conStruct` and you want more 
+information on how to visualze the results, please see 
+the companion vignette for [visualizing results](visualize-results.html).
+If you've run several `conStruct` analyses and want to 
+compare them, please see the companion vignette for 
+[model comparison](model-comparison.html).
 
 ## Running a conStruct analysis
 
@@ -63,12 +69,12 @@ data(conStruct.data)
 #		the geographic distance matrix (geoDist)
 #		the sampling coordinates (coords)
 
-conStruct(spatial = TRUE, 
-	 	  K = 3, 
-	  	  freqs = conStruct.data$allele.frequencies,
-	  	  geoDist = conStruct.data$geoDist, 
-	  	  coords = conStruct.data$coords,
-	  	  prefix = "spK3")
+my.run <- conStruct(spatial = TRUE, 
+	 	  			K = 3, 
+				  	freqs = conStruct.data$allele.frequencies,
+				  	geoDist = conStruct.data$geoDist, 
+				  	coords = conStruct.data$coords,
+				  	prefix = "spK3")
 ```
 
 The function call above runs `conStruct`'s spatial model 
@@ -105,12 +111,12 @@ data(conStruct.data)
 #		you do not have to specify 
 #		the geographic distance matrix (geoDist)
 
-conStruct(spatial = FALSE, 
-	  K = 2, 
-	  freqs = conStruct.data$allele.frequencies, 
-	  geoDist = NULL, 
-	  coords = conStruct.data$coords,
-	  prefix = "nspK2")
+my.run <- conStruct(spatial = FALSE, 
+				    K = 2, 
+				    freqs = conStruct.data$allele.frequencies, 
+				    geoDist = NULL, 
+				    coords = conStruct.data$coords,
+				    prefix = "nspK2")
 ```
 
 The function call above runs `conStruct`'s nonspatial model 
@@ -128,16 +134,16 @@ these defaults, so we describe them below:
 The full function call for the spatial model with 3 layers is:
 
 ```{r,eval=FALSE}
-conStruct(spatial = TRUE, 
-		  K = 3, 
-		  freqs = conStruct.data$allele.frequencies, 
-		  geoDist = conStruct.data$geoDist, 
-		  coords = conStruct.data$coords, 
-		  prefix = "spK3", 
-		  n.chains = 1, 
-		  n.iter = 1000, 
-		  make.figs = TRUE, 
-		  save.files = TRUE)
+my.run <- conStruct(spatial = TRUE, 
+					K = 3, 
+					freqs = conStruct.data$allele.frequencies, 
+					geoDist = conStruct.data$geoDist, 
+					coords = conStruct.data$coords, 
+					prefix = "spK3", 
+					n.chains = 1, 
+					n.iter = 1000, 
+					make.figs = TRUE, 
+					save.files = TRUE)
 ```
 
 The other options are `n.chains`, `n.iter`, `make.figs`, `save.files`; 

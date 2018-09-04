@@ -1,10 +1,12 @@
 library(conStruct)
 load("sim.dataset.Robj")
 
+options(error=recover)
+
 xvals <- x.validation(train.prop = 0.9,
-					  n.reps = 4,
-					  K = 1:3,
-					  freqs = sim.dataset$freq.data$freqs,
+					  n.reps = 2,
+					  K = 1:2,
+					  freqs = sim.dataset$freqs,
 					  geoDist = fields::rdist(sim.dataset$coords),
 					  coords = sim.dataset$coords,
 					  prefix = "xval_test1",
@@ -12,6 +14,6 @@ xvals <- x.validation(train.prop = 0.9,
 					  make.figs = FALSE,
 					  save.files = FALSE,
 					  parallel = TRUE,
-					  n.nodes = 4)
+					  n.nodes = 2)
 
 save(xvals,file="test1.xvals.Robj")

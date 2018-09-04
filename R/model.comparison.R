@@ -19,7 +19,7 @@
 #'		locus and one row per sample.
 #' 		Missing data should be indicated with \code{NA}.
 #' @param data.partitions A list with one element for each desired 
-#'		cross-vlaidation replicate. This argument can be specified 
+#'		cross-validation replicate. This argument can be specified 
 #'		instead of the \code{freqs} argument if the user wants to 
 #'		provide their own data partitions for model training and testing.
 #'		See the model comparison vignette for details on what this 
@@ -75,6 +75,7 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
 	}
 	check.data.partitions.arg(args <- as.list(environment()))
 	save(data.partitions,file=paste0(prefix, ".xval.data.partitions.Robj"))
+	prespecified <- parallel.prespecify.check(args <- as.list(environment()))
 	`%d%` <- parallelizing(args <- as.list(environment()))
 	i <- 1
     x.val <- foreach::foreach(i=1:n.reps) %d% {
@@ -92,6 +93,7 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
     x.val <- lapply(x.val, standardize.xvals)
     save(x.val,file=paste0(prefix,".xval.results.Robj"))
 	write.xvals(x.val,prefix)
+	tmp <- end.parallelization(prespecified)
     return(x.val)
 }
 
@@ -256,13 +258,15 @@ xval.process.data <- function(freqs,train.prop){
 }
 
 xval.make.data.block <- function(K, data.partition, coords, spatial, geoDist = NULL){
+	sd.dist.list <- standardize.distances(geoDist)
 	data.block <- list(N = nrow(coords),
 					   K = K,
 					   spatial = spatial,
 					   L = data.partition$n.loci,
 					   coords = coords,
 					   obsCov = data.partition$data,
-					   geoDist = standardize.distances(geoDist),
+					   geoDist = sd.dist.list$std.D,
+					   sd.geoDist = sd.dist.list$stdev.D,
 					   varMeanFreqs = data.partition$varMeanFreqs)
     data.block <- validate.data.block(data.block)
     return(data.block)
@@ -367,14 +371,12 @@ xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, pre
     							 chains = n.chains, 
         						 thin = ifelse(n.iter/500 > 1, n.iter/500, 1), 
         						 save_warmup = FALSE)
-    if (save.files) {
-        save(model.fit, file = paste(prefix, "model.fit.Robj", 
-            sep = "_"))
-    }
     conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
+	data.block <- unstandardize.distances(data.block)
     if (save.files) {
-        save(conStruct.results, file = paste(prefix, "conStruct.results.Robj", 
-            sep = "_"))
+        save(data.block, file = paste0(prefix, "_data.block.Robj"))	
+        save(conStruct.results, file = paste(prefix, "conStruct.results.Robj", sep = "_"))
+        save(model.fit, file = paste(prefix, "model.fit.Robj", sep = "_"))
     }
     if (make.figs) {
         make.all.the.plots(conStruct.results, data.block, prefix,layer.colors = NULL)
@@ -491,6 +493,22 @@ write.xvals <- function(xvals,prefix){
 		nsp <- round(nsp,digits=4)
 	utils::write.table(sp,file=paste0(prefix,"_sp_xval_results.txt"),row.names=FALSE,quote=FALSE)
 	utils::write.table(nsp,file=paste0(prefix,"_nsp_xval_results.txt"),row.names=FALSE,quote=FALSE)
+}
+
+parallel.prespecify.check <- function(args){
+	prespecified <- FALSE
+	if(args[["parallel"]] & foreach::getDoParRegistered()){
+		prespecified <- TRUE
+	}
+	return(prespecified)
+}
+
+end.parallelization <- function(prespecified){
+	if(!prespecified){
+		doParallel::stopImplicitCluster()
+		message("\nParallel workers terminated\n\n")
+	}
+	return(invisible("if not prespecified, parallelization ended"))
 }
 
 parallelizing <- function(args){

@@ -38,7 +38,7 @@ useful for visualizing results or diagnosing MCMC performance.
  The plots made are by no means an exhaustive, and users are 
 	encouraged to make further plots, or customize these plots as they 
 see fit.  For each plot, one file is generated for each MCMC chain 
-(specified withe the \code{n.chains} argument in the function 
+(specified with the \code{n.chains} argument in the function 
 \code{conStruct}. The plots generated (as .pdf files) are:
 \itemize{
 	\item Structure plot - STRUCTURE-style plot, where each sample 

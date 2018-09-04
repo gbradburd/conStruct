@@ -1,7 +1,7 @@
 ---
 title: "How to format data for a conStruct analysis"
 author: "Gideon Bradburd"
-date: "21 June 2018"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -16,9 +16,13 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 <!-- library(rmarkdown) ; render("format-data.Rmd",html_vignette(toc=TRUE))	-->
 
-## Introduction
+## Format data
 This document describes the format of the data used in 
 a `conStruct` analysis.
+
+For information on how to run a `conStruct` analysis 
+after you've formatted your data, see the companion 
+vignette on [how to run conStruct](run-conStruct.html)
 
 Throughout the document, I'll be referring to the 
 example dataset included with the package:

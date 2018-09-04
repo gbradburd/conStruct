@@ -5,6 +5,9 @@ sandbox/
 build.conStruct.pkg.R
 */.Rapp.history
 .Rapp.history
+.RData
+*.Rout
+nohup.out
 testing/*/.Rapp.history
 testing/*/.RData
 testing/*/*.pdf
@@ -18,3 +21,8 @@ testing/xval/xvals*.Robj
 testing/xval/*.xvals.Robj
 testing/xval/*data.partitions.Robj
 testing/xval/*.xval.results.Robj
+src/*.so
+src/*.o
+src/stan_files/*.o
+src/stan_files/*.hpp
+testing/xval/*.log

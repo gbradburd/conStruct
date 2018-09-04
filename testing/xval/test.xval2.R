@@ -3,13 +3,13 @@ load("sim.dataset.Robj")
 
 library(foreach)
 library(doParallel)
-cl <- makeCluster(4)
+cl <- makeCluster(2,type="FORK")
 registerDoParallel(cl)
 
 xvals <- x.validation(train.prop = 0.9,
-					  n.reps = 4,
-					  K = 1:3,
-					  freqs = sim.dataset$freq.data$freqs,
+					  n.reps = 2,
+					  K = 1:2,
+					  freqs = sim.dataset$freqs,
 					  data.partitions = NULL,
 					  geoDist = fields::rdist(sim.dataset$coords),
 					  coords = sim.dataset$coords,
@@ -18,7 +18,7 @@ xvals <- x.validation(train.prop = 0.9,
 					  make.figs = FALSE,
 					  save.files = FALSE,
 					  parallel = TRUE,
-					  n.nodes = 4)
+					  n.nodes = 2)
 
 save(xvals,file="xvals2.Robj")
 
