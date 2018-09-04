@@ -4,6 +4,8 @@
  + stan model blocks are now compiled at package installation instead of at a call to `conStruct` or `x.validation`.
  + `x.validation` is now parallelizable
  + new `model-comparison` vignette (see `vignette("model-comparison",package="conStruct")`)
+ + alphaD parameter is now rescaled to reflect non-normalized geographic distances
+ + compare.two.runs function added
 
 ## Bug fixes
  + Removed large files in git history on repo

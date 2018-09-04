@@ -1,6 +1,6 @@
 build.conStruct.pkg.R
 build.conStruct.pkg.Rout
-conStruct_*\.tar.gz
+conStruct_1.0.0.tar.gz
 sandbox/*
 testing/*
 cran-comments.md
