@@ -22,6 +22,9 @@ To install the R package:
 	install_github("gbradburd/conStruct",build_vignettes=TRUE)
 ```
 
+Note that Windows users may have to download Rtools as a 
+standalone executable before trying to install the conStruct R package.
+
 Upon installation, the conStruct models will be compiled, which may 
 spit lots of text, and possibly some warnings, to your screen. This is 
 totally normal, and you should only be concerned if you get errors 
