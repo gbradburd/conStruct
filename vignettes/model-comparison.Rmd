@@ -456,7 +456,7 @@ we might reasonably conclude that the best value of _K_ for describing our
 data is no greater than 2.
 
 Users can also set some threshold (e.g., 0.01) below which they count a layer's 
-contribution as negligble, and, by setting this threshold _a priori_, can 
+contribution as negligible, and, by setting this threshold _a priori_, can 
 use layer contributions as a metric for model selection.
 
 ## Cross-validation vs. Layer contribution

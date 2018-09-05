@@ -32,7 +32,7 @@ analysis is covered in a separate vignette in this
 package. You can view that vignette using the command: 
 `vignette(package="conStruct",topic="format-data")`.
 If you've already run `conStruct` and you want more 
-information on how to visualze the results, please see 
+information on how to visualize the results, please see 
 the companion vignette for [visualizing results](visualize-results.html).
 If you've run several `conStruct` analyses and want to 
 compare them, please see the companion vignette for 
