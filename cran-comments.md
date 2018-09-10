@@ -16,10 +16,10 @@ depend on rstan and which are developed using rstantools.
 The requirement is noted in the DESCRIPTION file.
 
 * checking installed package size ... NOTE
-  installed size is 11.7Mb
+  installed size is 12.0Mb
   sub-directories of 1Mb or more:
     data   6.6Mb
-    libs   4.1Mb
+    libs   4.5Mb
 
 Explanation: This package has a large installed library 
 size because it uses the Stan MCMC library as a backend, 
