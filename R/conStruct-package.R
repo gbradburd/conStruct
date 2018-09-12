@@ -3,7 +3,7 @@
 #' @description A method for modeling genetic data as a combination of discrete
 #'    layers, within each of which relatedness may decay continuously with geographic
 #'    distance. This package contains code for running analyses (which are implemented
-#'    in the modeling language rstan) and visualizing and interpreting output. See the
+#'    in the modeling language 'rstan') and visualizing and interpreting output. See the
 #'    associated paper (doi: 10.1534/genetics.118.301333) for more details on the model 
 #' 	  and its utility.
 #' 
