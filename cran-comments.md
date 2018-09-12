@@ -16,20 +16,14 @@ depend on rstan and which are developed using rstantools.
 The requirement is noted in the DESCRIPTION file.
 
 * checking installed package size ... NOTE
-  installed size is 12.0Mb
+  installed size is  5.6Mb
   sub-directories of 1Mb or more:
-    data   6.6Mb
     libs   4.5Mb
 
 Explanation: This package has a large installed library 
 size because it uses the Stan MCMC library as a backend, 
 and the C++ Stan models included in the package are 
-compiled upon installation. It has a large data directory 
-because it includes three example files that are used in 
-the vignettes: a file that contains example data inputs 
-to run an analysis, and two example output files from an 
-analysis, which are used to demonstrate post-analysis 
-visualization functions.
+compiled upon installation.
 
 
 ## Downstream dependendencies
