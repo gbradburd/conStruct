@@ -124,3 +124,24 @@ This function acts as a wrapper around a STAN model block determined
 		If \code{make.figs=TRUE}, running \code{conStruct} will also generate many output figures, 
 		which are detailed in the function \code{make.all.the.plots} in this package.
 }
+\examples{
+# load example dataset
+data(conStruct.data)
+
+# run example spatial analysis with K=2
+	#	
+# for this example, make.figs and save.files
+#	are set to FALSE, but most users will want them 
+#	set to TRUE
+conStruct(spatial = TRUE,
+		 K = 2,
+		 freqs = conStruct.data$allele.frequencies,
+		 geoDist = conStruct.data$geoDist,
+		 coords = conStruct.data$coords,
+		 prefix = "test",
+		 n.chains = 1,
+		 n.iter = 1e3,
+		 make.figs = FALSE,
+		 save.files = FALSE)
+
+}

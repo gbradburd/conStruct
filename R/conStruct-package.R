@@ -4,8 +4,7 @@
 #'    layers, within each of which relatedness may decay continuously with geographic
 #'    distance. This package contains code for running analyses (which are implemented
 #'    in the modeling language 'rstan') and visualizing and interpreting output. See the
-#'    associated paper (doi: 10.1534/genetics.118.301333) for more details on the model 
-#' 	  and its utility.
+#'    associated paper for more details on the model and its utility.
 #' 
 #' @docType package
 #' @name conStruct-package
@@ -17,7 +16,7 @@
 #' @importFrom rstan sampling
 #' 
 #' @references 
-#' G.S. Bradburd, G.M. Coop, and P.L. Ralph (2018). Inferring continuous and discrete population genetic structure across space. Genetics. doi: 10.1534/genetics.118.301333
+#' G.S. Bradburd, G.M. Coop, and P.L. Ralph (2018) <doi: 10.1534/genetics.118.301333>.
 #'
 #' Stan Development Team (2018). RStan: the R interface to Stan. R package version 2.17.3. http://mc-stan.org
 NULL

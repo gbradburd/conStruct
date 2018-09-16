@@ -55,3 +55,14 @@ is represented as a stacked bar plot, and the length of the
 bar plot segments of each color represent that sample's 
 admixture proportion in that layer.
 }
+\examples{
+\dontshow{
+	admix.props <- matrix(c(0.086,0.000,0.500,0.505,0.099,0.052,0.024,0.007,0.800,0.000,0.216,0.744,0.917,0.199,0.469,0.000,0.783,0.298,0.329,0.446,0.000,0.000,0.637,0.903,0.000,0.000,0.000,0.012,0.021,0.000,0.000,0.089,0.000,0.554,0.002,0.000,0.000,0.095,0.020,0.001,0.001,0.011,0.000,0.200,0.000,0.060,0.053,0.082,0.036,0.013,0.000,0.062,0.169,0.137,0.029,0.001,0.000,0.178,0.079,0.000,0.999,1.000,0.988,0.979,0.975,1.000,0.744,0.984,0.435,0.998,0.914,1.000,0.405,0.475,0.900,0.947,0.965,0.993,0.000,1.000,0.725,0.203,0.000,0.765,0.518,1.000,0.154,0.533,0.534,0.525,0.999,1.000,0.185,0.018,1.000,0.001,0.000,0.000,0.000,0.025,0.000,0.167,0.016,0.012,0.000),ncol=3)
+}	
+# make STRUCTURE-style plot
+	make.structure.plot(admix.proportions = admix.props)
+
+# make STRUCTURE-style plot, sorted by membership in layer 1
+make.structure.plot(admix.proportions = admix.props,sort.by=1) 
+
+}
