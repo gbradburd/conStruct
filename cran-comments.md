@@ -16,7 +16,7 @@ depend on rstan and which are developed using rstantools.
 The requirement is noted in the DESCRIPTION file.
 
 * checking installed package size ... NOTE
-  installed size is  5.6Mb
+  installed size is  5.5Mb
   sub-directories of 1Mb or more:
     libs   4.5Mb
 

@@ -112,16 +112,16 @@
 #'	# for this example, make.figs and save.files
 #'	#	are set to FALSE, but most users will want them 
 #'	#	set to TRUE
-#' conStruct(spatial = TRUE,
-#'			 K = 2,
-#'			 freqs = conStruct.data$allele.frequencies,
-#'			 geoDist = conStruct.data$geoDist,
-#'			 coords = conStruct.data$coords,
-#'			 prefix = "test",
-#'			 n.chains = 1,
-#'			 n.iter = 1e3,
-#'			 make.figs = FALSE,
-#'			 save.files = FALSE)
+#' my.run <- conStruct(spatial = TRUE,
+#'			 			K = 2,
+#'			 			freqs = conStruct.data$allele.frequencies,
+#'			 			geoDist = conStruct.data$geoDist,
+#'			 			coords = conStruct.data$coords,
+#'			 			prefix = "test",
+#'			 			n.chains = 1,
+#'			 			n.iter = 1e3,
+#'			 			make.figs = FALSE,
+#'			 			save.files = FALSE)
 #'
 #' @import rstan
 #' @export
