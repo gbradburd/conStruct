@@ -67,29 +67,6 @@
 #'	a cross-validation replicate, and each row gives the result for a value of 
 #'	\code{K}.
 #'
-#' @examples
-#'
-#' \donttest{
-#' # load example dataset
-#' data(conStruct.data)
-#' 
-#' # run example cross-validation analysis comparing
-#' #	the spatial and non-spatial models with K=1:5
-#' my.xvals <- x.validation(train.prop = 0.9,
-#'							n.reps = 5,
-#'							K = 1:5,
-#'							freqs = conStruct.data$allele.frequencies,
-#'							data.partitions = NULL,
-#'							geoDist = conStruct.data$geoDist,
-#'							coords = conStruct.data$coords,
-#'							prefix = "test_xval",
-#'							n.iter = 1e3,
-#'							make.figs = FALSE,
-#'							save.files = FALSE,
-#'							parallel = TRUE,
-#'							n.nodes = 2)
-#' }	
-#'
 #'@export
 x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partitions = NULL, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE,parallel=FALSE,n.nodes=NULL){
 	call.check <- check.xval.call(args <- as.list(environment()))
