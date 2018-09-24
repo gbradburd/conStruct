@@ -2,7 +2,7 @@
 ## conStruct (continuous Structure) ReadMe
 
 
-This repo contains the code for the method conStruct - a statistical tool 
+This repo contains the code for the method **conStruct** - a statistical tool 
 for modeling continuous and discrete population genetic structure.
 
 The manuscript, data files, and analysis scripts associated with the publication 
@@ -15,7 +15,23 @@ have been moved, and can be accessed at the links below:
 
 ## Installation
 
-To install the R package:
+### Latest release
+
+To install the most recent release of the **conStruct** R package:
+
+```r
+install.packages("conStruct")
+```
+
+Upon installation, the **conStruct** models will be compiled, which may 
+spit lots of text, and possibly some warnings, to your screen. This is 
+totally normal, and you should only be concerned if you get errors 
+and the installation fails.
+
+
+### Development version
+
+To install the development version from github:
 
 ```r
 	library(devtools)
@@ -23,12 +39,7 @@ To install the R package:
 ```
 
 Note that Windows users may have to download Rtools as a 
-standalone executable before trying to install the conStruct R package.
-
-Upon installation, the conStruct models will be compiled, which may 
-spit lots of text, and possibly some warnings, to your screen. This is 
-totally normal, and you should only be concerned if you get errors 
-and the installation fails.
+standalone executable before trying to install the **conStruct** R package.
 
 
 ## Getting Started
