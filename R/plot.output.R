@@ -61,7 +61,7 @@ make.all.the.plots <- function(conStruct.results,data.block,prefix,layer.colors=
 		stop("\nyou must specify conStruct results across all chains\ni.e. from conStruct.results rather than conStruct.results[[1]]\n\n")
 	}
 	if(!is.null(layer.colors)){
-		if(length(layer.colors!=data.block$K)){
+		if(length(layer.colors)!=data.block$K){
 			stop("\nyou must specify one color per layer\n\n")
 		}
 	} else {
