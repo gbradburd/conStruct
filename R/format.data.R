@@ -5,33 +5,49 @@
 #' 
 #' This function takes a population genetics dataset in 
 #' STRUCTURE format and converts it to conStruct format. 
-#' The STRUCTURE file must have one row per individual 
-#' and two columns per locus, and can only contain 
-#' bi-allelic SNPs.
+#' The STRUCTURE file can have one row per individual 
+#' and two columns per locus, or one column and two rows 
+#' per individual. It can only contain bi-allelic SNPs.
+#' Missing data is acceptable, but must be indicated with 
+#' a single value throughout the dataset.
 #' 
 #' @param infile The name and path of the file in STRUCTURE format 
 #' 			to be converted to \code{conStruct} format. 
+#' @param onerowperind Indicates whether the file format has 
+#'		one row per individual (\code{TRUE}) or two rows per 
+#'		individual (\code{FALSE}).
 #' @param start.loci The index of the first column in the dataset 
 #'			that contains genotype data.
 #' @param missing.datum The character or value used to denote 
-#' 			missing data in the STRUCTURE dataset (often -9).
+#' 			missing data in the STRUCTURE dataset (often 0 or -9).
 #' @param outfile The name and path of the file containing the 
 #'			\code{conStruct} formatted dataset to be generated 
 #' 			by this function.
 #'
 #' @details This function takes a STRUCTURE format data file and 
-#'		converts it to a \code{conStruct} format data file. 
-#' 		The STRUCTURE dataset should be in the ONEROWPERIND 
-#' 		file format, with one row per individual and two columns 
-#' 		per locus (this function therefore can only be applied to 
-#' 		diploid organisms). The first column of the STRUCTURE dataset 
-#' 		should be individual names. There may be any number of other 
-#' 		columns that contain non-genotype information before the first
-#'		column that contains genotype data, but there can 
-#' 		be no extraneous columns at the end of the dataset, after the 
-#' 		genotype data.  The genotype data should be bi-allelic 
-#'		single nucleotide polymorphisms (SNPs).
+#'		converts it to a \code{conStruct} format data file.
+#'		This function can only be applied to diploid organisms.
+#'		The STRUCTURE data file must be a plain text file, 
+#'		and the data must start on the first line of the file, 
+#'		with no column headers or extraneous text before the data 
+#'		starts (if present, these extra lines should be deleted by hand).
 #'		
+#' 		The STRUCTURE dataset can either be in the ONEROWPERIND=1 
+#' 		file format, with one row per individual and two columns 
+#' 		per locus, or the ONEROWPERIND=0 format, with two rows and 
+#'		one column per individual. The first column of the STRUCTURE 
+#' 		dataset should be individual names. There may be any number 
+#' 		of other columns that contain non-genotype information before 
+#'		the first column that contains genotype data, but there can 
+#' 		be no extraneous columns at the end of the dataset, after the 
+#' 		genotype data.
+#'		
+#'		The genotype data must be bi-allelic 
+#'		single nucleotide polymorphisms (SNPs). Applying this function 
+#'		to datasets with more than two alleles per locus may result in 
+#'		cryptic failure. For more details, see the \code{format-data} 
+#'		vignette.
+#'	
 #'	@return This function returns an allele frequency data matrix 
 #'		that can be used as the \code{freqs} argument in a conStruct 
 #'		analysis run using \code{\link{conStruct}}.  It also saves 
@@ -39,51 +55,97 @@
 #'		future analyses.
 #'		
 #' @export
-structure2conStruct <- function(infile,start.loci,missing.datum,outfile){
-	structure.data <- utils::read.table(infile,header=FALSE,stringsAsFactors=FALSE)
-	sample.names <- structure.data[,1]
-	genos <- structure.data[,start.loci:ncol(structure.data)]
-	rm(structure.data)
-		if(ncol(genos) %% 2 != 0){
-			stop("\nyou have mis-specified the genotype matrix\nplease check documentation\n\n")
-		}
-	n.loci <- ncol(genos)/2
-	freqs <- get.freqs(genos,n.loci)
-	missing.data <- get.missing.data(genos,n.loci,missing.datum)
-	freqs[missing.data==2] <- NA
-	row.names(freqs) <- sample.names
+structure2conStruct <- function(infile,onerowperind,start.loci,missing.datum,outfile){
 	outfile <- paste0(outfile,".RData")
 	if(file.exists(outfile)){
 		stop("\noutfile already exists\n\n")
 	}
+	structure.data <- utils::read.table(infile,header=FALSE,stringsAsFactors=FALSE)
+	sample.names <- get.sample.names(structure.data,onerowperind)
+	genos <- structure.data[,start.loci:ncol(structure.data)]
+	rm(structure.data)
+	if(onerowperind & ncol(genos) %% 2 != 0){
+		stop("\nyou have mis-specified the genotype matrix\nplease check documentation\n\n")
+	}
+	if(!onerowperind & nrow(genos) %% 2 != 0){
+		stop("\nyou have mis-specified the genotype matrix\nplease check documentation\n\n")	
+	}
+
+	freqs <- get.freqs(genos,onerowperind,missing.datum)
+	row.names(freqs) <- sample.names
 	save(freqs,file=outfile)
 	return(freqs)
 }
 
-get.counted.allele <- function(genos){
+get.sample.names <- function(structure.data,onerowperind){
+	sample.names <- structure.data[,1]
+	if(!onerowperind){
+		sample.names <- sample.names[seq(1,length(sample.names),by=2)]
+	}
+	return(sample.names)
+}
+
+get.counted.allele <- function(genos,missing.datum){
 	alleles <- unique(genos)
-	alleles <- alleles[!alleles<0]
+	alleles <- alleles[!alleles==missing.datum]
 	counted <- sample(alleles,1)
 	return(counted)
 }
 
-get.freqs <- function(genos,n.loci){
-	freqs <- Reduce("cbind",
-				lapply(1:n.loci,
-							function(l){
-								(genos[,seq(1,2*n.loci,by=2)[l]] == 1) + 
-								(genos[,seq(2,2*n.loci,by=2)[l]] == 1)
-							}))
-	freqs <- freqs/2
+get.freqs <- function(genos,onerowperind,missing.datum){
+	n.loci <- ifelse(onerowperind,ncol(genos)/2,ncol(genos))
+	if(onerowperind){
+		freqs <- get.freqs.onerowperind(genos,n.loci,missing.datum)
+	} else {
+		freqs <- get.freqs.tworowperind(genos,n.loci,missing.datum)
+	}
+	colnames(freqs) <- NULL
 	return(freqs)
 }
 
-get.missing.data <- function(genos,n.loci,missing.datum){
+get.freqs.onerowperind <- function(genos,n.loci,missing.datum){
+	if(any(genos > 1)){
+		counted.alleles <- apply(genos,2,get.counted.allele,missing.datum)
+	} else {
+		counted.alleles <- rep(1,n.loci)
+	}
+	freqs <- Reduce("cbind",
+				lapply(1:n.loci,
+							function(l){
+								(genos[,seq(1,2*n.loci,by=2)[l]] == counted.alleles[l]) + 
+								(genos[,seq(2,2*n.loci,by=2)[l]] == counted.alleles[l])
+							}))
+	freqs <- freqs/2
 	missing.data <- Reduce("cbind",
 						lapply(1:n.loci,
 							function(l){
 								(genos[,seq(1,2*n.loci,by=2)[l]] == missing.datum) + 
 								(genos[,seq(2,2*n.loci,by=2)[l]] == missing.datum)
 							}))
-	return(missing.data)
+	freqs[missing.data==2] <- NA
+	return(freqs)
 }
+
+get.freqs.tworowperind <- function(genos,n.loci,missing.datum){
+	if(any(genos > 1)){
+		counted.alleles <- apply(genos,2,get.counted.allele,missing.datum)
+	} else {
+		counted.alleles <- rep(1,n.loci)
+	}
+	freqs <- Reduce("cbind",
+				lapply(1:n.loci,
+							function(l){
+								(genos[seq(1,nrow(genos),by=2),l] == counted.alleles[l]) + 
+								(genos[seq(2,nrow(genos),by=2),l] == counted.alleles[l])
+							}))
+	freqs <- freqs/2
+	missing.data <- Reduce("cbind",
+						lapply(1:n.loci,
+							function(l){
+								(genos[seq(1,nrow(genos),by=2),l] == missing.datum) + 
+								(genos[seq(2,nrow(genos),by=2),l] == missing.datum)
+							}))
+	freqs[missing.data==2] <- NA
+	return(freqs)
+}
+

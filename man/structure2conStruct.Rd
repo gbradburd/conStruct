@@ -4,17 +4,22 @@
 \alias{structure2conStruct}
 \title{Convert a dataset from STRUCTURE to conStruct format}
 \usage{
-structure2conStruct(infile, start.loci, missing.datum, outfile)
+structure2conStruct(infile, onerowperind, start.loci, missing.datum,
+  outfile)
 }
 \arguments{
 \item{infile}{The name and path of the file in STRUCTURE format 
 to be converted to \code{conStruct} format.}
 
+\item{onerowperind}{Indicates whether the file format has 
+one row per individual (\code{TRUE}) or two rows per 
+individual (\code{FALSE}).}
+
 \item{start.loci}{The index of the first column in the dataset 
 that contains genotype data.}
 
 \item{missing.datum}{The character or value used to denote 
-missing data in the STRUCTURE dataset (often -9).}
+missing data in the STRUCTURE dataset (often 0 or -9).}
 
 \item{outfile}{The name and path of the file containing the 
 \code{conStruct} formatted dataset to be generated 
@@ -34,20 +39,33 @@ to conStruct format
 \details{
 This function takes a population genetics dataset in 
 STRUCTURE format and converts it to conStruct format. 
-The STRUCTURE file must have one row per individual 
-and two columns per locus, and can only contain 
-bi-allelic SNPs.
+The STRUCTURE file can have one row per individual 
+and two columns per locus, or one column and two rows 
+per individual. It can only contain bi-allelic SNPs.
+Missing data is acceptable, but must be indicated with 
+a single value throughout the dataset.
 
 This function takes a STRUCTURE format data file and 
-	converts it to a \code{conStruct} format data file. 
-		The STRUCTURE dataset should be in the ONEROWPERIND 
+	converts it to a \code{conStruct} format data file.
+	This function can only be applied to diploid organisms.
+	The STRUCTURE data file must be a plain text file, 
+	and the data must start on the first line of the file, 
+	with no column headers or extraneous text before the data 
+	starts (if present, these extra lines should be deleted by hand).
+	
+		The STRUCTURE dataset can either be in the ONEROWPERIND=1 
 		file format, with one row per individual and two columns 
-		per locus (this function therefore can only be applied to 
-		diploid organisms). The first column of the STRUCTURE dataset 
-		should be individual names. There may be any number of other 
-		columns that contain non-genotype information before the first
-	column that contains genotype data, but there can 
+		per locus, or the ONEROWPERIND=0 format, with two rows and 
+	one column per individual. The first column of the STRUCTURE 
+		dataset should be individual names. There may be any number 
+		of other columns that contain non-genotype information before 
+	the first column that contains genotype data, but there can 
 		be no extraneous columns at the end of the dataset, after the 
-		genotype data.  The genotype data should be bi-allelic 
-	single nucleotide polymorphisms (SNPs).
+		genotype data.
+	
+	The genotype data must be bi-allelic 
+	single nucleotide polymorphisms (SNPs). Applying this function 
+	to datasets with more than two alleles per locus may result in 
+	cryptic failure. For more details, see the \code{format-data} 
+	vignette.
 }

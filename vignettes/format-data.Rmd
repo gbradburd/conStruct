@@ -22,7 +22,7 @@ a `conStruct` analysis.
 
 For information on how to run a `conStruct` analysis 
 after you've formatted your data, see the companion 
-vignette on [how to run conStruct](run-conStruct.html)
+vignette on [how to run conStruct](run-conStruct.html).
 
 Throughout the document, I'll be referring to the 
 example dataset included with the package:
@@ -186,10 +186,54 @@ on the computer.  I also assume that the data are formatted as in
 the table above, with the genotype data starting at the 3rd column 
 of the data matrix, and missing data denoted with a value of -9.
 
+**Note that the STRUCTURE-format data must be a text file
+and there can be no lines of text before the data table begins.
+If your file is in an Excel spreadsheet, it can be converted to 
+a text file using Save As > File Format = Tab delimited Text 
+(.txt). If there are lines of text at the top of the document 
+before the data matrix begins, they must be deleted. In addition, 
+your data can only contain bi-allelic data. If you have loci with 
+more than two alleles, they should be not be included in the dataset. 
+For more information on multi-allelic datasets, see the section on 
+[Microsatellites](#microsatellites) below.**
+
 ```{r,eval=FALSE}
 conStruct.data <- structure2conStruct(infile = "~/Desktop/myStructureData.str",
+									  onerowperind = TRUE,
 									  start.loci = 3,
 				 					  missing.datum = -9,
+									  outfile = "~/Desktop/myConStructData")
+
+```
+
+An alternate STRUCTURE data format has two rows and one column per 
+diploid genotype:
+
+|        |     | Loc1 | Loc2 | Loc3 | Loc4 | Loc5 | Loc6 | Loc7 | Loc8 |
+|:------:|:---:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|  Ind1  |  1  |  1   |  1   |  2   |  2   |   1  |  2   |   0  |   1  |
+|  Ind1  |  1  |  1   |  2   |  2   |  2   |   2  |  2   |   0  |   1  |
+|  Ind2  |  1  |  0   |  1   |  2   |  2   |   2  |  2   |   2  |   2  |
+|  Ind2  |  1  |  0   |  2   |  1   |  2   |   1  |  1   |   1  |   1  |
+|  Ind3  |  2  |  2   |  1   |  2   |  1   |   1  |  1   |   1  |   2  |
+|  Ind3  |  2  |  2   |  1   |  2   |  1   |   1  |  1   |   1  |   2  |
+|  Ind4  |  2  |  2   |  0   |  2   |  2   |   2  |  1   |   0  |   2  |
+|  Ind4  |  2  |  2   |  0   |  2   |  2   |   1  |  1   |   0  |   2  |
+
+	Example STRUCTURE format dataset, with two rows per individual 
+	and one column per locus. The first column gives sample names, the 
+	second refers to the sample locations, and the last 8 columns give 
+	genotype data for 8 loci. The numbers in the genotype data refer to 
+	the allele present at that locus: A1 = `1`, A2 = `2`, missing = `0`.
+
+Data in this format can be converted to `conStruct` format using the 
+command below:
+
+```{r,eval=FALSE}
+conStruct.data <- structure2conStruct(infile = "~/Desktop/myStructureData.str",
+									  onerowperind = FALSE,
+									  start.loci = 3,
+				 					  missing.datum = 0,
 									  outfile = "~/Desktop/myConStructData")
 
 ```
