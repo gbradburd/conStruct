@@ -1,7 +1,7 @@
 ^CRAN-RELEASE$
 build.conStruct.pkg.R
 build.conStruct.pkg.Rout
-conStruct_*.tar.gz
+*.tar.gz
 sandbox/*
 testing/*
 cran-comments.md
