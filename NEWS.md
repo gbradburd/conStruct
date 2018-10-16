@@ -1,3 +1,12 @@
+# conStruct 1.0.1
+
+## Major changes
+ + following move to C++14 by Stan
+ + `structure2conStruct` now works for multiple STRUCTURE file formats
+
+## Bug fixes
+ + users can now specify their own custom plotting colors in `make.all.the.plots` 
+
 # conStruct 1.0.0
 
 ## Major changes

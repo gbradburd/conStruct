@@ -18,7 +18,7 @@ The requirement is noted in the DESCRIPTION file.
 * checking installed package size ... NOTE
   installed size is  5.5Mb
   sub-directories of 1Mb or more:
-    libs   4.5Mb
+    libs   4.6Mb
 
 Explanation: This package has a large installed library 
 size because it uses the Stan MCMC library as a backend, 

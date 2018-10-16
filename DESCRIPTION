@@ -1,5 +1,6 @@
 Package: conStruct
-Version: 1.0.0
+Version: 1.0.1
+Date: 2018-09-16
 Title: Models Spatially Continuous and Discrete Population Genetic Structure
 Description: A method for modeling genetic data as a combination of discrete
     layers, within each of which relatedness may decay continuously with geographic
@@ -11,9 +12,9 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-Depends: R (>= 3.4.0), Rcpp (>= 0.12.18), methods
-Imports: rstan (>= 2.17.3), rstantools (>= 1.5.0), caroline, gtools, foreach, parallel, doParallel
-LinkingTo: StanHeaders (>= 2.17.2), rstan (>= 2.17.3), BH (>= 1.66.0-1), Rcpp (>= 0.12.18), RcppEigen (>= 0.3.3.4.0)
+Depends: R (>= 3.4.0), Rcpp (>= 0.12.0), methods
+Imports: rstan (>= 2.18.1), rstantools (>= 1.5.0), caroline, gtools, foreach, parallel, doParallel
+LinkingTo: StanHeaders (>= 2.18.0), rstan (>= 2.18.1), BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0)
 SystemRequirements: GNU make
 NeedsCompilation: yes
 RoxygenNote: 6.1.0
