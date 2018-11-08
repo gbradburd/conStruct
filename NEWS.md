@@ -1,3 +1,8 @@
+# conStruct 1.0.2
+
+## Bug fixes
+ + updated Makevars and Makevars.win to be in compliance with CRAN policy
+
 # conStruct 1.0.1
 
 ## Major changes
