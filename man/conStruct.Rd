@@ -6,7 +6,7 @@
 \usage{
 conStruct(spatial = TRUE, K, freqs, geoDist = NULL, coords,
   prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE,
-  save.files = TRUE)
+  save.files = TRUE, ...)
 }
 \arguments{
 \item{spatial}{A logical indicating whether to perform a spatial analysis. 
@@ -43,6 +43,8 @@ make figures once the analysis is complete. Default is
 \item{save.files}{A \code{logical} value indicating whether to automatically 
 save output and intermediate files once the analysis is
  complete. Default is \code{TRUE}.}
+
+\item{...}{Further options to be passed to rstan::sampling (e.g., adapt_delta).}
 }
 \value{
 This function returns a list with one entry for each chain run 
