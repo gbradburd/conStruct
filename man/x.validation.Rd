@@ -7,7 +7,7 @@
 x.validation(train.prop = 0.9, n.reps, K, freqs = NULL,
   data.partitions = NULL, geoDist, coords, prefix, n.iter,
   make.figs = FALSE, save.files = FALSE, parallel = FALSE,
-  n.nodes = NULL)
+  n.nodes = NULL, ...)
 }
 \arguments{
 \item{train.prop}{A numeric value between 0 and 1 that gives 
@@ -62,6 +62,8 @@ comparison vignette.}
 \item{n.nodes}{Number of nodes to run parallel analyses on. Default is 
 \code{NULL}. Ignored if \code{parallel} is \code{FALSE}. For more details 
 in how to set up runs in parallel, see the model comparison vignette.}
+
+\item{...}{Further options to be passed to rstan::sampling (e.g., adapt_delta).}
 }
 \value{
 This function returns (and also saves as a .Robj) a \code{list} 

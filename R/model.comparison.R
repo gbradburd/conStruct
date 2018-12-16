@@ -47,6 +47,7 @@
 #' @param n.nodes Number of nodes to run parallel analyses on. Default is 
 #'		\code{NULL}. Ignored if \code{parallel} is \code{FALSE}. For more details 
 #'		in how to set up runs in parallel, see the model comparison vignette. 
+#' @param ... Further options to be passed to rstan::sampling (e.g., adapt_delta).
 #'	
 #' @return This function returns (and also saves as a .Robj) a \code{list} 
 #'		containing the standardized results of the cross-validation analysis
@@ -68,7 +69,7 @@
 #'	\code{K}.
 #'
 #'@export
-x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partitions = NULL, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE,parallel=FALSE,n.nodes=NULL){
+x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partitions = NULL, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE,parallel=FALSE,n.nodes=NULL,...){
 	call.check <- check.xval.call(args <- as.list(environment()))
 	if(is.null(data.partitions)){
 		data.partitions <- make.data.partitions(n.reps,freqs,train.prop)
@@ -87,7 +88,8 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
         								 prefix, 
         								 n.iter, 
         								 make.figs, 
-        								 save.files)
+        								 save.files,
+        								 ...)
     			 }
     names(x.val) <- paste0("rep_", 1:n.reps)
     x.val <- lapply(x.val, standardize.xvals)
@@ -369,7 +371,7 @@ check.xval.call <- function(args){
 	return(invisible("args checked"))
 }
 
-xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE) {
+xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE, save.files = TRUE, ...) {
     data.block <- xval.make.data.block(K, data, coords, spatial, geoDist)
     if (save.files) {
         save(data.block, file = paste0(prefix, "_data.block.Robj"))
@@ -381,7 +383,8 @@ xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, pre
     							 iter = n.iter, 
     							 chains = n.chains, 
         						 thin = ifelse(n.iter/500 > 1, n.iter/500, 1), 
-        						 save_warmup = FALSE)
+        						 save_warmup = FALSE,
+                                 ...)
     conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
 	data.block <- unstandardize.distances(data.block)
     if (save.files) {
@@ -395,13 +398,13 @@ xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, pre
     return(conStruct.results)
 }
 
-x.validation.rep <- function(rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE) {
+x.validation.rep <- function(rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE, ...) {
     training.runs.sp <- lapply(K, function(k) {
         xval.conStruct(spatial = TRUE, K = k, 
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
-					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
+					   n.iter = n.iter, make.figs = make.figs, save.files = save.files, ...)
     })
     names(training.runs.sp) <- paste0("K", K)
     if (save.files) {
@@ -413,7 +416,7 @@ x.validation.rep <- function(rep.no, K, data.partition, geoDist, coords, prefix,
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 
-					   n.iter = n.iter, make.figs = make.figs, save.files = save.files)
+					   n.iter = n.iter, make.figs = make.figs, save.files = save.files, ...)
     })
     names(training.runs.nsp) <- paste0("K", K)
     if (save.files) {
