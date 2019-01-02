@@ -1,5 +1,5 @@
 Package: conStruct
-Version: 1.0.2
+Version: 1.0.3
 Date: 2018-10-19
 Title: Models Spatially Continuous and Discrete Population Genetic Structure
 Description: A method for modeling genetic data as a combination of discrete
@@ -17,7 +17,7 @@ Imports: rstan (>= 2.18.1), rstantools (>= 1.5.0), caroline, gtools, foreach, pa
 LinkingTo: StanHeaders (>= 2.18.0), rstan (>= 2.18.1), BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0)
 SystemRequirements: GNU make
 NeedsCompilation: yes
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests:
     knitr,
     rmarkdown,

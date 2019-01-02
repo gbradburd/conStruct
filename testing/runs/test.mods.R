@@ -30,7 +30,7 @@ args <- list("run1" = list("spatial" = FALSE,
 						   "prefix" = "nsp3b")
 		)
 
-cl <- parallel::makeCluster(4,type="FORK")
+cl <- parallel::makeCluster(3,type="FORK")
 doParallel::registerDoParallel(cl)
 
 tmp <- foreach::foreach(i=1:length(args)) %dopar% {

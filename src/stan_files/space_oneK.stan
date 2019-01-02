@@ -10,7 +10,7 @@ functions {
 				parCov[j,i] = parCov[i,j];
 			}
 		}
-		parCov = gamma + parCov + Nug_mat;
+		parCov += gamma + Nug_mat;
 		return parCov;	
 	}
 }

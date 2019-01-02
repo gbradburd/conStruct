@@ -1,3 +1,12 @@
+# conStruct 1.0.3
+
+## Major changes
+ + added `...` to `conStruct` and `x.validation` so additional arguments can be passed to `rstan::sampling`
+
+## Bug fixes
+ + fixed aliasing due to inefficient deep copy in stan model
+ + removed duplicated vignettes displayed on CRAN page
+
 # conStruct 1.0.2
 
 ## Bug fixes

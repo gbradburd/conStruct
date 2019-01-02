@@ -5,9 +5,9 @@ functions {
 		parCov = rep_matrix(0,N,N);
 		Nug_mat = diag_matrix(nugget);
 		for(k in 1:K){
-			parCov = parCov + tcrossprod(to_matrix(w_mat[,k])) * phi[k];
+			parCov += tcrossprod(to_matrix(w_mat[,k])) * phi[k];
 		}
-		parCov = gamma + parCov + Nug_mat;
+		parCov += gamma + Nug_mat;
 		return parCov;	
 	}
 	matrix make_w_matrix(int N, int K, vector[] w){

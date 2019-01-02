@@ -4,7 +4,7 @@ functions {
 		matrix[N,N] Nug_mat;
 		parCov = rep_matrix(gamma,N,N);
 		Nug_mat = diag_matrix(nugget);
-		parCov = parCov + Nug_mat;
+		parCov += Nug_mat;
 		return parCov;	
 	}
 }
