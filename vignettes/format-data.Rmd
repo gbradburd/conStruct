@@ -191,7 +191,8 @@ and there can be no lines of text before the data table begins.
 If your file is in an Excel spreadsheet, it can be converted to 
 a text file using Save As > File Format = Tab delimited Text 
 (.txt). If there are lines of text at the top of the document 
-before the data matrix begins, they must be deleted. In addition, 
+before the data matrix begins, they must be deleted or specified 
+via the `start.samples` argument. In addition, 
 your data can only contain bi-allelic data. If you have loci with 
 more than two alleles, they should be not be included in the dataset. 
 For more information on multi-allelic datasets, see the section on 
@@ -201,6 +202,7 @@ For more information on multi-allelic datasets, see the section on
 conStruct.data <- structure2conStruct(infile = "~/Desktop/myStructureData.str",
 									  onerowperind = TRUE,
 									  start.loci = 3,
+									  start.samples = 1,
 				 					  missing.datum = -9,
 									  outfile = "~/Desktop/myConStructData")
 
@@ -233,6 +235,7 @@ command below:
 conStruct.data <- structure2conStruct(infile = "~/Desktop/myStructureData.str",
 									  onerowperind = FALSE,
 									  start.loci = 3,
+									  start.samples = 1,
 				 					  missing.datum = 0,
 									  outfile = "~/Desktop/myConStructData")
 

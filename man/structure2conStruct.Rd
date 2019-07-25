@@ -4,8 +4,8 @@
 \alias{structure2conStruct}
 \title{Convert a dataset from STRUCTURE to conStruct format}
 \usage{
-structure2conStruct(infile, onerowperind, start.loci, missing.datum,
-  outfile)
+structure2conStruct(infile, onerowperind, start.loci, start.samples = 1,
+  missing.datum, outfile)
 }
 \arguments{
 \item{infile}{The name and path of the file in STRUCTURE format 
@@ -17,6 +17,10 @@ individual (\code{FALSE}).}
 
 \item{start.loci}{The index of the first column in the dataset 
 that contains genotype data.}
+
+\item{start.samples}{The index of the first row in the dataset 
+that contains genotype data (e.g., after any headers). 
+Default value is 1.}
 
 \item{missing.datum}{The character or value used to denote 
 missing data in the STRUCTURE dataset (often 0 or -9).}
@@ -48,10 +52,10 @@ a single value throughout the dataset.
 This function takes a STRUCTURE format data file and 
 	converts it to a \code{conStruct} format data file.
 	This function can only be applied to diploid organisms.
-	The STRUCTURE data file must be a plain text file, 
-	and the data must start on the first line of the file, 
-	with no column headers or extraneous text before the data 
-	starts (if present, these extra lines should be deleted by hand).
+	The STRUCTURE data file must be a plain text file. 
+	If there is extraneous text or column headers before the data 
+	starts, those extra lines should be deleted by hand or 
+	taken into account via the \code{start.samples} argument.
 	
 		The STRUCTURE dataset can either be in the ONEROWPERIND=1 
 		file format, with one row per individual and two columns 

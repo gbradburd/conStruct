@@ -18,6 +18,9 @@
 #'		individual (\code{FALSE}).
 #' @param start.loci The index of the first column in the dataset 
 #'			that contains genotype data.
+#' @param start.samples The index of the first row in the dataset 
+#'			that contains genotype data (e.g., after any headers). 
+#'			Default value is 1.
 #' @param missing.datum The character or value used to denote 
 #' 			missing data in the STRUCTURE dataset (often 0 or -9).
 #' @param outfile The name and path of the file containing the 
@@ -27,10 +30,10 @@
 #' @details This function takes a STRUCTURE format data file and 
 #'		converts it to a \code{conStruct} format data file.
 #'		This function can only be applied to diploid organisms.
-#'		The STRUCTURE data file must be a plain text file, 
-#'		and the data must start on the first line of the file, 
-#'		with no column headers or extraneous text before the data 
-#'		starts (if present, these extra lines should be deleted by hand).
+#'		The STRUCTURE data file must be a plain text file. 
+#'		If there is extraneous text or column headers before the data 
+#'		starts, those extra lines should be deleted by hand or 
+#'		taken into account via the \code{start.samples} argument.
 #'		
 #' 		The STRUCTURE dataset can either be in the ONEROWPERIND=1 
 #' 		file format, with one row per individual and two columns 
@@ -55,12 +58,12 @@
 #'		future analyses.
 #'		
 #' @export
-structure2conStruct <- function(infile,onerowperind,start.loci,missing.datum,outfile){
+structure2conStruct <- function(infile,onerowperind,start.loci,start.samples=1,missing.datum,outfile){
 	outfile <- paste0(outfile,".RData")
 	if(file.exists(outfile)){
 		stop("\noutfile already exists\n\n")
 	}
-	structure.data <- utils::read.table(infile,header=FALSE,stringsAsFactors=FALSE)
+	structure.data <- utils::read.table(infile,header=FALSE,skip=start.samples-1,stringsAsFactors=FALSE)
 	sample.names <- get.sample.names(structure.data,onerowperind)
 	genos <- structure.data[,start.loci:ncol(structure.data)]
 	rm(structure.data)
@@ -87,6 +90,9 @@ get.sample.names <- function(structure.data,onerowperind){
 
 get.counted.allele <- function(genos,missing.datum){
 	alleles <- unique(genos)
+	if(identical(alleles, missing.datum)){
+		stop("\nyour dataset contains loci with all data missing. please remove and re-try.\n\n")
+	}
 	alleles <- alleles[!alleles==missing.datum]
 	counted <- sample(alleles,1)
 	return(counted)
