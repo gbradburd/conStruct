@@ -13,7 +13,7 @@ xvals <- x.validation(train.prop = 0.9,
 					  n.iter = 1e3,
 					  make.figs = FALSE,
 					  save.files = FALSE,
-					  parallel = TRUE,
-					  n.nodes = 2)
+					  parallel = FALSE,
+					  n.nodes = NULL)
 
 save(xvals,file="test1.xvals.Robj")
