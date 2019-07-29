@@ -319,6 +319,9 @@ check.data.partitions.arg <- function(args){
 	if(any(is.na(L.list)) | any(L.list < 0) | any(!is.numeric(L.list))){
 		stop("\nall values of \"n.loci\" must contain a numeric value greater than zero\n\n")			
 	}
+	if(any(L.list < nrow(args[["geoDist"]]))){
+		stop("\nthere must be more loci in each partition than there are samples\n\n")
+	}
 	if(any(is.na(vmf.list)) | any(vmf.list < 0) | any(!is.numeric(vmf.list))){
 		stop("\nall values of \"varMeanFreqs\" must contain a numeric value greater than zero\n\n")			
 	}
