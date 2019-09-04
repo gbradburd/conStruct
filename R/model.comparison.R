@@ -78,10 +78,11 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
 	save(data.partitions,file=paste0(prefix, ".xval.data.partitions.Robj"))
 	prespecified <- parallel.prespecify.check(args <- as.list(environment()))
 	`%d%` <- parallelizing(args <- as.list(environment()))
+	c<-unname(as.matrix(expand.grid(1:n.reps,K))) # to produce a matrix of all possible combinations
 	i <- 1
-    x.val <- foreach::foreach(i=1:n.reps) %d% {
-        				x.validation.rep(rep.no = i, 
-        								 K, 
+    x.val <- foreach::foreach(i=1:nrow(c)) %d% {
+        				x.validation.rep(rep.no = c[i,1], 
+        								 k = K = c[i,2], 
         								 data.partition = data.partitions[[i]], 
         								 geoDist, 
         								 coords, 
@@ -404,25 +405,21 @@ xval.conStruct <- function (spatial = TRUE, K, data, geoDist = NULL, coords, pre
 }
 
 x.validation.rep <- function(rep.no, K, data.partition, geoDist, coords, prefix, n.iter, make.figs = FALSE, save.files = FALSE, ...) {
-    training.runs.sp <- lapply(K, function(k) {
-        xval.conStruct(spatial = TRUE, K = k, 
+    training.runs.sp <- xval.conStruct(spatial = TRUE, K = k, 
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_sp_", "rep", rep.no, "K", k), 
 					   n.iter = n.iter, make.figs = make.figs, save.files = save.files, ...)
-    })
     names(training.runs.sp) <- paste0("K", K)
     if (save.files) {
         save(training.runs.sp, file = paste0(prefix, "_rep", 
             rep.no, "_", "training.runs.sp.Robj"))
     }
-    training.runs.nsp <- lapply(K, function(k) {
-        xval.conStruct(spatial = FALSE, K = k, 
+    training.runs.nsp <- xval.conStruct(spatial = FALSE, K = k, 
 					   data = data.partition$training, 
 					   geoDist = geoDist, coords = coords, 
 					   prefix = paste0(prefix, "_nsp_", "rep", rep.no, "K", k), 
 					   n.iter = n.iter, make.figs = make.figs, save.files = save.files, ...)
-    })
     names(training.runs.nsp) <- paste0("K", K)
     if (save.files) {
         save(training.runs.nsp, file = paste0(prefix, "_rep", 
