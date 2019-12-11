@@ -4,9 +4,19 @@
 \alias{conStruct}
 \title{Run a conStruct analysis.}
 \usage{
-conStruct(spatial = TRUE, K, freqs, geoDist = NULL, coords,
-  prefix = "", n.chains = 1, n.iter = 1000, make.figs = TRUE,
-  save.files = TRUE, ...)
+conStruct(
+  spatial = TRUE,
+  K,
+  freqs,
+  geoDist = NULL,
+  coords,
+  prefix = "",
+  n.chains = 1,
+  n.iter = 1000,
+  make.figs = TRUE,
+  save.files = TRUE,
+  ...
+)
 }
 \arguments{
 \item{spatial}{A logical indicating whether to perform a spatial analysis. 

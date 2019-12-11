@@ -4,8 +4,7 @@
 \alias{calculate.layer.contribution}
 \title{Calculate layer contribution}
 \usage{
-calculate.layer.contribution(conStruct.results, data.block,
-  layer.order = NULL)
+calculate.layer.contribution(conStruct.results, data.block, layer.order = NULL)
 }
 \arguments{
 \item{conStruct.results}{The list output by a 

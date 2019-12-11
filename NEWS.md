@@ -1,3 +1,9 @@
+# conStruct 1.0.4
+
+## Bug fixes
+ + updated data validation functions to be in compliance with mew class inheritance coming in next R release
+
+
 # conStruct 1.0.3
 
 ## Major changes

@@ -126,7 +126,7 @@ make.all.the.plots <- function(conStruct.results,data.block,prefix,layer.colors=
 #' 
 #'@export
 make.structure.plot <- function(admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=NULL,sample.names=NULL,sort.by=NULL,layer.colors=NULL){
-	if(class(admix.proportions)!="matrix"){
+	if(!inherits(admix.proportions,"matrix")){
 		stop("\nyou must specify a matrix of admixture proportions\n")
 	}
 	K <- ncol(admix.proportions)
@@ -210,7 +210,7 @@ make.structure.plot <- function(admix.proportions,mar=c(2,4,2,2),sample.order=NU
 #' 
 #'@export
 make.admix.pie.plot <- function(admix.proportions,coords,layer.colors=NULL,radii=2.7,add=FALSE,x.lim=NULL,y.lim=NULL,mar=c(2,2,2,2)){
-	if(class(admix.proportions)!="matrix"){
+	if(!inherits(admix.proportions,"matrix")){
 		stop("\nyou must specify a matrix of admixture proportions\n")
 	}
 	if(is.null(coords)){

@@ -4,8 +4,14 @@
 \alias{compare.two.runs}
 \title{Compare two conStruct runs}
 \usage{
-compare.two.runs(conStruct.results1, data.block1, conStruct.results2,
-  data.block2, prefix, layer.colors = NULL)
+compare.two.runs(
+  conStruct.results1,
+  data.block1,
+  conStruct.results2,
+  data.block2,
+  prefix,
+  layer.colors = NULL
+)
 }
 \arguments{
 \item{conStruct.results1}{The list output by a 

@@ -370,14 +370,17 @@ check.K.arg <- function(args){
 	if(length(args[["K"]]) > 1){
 		stop("\nyou have specified more than one value for the \"K\" argument\n")
 	} 
-	if(class(args[["K"]]) != "numeric" & class(args[["K"]]) != "integer"){
+	if(!inherits(args[["K"]],"numeric")){
 		stop("\nyou have specified a non-numeric value for the \"K\" argument\n")
+	}
+	if(args[["K"]] %% 1 != 0){
+		stop("\nyou have specified a non-integer value for the \"K\" argument\n")
 	}
 	return(invisible("K arg checked"))
 }
 
 check.freqs.arg <- function(args){
-	if(class(args[["freqs"]]) != "matrix"){
+	if(!inherits(args[["freqs"]],"matrix")){
 		stop("\nthe \"freqs\" argument must be of class \"matrix\"\n")
 	}
 	if(any(args[["freqs"]] > 1,na.rm=TRUE)){
@@ -396,7 +399,7 @@ check.geoDist.arg <- function(args){
 		}
 	}
 	if(!is.null(args[["geoDist"]])){
-		if(class(args[["geoDist"]]) != "matrix"){
+		if(!inherits(args[["geoDist"]],"matrix")){
 			stop("\nthe \"geoDist\" argument must be of class \"matrix\"\n")
 		}
 		if(length(unique(dim(args[["geoDist"]]))) > 1){
@@ -416,7 +419,7 @@ check.geoDist.arg <- function(args){
 }
 
 check.coords.arg <- function(args){
-	if(class(args[["coords"]]) != "matrix"){
+	if(!inherits(args[["coords"]],"matrix")){
 		stop("\nthe \"coords\" argument must be of class \"matrix\"\n")
 	}
 	if(ncol(args[["coords"]]) > 2){

@@ -180,22 +180,22 @@ print.layer.params <- function(layer.params){
 }
 
 index.MAP <- function(param,MAP.iter){
-	if(class(param) == "numeric"){
+	if(inherits(param,"numeric")){
 		MAP.param <- param[MAP.iter]
 	}
-	if(class(param) == "list"){
+	if(inherits(param,"list")){
 		MAP.param <- param[[MAP.iter]]
 	}
-	if(class(param) == "array"){
+	if(inherits(param,"array")){
 		MAP.param <- param[MAP.iter,,]
 		if(is.null(dim(MAP.param))){
 			MAP.param <- matrix(MAP.param,nrow=length(MAP.param),ncol=1)
 		}
 	}
-	if(class(param) == "matrix"){
+	if(inherits(param,"matrix")){
 		MAP.param <- param[MAP.iter,]
 	}
-	if(class(param) == "layer.params"){
+	if(inherits(param,"layer.params")){
 		MAP.param <- index.MAP.layer.params.list(param,MAP.iter)
 	}
 	return(MAP.param)

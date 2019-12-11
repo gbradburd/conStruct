@@ -4,8 +4,14 @@
 \alias{structure2conStruct}
 \title{Convert a dataset from STRUCTURE to conStruct format}
 \usage{
-structure2conStruct(infile, onerowperind, start.loci, start.samples = 1,
-  missing.datum, outfile)
+structure2conStruct(
+  infile,
+  onerowperind,
+  start.loci,
+  start.samples = 1,
+  missing.datum,
+  outfile
+)
 }
 \arguments{
 \item{infile}{The name and path of the file in STRUCTURE format 

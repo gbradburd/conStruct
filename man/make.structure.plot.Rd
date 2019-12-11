@@ -4,9 +4,15 @@
 \alias{make.structure.plot}
 \title{Make STRUCTURE output plot}
 \usage{
-make.structure.plot(admix.proportions, mar = c(2, 4, 2, 2),
-  sample.order = NULL, layer.order = NULL, sample.names = NULL,
-  sort.by = NULL, layer.colors = NULL)
+make.structure.plot(
+  admix.proportions,
+  mar = c(2, 4, 2, 2),
+  sample.order = NULL,
+  layer.order = NULL,
+  sample.names = NULL,
+  sort.by = NULL,
+  layer.colors = NULL
+)
 }
 \arguments{
 \item{admix.proportions}{A \code{matrix} of admixture proportions, 
