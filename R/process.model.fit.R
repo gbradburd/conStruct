@@ -186,13 +186,13 @@ index.MAP <- function(param,MAP.iter){
 	if(inherits(param,"list")){
 		MAP.param <- param[[MAP.iter]]
 	}
-	if(inherits(param,"array")){
+	if(inherits(param,"array") & length(dim(param)) == 3){
 		MAP.param <- param[MAP.iter,,]
 		if(is.null(dim(MAP.param))){
 			MAP.param <- matrix(MAP.param,nrow=length(MAP.param),ncol=1)
 		}
 	}
-	if(inherits(param,"matrix")){
+	if(inherits(param,"matrix") & length(dim(param)) == 2){
 		MAP.param <- param[MAP.iter,]
 	}
 	if(inherits(param,"layer.params")){
