@@ -370,7 +370,7 @@ check.K.arg <- function(args){
 	if(length(args[["K"]]) > 1){
 		stop("\nyou have specified more than one value for the \"K\" argument\n")
 	} 
-	if(!inherits(args[["K"]],"numeric")){
+	if(!inherits(args[["K"]],"numeric") & !inherits(args[["K"]],"integer")){
 		stop("\nyou have specified a non-numeric value for the \"K\" argument\n")
 	}
 	if(args[["K"]] %% 1 != 0){
