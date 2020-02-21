@@ -553,9 +553,12 @@ parallelizing <- function(args){
 }
 
 calculate.qij <- function(layer.params,data.block,i,j){
+	D <- data.block$geoDist[i,j]
+	if(is.null(D)){
+		D <- 0
+	}
 	q_ij <- 2 * layer.params$alpha0 * 
-				exp(-(layer.params$alphaD * 
-						data.block$geoDist[i,j])^layer.params$alpha2) + 
+				exp(-(layer.params$alphaD * D)^layer.params$alpha2) + 
 						2 * layer.params$phi + 0.5
 	return(q_ij)
 }
