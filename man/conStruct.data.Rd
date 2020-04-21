@@ -4,7 +4,8 @@
 \name{conStruct.data}
 \alias{conStruct.data}
 \title{Example dataset used in a \code{conStruct} analysis}
-\format{A list with two elements:
+\format{
+A list with two elements:
 \describe{
 	\item{allele.frequencies}{a matrix with one row for each of 
 		the 16 samples and one column for each of 10,000 loci, 
@@ -14,7 +15,8 @@
 		in the same order as that of the allele frequency matrix, 
 		and two columns, the first giving the x-coordinate 
 		(or longitude), the second giving the y-coordinate (or latitude)}
-}}
+}
+}
 \usage{
 conStruct.data
 }

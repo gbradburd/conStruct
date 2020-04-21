@@ -135,11 +135,11 @@ conStruct <- function(spatial=TRUE,K,freqs,geoDist=NULL,coords,prefix="",n.chain
 	}
 	stan.model <- pick.stan.model(spatial,K)
 	model.fit <- rstan::sampling(object = stanmodels[[stan.model]],
-							 	 refresh = min(n.iter/10,500),
+							 	 refresh = min(floor(n.iter/10),500),
 							 	 data = data.block,
 							 	 iter = n.iter,
 							 	 chains = n.chains,
-							 	 thin = ifelse(n.iter/500 > 1,n.iter/500,1),
+							 	 thin = ifelse(n.iter/500 > 1,floor(n.iter/500),1),
 							 	 save_warmup = FALSE,
 							 	 ...)
 	conStruct.results <- get.conStruct.results(data.block,model.fit,n.chains)
