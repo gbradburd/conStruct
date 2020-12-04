@@ -291,7 +291,7 @@ drop.missing <- function(freqs){
 
 calc.covariance <- function(freqs){
 	x <- t(freqs)
-	allelic.covariance <- stats::cov(x,use="pairwise.complete.obs") - 
+	allelic.covariance <- (1 - 1/nrow(freqs)) * stats::cov(x,use="pairwise.complete.obs") - 
 									(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
 									(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
 	diag(allelic.covariance) <- 0.25
