@@ -1,0 +1,11 @@
+***********************
+[UPCOMING] - XXXX-XX-XX
+***********************
+
+Bug fixes:
+
+- Calculation of the allelic covariance matrix in calc.covariance was found to
+  incorrectly use the sample covariance instead of the population covariance,
+  which could lead to non-positive-definite covariance matrices in rare cases
+  with small sample sizes. (@petrelharp, PR #34)
+
