@@ -73,5 +73,5 @@ load using the command:
 ## Contact
 
 After referring to the manual and vignettes, 
-please direct all queries to bradburd (at) msu.edu, 
+please direct all queries to bradburd (at) umich.edu, 
 or post as issues on the git repo.
