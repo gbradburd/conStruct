@@ -7,7 +7,7 @@ Description: A method for modeling genetic data as a combination of discrete
     distance. This package contains code for running analyses (which are implemented
     in the modeling language 'rstan') and visualizing and interpreting output. See the
     paper for more details on the model and its utility.
-Authors@R: person("Gideon", "Bradburd", email = "bradburd@msu.edu", role = c("aut", "cre"))
+Authors@R: person("Gideon", "Bradburd", email = "bradburd@umich.edu", role = c("aut", "cre"))
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
