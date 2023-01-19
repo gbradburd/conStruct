@@ -251,7 +251,7 @@ make.data.partitions <- function(n.reps,freqs,train.prop){
 
 get.var.mean.freqs <- function(freqs){
 	varMeanFreqs <- mean(0.5 * colMeans(freqs - 0.5, na.rm = TRUE)^2 + 
-	            		 0.5 * colMeans(0.5 - freqs, na.rm = TRUE)^2)
+	            		 0.5 * colMeans(0.5 - freqs, na.rm = TRUE)^2, na.rm=TRUE)
 	return(varMeanFreqs)
 }
 
