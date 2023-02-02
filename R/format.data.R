@@ -90,7 +90,7 @@ get.sample.names <- function(structure.data,onerowperind){
 
 get.counted.allele <- function(genos,missing.datum){
 	alleles <- unique(genos)
-	if(identical(alleles, missing.datum)){
+	if(all.equal(alleles, missing.datum)){
 		stop("\nyour dataset contains loci with all data missing. please remove and re-try.\n\n")
 	}
 	alleles <- alleles[!alleles==missing.datum]
