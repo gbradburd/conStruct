@@ -1,11 +1,15 @@
 
 ## conStruct (continuous Structure) ReadMe
 
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/gbradburd/conStruct/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gbradburd/conStruct/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
 
-This repo contains the code for the method **conStruct** - a statistical tool 
+
+This repo contains the code for the method **conStruct** - a statistical tool
 for modeling continuous and discrete population genetic structure.
 
-The manuscript, data files, and analysis scripts associated with the publication 
+The manuscript, data files, and analysis scripts associated with the publication
 "Inferring Continuous and Discrete Population Genetic Structure Across Space,"
 have been moved, and can be accessed at the links below:
 
@@ -23,9 +27,9 @@ To install the most recent release of the **conStruct** R package:
 install.packages("conStruct")
 ```
 
-Upon installation, the **conStruct** models will be compiled, which may 
-spit lots of text, and possibly some warnings, to your screen. This is 
-totally normal, and you should only be concerned if you get errors 
+Upon installation, the **conStruct** models will be compiled, which may
+spit lots of text, and possibly some warnings, to your screen. This is
+totally normal, and you should only be concerned if you get errors
 and the installation fails.
 
 
@@ -38,7 +42,7 @@ To install the development version from github:
 	install_github("gbradburd/conStruct",build_vignettes=TRUE)
 ```
 
-Note that Windows users may have to download Rtools as a 
+Note that Windows users may have to download Rtools as a
 standalone executable before trying to install the **conStruct** R package.
 
 
@@ -46,8 +50,8 @@ standalone executable before trying to install the **conStruct** R package.
 
 A complete manual for all documented functions is available [here](https://github.com/gbradburd/conStruct/blob/master/man/conStruct-manual.pdf).
 
-In addition, there are four vignettes included in the package that walk through 
-various steps in the analysis pipeline in detail. You can find them using: 
+In addition, there are four vignettes included in the package that walk through
+various steps in the analysis pipeline in detail. You can find them using:
 
 ```r
 # formatting data
@@ -63,7 +67,7 @@ various steps in the analysis pipeline in detail. You can find them using:
 	vignette(topic="model-comparison",package="conStruct")
 ```
 
-There is also an example data file included in the package, which you can 
+There is also an example data file included in the package, which you can
 load using the command:
 
 ```r
@@ -72,6 +76,6 @@ load using the command:
 
 ## Contact
 
-After referring to the manual and vignettes, 
-please direct all queries to bradburd (at) umich.edu, 
+After referring to the manual and vignettes,
+please direct all queries to bradburd (at) umich.edu,
 or post as issues on the git repo.
