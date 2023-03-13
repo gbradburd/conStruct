@@ -14,3 +14,4 @@ src/conStruct.so
 src/stan_files/.*\.o$
 src/stan_files/.*\.hpp$
 notes_for_next.release.txt
+^\.github$
