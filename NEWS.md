@@ -1,3 +1,9 @@
+# conStruct 1.0.5
+
+## Minor changes
+ + updated package to fully delegate the installation/compilation of stan models to rstantools.
+ + added a github actions R CMD CHECK workflow to make sure that changes are compatible across all platforms.
+
 # conStruct 1.0.4
 
 ## Bug fixes
