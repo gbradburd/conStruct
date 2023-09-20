@@ -28,3 +28,4 @@ src/stan_files/*.hpp
 testing/xval/*.log
 notes_for_next_release.txt
 testing/data_types
+CRAN-SUBMISSION
