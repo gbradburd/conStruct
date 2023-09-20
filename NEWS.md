@@ -1,3 +1,7 @@
+# conStruct 1.0.6
+## Minor changes
+ + Updated for compatibility with rstan 2.26
+
 # conStruct 1.0.5
 
 ## Minor changes
