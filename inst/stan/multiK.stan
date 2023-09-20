@@ -10,7 +10,7 @@ functions {
 		parCov += gamma + Nug_mat;
 		return parCov;	
 	}
-	matrix make_w_matrix(int N, int K, vector[] w){
+	matrix make_w_matrix(int N, int K, array[] vector w){
 		matrix[N,K] w_mat;
 		for(i in 1:N){
 			w_mat[i] = to_row_vector(w[i]);
@@ -35,7 +35,7 @@ parameters {
 	positive_ordered[K] phi;				// shared drift effect in layer k
 	real<lower=0> gamma;				// covariance between all layers
   	vector<lower=0>[N] nugget; 			// sample-specific variance (allele sampling error + sample-specific drift)
-	simplex[K]    w[N];    				// every sample (N in total) has a K simplex (i.e. K layers)
+	array[N] simplex[K]    w;    				// every sample (N in total) has a K simplex (i.e. K layers)
 }
 transformed parameters {
 	matrix[N,N] parCov;					// this specifies the parametric, admixed covariance matrix
