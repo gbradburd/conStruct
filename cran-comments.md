@@ -1,6 +1,6 @@
 
 ## Test environments
-* local OS X install R 3.6.1
+* local OS X install R 4.2.3
 * win-builder
 
 ## R CMD check results
