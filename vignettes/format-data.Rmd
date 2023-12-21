@@ -117,7 +117,7 @@ you must specify a matrix of pairwise geographic distance between
 all samples.  If the coordinates of the samples are real locations 
 on Earth (as opposed to simulated coordinates), I recommend 
 calculating pairwise great-circle distance between sampling 
-coordinates (using, e.g., `fields::rdist.earth`).
+coordinates (using, e.g., `geosphere::distm` or `geosphere::distGeo`).
 
 The order of the samples in the geographic distance matrix should 
 match both that of the geographic coordinates and that of the 
