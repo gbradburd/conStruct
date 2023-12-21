@@ -214,8 +214,14 @@ make.data.block.S3 <- function(data.block){
 	return(data.block)
 }
 
-print.data.block <- function(data.block){
-	print(utils::str(data.block,max.level=1))
+#' An S3 print method for class data.block
+#' 
+#' @param x an object of class \code{data.block}
+#' @param ... further options to be passed to \code{print}
+#' @return prints a top-level summary of the data.block, returns nothing
+#' @method print data.block
+print.data.block <- function(x,...){
+	print(x=utils::str(x,max.level=1),...)
 }
 
 validate.data.block <- function(data.block){
@@ -259,8 +265,14 @@ make.freq.data.list.S3 <- function(freq.data){
 	return(freq.data)
 }
 
-print.freq.data <- function(freq.data){
-	print(utils::str(freq.data,max.level=1))
+#' An S3 print method for class freq.data
+#' 
+#' @param x an object of class \code{freq.data}
+#' @param ... further options to be passed to \code{print}
+#' @return prints a top-level summary of the freq.data, returns nothing
+#' @method print freq.data
+print.freq.data <- function(x,...){
+	print(x=utils::str(x,max.level=1),...)
 }
 
 identify.invar.sites <- function(freqs){

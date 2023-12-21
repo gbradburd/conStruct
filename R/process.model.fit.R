@@ -175,8 +175,14 @@ make.layer.params.S3 <- function(layer.params){
 	return(layer.params)
 }
 
-print.layer.params <- function(layer.params){
-	print(utils::str(layer.params,max.level=1))
+#' An S3 print method for class layer.params
+#' 
+#' @param x an object of class \code{layer.params}
+#' @param ... further options to be passed to \code{print}
+#' @return prints a top-level summary of the layer.params, returns nothing
+#' @method print layer.params
+print.layer.params <- function(x,...){
+	print(x=utils::str(x,max.level=1),...)
 }
 
 index.MAP <- function(param,MAP.iter){
@@ -222,8 +228,14 @@ make.conStruct.results.S3 <- function(conStruct.results){
 	return(conStruct.results)
 }
 
-print.conStruct.results <- function(conStruct.results){
-	print(utils::str(conStruct.results,max.level=1))
+#' An S3 print method for class conStruct.results
+#' 
+#' @param x an object of class \code{conStruct.results}
+#' @param ... further options to be passed to \code{print}
+#' @return prints a top-level summary of the conStruct.results, returns nothing
+#' @method print conStruct.results
+print.conStruct.results <- function(x,...){
+	print(x=utils::str(x,max.level=1),...)
 }
 
 get.conStruct.chain.results <- function(data.block,model.fit,chain.no){
