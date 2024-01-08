@@ -1,6 +1,6 @@
 Package: conStruct
 Version: 1.0.6
-Date: 2023-12-21
+Date: 2024-1-08
 Title: Models Spatially Continuous and Discrete Population Genetic Structure
 Description: A method for modeling genetic data as a combination of discrete
     layers, within each of which relatedness may decay continuously with geographic
