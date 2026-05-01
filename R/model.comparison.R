@@ -288,8 +288,8 @@ xval.make.data.block <- function(K, data.partition, coords, spatial, geoDist = N
 check.data.partitions.covmats <- function(args){
 	data.list1 <- lapply(args[["data.partitions"]],function(x){x[[1]]$data})
 	data.list2 <- lapply(args[["data.partitions"]],function(x){x[[2]]$data})
-	if(!all(unlist(lapply(data.list1,function(x){isSymmetric(x, tol = 1e-10)}))) |
-	   !all(unlist(lapply(data.list2,function(x){isSymmetric(x, tol = 1e-10)})))){
+	if(!all(unlist(lapply(data.list1,function(x){isSymmetric(x)}))) |
+	   !all(unlist(lapply(data.list2,function(x){isSymmetric(x)})))){
 		stop("\nyou must specify symmetric matrices for the \"data\" elements of the data partitions list\n\n")
 	}	
 	if(any(unlist(lapply(data.list1,function(x){any(is.na(x))}))) |
