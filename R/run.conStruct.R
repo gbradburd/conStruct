@@ -311,7 +311,7 @@ calc.covariance <- function(freqs){
 									(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
 									(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
 	diag(allelic.covariance) <- 0.25
-	return(allelic.covariance)
+	return((allelic.covariance + t(allelic.covariance))/2)
 }
 
 pos.def.check <- function(obsCov){
