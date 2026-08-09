@@ -276,6 +276,10 @@ make.admix.pie.plot <- function(admix.proportions,coords,layer.colors=NULL,radii
 #'			plotting results for different layers. Users must 
 #'			specify one color per layer.  If \code{NULL}, plots 
 #'			will use a pre-specified vector of colors.
+#' @param pdf.width A \code{numeric} value giving the width, in inches, 
+#'			of the pdf output figures. Default value is 12.
+#' @param pdf.height A \code{numeric} value giving the width, in inches, 
+#'			of the pdf output figures. Default value is 6.
 #' @return This function has only invisible return values.
 #'
 #'	@details This function produces a variety of plots that can be 
@@ -324,7 +328,7 @@ make.admix.pie.plot <- function(admix.proportions,coords,layer.colors=NULL,radii
 #'		}
 #'	}
 #'@export
-compare.two.runs <- function(conStruct.results1,data.block1,conStruct.results2,data.block2,prefix,layer.colors=NULL){
+compare.two.runs <- function(conStruct.results1,data.block1,conStruct.results2,data.block2,prefix,layer.colors=NULL,pdf.width=NULL,pdf.height=NULL){
 	if(length(conStruct.results1) != length(conStruct.results1)){
 		stop("\nthe two \"conStruct.results\" objects must be from analyses with the same number of chains\n\n")
 	}
@@ -344,8 +348,16 @@ compare.two.runs <- function(conStruct.results1,data.block1,conStruct.results2,d
 			stop("\nyou has specified more layers than there are default colors.\n you must specify your own \"layer.colors\"\n\n")
 		}
 	}
+	if(is.null(pdf.width) & is.null(pdf.height)){
+		pdf.width <- 12
+		pdf.height <- 6
+	} else if(is.null(pdf.width) & !is.null(pdf.height)){
+		pdf.width <- 2*pdf.height
+	} else if(!is.null(pdf.width) & is.null(pdf.height)){
+		pdf.height <- pdf.width/2
+	}
 	lapply(1:length(conStruct.results1),function(i){
-		make.all.chain.coplots(conStruct.results1[[i]],conStruct.results2[[i]],chain.no=i,data.block1,data.block2,prefix,layer.colors)
+		make.all.chain.coplots(conStruct.results1[[i]],conStruct.results2[[i]],chain.no=i,data.block1,data.block2,prefix,layer.colors,pdf.width=pdf.width,pdf.height=pdf.height)
 	})
 }
 
@@ -439,23 +451,27 @@ get.par.cov.CI <- function(data.block,conStruct.results){
 plot.model.fit.CIs <- function(data.block,conStruct.results){
 	cov.range <- range(c(data.block$obsCov,
 						conStruct.results$posterior$par.cov))
-	graphics::plot(data.block$geoDist,data.block$obsCov,
+	ut <- upper.tri(data.block$geoDist,diag=TRUE)
+	graphics::plot(data.block$geoDist[ut],data.block$obsCov[ut],
     	xlab = "geographic distance", 
         ylab = "covariance",
         main="Cov/geoDist",
         ylim = cov.range, type = "n")
-	combns <- gtools::combinations(n=data.block$N,r=2,v=1:data.block$N,repeats.allowed=TRUE)
-	CIs <- get.par.cov.CI(data.block,conStruct.results)
-	lapply(1:nrow(combns),
+	CIs <- apply(conStruct.results$posterior$par.cov,2:3,function(x){stats::quantile(x,c(0.025,0.975))})
+	invisible(
+		lapply(1:data.block$N,
 			function(i){
-				graphics::segments(x0 = data.block$geoDist[combns[i,1],combns[i,2]],
-						 y0 = CIs[[i]][1],
-						 x1 = data.block$geoDist[combns[i,1],combns[i,2]],
-						 y1 = CIs[[i]][2],
-						 col = grDevices::adjustcolor(1,0.1),
-						 lwd=1.5)
-			})
-	graphics::points(data.block$geoDist,data.block$obsCov,col=2,pch=20,cex=0.8)
+				lapply(i:data.block$N,
+					function(j){
+						graphics::segments(x0 = data.block$geoDist[i,j],
+											y0 = CIs[1,i,j],
+											x1 = data.block$geoDist[i,j],
+											y1 = CIs[2,i,j],
+											col = grDevices::adjustcolor(1,0.1),
+											lwd=1.5)
+					})
+			}))
+	graphics::points(data.block$geoDist[ut],data.block$obsCov[ut],col=2,pch=20,cex=0.8)
 	graphics::legend(x="topright",legend=c("observed","95% CI"),pch=c(19,NA),lty=c(NA,1),col=c(2,"gray"))
 	return(invisible("plotted"))
 }
@@ -544,11 +560,11 @@ make.all.chain.plots <- function(conStruct.results,chain.no,data.block,prefix,la
 	return(invisible("made chain plots!"))
 }
 
-make.all.chain.coplots <- function(conStruct.results1,conStruct.results2,chain.no,data.block1,data.block2,prefix,layer.colors){
+make.all.chain.coplots <- function(conStruct.results1,conStruct.results2,chain.no,data.block1,data.block2,prefix,layer.colors,pdf.width=12,pdf.height=6){
 	match.order <- match.layers.x.runs(conStruct.results1$MAP$admix.proportions,conStruct.results2$MAP$admix.proportions)
 	layer.colors1 <- layer.colors
 	layer.colors2 <- layer.colors1[match.order]
-	grDevices::pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"),width=12,height=6)
+	grDevices::pdf(file=paste0(prefix,"_trace.plots.chain_",chain.no,".pdf"),width=pdf.width,height=pdf.height)
 		graphics::par(mfrow=c(1,2))
 			plot.lpd(conStruct.results1)
 			plot.lpd(conStruct.results2)
@@ -568,26 +584,26 @@ make.all.chain.coplots <- function(conStruct.results1,conStruct.results2,chain.n
 		}
 	grDevices::dev.off()
 	if(!is.null(data.block1$geoDist) & !is.null(data.block2$geoDist)){
-		grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),width=12,height=6)
+		grDevices::pdf(file=paste0(prefix,"_model.fit.CIs.chain_",chain.no,".pdf"),width=pdf.width,height=pdf.height)
 			graphics::par(mfrow=c(1,2))
 				plot.model.fit.CIs(data.block1,conStruct.results1)
 				plot.model.fit.CIs(data.block2,conStruct.results2)
 		grDevices::dev.off()
 	}
 	if(data.block1$spatial & data.block2$spatial | (data.block1$K > 1 & !is.null(data.block1$geoDist) & data.block2$K > 1 & !is.null(data.block2$geoDist))){
-		grDevices::pdf(file=paste0(prefix,"_layer.cov.curves.chain_",chain.no,".pdf"),width=10,height=5)
+		grDevices::pdf(file=paste0(prefix,"_layer.cov.curves.chain_",chain.no,".pdf"),width=pdf.width,height=pdf.height)
 			graphics::par(mfrow=c(1,2))
 				plot.layer.covariances(data.block1,conStruct.results1,layer.colors1)
 				plot.layer.covariances(data.block2,conStruct.results2,layer.colors1,layer.order=match.order)
 		grDevices::dev.off()
 	}
 	if(data.block1$K > 1 & data.block2$K > 1){
-		grDevices::pdf(file=paste0(prefix,"_pie.map.chain_",chain.no,".pdf"),width=12,height=6)	
+		grDevices::pdf(file=paste0(prefix,"_pie.map.chain_",chain.no,".pdf"),width=pdf.width,height=pdf.height)
 		graphics::par(mfrow=c(1,2))
 			make.admix.pie.plot(conStruct.results1$MAP$admix.proportions,data.block1$coords,layer.colors1,radii =2.7,add=FALSE,x.lim=NULL,y.lim=NULL)
 			make.admix.pie.plot(conStruct.results2$MAP$admix.proportions,data.block2$coords,layer.colors1[order(match.order)],radii =2.7,add=FALSE,x.lim=NULL,y.lim=NULL)
 		grDevices::dev.off()
-		grDevices::pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=10,height=10)
+		grDevices::pdf(file=paste0(prefix,"_structure.plot.chain_",chain.no,".pdf"),width=pdf.width,height=pdf.height)
 			graphics::par(mfrow=c(2,1))
 				make.structure.plot(conStruct.results1$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=NULL,sample.names=NULL,sort.by=NULL,layer.colors1)
 				make.structure.plot(conStruct.results2$MAP$admix.proportions,mar=c(2,4,2,2),sample.order=NULL,layer.order=match.order,sample.names=NULL,sort.by=NULL,layer.colors1[order(match.order)])

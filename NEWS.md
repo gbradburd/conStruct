@@ -1,3 +1,8 @@
+# conStruct 1.0.7
+## Minor changes
+ + fixed minor bug in calculating covariance
+ + allows user-specified sizes of pdfs produced by `compare.two.runs`
+
 # conStruct 1.0.6
 ## Minor changes
  + Updated for compatibility with rstan 2.26

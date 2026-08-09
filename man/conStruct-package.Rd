@@ -16,3 +16,12 @@ G.S. Bradburd, G.M. Coop, and P.L. Ralph (2018) <doi: 10.1534/genetics.118.30133
 
 Stan Development Team (2018). RStan: the R interface to Stan. R package version 2.17.3. http://mc-stan.org
 }
+\author{
+\strong{Maintainer}: Gideon Bradburd \email{bradburd@umich.edu}
+
+Authors:
+\itemize{
+  \item Gideon Bradburd \email{bradburd@umich.edu}
+}
+
+}

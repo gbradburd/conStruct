@@ -95,7 +95,7 @@ x.validation <- function(train.prop = 0.9, n.reps, K, freqs = NULL, data.partiti
     x.val <- lapply(x.val, standardize.xvals)
     save(x.val,file=paste0(prefix,".xval.results.Robj"))
 	write.xvals(x.val,prefix)
-	tmp <- end.parallelization(prespecified)
+	tmp <- end_parallelization(prespecified)
     return(x.val)
 }
 
@@ -522,7 +522,7 @@ parallel.prespecify.check <- function(args){
 	return(prespecified)
 }
 
-end.parallelization <- function(prespecified){
+end_parallelization <- function(prespecified){
 	if(!prespecified){
 		doParallel::stopImplicitCluster()
 		message("\nParallel workers terminated\n\n")
@@ -588,7 +588,7 @@ post.process.par.cov <- function(conStruct.results,samples){
 }
 
 
-log.likelihood <- function(obsCov,inv.par.cov,log.det,n.loci){
+log_likelihood <- function(obsCov,inv.par.cov,log.det,n.loci){
 	lnL <- -0.5 * (sum( inv.par.cov * obsCov) + n.loci * log.det)
 	return(lnL)
 }
@@ -596,7 +596,7 @@ log.likelihood <- function(obsCov,inv.par.cov,log.det,n.loci){
 calc.lnl.x.MCMC <- function(cov.chunk,pp.par.cov,chunk.size){
 	lnl.x.mcmc <- lapply(pp.par.cov,
 						function(x){
-							log.likelihood(cov.chunk,x$inv,x$log.det,n.loci=chunk.size)
+							log_likelihood(cov.chunk,x$inv,x$log.det,n.loci=chunk.size)
 					})
 	return(unlist(lnl.x.mcmc))
 }
@@ -606,7 +606,7 @@ fit.to.test <- function(test.data,conStruct.results){
 										samples = 1:conStruct.results$posterior$n.iter)
 	test.lnl <- lapply(pp.par.cov,
 						function(x){
-							log.likelihood(test.data$data,x$inv,x$log.det,test.data$n.loci)
+							log_likelihood(test.data$data,x$inv,x$log.det,test.data$n.loci)
 				})
 	return(test.lnl)
 }

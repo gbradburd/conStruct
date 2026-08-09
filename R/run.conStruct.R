@@ -220,6 +220,7 @@ make.data.block.S3 <- function(data.block){
 #' @param ... further options to be passed to \code{print}
 #' @return prints a top-level summary of the data.block, returns nothing
 #' @method print data.block
+#' @exportS3Method
 print.data.block <- function(x,...){
 	print(x=utils::str(x,max.level=1),...)
 }
@@ -271,22 +272,25 @@ make.freq.data.list.S3 <- function(freq.data){
 #' @param ... further options to be passed to \code{print}
 #' @return prints a top-level summary of the freq.data, returns nothing
 #' @method print freq.data
+#' @exportS3Method
 print.freq.data <- function(x,...){
 	print(x=utils::str(x,max.level=1),...)
 }
 
-identify.invar.sites <- function(freqs){
+
+identify_invar_sites <- function(freqs){
 	invar <- length(unique(freqs[which(!is.na(freqs))])) == 1
 	return(invar)
 }
 
 drop.invars <- function(freqs){
-	invars <- apply(freqs,2,identify.invar.sites)
+	invars <- apply(freqs,2,identify_invar_sites)
 	freqs <- freqs[,!invars]
 	return(freqs)
 }
 
-identify.missing.sites <- function(freqs){
+#' @noRd
+identify_missing_sites <- function(freqs){
 	n.samples <- length(freqs)
 	missing <- FALSE
 	if(length(which(is.na(freqs))) == n.samples){
@@ -296,14 +300,14 @@ identify.missing.sites <- function(freqs){
 }
 
 drop.missing <- function(freqs){
-	missing <- apply(freqs,2,identify.missing.sites)
+	missing <- apply(freqs,2,identify_missing_sites)
 	freqs <- freqs[,!missing]
 	return(freqs)
 }
 
 calc.covariance <- function(freqs){
 	x <- t(freqs)
-	allelic.covariance <- (1 - 1/nrow(freqs)) * stats::cov(x,use="pairwise.complete.obs") - 
+	allelic.covariance <- (1 - 1/nrow(x)) * stats::cov(x,use="pairwise.complete.obs") - 
 									(1/2) * outer( colMeans(x,na.rm=TRUE), 1-colMeans(x,na.rm=TRUE), "*" ) -
 									(1/2) * outer(1-colMeans(x,na.rm=TRUE), colMeans(x,na.rm=TRUE), "*") + 1/4
 	diag(allelic.covariance) <- 0.25

@@ -6,7 +6,6 @@
 #'    in the modeling language 'rstan') and visualizing and interpreting output. See the
 #'    associated paper for more details on the model and its utility.
 #' 
-#' @docType package
 #' @name conStruct-package
 #' @aliases conStruct-package
 #' @useDynLib conStruct, .registration = TRUE
@@ -19,4 +18,4 @@
 #' G.S. Bradburd, G.M. Coop, and P.L. Ralph (2018) <doi: 10.1534/genetics.118.301333>.
 #'
 #' Stan Development Team (2018). RStan: the R interface to Stan. R package version 2.17.3. http://mc-stan.org
-NULL
+"_PACKAGE"

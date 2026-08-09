@@ -10,7 +10,9 @@ compare.two.runs(
   conStruct.results2,
   data.block2,
   prefix,
-  layer.colors = NULL
+  layer.colors = NULL,
+  pdf.width = NULL,
+  pdf.height = NULL
 )
 }
 \arguments{
@@ -32,6 +34,12 @@ second \code{conStruct} run.}
 plotting results for different layers. Users must 
 specify one color per layer.  If \code{NULL}, plots 
 will use a pre-specified vector of colors.}
+
+\item{pdf.width}{A \code{numeric} value giving the width, in inches, 
+of the pdf output figures. Default value is 12.}
+
+\item{pdf.height}{A \code{numeric} value giving the width, in inches, 
+of the pdf output figures. Default value is 6.}
 }
 \value{
 This function has only invisible return values.
